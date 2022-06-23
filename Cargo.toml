@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "rxml",
+    "wow_vanilla_dbc",
+]

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<dbc>
+	<name>Cfg_Categories</name>
+	<alias>cfg_categories</alias>
+
+	<enum>
+		<type>int32</type>
+		<name>Category</name>
+		<options>
+			<option name="ONE"       value="1" />
+			<option name="TWO"        value="2" />
+			<option name="THREE"        value="3" />
+			<option name="FIVE"       value="5" />
+		</options>
+	</enum>
+
+	<enum>
+		<type>int32</type>
+		<name>Region</name>
+		<options>
+			<option name="UNITED_STATES" value="1" />
+			<option name="KOREA"         value="2" />
+			<option name="EUROPE"        value="3" />
+			<option name="TAIWAN"        value="4" />
+			<option name="CHINA"         value="5" />
+			<option name="TEST_SERVER"   value="99" />
+			<option name="QA_SERVER"     value="101" />
+		</options>
+	</enum>
+
+	<field>
+		<type>Category</type>
+		<name>category</name>
+	</field>
+
+	<field>
+		<type>Region</type>
+		<name>region</name>
+	</field>
+
+	<field>
+		<type>string_ref_loc</type>
+		<name>name</name>
+	</field>
+</dbc>

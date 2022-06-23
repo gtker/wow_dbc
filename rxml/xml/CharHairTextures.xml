@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<dbc>
+	<name>CharHairTextures</name>
+	
+	<field>
+		<type>uint32</type>
+		<name>id</name>
+		<key>
+			<type>primary</type>
+		</key>
+	</field>
+
+	<field>
+		<type>uint32</type>
+		<name>race</name>
+		<key>
+			<type>foreign</type>
+			<parent>ChrRaces</parent>
+		</key>
+	</field>
+
+	<enum>
+		<type>int32</type>
+		<name>Gender</name>
+		<options>
+			<option name="male" value="0x00" />
+			<option name="female" value="0x01" />
+		</options>
+	</enum>
+
+	<field>
+		<type>Gender</type>
+		<name>gender</name>
+	</field>
+
+	<field>
+		<type>uint32</type>
+		<name>variation</name>
+	</field>
+
+	<field>
+		<type>int32</type>
+		<name>geoset</name>
+	</field>
+
+	<field>
+		<type>uint32</type>
+		<name>show_scalp</name>
+	</field>
+
+	<field>
+		<type>uint32[2]</type>
+		<name>unknown_padding</name>
+	</field>
+</dbc>
