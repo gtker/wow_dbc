@@ -25,3 +25,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial release.
 
+[0.1.0]: https://github.com/gtker/wow_vanilla_dbc/tree/58484817c75947a97c05a0ed1fbf02f0bc6baa74
