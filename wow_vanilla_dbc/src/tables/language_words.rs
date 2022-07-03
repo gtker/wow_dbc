@@ -163,17 +163,3 @@ pub struct LanguageWordsRow {
     pub word: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn language_words() {
-        let contents = include_bytes!("../../../dbc/LanguageWords.dbc");
-        let actual = LanguageWords::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = LanguageWords::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

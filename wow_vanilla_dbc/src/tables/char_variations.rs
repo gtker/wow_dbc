@@ -124,17 +124,3 @@ pub struct CharVariationsRow {
     pub unknown_2: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn char_variations() {
-        let contents = include_bytes!("../../../dbc/CharVariations.dbc");
-        let actual = CharVariations::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CharVariations::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

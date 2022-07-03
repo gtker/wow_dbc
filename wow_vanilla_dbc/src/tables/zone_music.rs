@@ -203,17 +203,3 @@ pub struct ZoneMusicRow {
     pub night_sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn zone_music() {
-        let contents = include_bytes!("../../../dbc/ZoneMusic.dbc");
-        let actual = ZoneMusic::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ZoneMusic::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

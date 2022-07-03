@@ -150,17 +150,3 @@ pub struct GMSurveyCurrentSurveyRow {
     pub gm_survey: GMSurveySurveysKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn gm_survey_current_survey() {
-        let contents = include_bytes!("../../../dbc/GMSurveyCurrentSurvey.dbc");
-        let actual = GMSurveyCurrentSurvey::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GMSurveyCurrentSurvey::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -183,17 +183,3 @@ pub struct SkillLineRow {
     pub spell_icon: SpellIconKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn skill_line() {
-        let contents = include_bytes!("../../../dbc/SkillLine.dbc");
-        let actual = SkillLine::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SkillLine::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

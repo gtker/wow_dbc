@@ -251,17 +251,3 @@ pub struct EmotesRow {
     pub event_sound_entry: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn emotes() {
-        let contents = include_bytes!("../../../dbc/Emotes.dbc");
-        let actual = Emotes::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = Emotes::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

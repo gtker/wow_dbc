@@ -142,17 +142,3 @@ pub struct LightIntBandRow {
     pub data: [i32; 16],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn light_int_band() {
-        let contents = include_bytes!("../../../dbc/LightIntBand.dbc");
-        let actual = LightIntBand::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = LightIntBand::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

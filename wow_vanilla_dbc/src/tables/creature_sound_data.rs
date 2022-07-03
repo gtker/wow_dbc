@@ -345,17 +345,3 @@ pub struct CreatureSoundDataRow {
     pub submerged_sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn creature_sound_data() {
-        let contents = include_bytes!("../../../dbc/CreatureSoundData.dbc");
-        let actual = CreatureSoundData::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CreatureSoundData::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -147,17 +147,3 @@ pub struct DeathThudLookupsRow {
     pub sound_entry_water: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn death_thud_lookups() {
-        let contents = include_bytes!("../../../dbc/DeathThudLookups.dbc");
-        let actual = DeathThudLookups::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = DeathThudLookups::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

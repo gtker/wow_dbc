@@ -200,17 +200,3 @@ pub struct TalentTabRow {
     pub background_file: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn talent_tab() {
-        let contents = include_bytes!("../../../dbc/TalentTab.dbc");
-        let actual = TalentTab::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = TalentTab::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

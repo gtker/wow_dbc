@@ -231,17 +231,3 @@ pub struct CreatureDisplayInfoExtraRow {
     pub bake_name: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn creature_display_info_extra() {
-        let contents = include_bytes!("../../../dbc/CreatureDisplayInfoExtra.dbc");
-        let actual = CreatureDisplayInfoExtra::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CreatureDisplayInfoExtra::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

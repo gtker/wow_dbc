@@ -179,17 +179,3 @@ pub struct ZoneIntroMusicTableRow {
     pub min_delay: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn zone_intro_music_table() {
-        let contents = include_bytes!("../../../dbc/ZoneIntroMusicTable.dbc");
-        let actual = ZoneIntroMusicTable::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ZoneIntroMusicTable::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

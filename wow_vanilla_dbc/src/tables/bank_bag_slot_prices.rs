@@ -120,17 +120,3 @@ pub struct BankBagSlotPricesRow {
     pub cost: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn bank_bag_slot_prices() {
-        let contents = include_bytes!("../../../dbc/BankBagSlotPrices.dbc");
-        let actual = BankBagSlotPrices::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = BankBagSlotPrices::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

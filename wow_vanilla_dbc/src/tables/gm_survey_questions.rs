@@ -146,17 +146,3 @@ pub struct GMSurveyQuestionsRow {
     pub question: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn gm_survey_questions() {
-        let contents = include_bytes!("../../../dbc/GMSurveyQuestions.dbc");
-        let actual = GMSurveyQuestions::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GMSurveyQuestions::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

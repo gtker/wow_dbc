@@ -146,17 +146,3 @@ pub struct SpellFocusObjectRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_focus_object() {
-        let contents = include_bytes!("../../../dbc/SpellFocusObject.dbc");
-        let actual = SpellFocusObject::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellFocusObject::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

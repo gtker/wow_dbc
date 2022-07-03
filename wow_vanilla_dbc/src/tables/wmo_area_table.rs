@@ -231,17 +231,3 @@ pub struct WMOAreaTableRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn wmo_area_table() {
-        let contents = include_bytes!("../../../dbc/WMOAreaTable.dbc");
-        let actual = WMOAreaTable::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = WMOAreaTable::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

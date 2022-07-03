@@ -154,17 +154,3 @@ pub struct StringLookupsRow {
     pub path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn string_lookups() {
-        let contents = include_bytes!("../../../dbc/StringLookups.dbc");
-        let actual = StringLookups::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = StringLookups::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -146,17 +146,3 @@ pub struct PetLoyaltyRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn pet_loyalty() {
-        let contents = include_bytes!("../../../dbc/PetLoyalty.dbc");
-        let actual = PetLoyalty::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = PetLoyalty::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

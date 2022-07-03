@@ -168,17 +168,3 @@ pub struct CameraShakesRow {
     pub coefficient: f32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn camera_shakes() {
-        let contents = include_bytes!("../../../dbc/CameraShakes.dbc");
-        let actual = CameraShakes::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CameraShakes::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

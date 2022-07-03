@@ -188,17 +188,3 @@ pub struct TerrainTypeRow {
     pub display_footsteps: bool,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn terrain_type() {
-        let contents = include_bytes!("../../../dbc/TerrainType.dbc");
-        let actual = TerrainType::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = TerrainType::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

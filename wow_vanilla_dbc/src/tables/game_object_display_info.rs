@@ -165,17 +165,3 @@ pub struct GameObjectDisplayInfoRow {
     pub sound_entry: [u32; 10],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn game_object_display_info() {
-        let contents = include_bytes!("../../../dbc/GameObjectDisplayInfo.dbc");
-        let actual = GameObjectDisplayInfo::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GameObjectDisplayInfo::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

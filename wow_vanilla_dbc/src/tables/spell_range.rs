@@ -180,17 +180,3 @@ pub struct SpellRangeRow {
     pub display_name_short: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_range() {
-        let contents = include_bytes!("../../../dbc/SpellRange.dbc");
-        let actual = SpellRange::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellRange::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

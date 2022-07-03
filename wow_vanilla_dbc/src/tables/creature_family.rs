@@ -221,17 +221,3 @@ pub struct CreatureFamilyRow {
     pub icon_path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn creature_family() {
-        let contents = include_bytes!("../../../dbc/CreatureFamily.dbc");
-        let actual = CreatureFamily::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CreatureFamily::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

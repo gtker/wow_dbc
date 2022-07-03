@@ -154,17 +154,3 @@ pub struct AttackAnimTypesRow {
     pub name: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn attack_anim_types() {
-        let contents = include_bytes!("../../../dbc/AttackAnimTypes.dbc");
-        let actual = AttackAnimTypes::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = AttackAnimTypes::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

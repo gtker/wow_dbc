@@ -176,17 +176,3 @@ pub struct ItemRandomPropertiesRow {
     pub suffix: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_random_properties() {
-        let contents = include_bytes!("../../../dbc/ItemRandomProperties.dbc");
-        let actual = ItemRandomProperties::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemRandomProperties::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

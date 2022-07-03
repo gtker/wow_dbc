@@ -179,17 +179,3 @@ pub struct SpellShapeshiftFormRow {
     pub spell_icon: SpellIconKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_shapeshift_form() {
-        let contents = include_bytes!("../../../dbc/SpellShapeshiftForm.dbc");
-        let actual = SpellShapeshiftForm::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellShapeshiftForm::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

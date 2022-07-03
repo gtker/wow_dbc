@@ -315,17 +315,3 @@ pub struct MapRow {
     pub unknown_2: [i32; 2],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn map() {
-        let contents = include_bytes!("../../../dbc/Map.dbc");
-        let actual = Map::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = Map::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

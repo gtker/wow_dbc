@@ -136,17 +136,3 @@ pub struct SpellDurationRow {
     pub max_duration: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_duration() {
-        let contents = include_bytes!("../../../dbc/SpellDuration.dbc");
-        let actual = SpellDuration::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellDuration::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

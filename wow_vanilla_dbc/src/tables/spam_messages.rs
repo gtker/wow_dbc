@@ -154,17 +154,3 @@ pub struct SpamMessagesRow {
     pub text: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spam_messages() {
-        let contents = include_bytes!("../../../dbc/SpamMessages.dbc");
-        let actual = SpamMessages::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpamMessages::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

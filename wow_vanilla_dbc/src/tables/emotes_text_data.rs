@@ -146,17 +146,3 @@ pub struct EmotesTextDataRow {
     pub text: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn emotes_text_data() {
-        let contents = include_bytes!("../../../dbc/EmotesTextData.dbc");
-        let actual = EmotesTextData::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = EmotesTextData::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

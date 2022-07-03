@@ -218,17 +218,3 @@ pub struct PetPersonalityRow {
     pub modifier_happy: f32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn pet_personality() {
-        let contents = include_bytes!("../../../dbc/PetPersonality.dbc");
-        let actual = PetPersonality::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = PetPersonality::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

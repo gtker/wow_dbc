@@ -163,17 +163,3 @@ pub struct UISoundLookupsRow {
     pub internal_name: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn ui_sound_lookups() {
-        let contents = include_bytes!("../../../dbc/UISoundLookups.dbc");
-        let actual = UISoundLookups::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = UISoundLookups::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

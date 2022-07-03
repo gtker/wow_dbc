@@ -134,17 +134,3 @@ pub struct DurabilityCostsRow {
     pub armour_subclass_cost: [i32; 8],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn durability_costs() {
-        let contents = include_bytes!("../../../dbc/DurabilityCosts.dbc");
-        let actual = DurabilityCosts::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = DurabilityCosts::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

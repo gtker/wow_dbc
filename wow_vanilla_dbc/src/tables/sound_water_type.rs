@@ -177,17 +177,3 @@ pub struct SoundWaterTypeRow {
     pub sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn sound_water_type() {
-        let contents = include_bytes!("../../../dbc/SoundWaterType.dbc");
-        let actual = SoundWaterType::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SoundWaterType::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

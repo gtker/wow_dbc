@@ -146,17 +146,3 @@ pub struct ItemPetFoodRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_pet_food() {
-        let contents = include_bytes!("../../../dbc/ItemPetFood.dbc");
-        let actual = ItemPetFood::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemPetFood::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

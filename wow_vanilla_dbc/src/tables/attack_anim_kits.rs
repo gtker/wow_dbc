@@ -182,17 +182,3 @@ pub struct AttackAnimKitsRow {
     pub flags: AttackHand,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn attack_anim_kits() {
-        let contents = include_bytes!("../../../dbc/AttackAnimKits.dbc");
-        let actual = AttackAnimKits::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = AttackAnimKits::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

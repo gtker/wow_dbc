@@ -176,17 +176,3 @@ pub struct WeaponSwingSounds2Row {
     pub sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn weapon_swing_sounds2() {
-        let contents = include_bytes!("../../../dbc/WeaponSwingSounds2.dbc");
-        let actual = WeaponSwingSounds2::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = WeaponSwingSounds2::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

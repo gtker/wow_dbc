@@ -173,17 +173,3 @@ pub struct SkillRaceClassInfoRow {
     pub skill_cost: SkillCostsDataKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn skill_race_class_info() {
-        let contents = include_bytes!("../../../dbc/SkillRaceClassInfo.dbc");
-        let actual = SkillRaceClassInfo::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SkillRaceClassInfo::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -154,17 +154,3 @@ pub struct SpellIconRow {
     pub texture_file: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_icon() {
-        let contents = include_bytes!("../../../dbc/SpellIcon.dbc");
-        let actual = SpellIcon::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellIcon::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

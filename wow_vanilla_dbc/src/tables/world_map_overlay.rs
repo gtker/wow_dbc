@@ -254,17 +254,3 @@ pub struct WorldMapOverlayRow {
     pub hit_rect_right: u32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn world_map_overlay() {
-        let contents = include_bytes!("../../../dbc/WorldMapOverlay.dbc");
-        let actual = WorldMapOverlay::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = WorldMapOverlay::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

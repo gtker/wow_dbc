@@ -291,17 +291,3 @@ pub struct SpellVisualKitRow {
     pub unknown2_pad: u32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_visual_kit() {
-        let contents = include_bytes!("../../../dbc/SpellVisualKit.dbc");
-        let actual = SpellVisualKit::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellVisualKit::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

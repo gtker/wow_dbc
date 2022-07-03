@@ -180,17 +180,3 @@ pub struct CharStartOutfitRow {
     pub inv_slot_id: [i32; 12],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn char_start_outfit() {
-        let contents = include_bytes!("../../../dbc/CharStartOutfit.dbc");
-        let actual = CharStartOutfit::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CharStartOutfit::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -240,17 +240,3 @@ pub struct AreaPOIRow {
     pub world_state: WorldStateUIKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn area_poi() {
-        let contents = include_bytes!("../../../dbc/AreaPOI.dbc");
-        let actual = AreaPOI::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = AreaPOI::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

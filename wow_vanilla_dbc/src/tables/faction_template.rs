@@ -192,17 +192,3 @@ pub struct FactionTemplateRow {
     pub friends: [u32; 4],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn faction_template() {
-        let contents = include_bytes!("../../../dbc/FactionTemplate.dbc");
-        let actual = FactionTemplate::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = FactionTemplate::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

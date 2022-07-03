@@ -201,17 +201,3 @@ pub struct SheatheSoundLookupsRow {
     pub draw_sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn sheathe_sound_lookups() {
-        let contents = include_bytes!("../../../dbc/SheatheSoundLookups.dbc");
-        let actual = SheatheSoundLookups::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SheatheSoundLookups::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

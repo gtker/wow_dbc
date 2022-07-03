@@ -173,17 +173,3 @@ pub struct SpellVisualPrecastTransitionsRow {
     pub hold_animation: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_visual_precast_transitions() {
-        let contents = include_bytes!("../../../dbc/SpellVisualPrecastTransitions.dbc");
-        let actual = SpellVisualPrecastTransitions::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellVisualPrecastTransitions::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

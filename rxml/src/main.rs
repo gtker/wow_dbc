@@ -12,7 +12,7 @@ use std::path::Path;
 const XML_LOCATION: &str = "rxml/xml/";
 const TABLE_LOCATION: &str = "wow_vanilla_dbc/src/tables";
 
-const BUILD_TESTS: bool = true;
+const BUILD_TESTS: bool = false;
 
 fn main() {
     let paths = std::fs::read_dir(XML_LOCATION)

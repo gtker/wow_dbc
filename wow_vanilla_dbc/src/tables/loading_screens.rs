@@ -173,17 +173,3 @@ pub struct LoadingScreensRow {
     pub file_path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn loading_screens() {
-        let contents = include_bytes!("../../../dbc/LoadingScreens.dbc");
-        let actual = LoadingScreens::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = LoadingScreens::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

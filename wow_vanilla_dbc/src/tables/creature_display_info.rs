@@ -241,17 +241,3 @@ pub struct CreatureDisplayInfoRow {
     pub npc_sound: NPCSoundsKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn creature_display_info() {
-        let contents = include_bytes!("../../../dbc/CreatureDisplayInfo.dbc");
-        let actual = CreatureDisplayInfo::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CreatureDisplayInfo::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -131,17 +131,3 @@ pub struct SkillCostsDataRow {
     pub cost: [i32; 3],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn skill_costs_data() {
-        let contents = include_bytes!("../../../dbc/SkillCostsData.dbc");
-        let actual = SkillCostsData::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SkillCostsData::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

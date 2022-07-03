@@ -146,17 +146,3 @@ pub struct GMTicketCategoryRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn gm_ticket_category() {
-        let contents = include_bytes!("../../../dbc/GMTicketCategory.dbc");
-        let actual = GMTicketCategory::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GMTicketCategory::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

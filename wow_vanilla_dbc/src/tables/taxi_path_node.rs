@@ -178,17 +178,3 @@ pub struct TaxiPathNodeRow {
     pub delay: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn taxi_path_node() {
-        let contents = include_bytes!("../../../dbc/TaxiPathNode.dbc");
-        let actual = TaxiPathNode::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = TaxiPathNode::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

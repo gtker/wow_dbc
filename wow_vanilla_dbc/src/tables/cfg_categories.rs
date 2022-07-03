@@ -224,17 +224,3 @@ pub struct Cfg_CategoriesRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn cfg_categories() {
-        let contents = include_bytes!("../../../dbc/Cfg_Categories.dbc");
-        let actual = Cfg_Categories::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = Cfg_Categories::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

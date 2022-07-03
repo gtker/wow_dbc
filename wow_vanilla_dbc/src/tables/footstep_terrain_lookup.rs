@@ -147,17 +147,3 @@ pub struct FootstepTerrainLookupRow {
     pub sound_entry_splash: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn footstep_terrain_lookup() {
-        let contents = include_bytes!("../../../dbc/FootstepTerrainLookup.dbc");
-        let actual = FootstepTerrainLookup::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = FootstepTerrainLookup::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

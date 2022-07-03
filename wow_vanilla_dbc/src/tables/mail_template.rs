@@ -146,17 +146,3 @@ pub struct MailTemplateRow {
     pub body: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn mail_template() {
-        let contents = include_bytes!("../../../dbc/MailTemplate.dbc");
-        let actual = MailTemplate::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = MailTemplate::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

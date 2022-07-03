@@ -116,17 +116,3 @@ pub struct CharacterFacialHairStylesRow {
     pub geoset: [i32; 6],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn character_facial_hair_styles() {
-        let contents = include_bytes!("../../../dbc/CharacterFacialHairStyles.dbc");
-        let actual = CharacterFacialHairStyles::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CharacterFacialHairStyles::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

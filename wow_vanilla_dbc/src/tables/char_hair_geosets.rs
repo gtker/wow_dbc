@@ -190,17 +190,3 @@ pub struct CharHairGeosetsRow {
     pub show_scalp: Scalp,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn char_hair_geosets() {
-        let contents = include_bytes!("../../../dbc/CharHairGeosets.dbc");
-        let actual = CharHairGeosets::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CharHairGeosets::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

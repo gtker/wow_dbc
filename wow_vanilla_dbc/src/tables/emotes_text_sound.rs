@@ -148,17 +148,3 @@ pub struct EmotesTextSoundRow {
     pub sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn emotes_text_sound() {
-        let contents = include_bytes!("../../../dbc/EmotesTextSound.dbc");
-        let actual = EmotesTextSound::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = EmotesTextSound::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

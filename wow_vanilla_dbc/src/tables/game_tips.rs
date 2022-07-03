@@ -146,17 +146,3 @@ pub struct GameTipsRow {
     pub text: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn game_tips() {
-        let contents = include_bytes!("../../../dbc/GameTips.dbc");
-        let actual = GameTips::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GameTips::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

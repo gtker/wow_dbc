@@ -174,17 +174,3 @@ pub struct EmotesTextRow {
     pub emote_text_data: [u32; 16],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn emotes_text() {
-        let contents = include_bytes!("../../../dbc/EmotesText.dbc");
-        let actual = EmotesText::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = EmotesText::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

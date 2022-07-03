@@ -123,17 +123,3 @@ pub struct VideoHardwareRow {
     pub unknown: [u32; 21],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn video_hardware() {
-        let contents = include_bytes!("../../../dbc/VideoHardware.dbc");
-        let actual = VideoHardware::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = VideoHardware::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

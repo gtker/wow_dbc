@@ -187,17 +187,3 @@ pub struct TalentRow {
     pub required_spell: SpellKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn talent() {
-        let contents = include_bytes!("../../../dbc/Talent.dbc");
-        let actual = Talent::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = Talent::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

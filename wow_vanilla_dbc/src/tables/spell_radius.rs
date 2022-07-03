@@ -136,17 +136,3 @@ pub struct SpellRadiusRow {
     pub radius_max: f32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_radius() {
-        let contents = include_bytes!("../../../dbc/SpellRadius.dbc");
-        let actual = SpellRadius::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellRadius::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

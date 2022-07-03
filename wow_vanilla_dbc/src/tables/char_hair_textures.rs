@@ -165,17 +165,3 @@ pub struct CharHairTexturesRow {
     pub unknown_padding: [u32; 2],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn char_hair_textures() {
-        let contents = include_bytes!("../../../dbc/CharHairTextures.dbc");
-        let actual = CharHairTextures::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CharHairTextures::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

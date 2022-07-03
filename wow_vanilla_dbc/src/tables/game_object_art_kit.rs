@@ -207,17 +207,3 @@ pub struct GameObjectArtKitRow {
     pub attach_model: [String; 4],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn game_object_art_kit() {
-        let contents = include_bytes!("../../../dbc/GameObjectArtKit.dbc");
-        let actual = GameObjectArtKit::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GameObjectArtKit::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

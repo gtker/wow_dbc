@@ -154,17 +154,3 @@ pub struct SkillLineCategoryRow {
     pub sort_index: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn skill_line_category() {
-        let contents = include_bytes!("../../../dbc/SkillLineCategory.dbc");
-        let actual = SkillLineCategory::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SkillLineCategory::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

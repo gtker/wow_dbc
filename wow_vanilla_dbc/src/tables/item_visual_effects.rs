@@ -154,17 +154,3 @@ pub struct ItemVisualEffectsRow {
     pub model_path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_visual_effects() {
-        let contents = include_bytes!("../../../dbc/ItemVisualEffects.dbc");
-        let actual = ItemVisualEffects::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemVisualEffects::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

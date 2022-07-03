@@ -330,17 +330,3 @@ pub struct SoundProviderPreferencesRow {
     pub eax3_lf_reference: f32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn sound_provider_preferences() {
-        let contents = include_bytes!("../../../dbc/SoundProviderPreferences.dbc");
-        let actual = SoundProviderPreferences::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SoundProviderPreferences::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

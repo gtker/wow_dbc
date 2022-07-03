@@ -328,17 +328,3 @@ pub struct ItemDisplayInfoRow {
     pub item_visual: ItemVisualsKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_display_info() {
-        let contents = include_bytes!("../../../dbc/ItemDisplayInfo.dbc");
-        let actual = ItemDisplayInfo::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemDisplayInfo::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

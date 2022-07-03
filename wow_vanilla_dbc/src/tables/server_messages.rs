@@ -146,17 +146,3 @@ pub struct ServerMessagesRow {
     pub text: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn server_messages() {
-        let contents = include_bytes!("../../../dbc/ServerMessages.dbc");
-        let actual = ServerMessages::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ServerMessages::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -154,17 +154,3 @@ pub struct PageTextMaterialRow {
     pub name: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn page_text_material() {
-        let contents = include_bytes!("../../../dbc/PageTextMaterial.dbc");
-        let actual = PageTextMaterial::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = PageTextMaterial::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -139,17 +139,3 @@ pub struct Cfg_ConfigsRow {
     pub roleplaying: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn cfg_configs() {
-        let contents = include_bytes!("../../../dbc/Cfg_Configs.dbc");
-        let actual = Cfg_Configs::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = Cfg_Configs::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

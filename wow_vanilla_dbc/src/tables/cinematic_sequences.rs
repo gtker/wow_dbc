@@ -132,17 +132,3 @@ pub struct CinematicSequencesRow {
     pub cinematic_camera_1: [u32; 8],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn cinematic_sequences() {
-        let contents = include_bytes!("../../../dbc/CinematicSequences.dbc");
-        let actual = CinematicSequences::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CinematicSequences::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

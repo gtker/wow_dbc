@@ -162,17 +162,3 @@ pub struct VocalUISoundsRow {
     pub pissed_female_sound: SoundEntriesKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn vocal_ui_sounds() {
-        let contents = include_bytes!("../../../dbc/VocalUISounds.dbc");
-        let actual = VocalUISounds::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = VocalUISounds::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -154,17 +154,3 @@ pub struct NamesProfanityRow {
     pub name: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn names_profanity() {
-        let contents = include_bytes!("../../../dbc/NamesProfanity.dbc");
-        let actual = NamesProfanity::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = NamesProfanity::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

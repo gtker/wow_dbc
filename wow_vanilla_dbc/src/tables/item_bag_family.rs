@@ -146,17 +146,3 @@ pub struct ItemBagFamilyRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_bag_family() {
-        let contents = include_bytes!("../../../dbc/ItemBagFamily.dbc");
-        let actual = ItemBagFamily::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemBagFamily::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

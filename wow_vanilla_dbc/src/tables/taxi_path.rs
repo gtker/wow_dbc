@@ -137,17 +137,3 @@ pub struct TaxiPathRow {
     pub cost: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn taxi_path() {
-        let contents = include_bytes!("../../../dbc/TaxiPath.dbc");
-        let actual = TaxiPath::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = TaxiPath::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

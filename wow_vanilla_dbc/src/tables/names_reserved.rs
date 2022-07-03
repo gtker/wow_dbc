@@ -154,17 +154,3 @@ pub struct NamesReservedRow {
     pub name: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn names_reserved() {
-        let contents = include_bytes!("../../../dbc/NamesReserved.dbc");
-        let actual = NamesReserved::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = NamesReserved::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

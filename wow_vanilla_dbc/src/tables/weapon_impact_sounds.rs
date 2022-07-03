@@ -150,17 +150,3 @@ pub struct WeaponImpactSoundsRow {
     pub crit_impact_sound: [u32; 10],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn weapon_impact_sounds() {
-        let contents = include_bytes!("../../../dbc/WeaponImpactSounds.dbc");
-        let actual = WeaponImpactSounds::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = WeaponImpactSounds::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

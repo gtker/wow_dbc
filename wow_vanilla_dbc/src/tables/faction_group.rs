@@ -173,17 +173,3 @@ pub struct FactionGroupRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn faction_group() {
-        let contents = include_bytes!("../../../dbc/FactionGroup.dbc");
-        let actual = FactionGroup::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = FactionGroup::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -134,17 +134,3 @@ pub struct SkillTiersRow {
     pub value: [i32; 16],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn skill_tiers() {
-        let contents = include_bytes!("../../../dbc/SkillTiers.dbc");
-        let actual = SkillTiers::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SkillTiers::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

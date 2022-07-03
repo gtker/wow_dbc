@@ -123,17 +123,3 @@ pub struct ItemGroupSoundsRow {
     pub sound_entry: [u32; 4],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_group_sounds() {
-        let contents = include_bytes!("../../../dbc/ItemGroupSounds.dbc");
-        let actual = ItemGroupSounds::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemGroupSounds::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

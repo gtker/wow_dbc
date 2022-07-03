@@ -171,17 +171,3 @@ pub struct AuctionHouseRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn auction_house() {
-        let contents = include_bytes!("../../../dbc/AuctionHouse.dbc");
-        let actual = AuctionHouse::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = AuctionHouse::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

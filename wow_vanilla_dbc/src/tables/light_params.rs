@@ -177,17 +177,3 @@ pub struct LightParamsRow {
     pub flags: u32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn light_params() {
-        let contents = include_bytes!("../../../dbc/LightParams.dbc");
-        let actual = LightParams::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = LightParams::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

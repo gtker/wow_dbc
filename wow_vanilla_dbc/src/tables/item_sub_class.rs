@@ -204,17 +204,3 @@ pub struct ItemSubClassRow {
     pub verbose_name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_sub_class() {
-        let contents = include_bytes!("../../../dbc/ItemSubClass.dbc");
-        let actual = ItemSubClass::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemSubClass::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

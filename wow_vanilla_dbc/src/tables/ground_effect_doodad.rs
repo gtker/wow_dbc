@@ -162,17 +162,3 @@ pub struct GroundEffectDoodadRow {
     pub doodad_path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn ground_effect_doodad() {
-        let contents = include_bytes!("../../../dbc/GroundEffectDoodad.dbc");
-        let actual = GroundEffectDoodad::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GroundEffectDoodad::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

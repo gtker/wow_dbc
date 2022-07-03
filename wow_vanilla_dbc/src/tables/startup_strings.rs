@@ -168,17 +168,3 @@ pub struct Startup_StringsRow {
     pub startup_string: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn startup_strings() {
-        let contents = include_bytes!("../../../dbc/Startup_Strings.dbc");
-        let actual = Startup_Strings::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = Startup_Strings::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

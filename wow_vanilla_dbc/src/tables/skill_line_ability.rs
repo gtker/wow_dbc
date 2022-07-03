@@ -223,17 +223,3 @@ pub struct SkillLineAbilityRow {
     pub unknown_padding: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn skill_line_ability() {
-        let contents = include_bytes!("../../../dbc/SkillLineAbility.dbc");
-        let actual = SkillLineAbility::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SkillLineAbility::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

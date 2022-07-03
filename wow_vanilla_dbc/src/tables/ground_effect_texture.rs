@@ -140,17 +140,3 @@ pub struct GroundEffectTextureRow {
     pub terrain_type: TerrainTypeKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn ground_effect_texture() {
-        let contents = include_bytes!("../../../dbc/GroundEffectTexture.dbc");
-        let actual = GroundEffectTexture::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = GroundEffectTexture::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -195,17 +195,3 @@ pub struct CinematicCameraRow {
     pub rotation: f32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn cinematic_camera() {
-        let contents = include_bytes!("../../../dbc/CinematicCamera.dbc");
-        let actual = CinematicCamera::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CinematicCamera::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

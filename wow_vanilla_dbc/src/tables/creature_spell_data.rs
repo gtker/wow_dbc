@@ -134,17 +134,3 @@ pub struct CreatureSpellDataRow {
     pub cooldown_time_1: [i32; 4],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn creature_spell_data() {
-        let contents = include_bytes!("../../../dbc/CreatureSpellData.dbc");
-        let actual = CreatureSpellData::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CreatureSpellData::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

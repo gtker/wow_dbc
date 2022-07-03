@@ -129,17 +129,3 @@ pub struct ItemSubClassMaskRow {
     pub name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_sub_class_mask() {
-        let contents = include_bytes!("../../../dbc/ItemSubClassMask.dbc");
-        let actual = ItemSubClassMask::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemSubClassMask::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

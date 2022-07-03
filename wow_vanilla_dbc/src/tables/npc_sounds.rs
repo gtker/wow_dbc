@@ -123,17 +123,3 @@ pub struct NPCSoundsRow {
     pub sound_entries: [u32; 4],
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn npc_sounds() {
-        let contents = include_bytes!("../../../dbc/NPCSounds.dbc");
-        let actual = NPCSounds::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = NPCSounds::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

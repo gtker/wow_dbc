@@ -207,17 +207,3 @@ pub struct ItemSetRow {
     pub required_skill_rank: u32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_set() {
-        let contents = include_bytes!("../../../dbc/ItemSet.dbc");
-        let actual = ItemSet::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemSet::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

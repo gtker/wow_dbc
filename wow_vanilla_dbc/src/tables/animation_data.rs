@@ -210,17 +210,3 @@ pub struct AnimationDataRow {
     pub behaviour: AnimationDataKey,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn animation_data() {
-        let contents = include_bytes!("../../../dbc/AnimationData.dbc");
-        let actual = AnimationData::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = AnimationData::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -154,17 +154,3 @@ pub struct FootprintTexturesRow {
     pub footstep_file_path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn footprint_textures() {
-        let contents = include_bytes!("../../../dbc/FootprintTextures.dbc");
-        let actual = FootprintTextures::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = FootprintTextures::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

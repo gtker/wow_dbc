@@ -207,17 +207,3 @@ pub struct SpellItemEnchantmentRow {
     pub flags: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn spell_item_enchantment() {
-        let contents = include_bytes!("../../../dbc/SpellItemEnchantment.dbc");
-        let actual = SpellItemEnchantment::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = SpellItemEnchantment::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

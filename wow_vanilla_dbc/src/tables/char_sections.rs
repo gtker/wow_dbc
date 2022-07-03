@@ -266,17 +266,3 @@ pub struct CharSectionsRow {
     pub npc_only: bool,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn char_sections() {
-        let contents = include_bytes!("../../../dbc/CharSections.dbc");
-        let actual = CharSections::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = CharSections::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

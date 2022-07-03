@@ -198,17 +198,3 @@ pub struct ItemClassRow {
     pub class_name: LocalizedString,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn item_class() {
-        let contents = include_bytes!("../../../dbc/ItemClass.dbc");
-        let actual = ItemClass::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = ItemClass::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

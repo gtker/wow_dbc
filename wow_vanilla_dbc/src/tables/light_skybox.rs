@@ -154,17 +154,3 @@ pub struct LightSkyboxRow {
     pub skybox_model_path: String,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn light_skybox() {
-        let contents = include_bytes!("../../../dbc/LightSkybox.dbc");
-        let actual = LightSkybox::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = LightSkybox::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}

@@ -120,17 +120,3 @@ pub struct StableSlotPricesRow {
     pub cost: i32,
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn stable_slot_prices() {
-        let contents = include_bytes!("../../../dbc/StableSlotPrices.dbc");
-        let actual = StableSlotPrices::read(&mut contents.as_slice()).unwrap();
-        let mut v = Vec::with_capacity(contents.len());
-        actual.write(&mut v).unwrap();
-        let new = StableSlotPrices::read(&mut v.as_slice()).unwrap();
-        assert_eq!(actual, new);
-    }
-}
