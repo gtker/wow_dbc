@@ -6,7 +6,7 @@ Auto generated from the `.xml` files found in `rxml/xml/`, these are taken from 
 The project is split into the subdirectories:
 
 * `rxml`: Auto generates the definitions from the `.xml` files in `rxml/xml`.
-* `wow_vanilla_dbc`: **UNRELEASED** Rust library for the DBC reading and writing.
+* `wow_vanilla_dbc`: Rust library for the DBC reading and writing. [On crates.io](https://crates.io/crates/wow_vanilla_dbc) and [docs.rs](https://docs.rs/wow_vanilla_dbc/0.1.0/wow_vanilla_dbc/).
 
 ## License
 
