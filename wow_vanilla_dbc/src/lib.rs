@@ -1,4 +1,4 @@
-//! Implementation of the [DBC (DataBaseClient) file format for World of Warcraft 1.12](https://wowdev.wiki/DBC).
+//! Implementation of the [DBC (`DataBaseClient`) file format for World of Warcraft 1.12](https://wowdev.wiki/DBC).
 //! This is auto generated from `.xml` files [in the github repository](https://github.com/gtker/wow_vanilla_dbc/tree/main/rxml/xml).
 //!
 //! DBC files are inside [the MPQ files](https://wowdev.wiki/MPQ) that are included with the client.
@@ -282,6 +282,8 @@ pub trait DbcTable: Sized {
 
     /// Read table from bytes.
     ///
+    /// # Errors
+    ///
     /// Will error with [`InvalidHeaderError`] if the magic numbers (`0x43424457`) at the start of the file do not match.
     fn read(b: &mut impl Read) -> Result<Self, DbcError>;
     /// Write to bytes.
@@ -289,6 +291,10 @@ pub trait DbcTable: Sized {
     /// The string block will always start with a zero byte so that a string index of 0 is always an empty string.
     ///
     /// This is not guaranteed to create the exact same binary as is shipped with the game, but it will be semantically the same.
+    ///
+    /// # Errors
+    ///
+    /// Returns the same errors as [`Read::read_exact`].
     fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error>;
 }
 
