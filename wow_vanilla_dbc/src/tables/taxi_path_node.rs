@@ -36,7 +36,7 @@ impl DbcTable for TaxiPathNode {
         if header.field_count != 9 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 36,
+                    expected: 9,
                     actual: header.field_count,
                 },
             ));

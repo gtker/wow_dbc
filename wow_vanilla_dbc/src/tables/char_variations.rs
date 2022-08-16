@@ -35,7 +35,7 @@ impl DbcTable for CharVariations {
         if header.field_count != 6 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 24,
+                    expected: 6,
                     actual: header.field_count,
                 },
             ));

@@ -38,7 +38,7 @@ impl DbcTable for SkillLine {
         if header.field_count != 22 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 88,
+                    expected: 22,
                     actual: header.field_count,
                 },
             ));

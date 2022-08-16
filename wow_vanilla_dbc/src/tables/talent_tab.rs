@@ -38,7 +38,7 @@ impl DbcTable for TalentTab {
         if header.field_count != 15 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 60,
+                    expected: 15,
                     actual: header.field_count,
                 },
             ));

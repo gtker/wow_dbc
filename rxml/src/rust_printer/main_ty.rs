@@ -323,7 +323,7 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects) {
             s.inc_indent();
 
             s.open_curly("crate::InvalidHeaderError::FieldCount");
-            s.wln(format!("expected: {},", d.row_size()));
+            s.wln(format!("expected: {},", d.field_count()));
             s.wln("actual: header.field_count,");
             s.closing_curly_with(","); // InvalidHeaderError::RecordSize
 

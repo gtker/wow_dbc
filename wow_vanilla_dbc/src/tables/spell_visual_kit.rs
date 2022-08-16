@@ -38,7 +38,7 @@ impl DbcTable for SpellVisualKit {
         if header.field_count != 35 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 140,
+                    expected: 35,
                     actual: header.field_count,
                 },
             ));

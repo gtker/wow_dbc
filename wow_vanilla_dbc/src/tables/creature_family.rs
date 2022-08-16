@@ -35,7 +35,7 @@ impl DbcTable for CreatureFamily {
         if header.field_count != 18 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 72,
+                    expected: 18,
                     actual: header.field_count,
                 },
             ));

@@ -36,7 +36,7 @@ impl DbcTable for SheatheSoundLookups {
         if header.field_count != 7 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 28,
+                    expected: 7,
                     actual: header.field_count,
                 },
             ));

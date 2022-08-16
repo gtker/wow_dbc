@@ -37,7 +37,7 @@ impl DbcTable for Map {
         if header.field_count != 42 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 168,
+                    expected: 42,
                     actual: header.field_count,
                 },
             ));

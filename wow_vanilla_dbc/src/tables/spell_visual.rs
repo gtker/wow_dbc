@@ -36,7 +36,7 @@ impl DbcTable for SpellVisual {
         if header.field_count != 16 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 64,
+                    expected: 16,
                     actual: header.field_count,
                 },
             ));

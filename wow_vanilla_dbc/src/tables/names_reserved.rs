@@ -34,7 +34,7 @@ impl DbcTable for NamesReserved {
         if header.field_count != 2 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 8,
+                    expected: 2,
                     actual: header.field_count,
                 },
             ));

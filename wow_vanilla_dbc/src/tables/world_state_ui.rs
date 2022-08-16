@@ -37,7 +37,7 @@ impl DbcTable for WorldStateUI {
         if header.field_count != 39 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 156,
+                    expected: 39,
                     actual: header.field_count,
                 },
             ));

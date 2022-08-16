@@ -34,7 +34,7 @@ impl DbcTable for TerrainTypeSounds {
         if header.field_count != 1 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 4,
+                    expected: 1,
                     actual: header.field_count,
                 },
             ));

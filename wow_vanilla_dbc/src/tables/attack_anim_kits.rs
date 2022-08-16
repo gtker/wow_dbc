@@ -36,7 +36,7 @@ impl DbcTable for AttackAnimKits {
         if header.field_count != 5 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 20,
+                    expected: 5,
                     actual: header.field_count,
                 },
             ));

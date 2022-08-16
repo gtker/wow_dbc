@@ -34,7 +34,7 @@ impl DbcTable for GameObjectDisplayInfo {
         if header.field_count != 12 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 48,
+                    expected: 12,
                     actual: header.field_count,
                 },
             ));

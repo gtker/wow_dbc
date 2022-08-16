@@ -35,7 +35,7 @@ impl DbcTable for WorldMapOverlay {
         if header.field_count != 17 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 68,
+                    expected: 17,
                     actual: header.field_count,
                 },
             ));

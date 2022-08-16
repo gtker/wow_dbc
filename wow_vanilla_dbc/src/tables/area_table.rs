@@ -43,7 +43,7 @@ impl DbcTable for AreaTable {
         if header.field_count != 25 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 100,
+                    expected: 25,
                     actual: header.field_count,
                 },
             ));

@@ -41,7 +41,7 @@ impl DbcTable for ChrRaces {
         if header.field_count != 29 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 116,
+                    expected: 29,
                     actual: header.field_count,
                 },
             ));

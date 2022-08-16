@@ -34,7 +34,7 @@ impl DbcTable for UnitBlood {
         if header.field_count != 10 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 40,
+                    expected: 10,
                     actual: header.field_count,
                 },
             ));

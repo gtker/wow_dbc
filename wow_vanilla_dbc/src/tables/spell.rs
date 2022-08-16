@@ -48,7 +48,7 @@ impl DbcTable for Spell {
         if header.field_count != 173 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 692,
+                    expected: 173,
                     actual: header.field_count,
                 },
             ));

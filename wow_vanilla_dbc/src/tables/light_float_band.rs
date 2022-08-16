@@ -34,7 +34,7 @@ impl DbcTable for LightFloatBand {
         if header.field_count != 34 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 136,
+                    expected: 34,
                     actual: header.field_count,
                 },
             ));

@@ -36,7 +36,7 @@ impl DbcTable for ItemSet {
         if header.field_count != 45 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 180,
+                    expected: 45,
                     actual: header.field_count,
                 },
             ));

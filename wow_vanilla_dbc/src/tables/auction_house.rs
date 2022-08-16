@@ -36,7 +36,7 @@ impl DbcTable for AuctionHouse {
         if header.field_count != 13 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 52,
+                    expected: 13,
                     actual: header.field_count,
                 },
             ));

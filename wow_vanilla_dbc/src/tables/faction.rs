@@ -35,7 +35,7 @@ impl DbcTable for Faction {
         if header.field_count != 37 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 148,
+                    expected: 37,
                     actual: header.field_count,
                 },
             ));

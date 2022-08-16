@@ -33,7 +33,7 @@ impl DbcTable for PaperDollItemFrame {
         if header.field_count != 3 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 12,
+                    expected: 3,
                     actual: header.field_count,
                 },
             ));

@@ -34,7 +34,7 @@ impl DbcTable for SpellDuration {
         if header.field_count != 4 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 16,
+                    expected: 4,
                     actual: header.field_count,
                 },
             ));

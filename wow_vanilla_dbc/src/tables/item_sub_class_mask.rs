@@ -34,7 +34,7 @@ impl DbcTable for ItemSubClassMask {
         if header.field_count != 11 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 44,
+                    expected: 11,
                     actual: header.field_count,
                 },
             ));

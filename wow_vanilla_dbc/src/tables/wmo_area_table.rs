@@ -40,7 +40,7 @@ impl DbcTable for WMOAreaTable {
         if header.field_count != 20 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 80,
+                    expected: 20,
                     actual: header.field_count,
                 },
             ));

@@ -37,7 +37,7 @@ impl DbcTable for CharStartOutfit {
         if header.field_count != 41 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 152,
+                    expected: 41,
                     actual: header.field_count,
                 },
             ));

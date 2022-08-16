@@ -34,7 +34,7 @@ impl DbcTable for SoundProviderPreferences {
         if header.field_count != 24 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 96,
+                    expected: 24,
                     actual: header.field_count,
                 },
             ));

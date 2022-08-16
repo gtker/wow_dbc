@@ -36,7 +36,7 @@ impl DbcTable for WorldSafeLocs {
         if header.field_count != 14 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 56,
+                    expected: 14,
                     actual: header.field_count,
                 },
             ));

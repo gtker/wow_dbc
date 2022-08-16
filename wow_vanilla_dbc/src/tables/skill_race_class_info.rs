@@ -39,7 +39,7 @@ impl DbcTable for SkillRaceClassInfo {
         if header.field_count != 8 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 32,
+                    expected: 8,
                     actual: header.field_count,
                 },
             ));
