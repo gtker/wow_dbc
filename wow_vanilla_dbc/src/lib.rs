@@ -7,16 +7,16 @@
 //!
 //! # Usage
 //!
-//! The [`tables`] module contains submodules with table definitions.
-//! Each table always has two types (using [`tables::item_class`] as an example):
+//! The [`vanilla_tables`] module contains submodules with table definitions.
+//! Each table always has two types (using [`vanilla_tables::item_class`] as an example):
 //!
-//! 1. The table: [`ItemClass`](`tables::item_class::ItemClass`). Which implements [`DbcTable`].
-//! 2. The table row: [`ItemClassRow`](`tables::item_class::ItemClassRow`). Which is accessed through [`DbcTable::rows`].
+//! 1. The table: [`ItemClass`](`vanilla_tables::item_class::ItemClass`). Which implements [`DbcTable`].
+//! 2. The table row: [`ItemClassRow`](`vanilla_tables::item_class::ItemClassRow`). Which is accessed through [`DbcTable::rows`].
 //!
-//! Tables that have a primary key additionally have a type suffixed with `Key` ([`ItemClassKey`](`tables::item_class::ItemClassKey`)),
-//! and the table ([`ItemClass`](`tables::item_class::ItemClass`)) implements the [`Indexable`] trait.
+//! Tables that have a primary key additionally have a type suffixed with `Key` ([`ItemClassKey`](`vanilla_tables::item_class::ItemClassKey`)),
+//! and the table ([`ItemClass`](`vanilla_tables::item_class::ItemClass`)) implements the [`Indexable`] trait.
 //!
-//! [`Gender`] and [`SizeClass`] are in the crate root because they are used in multiple tables and have been de-duplicated in order to reduce the amount of types in the crate.
+//! [`Gender`] and [`SizeClass`] are in the crate root because they are used in multiple vanilla_tables and have been de-duplicated in order to reduce the amount of types in the crate.
 //!
 //! # Installation
 //!
@@ -34,7 +34,7 @@
 //!
 //! # Tests
 //!
-//! Published builds do not have any tests for individual tables,
+//! Published builds do not have any tests for individual vanilla_tables,
 //! but these can be built by changing `BUILD_TESTS` in `rxml/src/main.rs` of the repository.
 //! These require the original DBC files from the client which can not be republished.
 //!
@@ -59,7 +59,7 @@ use std::io::{Read, Write};
 pub(crate) mod error;
 pub(crate) mod header;
 #[allow(missing_docs)]
-pub mod tables;
+pub mod vanilla_tables;
 mod util;
 
 pub use error::*;
@@ -267,7 +267,7 @@ impl Default for SizeClass {
     }
 }
 
-/// Main trait for the crate. Implemented by all tables in [`tables`].
+/// Main trait for the crate. Implemented by all vanilla_tables in [`vanilla_tables`].
 pub trait DbcTable: Sized {
     /// Will be the name of the implementing type suffixed with `Row`.
     type Row;
@@ -298,7 +298,7 @@ pub trait DbcTable: Sized {
     fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error>;
 }
 
-/// Implemented by tables that have a primary key.
+/// Implemented by vanilla_tables that have a primary key.
 ///
 /// This is a separate trait instead of just implementing [`std::ops::Index`] and [`std::ops::IndexMut`] since
 /// those traits do not return [`Option`]s and only have the possibility of panicking on invalid keys.

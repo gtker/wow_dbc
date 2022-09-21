@@ -8,10 +8,10 @@ fn not_pascal_case_name(s: &str) -> bool {
     s.contains('_')
 }
 
-pub fn create_table(d: &DbcDescription, o: &Objects) -> Writer {
+pub fn create_table(d: &DbcDescription, o: &Objects, include_path: &str) -> Writer {
     let mut s = Writer::new(d.name());
 
-    includes(&mut s, d, o);
+    includes(&mut s, d, o, include_path);
 
     main_ty::create_main_ty(&mut s, d, o);
 
@@ -28,7 +28,7 @@ pub fn create_table(d: &DbcDescription, o: &Objects) -> Writer {
     s
 }
 
-fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects) {
+fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str) {
     s.wln("use crate::header::{HEADER_SIZE, DbcHeader};");
     s.wln("use crate::header;");
     s.wln("use crate::DbcTable;");
@@ -56,7 +56,7 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects) {
         }
 
         s.wln(format!(
-            "use crate::tables::{name}::*;",
+            "use crate::{include_path}::{name}::*;",
             name = foreign_key.to_snake_case()
         ));
     }
