@@ -8,7 +8,7 @@ fn not_pascal_case_name(s: &str) -> bool {
     s.contains('_')
 }
 
-pub fn create_table(d: &DbcDescription, o: &Objects, include_path: &str) -> Writer {
+pub fn create_table(d: &DbcDescription, o: &Objects, include_path: &str, test_dir_name: &str) -> Writer {
     let mut s = Writer::new(d.name());
 
     includes(&mut s, d, o, include_path);
@@ -23,7 +23,7 @@ pub fn create_table(d: &DbcDescription, o: &Objects, include_path: &str) -> Writ
 
     create_row(&mut s, d, o);
 
-    create_test(&mut s, d);
+    create_test(&mut s, d, test_dir_name);
 
     s
 }
@@ -208,7 +208,7 @@ fn print_field_comment(s: &mut Writer, field: &Field) {
     s.wln(format!("// {}: {}", field.name(), field.ty().str()));
 }
 
-fn create_test(s: &mut Writer, d: &DbcDescription) {
+fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     if !BUILD_TESTS {
         return;
     }
@@ -231,8 +231,9 @@ fn create_test(s: &mut Writer, d: &DbcDescription) {
     s.open_curly(format!("fn {name}()", name = d.name().to_snake_case()));
 
     s.wln(format!(
-        "let contents = include_bytes!(\"../../../dbc/{}.dbc\");",
-        d.name()
+        "let contents = include_bytes!(\"../../../{}-dbc/{}.dbc\");",
+        test_dir_name,
+        d.name(),
     ));
     s.wln(format!(
         "let actual = {}::read(&mut contents.as_slice()).unwrap();",
