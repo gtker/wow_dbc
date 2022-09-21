@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>DanceMoves</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>param</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>fallback</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>racemask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>internal_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>lock_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Lock</parent>
+</key>
+</field>
+
+</dbc>

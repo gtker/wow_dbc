@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>RandPropPoints</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>epic</name>
+    <type>int32[5]</type>
+</field>
+
+<field>
+    <name>superior</name>
+    <type>int32[5]</type>
+</field>
+
+<field>
+    <name>good</name>
+    <type>int32[5]</type>
+</field>
+
+</dbc>

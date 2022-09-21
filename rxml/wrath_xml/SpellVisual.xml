@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellVisual</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>precast_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>cast_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>impact_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state_done_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>channel_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>has_missile</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_model</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_path_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_destination_attachment</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_sound</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>anim_event_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>caster_impact_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>target_impact_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_attachment</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_follow_ground_height</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_follow_ground_drop_speed</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_follow_ground_approach</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_follow_ground_flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_motion</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_targeting_kit</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellVisualKit</parent>
+</key>
+</field>
+
+<field>
+    <name>instant_area_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>impact_area_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>persistent_area_kit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>missile_cast_offset</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>missile_impact_offset</name>
+    <type>float[3]</type>
+</field>
+
+</dbc>

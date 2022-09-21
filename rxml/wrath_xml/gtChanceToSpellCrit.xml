@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<dbc>
+<name>gtChanceToSpellCrit</name>
+
+<field>
+    <name>data</name>
+    <type>float</type>
+</field>
+
+</dbc>

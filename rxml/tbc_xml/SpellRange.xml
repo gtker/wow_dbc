@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellRange</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>range_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>range_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>display_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>display_name_short_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

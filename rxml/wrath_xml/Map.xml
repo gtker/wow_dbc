@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Map</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>directory</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>instance_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>p_v_p</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>map_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>area_table_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaTable</parent>
+</key>
+</field>
+
+<field>
+    <name>map_description0_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>map_description1_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>loading_screen_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>LoadingScreens</parent>
+</key>
+</field>
+
+<field>
+    <name>minimap_icon_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>corpse_map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>corpse</name>
+    <type>float[2]</type>
+</field>
+
+<field>
+    <name>time_of_day_override</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>expansion_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>raid_offset</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_players</name>
+    <type>int32</type>
+</field>
+
+</dbc>

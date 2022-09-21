@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CreatureModelData</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>model_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>size_class</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>model_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>blood_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>UnitBlood</parent>
+</key>
+</field>
+
+<field>
+    <name>footprint_texture_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FootprintTextures</parent>
+</key>
+</field>
+
+<field>
+    <name>footprint_texture_length</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>footprint_texture_width</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>footprint_particle_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>foley_material_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Material</parent>
+</key>
+</field>
+
+<field>
+    <name>footstep_shake_size</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>death_thud_shake_size</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureSoundData</parent>
+</key>
+</field>
+
+<field>
+    <name>collision_width</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>collision_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mount_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>geo_box_min_x</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>geo_box_min_y</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>geo_box_min_z</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>geo_box_max_x</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>geo_box_max_y</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>geo_box_max_z</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>world_effect_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>attached_effect_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>missile_collision_radius</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>missile_collision_push</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>missile_collision_raise</name>
+    <type>float</type>
+</field>
+
+</dbc>

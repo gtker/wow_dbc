@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Achievement_Criteria</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>achievement_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Achievement</parent>
+</key>
+</field>
+
+<field>
+    <name>type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>asset_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>quantity</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>start_event</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>start_asset</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>fail_event</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>fail_asset</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>description_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>timer_start_event</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>timer_asset_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>timer_time</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ui_order</name>
+    <type>int32</type>
+</field>
+
+</dbc>

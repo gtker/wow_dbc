@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<dbc>
+<name>DestructibleModelData</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>state0_impact_effect_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state0_ambient_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state1_w_m_o</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state1_destruction_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state1_impact_effect_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state1_ambient_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state2_w_m_o</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state2_destruction_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state2_impact_effect_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state2_ambient_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state3_w_m_o</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state3_init_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>state3_ambient_doodad_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>eject_direction</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>repair_ground_fx</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>do_not_highlight</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>heal_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>heal_effect_speed</name>
+    <type>int32</type>
+</field>
+
+</dbc>

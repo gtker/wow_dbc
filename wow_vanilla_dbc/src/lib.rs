@@ -42,6 +42,7 @@
 #![forbid(unsafe_code)]
 // This requires fields knowing about the sizes of enums
 #![allow(clippy::useless_conversion)]
+#![allow(non_camel_case_types)]
 #![warn(
     clippy::perf,
     clippy::correctness,
@@ -58,8 +59,16 @@ use std::io::{Read, Write};
 
 pub(crate) mod error;
 pub(crate) mod header;
+
 #[allow(missing_docs)]
 pub mod vanilla_tables;
+
+#[allow(missing_docs)]
+pub mod tbc_tables;
+
+#[allow(missing_docs)]
+pub mod wrath_tables;
+
 mod util;
 
 pub use error::*;

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CharacterFacialHairStyles</name>
+
+<field>
+    <name>race_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>sex_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>variation_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>geoset</name>
+    <type>int32[5]</type>
+</field>
+
+</dbc>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<dbc>
+<name>MovieFileData</name>
+
+<field>
+    <name>file_data_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FileData</parent>
+</key>
+</field>
+
+<field>
+    <name>resolution</name>
+    <type>int32</type>
+</field>
+
+</dbc>

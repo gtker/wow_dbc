@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CreatureMovementInfo</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>smooth_facing_chase_rate</name>
+    <type>float</type>
+</field>
+
+</dbc>

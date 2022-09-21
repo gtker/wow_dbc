@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<dbc>
+<name>AreaTable</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>continent_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>parent_area_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaTable</parent>
+</key>
+</field>
+
+<field>
+    <name>area_bit</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_provider_pref</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundProviderPreferences</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_provider_pref_underwater</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundProviderPreferences</parent>
+</key>
+</field>
+
+<field>
+    <name>ambience_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundAmbience</parent>
+</key>
+</field>
+
+<field>
+    <name>zone_music</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ZoneMusic</parent>
+</key>
+</field>
+
+<field>
+    <name>intro_sound</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ZoneIntroMusicTable</parent>
+</key>
+</field>
+
+<field>
+    <name>exploration_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>area_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>faction_group_mask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>liquid_type_id</name>
+    <type>int32[4]</type>
+<key>
+    <type>foreign</type>
+    <parent>LiquidType</parent>
+</key>
+</field>
+
+<field>
+    <name>min_elevation</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>ambient_multiplier</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>light_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Light</parent>
+</key>
+</field>
+
+</dbc>

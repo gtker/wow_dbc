@@ -13,10 +13,18 @@ const VANILLA_XML_LOCATION: &str = "rxml/vanilla_xml/";
 const VANILLA_TABLE_LOCATION: &str = "wow_vanilla_dbc/src/vanilla_tables";
 const VANILLA_MODULE_NAME: &str = "vanilla_tables";
 
+const TBC_XML_LOCATION: &str = "rxml/tbc_xml/";
+const TBC_TABLE_LOCATION: &str = "wow_vanilla_dbc/src/tbc_tables";
+const TBC_MODULE_NAME: &str = "tbc_tables";
+
+const WRATH_XML_LOCATION: &str = "rxml/wrath_xml/";
+const WRATH_TABLE_LOCATION: &str = "wow_vanilla_dbc/src/wrath_tables";
+const WRATH_MODULE_NAME: &str = "wrath_tables";
+
 const BUILD_TESTS: bool = false;
 
 fn main() {
-    for location in [(VANILLA_XML_LOCATION, VANILLA_TABLE_LOCATION, VANILLA_MODULE_NAME)] {
+    for location in [(VANILLA_XML_LOCATION, VANILLA_TABLE_LOCATION, VANILLA_MODULE_NAME), (TBC_XML_LOCATION, TBC_TABLE_LOCATION, TBC_MODULE_NAME), (WRATH_XML_LOCATION, WRATH_TABLE_LOCATION, WRATH_MODULE_NAME)] {
         let paths = std::fs::read_dir(location.0)
             .unwrap()
             .filter_map(|a| a.ok());
@@ -49,7 +57,7 @@ fn main() {
 
         overwrite_if_not_same_contents(
             module_file.inner(),
-            Path::new(&format!("{}/{}", location.1, location.2)),
+            Path::new(&format!("{}/mod.rs", location.1)),
         );
     }
 }

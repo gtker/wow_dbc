@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LFGDungeonExpansion</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>lfg_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>expansion_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>random_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>hard_level_min</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>hard_level_max</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>target_level_min</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>target_level_max</name>
+    <type>int32</type>
+</field>
+
+</dbc>

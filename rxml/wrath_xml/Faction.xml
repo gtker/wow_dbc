@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Faction</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>reputation_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>reputation_race_mask</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>reputation_class_mask</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>reputation_base</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>reputation_flags</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>parent_faction_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Faction</parent>
+</key>
+</field>
+
+<field>
+    <name>parent_faction_mod</name>
+    <type>float[2]</type>
+</field>
+
+<field>
+    <name>parent_faction_cap</name>
+    <type>int32[2]</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>description_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CharSections</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>race_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>sex_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>base_section</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>variation_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>color_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>texture_name</name>
+    <type>string_ref[3]</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

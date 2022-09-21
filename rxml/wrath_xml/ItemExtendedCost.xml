@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemExtendedCost</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>honor_points</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>arena_points</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>arena_bracket</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>item_id</name>
+    <type>int32[5]</type>
+<key>
+    <type>foreign</type>
+    <parent>Item</parent>
+</key>
+</field>
+
+<field>
+    <name>item_count</name>
+    <type>int32[5]</type>
+</field>
+
+<field>
+    <name>required_arena_rating</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>item_purchase_group</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ItemPurchaseGroup</parent>
+</key>
+</field>
+
+</dbc>

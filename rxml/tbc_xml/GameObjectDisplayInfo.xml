@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dbc>
+<name>GameObjectDisplayInfo</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>model_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>sound</name>
+    <type>int32[10]</type>
+</field>
+
+<field>
+    <name>geo_box_min</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>geo_box_max</name>
+    <type>float[3]</type>
+</field>
+
+</dbc>

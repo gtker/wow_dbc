@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<dbc>
+<name>OverrideSpellData</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>spells</name>
+    <type>int32[10]</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

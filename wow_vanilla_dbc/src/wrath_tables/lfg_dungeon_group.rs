@@ -1,0 +1,172 @@
+use crate::header::{HEADER_SIZE, DbcHeader};
+use crate::header;
+use crate::DbcTable;
+use std::io::Write;
+use crate::Indexable;
+use crate::LocalizedString;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LFGDungeonGroup {
+    pub rows: Vec<LFGDungeonGroupRow>,
+}
+
+impl DbcTable for LFGDungeonGroup {
+    type Row = LFGDungeonGroupRow;
+
+    fn filename() -> &'static str { "LFGDungeonGroup.dbc" }
+
+    fn rows(&self) -> &[Self::Row] { &self.rows }
+    fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
+
+    fn read(b: &mut impl std::io::Read) -> Result<Self, crate::DbcError> {
+        let mut header = [0_u8; HEADER_SIZE];
+        b.read_exact(&mut header)?;
+        let header = header::parse_header(&header)?;
+
+        if header.record_size != 52 {
+            return Err(crate::DbcError::InvalidHeader(
+                crate::InvalidHeaderError::RecordSize {
+                    expected: 52,
+                    actual: header.record_size,
+                },
+            ));
+        }
+
+        if header.field_count != 13 {
+            return Err(crate::DbcError::InvalidHeader(
+                crate::InvalidHeaderError::FieldCount {
+                    expected: 13,
+                    actual: header.field_count,
+                },
+            ));
+        }
+
+        let mut r = vec![0_u8; (header.record_count * header.record_size) as usize];
+        b.read_exact(&mut r)?;
+        let mut string_block = vec![0_u8; header.string_block_size as usize];
+        b.read_exact(&mut string_block)?;
+
+        let mut rows = Vec::with_capacity(header.record_count as usize);
+
+        for mut chunk in r.chunks(header.record_size as usize) {
+            let chunk = &mut chunk;
+
+            // id: primary_key (LFGDungeonGroup) int32
+            let id = LFGDungeonGroupKey::new(crate::util::read_i32_le(chunk)?);
+
+            // name_lang: string_ref_loc
+            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+
+            // order_index: int32
+            let order_index = crate::util::read_i32_le(chunk)?;
+
+            // parent_group_id: int32
+            let parent_group_id = crate::util::read_i32_le(chunk)?;
+
+            // type_id: int32
+            let type_id = crate::util::read_i32_le(chunk)?;
+
+
+            rows.push(LFGDungeonGroupRow {
+                id,
+                name_lang,
+                order_index,
+                parent_group_id,
+                type_id,
+            });
+        }
+
+        Ok(LFGDungeonGroup { rows, })
+    }
+
+    fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
+        let header = DbcHeader {
+            record_count: self.rows.len() as u32,
+            field_count: 13,
+            record_size: 52,
+            string_block_size: self.string_block_size(),
+        };
+
+        b.write_all(&header.write_header())?;
+
+        let mut string_index = 1;
+        for row in &self.rows {
+            // id: primary_key (LFGDungeonGroup) int32
+            b.write_all(&row.id.id.to_le_bytes())?;
+
+            // name_lang: string_ref_loc
+            b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
+
+            // order_index: int32
+            b.write_all(&row.order_index.to_le_bytes())?;
+
+            // parent_group_id: int32
+            b.write_all(&row.parent_group_id.to_le_bytes())?;
+
+            // type_id: int32
+            b.write_all(&row.type_id.to_le_bytes())?;
+
+        }
+
+        self.write_string_block(b)?;
+
+        Ok(())
+    }
+
+}
+
+impl Indexable for LFGDungeonGroup {
+    type PrimaryKey = LFGDungeonGroupKey;
+    fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row> {
+        self.rows.iter().find(|a| a.id.id == key.id)
+    }
+
+    fn get_mut(&mut self, key: &Self::PrimaryKey) -> Option<&mut Self::Row> {
+        self.rows.iter_mut().find(|a| a.id.id == key.id)
+    }
+
+}
+
+impl LFGDungeonGroup {
+    fn write_string_block(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
+        b.write_all(&[0])?;
+
+        for row in &self.rows {
+            row.name_lang.string_block_as_array(b)?;
+        }
+
+        Ok(())
+    }
+
+    fn string_block_size(&self) -> u32 {
+        let mut sum = 1;
+        for row in &self.rows {
+            sum += row.name_lang.string_block_size();
+        }
+
+        sum as u32
+    }
+
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+pub struct LFGDungeonGroupKey {
+    pub id: i32
+}
+
+impl LFGDungeonGroupKey {
+    pub const fn new(id: i32) -> Self {
+        Self { id }
+    }
+
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LFGDungeonGroupRow {
+    pub id: LFGDungeonGroupKey,
+    pub name_lang: LocalizedString,
+    pub order_index: i32,
+    pub parent_group_id: i32,
+    pub type_id: i32,
+}
+

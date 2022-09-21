@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CharBaseInfo</name>
+
+<field>
+    <name>race_id</name>
+    <type>int8</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>class_id</name>
+    <type>int8</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrClasses</parent>
+</key>
+</field>
+
+</dbc>

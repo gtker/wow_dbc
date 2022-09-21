@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellVisualEffectName</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>file_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>area_effect_size</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>scale</name>
+    <type>float</type>
+</field>
+
+</dbc>

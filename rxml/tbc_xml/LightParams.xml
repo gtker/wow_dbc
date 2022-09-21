@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LightParams</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>highlight_sky</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>light_skybox_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>LightSkybox</parent>
+</key>
+</field>
+
+<field>
+    <name>glow</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>water_shallow_alpha</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>water_deep_alpha</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>ocean_shallow_alpha</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>ocean_deep_alpha</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

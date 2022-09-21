@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<dbc>
+<name>TaxiNodes</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>continent_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>pos</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>mount_creature_id</name>
+    <type>int32[2]</type>
+<key>
+    <type>foreign</type>
+    <parent>Creature</parent>
+</key>
+</field>
+
+</dbc>

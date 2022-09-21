@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SkillLineAbility</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>skill_line</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SkillLine</parent>
+</key>
+</field>
+
+<field>
+    <name>spell</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>race_mask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>class_mask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>exclude_race</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>exclude_class</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>min_skill_line_rank</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>superceded_by_spell</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>acquire_method</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>trivial_skill_line_rank_high</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>trivial_skill_line_rank_low</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>abandonable</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>character_points</name>
+    <type>int32[2]</type>
+</field>
+
+</dbc>

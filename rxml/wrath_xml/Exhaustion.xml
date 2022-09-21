@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Exhaustion</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>xp</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>factor</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>outdoor_hours</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>inn_hours</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>threshold</name>
+    <type>float</type>
+</field>
+
+</dbc>

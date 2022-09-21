@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SoundEmitters</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>position</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>direction</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>sound_entry_advanced_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntriesAdvanced</parent>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

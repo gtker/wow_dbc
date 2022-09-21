@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ChrClasses</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>damage_bonus_stat</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>display_power</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>PowerType</parent>
+</key>
+</field>
+
+<field>
+    <name>pet_name_token</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>name_female_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>name_male_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>filename</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>spell_class_set</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>cinematic_sequence_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CinematicSequences</parent>
+</key>
+</field>
+
+<field>
+    <name>required_expansion</name>
+    <type>int32</type>
+</field>
+
+</dbc>

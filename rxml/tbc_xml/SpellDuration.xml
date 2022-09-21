@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellDuration</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>duration</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>duration_per_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_duration</name>
+    <type>int32</type>
+</field>
+
+</dbc>

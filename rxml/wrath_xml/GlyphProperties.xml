@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<dbc>
+<name>GlyphProperties</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>spell_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>glyph_slot_flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>spell_icon_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellIcon</parent>
+</key>
+</field>
+
+</dbc>

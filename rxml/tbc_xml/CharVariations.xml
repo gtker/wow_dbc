@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CharVariations</name>
+
+<field>
+    <name>race_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>sex_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>texture_hold_layer</name>
+    <type>int32[4]</type>
+</field>
+
+</dbc>

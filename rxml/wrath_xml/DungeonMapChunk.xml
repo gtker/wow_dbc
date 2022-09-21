@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<dbc>
+<name>DungeonMapChunk</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>w_m_o_group_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>WMOAreaTable</parent>
+</key>
+</field>
+
+<field>
+    <name>dungeon_map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>DungeonMap</parent>
+</key>
+</field>
+
+<field>
+    <name>min_z</name>
+    <type>float</type>
+</field>
+
+</dbc>

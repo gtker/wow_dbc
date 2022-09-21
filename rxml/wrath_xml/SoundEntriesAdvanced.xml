@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SoundEntriesAdvanced</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>sound_entry_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>inner_radius2_d</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>time_a</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_b</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_c</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_d</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>random_offset_range</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>usage</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_interval_min</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_interval_max</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>volume_slider_category</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>duck_to_s_f_x</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>duck_to_music</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>duck_to_ambience</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>inner_radius_of_influence</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>outer_radius_of_influence</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>time_to_duck</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_to_unduck</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>inside_angle</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>outside_angle</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>outside_volume</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>outer_radius2_d</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SkillLine</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>category_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SkillLineCategory</parent>
+</key>
+</field>
+
+<field>
+    <name>skill_costs_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>display_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>description_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>spell_icon_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellIcon</parent>
+</key>
+</field>
+
+<field>
+    <name>alternate_verb_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>can_link</name>
+    <type>int32</type>
+</field>
+
+</dbc>

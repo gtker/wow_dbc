@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LiquidType</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>spell_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+</dbc>

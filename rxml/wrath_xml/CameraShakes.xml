@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CameraShakes</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>shake_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>direction</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>amplitude</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>frequency</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>phase</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>coefficient</name>
+    <type>float</type>
+</field>
+
+</dbc>

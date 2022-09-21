@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LanguageWords</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>language_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Languages</parent>
+</key>
+</field>
+
+<field>
+    <name>word</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

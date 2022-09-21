@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemPurchaseGroup</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>item_id</name>
+    <type>int32[8]</type>
+<key>
+    <type>foreign</type>
+    <parent>Item</parent>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ObjectEffectModifier</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>input_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>map_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>output_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>param</name>
+    <type>float[4]</type>
+</field>
+
+</dbc>

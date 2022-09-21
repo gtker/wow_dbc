@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<dbc>
+<name>WorldMapTransforms</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>region_min</name>
+    <type>float[2]</type>
+</field>
+
+<field>
+    <name>region_max</name>
+    <type>float[2]</type>
+</field>
+
+<field>
+    <name>new_map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>region_offset</name>
+    <type>float[2]</type>
+</field>
+
+</dbc>

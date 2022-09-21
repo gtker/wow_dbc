@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CreatureSoundData</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>sound_exertion_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_exertion_critical_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_injury_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_injury_critical_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_injury_crushing_blow_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_death_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_stun_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_stand_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_footstep_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FootstepTerrainLookup</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_aggro_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_wing_flap_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_wing_glide_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_alert_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_fidget</name>
+    <type>int32[5]</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>custom_attack</name>
+    <type>int32[4]</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>n_p_c_sound_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>loop_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>creature_impact_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_jump_start_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_jump_end_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_pet_attack_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_pet_order_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_pet_dismiss_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>fidget_delay_seconds_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>fidget_delay_seconds_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>birth_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>spell_cast_directed_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>submerge_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>submerged_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+</dbc>

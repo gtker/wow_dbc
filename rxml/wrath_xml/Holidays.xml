@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Holidays</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>duration</name>
+    <type>int32[10]</type>
+</field>
+
+<field>
+    <name>date</name>
+    <type>int32[26]</type>
+</field>
+
+<field>
+    <name>region</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>looping</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>calendar_flags</name>
+    <type>int32[10]</type>
+</field>
+
+<field>
+    <name>holiday_name_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>HolidayNames</parent>
+</key>
+</field>
+
+<field>
+    <name>holiday_description_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>HolidayDescriptions</parent>
+</key>
+</field>
+
+<field>
+    <name>texture_file_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>priority</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>calendar_filter_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

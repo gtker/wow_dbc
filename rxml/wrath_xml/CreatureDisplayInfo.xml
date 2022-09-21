@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CreatureDisplayInfo</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>model_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureModelData</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureSoundData</parent>
+</key>
+</field>
+
+<field>
+    <name>extended_display_info_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureDisplayInfoExtra</parent>
+</key>
+</field>
+
+<field>
+    <name>creature_model_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>creature_model_alpha</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>texture_variation</name>
+    <type>string_ref[3]</type>
+</field>
+
+<field>
+    <name>portrait_texture_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>size_class</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>blood_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>UnitBlood</parent>
+</key>
+</field>
+
+<field>
+    <name>n_p_c_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>NPCSounds</parent>
+</key>
+</field>
+
+<field>
+    <name>particle_color_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ParticleColor</parent>
+</key>
+</field>
+
+<field>
+    <name>creature_geoset_data</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>object_effect_package_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ObjectEffectPackage</parent>
+</key>
+</field>
+
+</dbc>

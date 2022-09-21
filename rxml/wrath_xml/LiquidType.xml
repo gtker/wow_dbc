@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LiquidType</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_bank</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>spell_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>max_darken_depth</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>fog_darken_intensity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>amb_darken_intensity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>dir_darken_intensity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>light_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Light</parent>
+</key>
+</field>
+
+<field>
+    <name>particle_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>particle_movement</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>particle_tex_slots</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>material_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>LiquidMaterial</parent>
+</key>
+</field>
+
+<field>
+    <name>texture</name>
+    <type>string_ref[6]</type>
+</field>
+
+<field>
+    <name>color</name>
+    <type>int32[2]</type>
+</field>
+
+<field>
+    <name>float</name>
+    <type>float[18]</type>
+</field>
+
+<field>
+    <name>int</name>
+    <type>int32[4]</type>
+</field>
+
+</dbc>

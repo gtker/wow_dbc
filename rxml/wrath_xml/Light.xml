@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Light</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>continent_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>game_coords</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>game_falloff_start</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>game_falloff_end</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>light_params_id</name>
+    <type>int32[8]</type>
+<key>
+    <type>foreign</type>
+    <parent>LightParams</parent>
+</key>
+</field>
+
+</dbc>

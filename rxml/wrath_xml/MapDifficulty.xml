@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<dbc>
+<name>MapDifficulty</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>difficulty</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>message_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>raid_duration</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_players</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>difficultystring</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

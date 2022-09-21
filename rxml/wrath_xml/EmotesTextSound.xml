@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<dbc>
+<name>EmotesTextSound</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>emotes_text_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>EmotesText</parent>
+</key>
+</field>
+
+<field>
+    <name>race_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>sex_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+</dbc>

@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SoundProviderPreferences</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>description</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x_environment_selection</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x_decay_time</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_environment_size</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_environment_diffusion</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_room</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x2_room_h_f</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x2_decay_h_f_ratio</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_reflections</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x2_reflections_delay</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_reverb</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x2_reverb_delay</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_room_rolloff</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_air_absorption</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_room_l_f</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x3_decay_l_f_ratio</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_echo_time</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_echo_depth</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_modulation_time</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_modulation_depth</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_h_f_reference</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_l_f_reference</name>
+    <type>float</type>
+</field>
+
+</dbc>

@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Vehicle</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>turn_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pitch_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pitch_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pitch_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>seat_id</name>
+    <type>int32[8]</type>
+<key>
+    <type>foreign</type>
+    <parent>VehicleSeat</parent>
+</key>
+</field>
+
+<field>
+    <name>mouse_look_offset_pitch</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>camera_fade_dist_scalar_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>camera_fade_dist_scalar_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>camera_pitch_offset</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>facing_limit_right</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>facing_limit_left</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_turn_lingering</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_pitch_lingering</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_mouse_lingering</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_end_opacity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_arc_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_arc_repeat</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_arc_width</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>mssl_trgt_impact_radius</name>
+    <type>float[2]</type>
+</field>
+
+<field>
+    <name>mssl_trgt_arc_texture</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>mssl_trgt_impact_texture</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>mssl_trgt_impact_model</name>
+    <type>string_ref[2]</type>
+</field>
+
+<field>
+    <name>camera_yaw_offset</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>ui_locomotion_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>mssl_trgt_impact_tex_radius</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>vehicle_u_i_indicator_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>VehicleUIIndicator</parent>
+</key>
+</field>
+
+<field>
+    <name>power_display_id</name>
+    <type>int32[3]</type>
+<key>
+    <type>foreign</type>
+    <parent>PowerDisplay</parent>
+</key>
+</field>
+
+</dbc>

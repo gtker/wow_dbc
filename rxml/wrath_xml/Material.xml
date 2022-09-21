@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Material</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>foley_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundKit</parent>
+</key>
+</field>
+
+<field>
+    <name>sheathe_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundKit</parent>
+</key>
+</field>
+
+<field>
+    <name>unsheathe_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundKit</parent>
+</key>
+</field>
+
+</dbc>

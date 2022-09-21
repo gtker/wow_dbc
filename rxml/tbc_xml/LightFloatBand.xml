@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LightFloatBand</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>num</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time</name>
+    <type>int32[16]</type>
+</field>
+
+<field>
+    <name>data</name>
+    <type>float[16]</type>
+</field>
+
+</dbc>

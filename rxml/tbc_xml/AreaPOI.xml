@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<dbc>
+<name>AreaPOI</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>importance</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>icon</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>faction_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FactionTemplate</parent>
+</key>
+</field>
+
+<field>
+    <name>pos</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>continent_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>area_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaTable</parent>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>description_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>world_state_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>WorldState</parent>
+</key>
+</field>
+
+</dbc>

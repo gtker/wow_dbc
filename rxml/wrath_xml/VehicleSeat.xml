@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<dbc>
+<name>VehicleSeat</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_001</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>attachment_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>attachment_offset</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_004</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_gravity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_min_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_max_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_min_arc_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_max_arc_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>enter_anim_start</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>enter_anim_loop</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ride_anim_start</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ride_anim_loop</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ride_upper_anim_start</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ride_upper_anim_loop</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_017</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_gravity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_min_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_max_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_min_arc_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_max_arc_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>exit_anim_start</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>exit_anim_loop</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>exit_anim_end</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_027</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>passenger_pitch</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_029</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>passenger_attachment_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>vehicle_enter_anim</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>vehicle_exit_anim</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>vehicle_ride_anim_loop</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_034</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>vehicle_exit_anim_bone</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>vehicle_enter_anim_bone</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_037</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_038</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>vehicle_ability_display</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>enter_u_i_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_041</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ui_skin</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_043</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_044</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_045</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_046</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_047</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_048</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_049</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_050</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_051</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_052</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_053</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_054</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_3_3_5_12213_055</name>
+    <type>float</type>
+</field>
+
+</dbc>

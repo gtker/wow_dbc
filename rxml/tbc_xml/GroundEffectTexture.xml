@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>GroundEffectTexture</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>doodad_id</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>density</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound</name>
+    <type>int32</type>
+</field>
+
+</dbc>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellRadius</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>radius</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>radius_per_level</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>radius_max</name>
+    <type>float</type>
+</field>
+
+</dbc>

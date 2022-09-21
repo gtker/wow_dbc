@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<dbc>
+<name>WorldMapArea</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>area_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaTable</parent>
+</key>
+</field>
+
+<field>
+    <name>area_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>loc_left</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>loc_right</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>loc_top</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>loc_bottom</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>display_map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>default_dungeon_floor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>parent_world_map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>WorldMapArea</parent>
+</key>
+</field>
+
+</dbc>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<dbc>
+<name>EmotesText</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>emote_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Emotes</parent>
+</key>
+</field>
+
+<field>
+    <name>emote_text</name>
+    <type>int32[16]</type>
+<key>
+    <type>foreign</type>
+    <parent>EmotesTextData</parent>
+</key>
+</field>
+
+</dbc>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dbc>
+<name>TransportAnimation</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>transport_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>time_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>pos</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>sequence_id</name>
+    <type>int32</type>
+</field>
+
+</dbc>

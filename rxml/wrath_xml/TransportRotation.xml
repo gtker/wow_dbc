@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<dbc>
+<name>TransportRotation</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>game_objects_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>GameObjects</parent>
+</key>
+</field>
+
+<field>
+    <name>time_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>rot</name>
+    <type>float[4]</type>
+</field>
+
+</dbc>

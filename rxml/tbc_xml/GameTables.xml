@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<dbc>
+<name>GameTables</name>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>num_rows</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>num_columns</name>
+    <type>int32</type>
+</field>
+
+</dbc>

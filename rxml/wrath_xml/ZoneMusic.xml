@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ZoneMusic</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>set_name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>silence_interval_min</name>
+    <type>int32[2]</type>
+</field>
+
+<field>
+    <name>silence_interval_max</name>
+    <type>int32[2]</type>
+</field>
+
+<field>
+    <name>sounds</name>
+    <type>int32[2]</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+</dbc>

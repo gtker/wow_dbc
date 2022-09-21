@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CurrencyTypes</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>item_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Item</parent>
+</key>
+</field>
+
+<field>
+    <name>category_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CurrencyCategory</parent>
+</key>
+</field>
+
+<field>
+    <name>bit_index</name>
+    <type>int32</type>
+</field>
+
+</dbc>

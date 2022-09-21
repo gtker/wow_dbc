@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CharHairTextures</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_001_race</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_002_gender</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_003</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_004_mayberacemask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_005_the_x_in_hair_xy_blp</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_006</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_5_3_3368_007</name>
+    <type>int32</type>
+</field>
+
+</dbc>

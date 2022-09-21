@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<dbc>
+<name>EnvironmentalDamage</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>enum_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>visualkit_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellVisualKit</parent>
+</key>
+</field>
+
+</dbc>

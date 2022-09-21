@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<dbc>
+<name>TaxiPathNode</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>path_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>TaxiPath</parent>
+</key>
+</field>
+
+<field>
+    <name>node_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>continent_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>loc</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>delay</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>arrival_event_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>departure_event_id</name>
+    <type>int32</type>
+</field>
+
+</dbc>

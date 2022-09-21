@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellItemEnchantmentCondition</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>lt_operand_type</name>
+    <type>int8[5]</type>
+</field>
+
+<field>
+    <name>lt_operand</name>
+    <type>int32[5]</type>
+</field>
+
+<field>
+    <name>operator</name>
+    <type>int8[5]</type>
+</field>
+
+<field>
+    <name>rt_operand_type</name>
+    <type>int8[5]</type>
+</field>
+
+<field>
+    <name>rt_operand</name>
+    <type>int32[5]</type>
+</field>
+
+<field>
+    <name>logic</name>
+    <type>int8[5]</type>
+</field>
+
+</dbc>

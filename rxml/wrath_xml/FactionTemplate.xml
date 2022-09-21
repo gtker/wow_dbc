@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<dbc>
+<name>FactionTemplate</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>faction</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Faction</parent>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>faction_group</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FactionGroup</parent>
+</key>
+</field>
+
+<field>
+    <name>friend_group</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>enemy_group</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>enemies</name>
+    <type>int32[4]</type>
+<key>
+    <type>foreign</type>
+    <parent>Faction</parent>
+</key>
+</field>
+
+<field>
+    <name>friend</name>
+    <type>int32[4]</type>
+<key>
+    <type>foreign</type>
+    <parent>Faction</parent>
+</key>
+</field>
+
+</dbc>

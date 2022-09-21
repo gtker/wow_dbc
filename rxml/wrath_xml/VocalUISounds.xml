@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<dbc>
+<name>VocalUISounds</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>vocal_u_i_enum</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>race_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>normal_sound_id</name>
+    <type>int32[2]</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundKit</parent>
+</key>
+</field>
+
+<field>
+    <name>pissed_sound_id</name>
+    <type>int32[2]</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundKit</parent>
+</key>
+</field>
+
+</dbc>

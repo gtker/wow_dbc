@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<dbc>
+<name>AreaGroup</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>area_id</name>
+    <type>int32[6]</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaTable</parent>
+</key>
+</field>
+
+<field>
+    <name>next_area_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaGroup</parent>
+</key>
+</field>
+
+</dbc>

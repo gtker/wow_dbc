@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Achievement_Category</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>parent</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Achievement_Category</parent>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>ui_order</name>
+    <type>int32</type>
+</field>
+
+</dbc>

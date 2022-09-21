@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SoundSamplePreferences</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_001</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_002</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x2_sample_room</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_004</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_005</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_006</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_007</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x2_sample_occlusion_l_f_ratio</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x2_sample_occlusion_room_ratio</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_010</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>e_a_x1_effect_level</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_012</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_013</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x3_sample_exclusion</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_015</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>field_0_6_0_3592_016</name>
+    <type>int32</type>
+</field>
+
+</dbc>

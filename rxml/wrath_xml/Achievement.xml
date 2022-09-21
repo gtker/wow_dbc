@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Achievement</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>faction</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Faction</parent>
+</key>
+</field>
+
+<field>
+    <name>instance_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>supercedes</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Achievement</parent>
+</key>
+</field>
+
+<field>
+    <name>title_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>description_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>category</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Achievement_Category</parent>
+</key>
+</field>
+
+<field>
+    <name>points</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ui_order</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>icon_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellIcon</parent>
+</key>
+</field>
+
+<field>
+    <name>reward_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>minimum_criteria</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>shares_criteria</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Achievement</parent>
+</key>
+</field>
+
+</dbc>

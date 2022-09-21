@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>UnitBlood</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>combat_blood_spurt_front</name>
+    <type>int32[2]</type>
+</field>
+
+<field>
+    <name>combat_blood_spurt_back</name>
+    <type>int32[2]</type>
+</field>
+
+<field>
+    <name>ground_blood</name>
+    <type>string_ref[5]</type>
+</field>
+
+</dbc>

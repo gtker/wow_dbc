@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<dbc>
+<name>DeclinedWordCases</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>declined_word_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>DeclinedWord</parent>
+</key>
+</field>
+
+<field>
+    <name>case_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>declined_word</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

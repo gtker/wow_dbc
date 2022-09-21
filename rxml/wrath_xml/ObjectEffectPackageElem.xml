@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ObjectEffectPackageElem</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>object_effect_package_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ObjectEffectPackage</parent>
+</key>
+</field>
+
+<field>
+    <name>object_effect_group_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ObjectEffectGroup</parent>
+</key>
+</field>
+
+<field>
+    <name>state_type</name>
+    <type>int32</type>
+</field>
+
+</dbc>

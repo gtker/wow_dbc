@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<dbc>
+<name>PVPDifficulty</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>range_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>min_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>difficulty</name>
+    <type>int32</type>
+</field>
+
+</dbc>

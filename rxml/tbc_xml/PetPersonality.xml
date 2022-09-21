@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dbc>
+<name>PetPersonality</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>happiness_threshold</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>happiness_damage</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>damage_modifier</name>
+    <type>float[3]</type>
+</field>
+
+</dbc>

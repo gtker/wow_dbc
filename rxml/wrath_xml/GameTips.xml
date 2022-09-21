@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<dbc>
+<name>GameTips</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>text_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

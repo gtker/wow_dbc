@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellShapeshiftForm</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>bonus_action_bar</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>creature_type</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureType</parent>
+</key>
+</field>
+
+<field>
+    <name>attack_icon_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellIcon</parent>
+</key>
+</field>
+
+<field>
+    <name>combat_round_time</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>creature_display_id</name>
+    <type>int32[4]</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureDisplayInfo</parent>
+</key>
+</field>
+
+<field>
+    <name>preset_spell_id</name>
+    <type>int32[8]</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+</dbc>

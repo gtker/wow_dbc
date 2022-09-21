@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CharStartOutfit</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>race_id</name>
+    <type>int8</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>class_id</name>
+    <type>int8</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrClasses</parent>
+</key>
+</field>
+
+<field>
+    <name>sex_id</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>outfit_id</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>item_id</name>
+    <type>int32[24]</type>
+<key>
+    <type>foreign</type>
+    <parent>Item</parent>
+</key>
+</field>
+
+<field>
+    <name>display_item_id</name>
+    <type>int32[24]</type>
+<key>
+    <type>foreign</type>
+    <parent>ItemDisplayInfo</parent>
+</key>
+</field>
+
+<field>
+    <name>inventory_type</name>
+    <type>int32[24]</type>
+</field>
+
+</dbc>

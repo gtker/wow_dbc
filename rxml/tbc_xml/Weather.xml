@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Weather</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>ambience_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>effect_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>effect_color</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>effect_texture</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

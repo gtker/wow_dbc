@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellVisualKit</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>kit_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>anim_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AnimationData</parent>
+</key>
+</field>
+
+<field>
+    <name>head_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>chest_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>base_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>left_hand_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>right_hand_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>breath_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>left_weapon_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>right_weapon_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>special_effect</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>world_effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>shake_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellEffectCameraShakes</parent>
+</key>
+</field>
+
+<field>
+    <name>char_proc</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>char_param_zero</name>
+    <type>float[4]</type>
+</field>
+
+<field>
+    <name>char_param_one</name>
+    <type>float[4]</type>
+</field>
+
+<field>
+    <name>char_param_two</name>
+    <type>float[4]</type>
+</field>
+
+<field>
+    <name>char_param_three</name>
+    <type>float[4]</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<dbc>
+<name>AnimationData</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>weaponflags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>bodyflags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_0_7_0_3694_004</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>fallback</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AnimationData</parent>
+</key>
+</field>
+
+</dbc>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>BarberShopStyle</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>display_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>description_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>cost_modifier</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>race</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>sex</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>data</name>
+    <type>int32</type>
+</field>
+
+</dbc>

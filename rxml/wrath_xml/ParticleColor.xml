@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ParticleColor</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>start</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>m_id</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>end</name>
+    <type>int32[3]</type>
+</field>
+
+</dbc>

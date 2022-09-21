@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<dbc>
+<name>UnitBloodLevels</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>violencelevel</name>
+    <type>int32[3]</type>
+</field>
+
+</dbc>

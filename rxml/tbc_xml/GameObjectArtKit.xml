@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<dbc>
+<name>GameObjectArtKit</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>texture_variation</name>
+    <type>string_ref[3]</type>
+</field>
+
+<field>
+    <name>attach_model</name>
+    <type>string_ref[4]</type>
+</field>
+
+</dbc>

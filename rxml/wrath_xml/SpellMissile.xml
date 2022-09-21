@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellMissile</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>default_pitch_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>default_pitch_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>default_speed_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>default_speed_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>randomize_facing_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>randomize_facing_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>randomize_pitch_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>randomize_pitch_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>randomize_speed_min</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>randomize_speed_max</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>gravity</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>collision_radius</name>
+    <type>float</type>
+</field>
+
+</dbc>

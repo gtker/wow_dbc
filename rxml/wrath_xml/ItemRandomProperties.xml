@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemRandomProperties</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>enchantment</name>
+    <type>int32[5]</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellItemEnchantment</parent>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

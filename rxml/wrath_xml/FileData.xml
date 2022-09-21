@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<dbc>
+<name>FileData</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>filename</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>filepath</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

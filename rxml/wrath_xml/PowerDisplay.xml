@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<dbc>
+<name>PowerDisplay</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>actual_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>global_string_base_tag</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>red</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>green</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>blue</name>
+    <type>int8</type>
+</field>
+
+</dbc>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Emotes</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>emote_slash_command</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>anim_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AnimationData</parent>
+</key>
+</field>
+
+<field>
+    <name>emote_flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>emote_spec_proc</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>emote_spec_proc_param</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>event_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+</dbc>

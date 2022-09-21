@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CreatureFamily</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>min_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_scale_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_scale_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>skill_line</name>
+    <type>int32[2]</type>
+<key>
+    <type>foreign</type>
+    <parent>SkillLine</parent>
+</key>
+</field>
+
+<field>
+    <name>pet_food_mask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>icon_file</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

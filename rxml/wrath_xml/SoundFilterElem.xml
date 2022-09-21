@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SoundFilterElem</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>sound_filter_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundFilter</parent>
+</key>
+</field>
+
+<field>
+    <name>order_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>filter_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>params</name>
+    <type>float[9]</type>
+</field>
+
+</dbc>

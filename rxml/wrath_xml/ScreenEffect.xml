@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ScreenEffect</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>effect</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>param</name>
+    <type>int32[4]</type>
+</field>
+
+<field>
+    <name>light_params_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>LightParams</parent>
+</key>
+</field>
+
+<field>
+    <name>sound_ambience_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundAmbience</parent>
+</key>
+</field>
+
+<field>
+    <name>zone_music_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ZoneMusic</parent>
+</key>
+</field>
+
+</dbc>

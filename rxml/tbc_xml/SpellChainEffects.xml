@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellChainEffects</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>avg_seg_len</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>width</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>noise_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>tex_coord_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>seg_duration</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>seg_delay</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>texture</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>joint_count</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>joint_offset_radius</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>joints_per_minor_joint</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>minor_joints_per_major_joint</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>minor_joint_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>major_joint_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>joint_move_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>joint_smoothness</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_duration_between_joint_jumps</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_duration_between_joint_jumps</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>wave_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>wave_freq</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>wave_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_wave_angle</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_wave_angle</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_wave_spin</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_wave_spin</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>arc_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_arc_angle</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_arc_angle</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_arc_spin</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_arc_spin</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>delay_between_effects</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_flicker_on_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_flicker_on_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_flicker_off_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_flicker_off_duration</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pulse_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pulse_on_length</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pulse_fade_length</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>alpha</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>red</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>green</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>blue</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>blend_mode</name>
+    <type>int8</type>
+</field>
+
+<field>
+    <name>combo</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>render_layer</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>texture_length</name>
+    <type>float</type>
+</field>
+
+</dbc>

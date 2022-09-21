@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ObjectEffect</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>object_effect_group_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ObjectEffectGroup</parent>
+</key>
+</field>
+
+<field>
+    <name>trigger_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>event_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>effect_rec_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>effect_rec_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundKit</parent>
+</key>
+</field>
+
+<field>
+    <name>attachment</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>offset</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>object_effect_modifier_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ObjectEffectModifier</parent>
+</key>
+</field>
+
+</dbc>

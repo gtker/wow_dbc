@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ScalingStatValues</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>charlevel</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>shoulder_budget</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>trinket_budget</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_budget1_h</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ranged_budget</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>cloth_shoulder_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>leather_shoulder_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>mail_shoulder_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>plate_shoulder_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_d_p_s1_h</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_d_p_s2_h</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>spellcaster_d_p_s1_h</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>spellcaster_d_p_s2_h</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>ranged_d_p_s</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>wand_d_p_s</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>spell_power</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>primary_budget</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>tertiary_budget</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>cloth_cloak_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>cloth_chest_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>leather_chest_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>mail_chest_armor</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>plate_chest_armor</name>
+    <type>int32</type>
+</field>
+
+</dbc>

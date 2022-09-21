@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<dbc>
+<name>TransportPhysics</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>wave_amp</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>wave_time_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>roll_amp</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>roll_time_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pitch_amp</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pitch_time_scale</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_bank</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_bank_turn_speed</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>speed_damp_thresh</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>speed_damp</name>
+    <type>float</type>
+</field>
+
+</dbc>

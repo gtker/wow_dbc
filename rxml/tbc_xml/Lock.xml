@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Lock</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>type</name>
+    <type>int32[8]</type>
+</field>
+
+<field>
+    <name>index</name>
+    <type>int32[8]</type>
+</field>
+
+<field>
+    <name>skill</name>
+    <type>int32[8]</type>
+</field>
+
+<field>
+    <name>action</name>
+    <type>int32[8]</type>
+</field>
+
+</dbc>

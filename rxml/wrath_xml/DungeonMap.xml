@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<dbc>
+<name>DungeonMap</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>floor_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>min_x</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_x</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>min_y</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>max_y</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>parent_world_map_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>AreaTable</parent>
+</key>
+</field>
+
+</dbc>

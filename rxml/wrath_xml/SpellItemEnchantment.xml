@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellItemEnchantment</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>charges</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>effect</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>effect_points_min</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>effect_points_max</name>
+    <type>int32[3]</type>
+</field>
+
+<field>
+    <name>effect_arg</name>
+    <type>int32[3]</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>item_visual</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ItemVisuals</parent>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>src_item_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>condition_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellItemEnchantmentCondition</parent>
+</key>
+</field>
+
+<field>
+    <name>required_skill_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SkillLine</parent>
+</key>
+</field>
+
+<field>
+    <name>required_skill_rank</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>min_level</name>
+    <type>int32</type>
+</field>
+
+</dbc>

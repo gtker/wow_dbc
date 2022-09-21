@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SummonProperties</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>control</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>faction</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FactionTemplate</parent>
+</key>
+</field>
+
+<field>
+    <name>title</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>slot</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

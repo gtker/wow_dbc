@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SpellVisualKitModelAttach</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>parent_spell_visual_kit_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellVisualKit</parent>
+</key>
+</field>
+
+<field>
+    <name>spell_visual_effect_name_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SpellVisualEffectName</parent>
+</key>
+</field>
+
+<field>
+    <name>attachment_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>offset</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>yaw</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>pitch</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>roll</name>
+    <type>float</type>
+</field>
+
+</dbc>

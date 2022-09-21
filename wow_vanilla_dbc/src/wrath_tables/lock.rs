@@ -1,0 +1,158 @@
+use crate::header::{HEADER_SIZE, DbcHeader};
+use crate::header;
+use crate::DbcTable;
+use std::io::Write;
+use crate::Indexable;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Lock {
+    pub rows: Vec<LockRow>,
+}
+
+impl DbcTable for Lock {
+    type Row = LockRow;
+
+    fn filename() -> &'static str { "Lock.dbc" }
+
+    fn rows(&self) -> &[Self::Row] { &self.rows }
+    fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
+
+    fn read(b: &mut impl std::io::Read) -> Result<Self, crate::DbcError> {
+        let mut header = [0_u8; HEADER_SIZE];
+        b.read_exact(&mut header)?;
+        let header = header::parse_header(&header)?;
+
+        if header.record_size != 132 {
+            return Err(crate::DbcError::InvalidHeader(
+                crate::InvalidHeaderError::RecordSize {
+                    expected: 132,
+                    actual: header.record_size,
+                },
+            ));
+        }
+
+        if header.field_count != 33 {
+            return Err(crate::DbcError::InvalidHeader(
+                crate::InvalidHeaderError::FieldCount {
+                    expected: 33,
+                    actual: header.field_count,
+                },
+            ));
+        }
+
+        let mut r = vec![0_u8; (header.record_count * header.record_size) as usize];
+        b.read_exact(&mut r)?;
+
+        let mut rows = Vec::with_capacity(header.record_count as usize);
+
+        for mut chunk in r.chunks(header.record_size as usize) {
+            let chunk = &mut chunk;
+
+            // id: primary_key (Lock) int32
+            let id = LockKey::new(crate::util::read_i32_le(chunk)?);
+
+            // ty: int32[8]
+            let ty = crate::util::read_array_i32::<8>(chunk)?;
+
+            // index: int32[8]
+            let index = crate::util::read_array_i32::<8>(chunk)?;
+
+            // skill: int32[8]
+            let skill = crate::util::read_array_i32::<8>(chunk)?;
+
+            // action: int32[8]
+            let action = crate::util::read_array_i32::<8>(chunk)?;
+
+
+            rows.push(LockRow {
+                id,
+                ty,
+                index,
+                skill,
+                action,
+            });
+        }
+
+        Ok(Lock { rows, })
+    }
+
+    fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
+        let header = DbcHeader {
+            record_count: self.rows.len() as u32,
+            field_count: 33,
+            record_size: 132,
+            string_block_size: 1,
+        };
+
+        b.write_all(&header.write_header())?;
+
+        for row in &self.rows {
+            // id: primary_key (Lock) int32
+            b.write_all(&row.id.id.to_le_bytes())?;
+
+            // ty: int32[8]
+            for i in row.ty {
+                b.write_all(&i.to_le_bytes())?;
+            }
+
+
+            // index: int32[8]
+            for i in row.index {
+                b.write_all(&i.to_le_bytes())?;
+            }
+
+
+            // skill: int32[8]
+            for i in row.skill {
+                b.write_all(&i.to_le_bytes())?;
+            }
+
+
+            // action: int32[8]
+            for i in row.action {
+                b.write_all(&i.to_le_bytes())?;
+            }
+
+
+        }
+
+        b.write_all(&[0_u8])?;
+
+        Ok(())
+    }
+
+}
+
+impl Indexable for Lock {
+    type PrimaryKey = LockKey;
+    fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row> {
+        self.rows.iter().find(|a| a.id.id == key.id)
+    }
+
+    fn get_mut(&mut self, key: &Self::PrimaryKey) -> Option<&mut Self::Row> {
+        self.rows.iter_mut().find(|a| a.id.id == key.id)
+    }
+
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+pub struct LockKey {
+    pub id: i32
+}
+
+impl LockKey {
+    pub const fn new(id: i32) -> Self {
+        Self { id }
+    }
+
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LockRow {
+    pub id: LockKey,
+    pub ty: [i32; 8],
+    pub index: [i32; 8],
+    pub skill: [i32; 8],
+    pub action: [i32; 8],
+}
+

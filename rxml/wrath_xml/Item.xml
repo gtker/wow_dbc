@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>Item</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>class_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>subclass_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_override_subclass_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>material</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Material</parent>
+</key>
+</field>
+
+<field>
+    <name>display_info_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>inventory_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sheathe_type</name>
+    <type>int32</type>
+</field>
+
+</dbc>

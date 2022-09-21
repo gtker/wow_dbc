@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<dbc>
+<name>TerrainType</name>
+
+<field>
+    <name>terrain_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>terrain_desc</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>footstep_spray_run</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>footstep_spray_walk</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+</dbc>

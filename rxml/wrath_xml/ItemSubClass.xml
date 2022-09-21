@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemSubClass</name>
+
+<field>
+    <name>class_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sub_class_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>prerequisite_proficiency</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>postrequisite_proficiency</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>display_flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_parry_seq</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_ready_seq</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_attack_seq</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>weapon_swing_size</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>display_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>verbose_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

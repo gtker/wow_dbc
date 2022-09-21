@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<dbc>
+<name>BattlemasterList</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>map_id</name>
+    <type>int32[8]</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>instance_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>min_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_2_0_0_5610_005</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>field_2_0_0_5610_006</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>groups_allowed</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>field_2_4_0_8089_009</name>
+    <type>int32</type>
+</field>
+
+</dbc>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<dbc>
+<name>VehicleUIIndSeat</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>vehicle_u_i_indicator_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>VehicleUIIndicator</parent>
+</key>
+</field>
+
+<field>
+    <name>virtual_seat_index</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>x_pos</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>y_pos</name>
+    <type>float</type>
+</field>
+
+</dbc>

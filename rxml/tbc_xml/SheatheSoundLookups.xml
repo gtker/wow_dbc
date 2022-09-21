@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SheatheSoundLookups</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>class_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>subclass_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>material</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Material</parent>
+</key>
+</field>
+
+<field>
+    <name>check_material</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sheathe_sound</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>unsheathe_sound</name>
+    <type>int32</type>
+</field>
+
+</dbc>

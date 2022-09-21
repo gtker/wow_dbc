@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemCondExtCosts</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>cond_extended_cost</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>item_extended_cost_entry</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ItemExtendedCost</parent>
+</key>
+</field>
+
+<field>
+    <name>arena_season</name>
+    <type>int32</type>
+</field>
+
+</dbc>

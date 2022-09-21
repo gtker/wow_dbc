@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemClass</name>
+
+<field>
+    <name>class_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>subclass_map_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>class_name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

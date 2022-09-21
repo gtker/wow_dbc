@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<dbc>
+<name>SoundEntries</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>sound_type</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>name</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>file</name>
+    <type>string_ref[10]</type>
+</field>
+
+<field>
+    <name>freq</name>
+    <type>int32[10]</type>
+</field>
+
+<field>
+    <name>directory_base</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>volume_float</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>min_distance</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>distance_cutoff</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>e_a_x_def</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>sound_entries_advanced_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntriesAdvanced</parent>
+</key>
+</field>
+
+</dbc>

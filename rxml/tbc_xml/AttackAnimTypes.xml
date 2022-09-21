@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<dbc>
+<name>AttackAnimTypes</name>
+
+<field>
+    <name>anim_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>anim_name</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>

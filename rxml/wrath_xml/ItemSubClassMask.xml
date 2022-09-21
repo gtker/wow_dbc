@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ItemSubClassMask</name>
+
+<field>
+    <name>class_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>mask</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+</dbc>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>AreaTrigger</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>continent_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Map</parent>
+</key>
+</field>
+
+<field>
+    <name>pos</name>
+    <type>float[3]</type>
+</field>
+
+<field>
+    <name>radius</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>box_length</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>box_width</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>box_height</name>
+    <type>float</type>
+</field>
+
+<field>
+    <name>box_yaw</name>
+    <type>float</type>
+</field>
+
+</dbc>

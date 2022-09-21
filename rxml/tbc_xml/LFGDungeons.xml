@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<dbc>
+<name>LFGDungeons</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>min_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>max_level</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>type_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>faction</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Faction</parent>
+</key>
+</field>
+
+<field>
+    <name>texture_filename</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>expansion_level</name>
+    <type>int32</type>
+</field>
+
+</dbc>

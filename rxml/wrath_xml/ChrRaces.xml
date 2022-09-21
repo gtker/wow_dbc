@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<dbc>
+<name>ChrRaces</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>faction_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>FactionTemplate</parent>
+</key>
+</field>
+
+<field>
+    <name>exploration_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>male_display_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureDisplayInfo</parent>
+</key>
+</field>
+
+<field>
+    <name>female_display_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureDisplayInfo</parent>
+</key>
+</field>
+
+<field>
+    <name>client_prefix</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>base_language</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Languages</parent>
+</key>
+</field>
+
+<field>
+    <name>creature_type</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CreatureType</parent>
+</key>
+</field>
+
+<field>
+    <name>res_sickness_spell_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>Spell</parent>
+</key>
+</field>
+
+<field>
+    <name>splash_sound_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>SoundEntries</parent>
+</key>
+</field>
+
+<field>
+    <name>client_file_string</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>cinematic_sequence_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>CinematicSequences</parent>
+</key>
+</field>
+
+<field>
+    <name>alliance</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>name_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>name_female_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>name_male_lang</name>
+    <type>string_ref_loc</type>
+</field>
+
+<field>
+    <name>facial_hair_customization</name>
+    <type>string_ref[2]</type>
+</field>
+
+<field>
+    <name>hair_customization</name>
+    <type>string_ref</type>
+</field>
+
+<field>
+    <name>required_expansion</name>
+    <type>int32</type>
+</field>
+
+</dbc>

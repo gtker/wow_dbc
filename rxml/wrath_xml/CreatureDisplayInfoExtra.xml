@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<dbc>
+<name>CreatureDisplayInfoExtra</name>
+
+<field>
+    <name>id</name>
+    <type>int32</type>
+<key>
+    <type>primary</type>
+</key>
+</field>
+
+<field>
+    <name>display_race_id</name>
+    <type>int32</type>
+<key>
+    <type>foreign</type>
+    <parent>ChrRaces</parent>
+</key>
+</field>
+
+<field>
+    <name>display_sex_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>skin_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>face_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>hair_style_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>hair_color_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>facial_hair_id</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>n_p_c_item_display</name>
+    <type>int32[11]</type>
+<key>
+    <type>foreign</type>
+    <parent>ItemDisplayInfo</parent>
+</key>
+</field>
+
+<field>
+    <name>flags</name>
+    <type>int32</type>
+</field>
+
+<field>
+    <name>bake_name</name>
+    <type>string_ref</type>
+</field>
+
+</dbc>
