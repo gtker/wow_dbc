@@ -2,7 +2,7 @@
 name = "wow_vanilla_dbc"
 version = "0.1.0" # Remember to update docs in src/lib.rs and README.md
 edition = "2021"
-description = "Library for parsing World of Warcraft DBC files for 1.12."
+description = "Library for parsing World of Warcraft DBC files for 1.12, 2.4.3 and 3.3.5."
 license = "MIT OR Apache-2.0"
 repository = "https://www.github.com/gtker/wow_vanilla_dbc"
 keywords = ["wow", "world-of-warcraft", "mpq", "dbc", "databaseclient"]
