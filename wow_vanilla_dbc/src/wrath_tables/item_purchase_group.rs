@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemPurchaseGroup {
     pub rows: Vec<ItemPurchaseGroupRow>,
 }
@@ -150,7 +150,7 @@ impl ItemPurchaseGroupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemPurchaseGroupRow {
     pub id: ItemPurchaseGroupKey,
     pub item_id: [i32; 8],

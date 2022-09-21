@@ -7,7 +7,7 @@ use crate::LocalizedString;
 use crate::tbc_tables::item_visuals::*;
 use crate::tbc_tables::spell_item_enchantment_condition::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellItemEnchantment {
     pub rows: Vec<SpellItemEnchantmentRow>,
 }
@@ -210,7 +210,7 @@ impl SpellItemEnchantmentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellItemEnchantmentRow {
     pub id: SpellItemEnchantmentKey,
     pub effect: [i32; 3],

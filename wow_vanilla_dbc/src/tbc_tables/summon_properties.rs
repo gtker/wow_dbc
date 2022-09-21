@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::faction_template::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SummonProperties {
     pub rows: Vec<SummonPropertiesRow>,
 }
@@ -143,7 +143,7 @@ impl SummonPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SummonPropertiesRow {
     pub id: SummonPropertiesKey,
     pub control: i32,

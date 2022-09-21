@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::gm_survey_surveys::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GMSurveyCurrentSurvey {
     pub rows: Vec<GMSurveyCurrentSurveyRow>,
 }
@@ -115,7 +115,7 @@ impl GMSurveyCurrentSurveyKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GMSurveyCurrentSurveyRow {
     pub id: GMSurveyCurrentSurveyKey,
     pub gm_survey_id: GMSurveySurveysKey,

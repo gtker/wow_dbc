@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Talent {
     pub rows: Vec<TalentRow>,
 }
@@ -183,7 +183,7 @@ impl TalentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TalentRow {
     pub id: TalentKey,
     pub tab_id: i32,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ObjectEffectPackage {
     pub rows: Vec<ObjectEffectPackageRow>,
 }
@@ -148,7 +148,7 @@ impl ObjectEffectPackageKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ObjectEffectPackageRow {
     pub id: ObjectEffectPackageKey,
     pub name: String,

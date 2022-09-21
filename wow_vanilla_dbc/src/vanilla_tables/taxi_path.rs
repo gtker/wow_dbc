@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::taxi_nodes::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TaxiPath {
     pub rows: Vec<TaxiPathRow>,
 }
@@ -129,7 +129,7 @@ impl TaxiPathKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TaxiPathRow {
     pub id: TaxiPathKey,
     pub source_taxi_node: TaxiNodesKey,

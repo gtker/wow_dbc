@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::item_class::*;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SheatheSoundLookups {
     pub rows: Vec<SheatheSoundLookupsRow>,
 }
@@ -190,7 +190,7 @@ impl Default for ItemEnvTypes {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SheatheSoundLookupsRow {
     pub id: SheatheSoundLookupsKey,
     pub item_class: ItemClassKey,

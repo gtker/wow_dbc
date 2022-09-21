@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::item_extended_cost::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemCondExtCosts {
     pub rows: Vec<ItemCondExtCostsRow>,
 }
@@ -129,7 +129,7 @@ impl ItemCondExtCostsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemCondExtCostsRow {
     pub id: ItemCondExtCostsKey,
     pub cond_extended_cost: i32,

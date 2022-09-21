@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LockType {
     pub rows: Vec<LockTypeRow>,
 }
@@ -176,7 +176,7 @@ impl LockTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LockTypeRow {
     pub id: LockTypeKey,
     pub name: LocalizedString,

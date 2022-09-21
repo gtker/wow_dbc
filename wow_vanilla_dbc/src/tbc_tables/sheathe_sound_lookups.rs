@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::material::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SheatheSoundLookups {
     pub rows: Vec<SheatheSoundLookupsRow>,
 }
@@ -150,7 +150,7 @@ impl SheatheSoundLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SheatheSoundLookupsRow {
     pub id: SheatheSoundLookupsKey,
     pub class_id: i32,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GMSurveySurveys {
     pub rows: Vec<GMSurveySurveysRow>,
 }
@@ -117,7 +117,7 @@ impl GMSurveySurveysKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GMSurveySurveysRow {
     pub id: GMSurveySurveysKey,
     pub q: [i32; 10],

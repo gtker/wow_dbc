@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::tbc_tables::sound_entries::*;
 use crate::tbc_tables::terrain_type_sounds::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DeathThudLookups {
     pub rows: Vec<DeathThudLookupsRow>,
 }
@@ -137,7 +137,7 @@ impl DeathThudLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DeathThudLookupsRow {
     pub id: DeathThudLookupsKey,
     pub size_class: i32,

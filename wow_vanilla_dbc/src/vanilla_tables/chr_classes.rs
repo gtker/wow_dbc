@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChrClasses {
     pub rows: Vec<ChrClassesRow>,
 }
@@ -256,7 +256,7 @@ impl Default for PowerType {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChrClassesRow {
     pub id: ChrClassesKey,
     pub player_class: u32,

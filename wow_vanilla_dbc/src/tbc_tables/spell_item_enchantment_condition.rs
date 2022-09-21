@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellItemEnchantmentCondition {
     pub rows: Vec<SpellItemEnchantmentConditionRow>,
 }
@@ -195,7 +195,7 @@ impl SpellItemEnchantmentConditionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellItemEnchantmentConditionRow {
     pub id: SpellItemEnchantmentConditionKey,
     pub lt_operand_type: [i8; 5],

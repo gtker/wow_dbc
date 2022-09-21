@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Resistances {
     pub rows: Vec<ResistancesRow>,
 }
@@ -155,7 +155,7 @@ impl ResistancesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ResistancesRow {
     pub id: ResistancesKey,
     pub physical_damage: bool,

@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::sound_entries::*;
 use crate::vanilla_tables::spell_visual_effect_name::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TerrainType {
     pub rows: Vec<TerrainTypeRow>,
 }
@@ -178,7 +178,7 @@ impl TerrainTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TerrainTypeRow {
     pub id: TerrainTypeKey,
     pub description: String,

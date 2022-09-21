@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::tbc_tables::faction::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeons {
     pub rows: Vec<LFGDungeonsRow>,
 }
@@ -194,7 +194,7 @@ impl LFGDungeonsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
     pub name_lang: LocalizedString,

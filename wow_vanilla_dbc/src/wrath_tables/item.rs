@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::material::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Item {
     pub rows: Vec<ItemRow>,
 }
@@ -157,7 +157,7 @@ impl ItemKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemRow {
     pub id: ItemKey,
     pub class_id: i32,

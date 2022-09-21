@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::world_map_area::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldMapOverlay {
     pub rows: Vec<WorldMapOverlayRow>,
 }
@@ -236,7 +236,7 @@ impl WorldMapOverlayKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldMapOverlayRow {
     pub id: WorldMapOverlayKey,
     pub map_area_id: WorldMapAreaKey,

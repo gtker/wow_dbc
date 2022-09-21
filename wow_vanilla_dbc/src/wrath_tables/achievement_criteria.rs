@@ -7,7 +7,7 @@ use crate::LocalizedString;
 use crate::wrath_tables::achievement::*;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Achievement_Criteria {
     pub rows: Vec<Achievement_CriteriaRow>,
 }
@@ -235,7 +235,7 @@ impl Achievement_CriteriaKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Achievement_CriteriaRow {
     pub id: Achievement_CriteriaKey,
     pub achievement_id: AchievementKey,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VehicleUIIndicator {
     pub rows: Vec<VehicleUIIndicatorRow>,
 }
@@ -148,7 +148,7 @@ impl VehicleUIIndicatorKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VehicleUIIndicatorRow {
     pub id: VehicleUIIndicatorKey,
     pub background_texture: String,

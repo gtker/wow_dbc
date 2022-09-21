@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::tbc_tables::animation_data::*;
 use crate::tbc_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Emotes {
     pub rows: Vec<EmotesRow>,
 }
@@ -185,7 +185,7 @@ impl EmotesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EmotesRow {
     pub id: EmotesKey,
     pub emote_slash_command: String,

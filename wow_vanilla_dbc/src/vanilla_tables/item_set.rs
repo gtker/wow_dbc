@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::vanilla_tables::skill_line::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemSet {
     pub rows: Vec<ItemSetRow>,
 }
@@ -195,7 +195,7 @@ impl ItemSetKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemSetRow {
     pub id: ItemSetKey,
     pub name: LocalizedString,

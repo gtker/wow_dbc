@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestSort {
     pub rows: Vec<QuestSortRow>,
 }
@@ -140,7 +140,7 @@ impl QuestSortKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestSortRow {
     pub id: QuestSortKey,
     pub name: LocalizedString,

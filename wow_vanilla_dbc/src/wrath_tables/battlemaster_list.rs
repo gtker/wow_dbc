@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BattlemasterList {
     pub rows: Vec<BattlemasterListRow>,
 }
@@ -192,7 +192,7 @@ impl BattlemasterListKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BattlemasterListRow {
     pub id: BattlemasterListKey,
     pub map_id: [i32; 8],

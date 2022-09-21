@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScalingStatValues {
     pub rows: Vec<ScalingStatValuesRow>,
 }
@@ -268,7 +268,7 @@ impl ScalingStatValuesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScalingStatValuesRow {
     pub id: ScalingStatValuesKey,
     pub charlevel: i32,

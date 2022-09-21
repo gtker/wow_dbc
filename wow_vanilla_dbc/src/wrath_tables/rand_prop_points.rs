@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RandPropPoints {
     pub rows: Vec<RandPropPointsRow>,
 }
@@ -137,7 +137,7 @@ impl RandPropPointsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RandPropPointsRow {
     pub id: RandPropPointsKey,
     pub epic: [i32; 5],

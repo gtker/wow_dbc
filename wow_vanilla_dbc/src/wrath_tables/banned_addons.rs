@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BannedAddons {
     pub rows: Vec<BannedAddonsRow>,
 }
@@ -141,7 +141,7 @@ impl BannedAddonsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BannedAddonsRow {
     pub id: BannedAddonsKey,
     pub name_m_d5: [i32; 4],

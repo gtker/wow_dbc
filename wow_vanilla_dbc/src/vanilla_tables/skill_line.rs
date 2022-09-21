@@ -8,7 +8,7 @@ use crate::vanilla_tables::skill_costs_data::*;
 use crate::vanilla_tables::skill_line_category::*;
 use crate::vanilla_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLine {
     pub rows: Vec<SkillLineRow>,
 }
@@ -173,7 +173,7 @@ impl SkillLineKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineRow {
     pub id: SkillLineKey,
     pub category: SkillLineCategoryKey,

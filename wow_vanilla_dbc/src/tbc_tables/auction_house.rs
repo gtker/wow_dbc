@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::tbc_tables::faction::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AuctionHouse {
     pub rows: Vec<AuctionHouseRow>,
 }
@@ -162,7 +162,7 @@ impl AuctionHouseKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AuctionHouseRow {
     pub id: AuctionHouseKey,
     pub faction_id: FactionKey,

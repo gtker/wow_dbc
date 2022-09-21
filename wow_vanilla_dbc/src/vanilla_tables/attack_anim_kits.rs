@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::animation_data::*;
 use crate::vanilla_tables::attack_anim_types::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttackAnimKits {
     pub rows: Vec<AttackAnimKitsRow>,
 }
@@ -173,7 +173,7 @@ impl Default for AttackHand {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttackAnimKitsRow {
     pub id: AttackAnimKitsKey,
     pub animation_data: AnimationDataKey,

@@ -7,7 +7,7 @@ use crate::SizeClass;
 use crate::vanilla_tables::sound_entries::*;
 use crate::vanilla_tables::terrain_type::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DeathThudLookups {
     pub rows: Vec<DeathThudLookupsRow>,
 }
@@ -138,7 +138,7 @@ impl DeathThudLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DeathThudLookupsRow {
     pub id: DeathThudLookupsKey,
     pub size: SizeClass,

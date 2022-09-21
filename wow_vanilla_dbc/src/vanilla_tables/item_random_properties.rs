@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemRandomProperties {
     pub rows: Vec<ItemRandomPropertiesRow>,
 }
@@ -168,7 +168,7 @@ impl ItemRandomPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemRandomPropertiesRow {
     pub id: ItemRandomPropertiesKey,
     pub name: String,

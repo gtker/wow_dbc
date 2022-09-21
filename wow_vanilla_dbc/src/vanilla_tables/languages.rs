@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Languages {
     pub rows: Vec<LanguagesRow>,
 }
@@ -140,7 +140,7 @@ impl LanguagesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LanguagesRow {
     pub id: LanguagesKey,
     pub name: LocalizedString,

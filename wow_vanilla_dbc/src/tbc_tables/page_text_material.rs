@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PageTextMaterial {
     pub rows: Vec<PageTextMaterialRow>,
 }
@@ -148,7 +148,7 @@ impl PageTextMaterialKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PageTextMaterialRow {
     pub id: PageTextMaterialKey,
     pub name: String,

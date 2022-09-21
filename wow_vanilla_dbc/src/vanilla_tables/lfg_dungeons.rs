@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeons {
     pub rows: Vec<LFGDungeonsRow>,
 }
@@ -249,7 +249,7 @@ impl Default for Faction {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
     pub name: LocalizedString,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::emotes::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EmotesText {
     pub rows: Vec<EmotesTextRow>,
 }
@@ -166,7 +166,7 @@ impl EmotesTextKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EmotesTextRow {
     pub id: EmotesTextKey,
     pub name: String,

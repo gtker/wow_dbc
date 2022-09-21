@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::vanilla_tables::gm_survey_surveys::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GMSurveyCurrentSurvey {
     pub rows: Vec<GMSurveyCurrentSurveyRow>,
 }
@@ -144,7 +144,7 @@ impl Default for Language {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GMSurveyCurrentSurveyRow {
     pub language: Language,
     pub gm_survey: GMSurveySurveysKey,

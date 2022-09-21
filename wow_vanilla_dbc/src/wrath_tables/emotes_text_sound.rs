@@ -7,7 +7,7 @@ use crate::wrath_tables::chr_races::*;
 use crate::wrath_tables::emotes_text::*;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EmotesTextSound {
     pub rows: Vec<EmotesTextSoundRow>,
 }
@@ -138,7 +138,7 @@ impl EmotesTextSoundKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EmotesTextSoundRow {
     pub id: EmotesTextSoundKey,
     pub emotes_text_id: EmotesTextKey,

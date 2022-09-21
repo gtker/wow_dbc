@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::Gender;
 use crate::vanilla_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CreatureDisplayInfoExtra {
     pub rows: Vec<CreatureDisplayInfoExtraRow>,
 }
@@ -216,7 +216,7 @@ impl CreatureDisplayInfoExtraKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CreatureDisplayInfoExtraRow {
     pub id: CreatureDisplayInfoExtraKey,
     pub display_race: ChrRacesKey,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GameObjectArtKit {
     pub rows: Vec<GameObjectArtKitRow>,
 }
@@ -200,7 +200,7 @@ impl GameObjectArtKitKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GameObjectArtKitRow {
     pub id: GameObjectArtKitKey,
     pub texture_variation: [String; 3],

@@ -7,7 +7,7 @@ use crate::LocalizedString;
 use crate::vanilla_tables::area_table::*;
 use crate::vanilla_tables::loading_screens::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Map {
     pub rows: Vec<MapRow>,
 }
@@ -296,7 +296,7 @@ impl Default for InstanceType {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MapRow {
     pub id: MapKey,
     pub internal_name: String,

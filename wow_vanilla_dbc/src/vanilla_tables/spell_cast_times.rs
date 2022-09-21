@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellCastTimes {
     pub rows: Vec<SpellCastTimesRow>,
 }
@@ -128,7 +128,7 @@ impl SpellCastTimesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellCastTimesRow {
     pub id: SpellCastTimesKey,
     pub base: i32,

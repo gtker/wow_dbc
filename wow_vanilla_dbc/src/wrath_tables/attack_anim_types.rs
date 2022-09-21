@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttackAnimTypes {
     pub rows: Vec<AttackAnimTypesRow>,
 }
@@ -123,7 +123,7 @@ impl AttackAnimTypes {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttackAnimTypesRow {
     pub anim_id: i32,
     pub anim_name: String,

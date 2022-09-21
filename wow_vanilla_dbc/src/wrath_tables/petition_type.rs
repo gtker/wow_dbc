@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PetitionType {
     pub rows: Vec<PetitionTypeRow>,
 }
@@ -155,7 +155,7 @@ impl PetitionTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PetitionTypeRow {
     pub id: PetitionTypeKey,
     pub name: String,

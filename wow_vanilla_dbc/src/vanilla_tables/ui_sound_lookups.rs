@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UISoundLookups {
     pub rows: Vec<UISoundLookupsRow>,
 }
@@ -156,7 +156,7 @@ impl UISoundLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UISoundLookupsRow {
     pub id: UISoundLookupsKey,
     pub sound_entry: SoundEntriesKey,

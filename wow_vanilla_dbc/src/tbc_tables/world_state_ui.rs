@@ -8,7 +8,7 @@ use crate::tbc_tables::area_table::*;
 use crate::tbc_tables::faction::*;
 use crate::tbc_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldStateUI {
     pub rows: Vec<WorldStateUIRow>,
 }
@@ -260,7 +260,7 @@ impl WorldStateUIKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldStateUIRow {
     pub id: WorldStateUIKey,
     pub map_id: MapKey,

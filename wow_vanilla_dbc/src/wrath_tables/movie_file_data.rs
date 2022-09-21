@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::wrath_tables::file_data::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MovieFileData {
     pub rows: Vec<MovieFileDataRow>,
 }
@@ -90,7 +90,7 @@ impl DbcTable for MovieFileData {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MovieFileDataRow {
     pub file_data_id: FileDataKey,
     pub resolution: i32,

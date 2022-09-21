@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::tbc_tables::particle_color::*;
 use crate::tbc_tables::spell_visual::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemDisplayInfo {
     pub rows: Vec<ItemDisplayInfoRow>,
 }
@@ -327,7 +327,7 @@ impl ItemDisplayInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemDisplayInfoRow {
     pub id: ItemDisplayInfoKey,
     pub model_name: [String; 2],

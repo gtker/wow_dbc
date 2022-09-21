@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VocalUISounds {
     pub rows: Vec<VocalUISoundsRow>,
 }
@@ -142,7 +142,7 @@ impl VocalUISoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VocalUISoundsRow {
     pub id: VocalUISoundsKey,
     pub vocal_u_i_enum: i32,

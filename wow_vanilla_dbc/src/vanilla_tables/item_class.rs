@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemClass {
     pub rows: Vec<ItemClassRow>,
 }
@@ -190,7 +190,7 @@ impl Default for Class {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemClassRow {
     pub id: ItemClassKey,
     pub subclass_map: u32,

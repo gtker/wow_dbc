@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Achievement_Category {
     pub rows: Vec<Achievement_CategoryRow>,
 }
@@ -157,7 +157,7 @@ impl Achievement_CategoryKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Achievement_CategoryRow {
     pub id: Achievement_CategoryKey,
     pub parent: Achievement_CategoryKey,

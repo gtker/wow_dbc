@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WeaponSwingSounds2 {
     pub rows: Vec<WeaponSwingSounds2Row>,
 }
@@ -168,7 +168,7 @@ impl Default for SwingType {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WeaponSwingSounds2Row {
     pub id: WeaponSwingSounds2Key,
     pub swing_type: SwingType,

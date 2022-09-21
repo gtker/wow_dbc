@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LiquidType {
     pub rows: Vec<LiquidTypeRow>,
 }
@@ -163,7 +163,7 @@ impl LiquidTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LiquidTypeRow {
     pub id: LiquidTypeKey,
     pub name: String,

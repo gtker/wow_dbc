@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GroundEffectTexture {
     pub rows: Vec<GroundEffectTextureRow>,
 }
@@ -131,7 +131,7 @@ impl GroundEffectTextureKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GroundEffectTextureRow {
     pub id: GroundEffectTextureKey,
     pub doodad_id: [i32; 4],

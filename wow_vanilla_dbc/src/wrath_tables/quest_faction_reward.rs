@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestFactionReward {
     pub rows: Vec<QuestFactionRewardRow>,
 }
@@ -117,7 +117,7 @@ impl QuestFactionRewardKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestFactionRewardRow {
     pub id: QuestFactionRewardKey,
     pub difficulty: [i32; 10],

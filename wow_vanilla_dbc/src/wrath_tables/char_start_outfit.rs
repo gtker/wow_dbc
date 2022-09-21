@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::chr_classes::*;
 use crate::wrath_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharStartOutfit {
     pub rows: Vec<CharStartOutfitRow>,
 }
@@ -167,7 +167,7 @@ impl CharStartOutfitKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharStartOutfitRow {
     pub id: CharStartOutfitKey,
     pub race_id: ChrRacesKey,

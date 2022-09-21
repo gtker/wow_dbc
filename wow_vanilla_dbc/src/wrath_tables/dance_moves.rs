@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::wrath_tables::lock::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DanceMoves {
     pub rows: Vec<DanceMovesRow>,
 }
@@ -194,7 +194,7 @@ impl DanceMovesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DanceMovesRow {
     pub id: DanceMovesKey,
     pub ty: i32,

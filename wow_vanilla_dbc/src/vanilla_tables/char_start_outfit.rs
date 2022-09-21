@@ -7,7 +7,7 @@ use crate::Gender;
 use crate::vanilla_tables::chr_classes::*;
 use crate::vanilla_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharStartOutfit {
     pub rows: Vec<CharStartOutfitRow>,
 }
@@ -168,7 +168,7 @@ impl CharStartOutfitKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharStartOutfitRow {
     pub id: CharStartOutfitKey,
     pub race: ChrRacesKey,

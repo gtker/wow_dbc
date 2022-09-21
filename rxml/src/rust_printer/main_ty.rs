@@ -1,4 +1,4 @@
-use crate::rust_printer::not_pascal_case_name;
+use crate::rust_printer::{not_pascal_case_name, print_derives};
 use crate::types::{Field, Type};
 use crate::{rust_printer, DbcDescription, Objects, Writer};
 
@@ -6,7 +6,7 @@ pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     if not_pascal_case_name(d.name()) {
         s.wln("#[allow(non_camel_case_types)]");
     }
-    s.wln("#[derive(Debug, Clone, PartialEq)]");
+    print_derives(s, d.fields());
     s.new_struct(d.name(), |s| {
         s.wln(format!("pub rows: Vec<{}Row>,", d.name()));
     });

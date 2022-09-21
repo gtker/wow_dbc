@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::vanilla_tables::faction_group::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChatChannels {
     pub rows: Vec<ChatChannelsRow>,
 }
@@ -180,7 +180,7 @@ impl ChannelFlags {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChatChannelsRow {
     pub id: ChatChannelsKey,
     pub flags: ChannelFlags,

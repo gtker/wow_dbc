@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::tbc_tables::skill_line::*;
 use crate::tbc_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineAbility {
     pub rows: Vec<SkillLineAbilityRow>,
 }
@@ -203,7 +203,7 @@ impl SkillLineAbilityKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineAbilityRow {
     pub id: SkillLineAbilityKey,
     pub skill_line: SkillLineKey,

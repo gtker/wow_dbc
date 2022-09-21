@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemGroupSounds {
     pub rows: Vec<ItemGroupSoundsRow>,
 }
@@ -117,7 +117,7 @@ impl ItemGroupSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemGroupSoundsRow {
     pub id: ItemGroupSoundsKey,
     pub sound: [i32; 4],

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Material {
     pub rows: Vec<MaterialRow>,
 }
@@ -135,7 +135,7 @@ impl MaterialKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MaterialRow {
     pub id: MaterialKey,
     pub flags: i32,

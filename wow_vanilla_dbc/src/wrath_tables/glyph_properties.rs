@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::spell::*;
 use crate::wrath_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GlyphProperties {
     pub rows: Vec<GlyphPropertiesRow>,
 }
@@ -130,7 +130,7 @@ impl GlyphPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GlyphPropertiesRow {
     pub id: GlyphPropertiesKey,
     pub spell_id: SpellKey,

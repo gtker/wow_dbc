@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DestructibleModelData {
     pub rows: Vec<DestructibleModelDataRow>,
 }
@@ -233,7 +233,7 @@ impl DestructibleModelDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DestructibleModelDataRow {
     pub id: DestructibleModelDataKey,
     pub state0_impact_effect_doodad_set: i32,

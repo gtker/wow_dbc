@@ -7,7 +7,7 @@ use crate::vanilla_tables::item_group_sounds::*;
 use crate::vanilla_tables::item_visuals::*;
 use crate::vanilla_tables::spell_visual::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemDisplayInfo {
     pub rows: Vec<ItemDisplayInfoRow>,
 }
@@ -314,7 +314,7 @@ impl ItemDisplayInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemDisplayInfoRow {
     pub id: ItemDisplayInfoKey,
     pub model_name: [String; 2],

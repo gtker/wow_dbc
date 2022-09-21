@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Cfg_Configs {
     pub rows: Vec<Cfg_ConfigsRow>,
 }
@@ -131,7 +131,7 @@ impl Cfg_ConfigsKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Cfg_ConfigsRow {
     pub id: Cfg_ConfigsKey,
     pub realm_type: i32,

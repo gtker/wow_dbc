@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttackAnimKits {
     pub rows: Vec<AttackAnimKitsRow>,
 }
@@ -135,7 +135,7 @@ impl AttackAnimKitsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttackAnimKitsRow {
     pub id: AttackAnimKitsKey,
     pub item_subclass_id: i32,

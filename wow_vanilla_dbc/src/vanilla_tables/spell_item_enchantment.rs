@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::vanilla_tables::item_visuals::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellItemEnchantment {
     pub rows: Vec<SpellItemEnchantmentRow>,
 }
@@ -195,7 +195,7 @@ impl SpellItemEnchantmentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellItemEnchantmentRow {
     pub id: SpellItemEnchantmentKey,
     pub enchantment_type: [i32; 3],

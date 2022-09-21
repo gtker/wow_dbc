@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::tbc_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TalentTab {
     pub rows: Vec<TalentTabRow>,
 }
@@ -187,7 +187,7 @@ impl TalentTabKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TalentTabRow {
     pub id: TalentTabKey,
     pub name_lang: LocalizedString,

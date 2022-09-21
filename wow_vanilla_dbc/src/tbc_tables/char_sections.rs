@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharSections {
     pub rows: Vec<CharSectionsRow>,
 }
@@ -208,7 +208,7 @@ impl CharSectionsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharSectionsRow {
     pub id: CharSectionsKey,
     pub race_id: ChrRacesKey,

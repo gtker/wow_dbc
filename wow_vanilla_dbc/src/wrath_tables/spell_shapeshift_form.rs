@@ -7,7 +7,7 @@ use crate::LocalizedString;
 use crate::wrath_tables::creature_type::*;
 use crate::wrath_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellShapeshiftForm {
     pub rows: Vec<SpellShapeshiftFormRow>,
 }
@@ -197,7 +197,7 @@ impl SpellShapeshiftFormKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellShapeshiftFormRow {
     pub id: SpellShapeshiftFormKey,
     pub bonus_action_bar: i32,

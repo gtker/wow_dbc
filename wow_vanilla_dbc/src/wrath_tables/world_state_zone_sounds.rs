@@ -9,7 +9,7 @@ use crate::wrath_tables::wmo_area_table::*;
 use crate::wrath_tables::zone_intro_music_table::*;
 use crate::wrath_tables::zone_music::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldStateZoneSounds {
     pub rows: Vec<WorldStateZoneSoundsRow>,
 }
@@ -137,7 +137,7 @@ impl DbcTable for WorldStateZoneSounds {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldStateZoneSoundsRow {
     pub world_state_id: i32,
     pub world_state_value: i32,

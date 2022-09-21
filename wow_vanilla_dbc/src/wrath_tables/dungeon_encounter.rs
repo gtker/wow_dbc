@@ -7,7 +7,7 @@ use crate::LocalizedString;
 use crate::wrath_tables::map::*;
 use crate::wrath_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DungeonEncounter {
     pub rows: Vec<DungeonEncounterRow>,
 }
@@ -177,7 +177,7 @@ impl DungeonEncounterKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DungeonEncounterRow {
     pub id: DungeonEncounterKey,
     pub map_id: MapKey,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::spell_item_enchantment::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GemProperties {
     pub rows: Vec<GemPropertiesRow>,
 }
@@ -136,7 +136,7 @@ impl GemPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GemPropertiesRow {
     pub id: GemPropertiesKey,
     pub enchant_id: SpellItemEnchantmentKey,

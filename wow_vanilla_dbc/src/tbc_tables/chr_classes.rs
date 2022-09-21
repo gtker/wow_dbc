@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChrClasses {
     pub rows: Vec<ChrClassesRow>,
 }
@@ -222,7 +222,7 @@ impl ChrClassesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChrClassesRow {
     pub id: ChrClassesKey,
     pub damage_bonus_stat: i32,

@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::sound_entries::*;
 use crate::vanilla_tables::spell_visual_kit::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellVisual {
     pub rows: Vec<SpellVisualRow>,
 }
@@ -214,7 +214,7 @@ impl SpellVisualKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellVisualRow {
     pub id: SpellVisualKey,
     pub precast_kit: SpellVisualKitKey,

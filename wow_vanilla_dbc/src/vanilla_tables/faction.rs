@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Faction {
     pub rows: Vec<FactionRow>,
 }
@@ -249,7 +249,7 @@ impl ReputationFlags {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FactionRow {
     pub id: FactionKey,
     pub reputation_index: u32,

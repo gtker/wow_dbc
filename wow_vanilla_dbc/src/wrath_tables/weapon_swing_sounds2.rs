@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WeaponSwingSounds2 {
     pub rows: Vec<WeaponSwingSounds2Row>,
 }
@@ -129,7 +129,7 @@ impl WeaponSwingSounds2Key {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WeaponSwingSounds2Row {
     pub id: WeaponSwingSounds2Key,
     pub swing_type: i32,

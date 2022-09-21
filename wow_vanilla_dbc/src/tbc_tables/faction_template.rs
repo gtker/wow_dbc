@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::tbc_tables::faction::*;
 use crate::tbc_tables::faction_group::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FactionTemplate {
     pub rows: Vec<FactionTemplateRow>,
 }
@@ -164,7 +164,7 @@ impl FactionTemplateKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FactionTemplateRow {
     pub id: FactionTemplateKey,
     pub faction: FactionKey,

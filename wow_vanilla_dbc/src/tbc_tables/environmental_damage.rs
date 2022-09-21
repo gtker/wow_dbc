@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::spell_visual_kit::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnvironmentalDamage {
     pub rows: Vec<EnvironmentalDamageRow>,
 }
@@ -122,7 +122,7 @@ impl EnvironmentalDamageKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnvironmentalDamageRow {
     pub id: EnvironmentalDamageKey,
     pub enum_id: i32,

@@ -7,7 +7,7 @@ use crate::vanilla_tables::ground_effect_doodad::*;
 use crate::vanilla_tables::sound_entries::*;
 use crate::vanilla_tables::terrain_type::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FootstepTerrainLookup {
     pub rows: Vec<FootstepTerrainLookupRow>,
 }
@@ -138,7 +138,7 @@ impl FootstepTerrainLookupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FootstepTerrainLookupRow {
     pub id: FootstepTerrainLookupKey,
     pub creature_footstep: GroundEffectDoodadKey,

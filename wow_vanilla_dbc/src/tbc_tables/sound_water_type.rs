@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SoundWaterType {
     pub rows: Vec<SoundWaterTypeRow>,
 }
@@ -129,7 +129,7 @@ impl SoundWaterTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SoundWaterTypeRow {
     pub id: SoundWaterTypeKey,
     pub sound_type: i32,

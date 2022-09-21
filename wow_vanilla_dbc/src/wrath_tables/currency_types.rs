@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::currency_category::*;
 use crate::wrath_tables::item::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CurrencyTypes {
     pub rows: Vec<CurrencyTypesRow>,
 }
@@ -130,7 +130,7 @@ impl CurrencyTypesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CurrencyTypesRow {
     pub id: CurrencyTypesKey,
     pub item_id: ItemKey,

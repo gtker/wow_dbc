@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::terrain_type::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GroundEffectTexture {
     pub rows: Vec<GroundEffectTextureRow>,
 }
@@ -132,7 +132,7 @@ impl GroundEffectTextureKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GroundEffectTextureRow {
     pub id: GroundEffectTextureKey,
     pub doodad: [u32; 4],

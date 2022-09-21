@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::spell::*;
 use crate::vanilla_tables::talent_tab::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Talent {
     pub rows: Vec<TalentRow>,
 }
@@ -174,7 +174,7 @@ impl TalentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TalentRow {
     pub id: TalentKey,
     pub tab: TalentTabKey,

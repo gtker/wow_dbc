@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::liquid_type::*;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SoundWaterType {
     pub rows: Vec<SoundWaterTypeRow>,
 }
@@ -169,7 +169,7 @@ impl Default for FluidSpeed {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SoundWaterTypeRow {
     pub id: SoundWaterTypeKey,
     pub liquid_type: LiquidTypeKey,

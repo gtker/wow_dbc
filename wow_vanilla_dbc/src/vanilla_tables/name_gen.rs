@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::Gender;
 use crate::vanilla_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NameGen {
     pub rows: Vec<NameGenRow>,
 }
@@ -164,7 +164,7 @@ impl NameGenKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NameGenRow {
     pub id: NameGenKey,
     pub name: String,

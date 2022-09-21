@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CreatureType {
     pub rows: Vec<CreatureTypeRow>,
 }
@@ -147,7 +147,7 @@ impl CreatureTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CreatureTypeRow {
     pub id: CreatureTypeKey,
     pub name: LocalizedString,

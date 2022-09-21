@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineCategory {
     pub rows: Vec<SkillLineCategoryRow>,
 }
@@ -147,7 +147,7 @@ impl SkillLineCategoryKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineCategoryRow {
     pub id: SkillLineCategoryKey,
     pub name_lang: LocalizedString,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LightIntBand {
     pub rows: Vec<LightIntBandRow>,
 }
@@ -134,7 +134,7 @@ impl LightIntBandKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LightIntBandRow {
     pub id: LightIntBandKey,
     pub num: i32,

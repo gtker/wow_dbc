@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StableSlotPrices {
     pub rows: Vec<StableSlotPricesRow>,
 }
@@ -114,7 +114,7 @@ impl StableSlotPricesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StableSlotPricesRow {
     pub id: StableSlotPricesKey,
     pub cost: i32,

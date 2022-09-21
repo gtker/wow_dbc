@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellIcon {
     pub rows: Vec<SpellIconRow>,
 }
@@ -148,7 +148,7 @@ impl SpellIconKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SpellIconRow {
     pub id: SpellIconKey,
     pub texture_filename: String,

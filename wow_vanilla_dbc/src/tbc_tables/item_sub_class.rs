@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemSubClass {
     pub rows: Vec<ItemSubClassRow>,
 }
@@ -187,7 +187,7 @@ impl ItemSubClass {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemSubClassRow {
     pub class_id: i32,
     pub sub_class_id: i32,

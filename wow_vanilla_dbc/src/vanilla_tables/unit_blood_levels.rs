@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnitBloodLevels {
     pub rows: Vec<UnitBloodLevelsRow>,
 }
@@ -117,7 +117,7 @@ impl UnitBloodLevelsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnitBloodLevelsRow {
     pub id: UnitBloodLevelsKey,
     pub violence_level: [i32; 3],

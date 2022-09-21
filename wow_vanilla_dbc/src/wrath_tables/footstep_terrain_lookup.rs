@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FootstepTerrainLookup {
     pub rows: Vec<FootstepTerrainLookupRow>,
 }
@@ -136,7 +136,7 @@ impl FootstepTerrainLookupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FootstepTerrainLookupRow {
     pub id: FootstepTerrainLookupKey,
     pub creature_footstep_id: i32,

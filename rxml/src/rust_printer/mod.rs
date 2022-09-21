@@ -64,11 +64,37 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     s.newline();
 }
 
+fn print_derives(s: &mut Writer ,fields: &[Field])  {
+    s.w("#[derive(Debug, Clone, PartialEq");
+    if can_derive_eq(fields) {
+        s.w_no_indent(", Eq");
+    }
+    s.wln_no_indent(")]");
+}
+
+fn can_derive_eq(fields: &[Field]) -> bool {
+    for field in fields {
+        match field.ty() {
+            Type::Float => return false,
+            Type::Array(array) => {
+                if matches!(array.ty(), Type::Float) {
+                    return false;
+                }
+            }
+            _ => {}
+        }
+    }
+
+    true
+}
+
 fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     if not_pascal_case_name(d.name()) {
         s.wln("#[allow(non_camel_case_types)]");
     }
-    s.wln("#[derive(Debug, Clone, PartialEq)]");
+
+    print_derives(s, d.fields());
+
     s.new_struct(format!("{}Row", d.name()), |s| {
         for field in d.fields() {
             match field.ty() {

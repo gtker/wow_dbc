@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::tbc_tables::chr_classes::*;
 use crate::tbc_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharBaseInfo {
     pub rows: Vec<CharBaseInfoRow>,
 }
@@ -91,7 +91,7 @@ impl DbcTable for CharBaseInfo {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CharBaseInfoRow {
     pub race_id: ChrRacesKey,
     pub class_id: ChrClassesKey,

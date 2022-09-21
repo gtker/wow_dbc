@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::languages::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LanguageWords {
     pub rows: Vec<LanguageWordsRow>,
 }
@@ -156,7 +156,7 @@ impl LanguageWordsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LanguageWordsRow {
     pub id: LanguageWordsKey,
     pub language: LanguagesKey,

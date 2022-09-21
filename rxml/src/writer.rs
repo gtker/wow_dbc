@@ -47,6 +47,10 @@ impl Writer {
         self.newline();
     }
 
+    pub fn w_no_indent(&mut self, s: impl AsRef<str>) {
+        self.inner.write_str(s.as_ref()).unwrap();
+    }
+
     pub fn wln_no_indent(&mut self, s: impl AsRef<str>) {
         self.inner.write_str(s.as_ref()).unwrap();
         self.newline();

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Lock {
     pub rows: Vec<LockRow>,
 }
@@ -147,7 +147,7 @@ impl LockKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LockRow {
     pub id: LockKey,
     pub ty: [i32; 8],

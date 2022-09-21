@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FactionGroup {
     pub rows: Vec<FactionGroupRow>,
 }
@@ -165,7 +165,7 @@ impl FactionGroupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FactionGroupRow {
     pub id: FactionGroupKey,
     pub mask_id: u32,

@@ -7,7 +7,7 @@ use crate::LocalizedString;
 use crate::wrath_tables::skill_line_category::*;
 use crate::wrath_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLine {
     pub rows: Vec<SkillLineRow>,
 }
@@ -188,7 +188,7 @@ impl SkillLineKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineRow {
     pub id: SkillLineKey,
     pub category_id: SkillLineCategoryKey,
