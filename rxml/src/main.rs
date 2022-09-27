@@ -16,46 +16,19 @@ fn workspace_directory() -> PathBuf {
 }
 
 fn xml_location(version: DbcVersion) -> PathBuf {
-    let p = workspace_directory().join("rxml");
-    match version {
-        DbcVersion::Vanilla => p.join(VANILLA_XML_LOCATION),
-        DbcVersion::Tbc => p.join(TBC_XML_LOCATION),
-        DbcVersion::Wrath => p.join(WRATH_XML_LOCATION),
-    }
+    workspace_directory()
+        .join("rxml")
+        .join(version.xml_dir_name())
 }
 
 fn table_location(version: DbcVersion) -> PathBuf {
-    let p = workspace_directory().join("wow_vanilla_dbc").join("src");
-    match version {
-        DbcVersion::Vanilla => p.join(VANILLA_TABLE_LOCATION),
-        DbcVersion::Tbc => p.join(TBC_TABLE_LOCATION),
-        DbcVersion::Wrath => p.join(WRATH_TABLE_LOCATION),
-    }
+    workspace_directory()
+        .join("wow_vanilla_dbc")
+        .join("src")
+        .join(version.module_name())
 }
-
-const VANILLA_XML_LOCATION: &str = "vanilla_xml";
-const VANILLA_TABLE_LOCATION: &str = "vanilla_tables";
-const VANILLA_MODULE_NAME: &str = "vanilla_tables";
-const VANILLA_TEST_DIR_NAME: &str = "vanilla";
-
-const TBC_XML_LOCATION: &str = "tbc_xml";
-const TBC_TABLE_LOCATION: &str = "tbc_tables";
-const TBC_MODULE_NAME: &str = "tbc_tables";
-const TBC_TEST_DIR_NAME: &str = "tbc";
-
-const WRATH_XML_LOCATION: &str = "wrath_xml";
-const WRATH_TABLE_LOCATION: &str = "wrath_tables";
-const WRATH_MODULE_NAME: &str = "wrath_tables";
-const WRATH_TEST_DIR_NAME: &str = "wrath";
 
 const BUILD_TESTS: bool = false;
-
-#[derive(Debug, Clone)]
-pub struct Expansion {
-    module_name: &'static str,
-    test_dir_name: &'static str,
-    version: DbcVersion,
-}
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum DbcVersion {
@@ -64,45 +37,50 @@ pub enum DbcVersion {
     Wrath,
 }
 
-fn main() {
-    let expansions = [
-        Expansion {
-            module_name: VANILLA_MODULE_NAME,
-            test_dir_name: VANILLA_TEST_DIR_NAME,
-            version: DbcVersion::Vanilla,
-        },
-        Expansion {
-            module_name: TBC_MODULE_NAME,
-            test_dir_name: TBC_TEST_DIR_NAME,
-            version: DbcVersion::Tbc,
-        },
-        Expansion {
-            module_name: WRATH_MODULE_NAME,
-            test_dir_name: WRATH_TEST_DIR_NAME,
-            version: DbcVersion::Wrath,
-        },
-    ];
+impl DbcVersion {
+    pub const fn to_str(&self) -> &'static str {
+        match self {
+            DbcVersion::Vanilla => "vanilla",
+            DbcVersion::Tbc => "tbc",
+            DbcVersion::Wrath => "wrath",
+        }
+    }
 
-    for location in expansions {
-        let paths = std::fs::read_dir(xml_location(location.version))
+    pub fn module_name(&self) -> String {
+        format!("{}_tables", self.to_str())
+    }
+
+    pub fn test_dir_name(&self) -> String {
+        format!("{}-dbc", self.to_str())
+    }
+
+    pub fn xml_dir_name(&self) -> String {
+        format!("{}_xml", self.to_str())
+    }
+}
+
+fn main() {
+    let expansions = [DbcVersion::Vanilla, DbcVersion::Tbc, DbcVersion::Wrath];
+
+    for version in expansions {
+        let paths = std::fs::read_dir(xml_location(version))
             .unwrap()
             .filter_map(|a| a.ok());
 
         let mut o = Objects::new();
         for path in paths {
-            let d = parser::parse_dbc_xml_file(&path.path(), location.version);
+            let d = parser::parse_dbc_xml_file(&path.path(), version);
             o.push_description(d);
         }
 
         let mut modules = Vec::with_capacity(o.descriptions().len());
 
         for d in o.descriptions() {
-            let s =
-                rust_printer::create_table(&d, &o, location.module_name, location.test_dir_name);
+            let s = rust_printer::create_table(&d, &o, version);
 
             modules.push(s.module_name());
 
-            let mut file_path = table_location(location.version);
+            let mut file_path = table_location(version);
             file_path.push(s.file_name());
             overwrite_if_not_same_contents(s.inner(), &file_path);
         }
@@ -114,7 +92,7 @@ fn main() {
             module_file.wln(format!("pub mod {};", module));
         }
 
-        let mut mod_rs_path = table_location(location.version);
+        let mut mod_rs_path = table_location(version);
         mod_rs_path.push("mod.rs");
         overwrite_if_not_same_contents(module_file.inner(), &mod_rs_path);
     }

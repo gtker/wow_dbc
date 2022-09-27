@@ -1,5 +1,5 @@
 use crate::types::{Field, Type};
-use crate::{DbcDescription, Objects, Writer, BUILD_TESTS};
+use crate::{DbcDescription, DbcVersion, Objects, Writer, BUILD_TESTS};
 use heck::ToSnakeCase;
 
 mod main_ty;
@@ -8,15 +8,10 @@ fn not_pascal_case_name(s: &str) -> bool {
     s.contains('_')
 }
 
-pub fn create_table(
-    d: &DbcDescription,
-    o: &Objects,
-    include_path: &str,
-    test_dir_name: &str,
-) -> Writer {
+pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Writer {
     let mut s = Writer::new(d.name());
 
-    includes(&mut s, d, o, include_path);
+    includes(&mut s, d, o, &version.module_name());
 
     main_ty::create_main_ty(&mut s, d, o);
 
@@ -28,7 +23,7 @@ pub fn create_table(
 
     create_row(&mut s, d, o);
 
-    create_test(&mut s, d, test_dir_name);
+    create_test(&mut s, d, &version.test_dir_name());
 
     s
 }
@@ -266,8 +261,7 @@ fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     s.open_curly(format!("fn {name}()", name = d.name().to_snake_case()));
 
     s.wln(format!(
-        "let contents = include_bytes!(\"../../../{}-dbc/{}.dbc\");",
-        test_dir_name,
+        "let contents = include_bytes!(\"../../../{test_dir_name}/{}.dbc\");",
         d.name(),
     ));
     s.wln(format!(
