@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct PetPersonality {
@@ -23,19 +23,19 @@ impl DbcTable for PetPersonality {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 76 {
+        if header.record_size != 108 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 76,
+                    expected: 108,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 19 {
+        if header.field_count != 27 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 19,
+                    expected: 27,
                     actual: header.field_count,
                 },
             ));
@@ -54,8 +54,8 @@ impl DbcTable for PetPersonality {
             // id: primary_key (PetPersonality) int32
             let id = PetPersonalityKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // happiness_threshold: int32[3]
             let happiness_threshold = crate::util::read_array_i32::<3>(chunk)?;
@@ -82,8 +82,8 @@ impl DbcTable for PetPersonality {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 19,
-            record_size: 76,
+            field_count: 27,
+            record_size: 108,
             string_block_size: self.string_block_size(),
         };
 
@@ -94,7 +94,7 @@ impl DbcTable for PetPersonality {
             // id: primary_key (PetPersonality) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // happiness_threshold: int32[3]
@@ -173,7 +173,7 @@ impl PetPersonalityKey {
 #[derive(Debug, Clone, PartialEq)]
 pub struct PetPersonalityRow {
     pub id: PetPersonalityKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub happiness_threshold: [i32; 3],
     pub happiness_damage: [f32; 3],
     pub damage_modifier: [f32; 3],

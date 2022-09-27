@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::loading_screens::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for Map {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 168 {
+        if header.record_size != 264 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 168,
+                    expected: 264,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 42 {
+        if header.field_count != 66 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 42,
+                    expected: 66,
                     actual: header.field_count,
                 },
             ));
@@ -71,17 +71,17 @@ impl DbcTable for Map {
             // p_v_p: int32
             let p_v_p = crate::util::read_i32_le(chunk)?;
 
-            // map_name_lang: string_ref_loc
-            let map_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // map_name_lang: string_ref_loc (Extended)
+            let map_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // area_table_id: foreign_key (AreaTable) int32
             let area_table_id = AreaTableKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // map_description0_lang: string_ref_loc
-            let map_description0_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // map_description0_lang: string_ref_loc (Extended)
+            let map_description0_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // map_description1_lang: string_ref_loc
-            let map_description1_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // map_description1_lang: string_ref_loc (Extended)
+            let map_description1_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // loading_screen_id: foreign_key (LoadingScreens) int32
             let loading_screen_id = LoadingScreensKey::new(crate::util::read_i32_le(chunk)?.into());
@@ -135,8 +135,8 @@ impl DbcTable for Map {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 42,
-            record_size: 168,
+            field_count: 66,
+            record_size: 264,
             string_block_size: self.string_block_size(),
         };
 
@@ -165,16 +165,16 @@ impl DbcTable for Map {
             // p_v_p: int32
             b.write_all(&row.p_v_p.to_le_bytes())?;
 
-            // map_name_lang: string_ref_loc
+            // map_name_lang: string_ref_loc (Extended)
             b.write_all(&row.map_name_lang.string_indices_as_array(&mut string_index))?;
 
             // area_table_id: foreign_key (AreaTable) int32
             b.write_all(&(row.area_table_id.id as i32).to_le_bytes())?;
 
-            // map_description0_lang: string_ref_loc
+            // map_description0_lang: string_ref_loc (Extended)
             b.write_all(&row.map_description0_lang.string_indices_as_array(&mut string_index))?;
 
-            // map_description1_lang: string_ref_loc
+            // map_description1_lang: string_ref_loc (Extended)
             b.write_all(&row.map_description1_lang.string_indices_as_array(&mut string_index))?;
 
             // loading_screen_id: foreign_key (LoadingScreens) int32
@@ -272,10 +272,10 @@ pub struct MapRow {
     pub instance_type: i32,
     pub flags: i32,
     pub p_v_p: i32,
-    pub map_name_lang: LocalizedString,
+    pub map_name_lang: ExtendedLocalizedString,
     pub area_table_id: AreaTableKey,
-    pub map_description0_lang: LocalizedString,
-    pub map_description1_lang: LocalizedString,
+    pub map_description0_lang: ExtendedLocalizedString,
+    pub map_description1_lang: ExtendedLocalizedString,
     pub loading_screen_id: LoadingScreensKey,
     pub minimap_icon_scale: f32,
     pub corpse_map_id: MapKey,

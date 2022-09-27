@@ -8,7 +8,12 @@ fn not_pascal_case_name(s: &str) -> bool {
     s.contains('_')
 }
 
-pub fn create_table(d: &DbcDescription, o: &Objects, include_path: &str, test_dir_name: &str) -> Writer {
+pub fn create_table(
+    d: &DbcDescription,
+    o: &Objects,
+    include_path: &str,
+    test_dir_name: &str,
+) -> Writer {
     let mut s = Writer::new(d.name());
 
     includes(&mut s, d, o, include_path);
@@ -42,6 +47,10 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
         s.wln("use crate::LocalizedString;");
     }
 
+    if d.contains_extended_localized_string() {
+        s.wln("use crate::ExtendedLocalizedString;");
+    }
+
     if d.contains_gender_enum() {
         s.wln("use crate::Gender;");
     }
@@ -64,7 +73,7 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     s.newline();
 }
 
-fn print_derives(s: &mut Writer ,fields: &[Field])  {
+fn print_derives(s: &mut Writer, fields: &[Field]) {
     s.w("#[derive(Debug, Clone, PartialEq");
     if can_derive_eq(fields) {
         s.w_no_indent(", Eq");

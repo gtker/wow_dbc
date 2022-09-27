@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::faction::*;
 use crate::wrath_tables::map::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for LFGDungeons {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 132 {
+        if header.record_size != 196 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 132,
+                    expected: 196,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 33 {
+        if header.field_count != 49 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 33,
+                    expected: 49,
                     actual: header.field_count,
                 },
             ));
@@ -56,8 +56,8 @@ impl DbcTable for LFGDungeons {
             // id: primary_key (LFGDungeons) int32
             let id = LFGDungeonsKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // min_level: int32
             let min_level = crate::util::read_i32_le(chunk)?;
@@ -104,8 +104,8 @@ impl DbcTable for LFGDungeons {
             // group_id: int32
             let group_id = crate::util::read_i32_le(chunk)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(LFGDungeonsRow {
@@ -135,8 +135,8 @@ impl DbcTable for LFGDungeons {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 33,
-            record_size: 132,
+            field_count: 49,
+            record_size: 196,
             string_block_size: self.string_block_size(),
         };
 
@@ -147,7 +147,7 @@ impl DbcTable for LFGDungeons {
             // id: primary_key (LFGDungeons) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // min_level: int32
@@ -198,7 +198,7 @@ impl DbcTable for LFGDungeons {
             // group_id: int32
             b.write_all(&row.group_id.to_le_bytes())?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -263,7 +263,7 @@ impl LFGDungeonsKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub min_level: i32,
     pub max_level: i32,
     pub target_level: i32,
@@ -278,6 +278,6 @@ pub struct LFGDungeonsRow {
     pub expansion_level: i32,
     pub order_index: i32,
     pub group_id: i32,
-    pub description_lang: LocalizedString,
+    pub description_lang: ExtendedLocalizedString,
 }
 

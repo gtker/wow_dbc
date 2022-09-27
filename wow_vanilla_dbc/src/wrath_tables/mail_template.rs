@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MailTemplate {
@@ -23,19 +23,19 @@ impl DbcTable for MailTemplate {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 76 {
+        if header.record_size != 140 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 76,
+                    expected: 140,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 19 {
+        if header.field_count != 35 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 19,
+                    expected: 35,
                     actual: header.field_count,
                 },
             ));
@@ -54,11 +54,11 @@ impl DbcTable for MailTemplate {
             // id: primary_key (MailTemplate) int32
             let id = MailTemplateKey::new(crate::util::read_i32_le(chunk)?);
 
-            // subject_lang: string_ref_loc
-            let subject_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // subject_lang: string_ref_loc (Extended)
+            let subject_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // body_lang: string_ref_loc
-            let body_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // body_lang: string_ref_loc (Extended)
+            let body_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(MailTemplateRow {
@@ -74,8 +74,8 @@ impl DbcTable for MailTemplate {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 19,
-            record_size: 76,
+            field_count: 35,
+            record_size: 140,
             string_block_size: self.string_block_size(),
         };
 
@@ -86,10 +86,10 @@ impl DbcTable for MailTemplate {
             // id: primary_key (MailTemplate) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // subject_lang: string_ref_loc
+            // subject_lang: string_ref_loc (Extended)
             b.write_all(&row.subject_lang.string_indices_as_array(&mut string_index))?;
 
-            // body_lang: string_ref_loc
+            // body_lang: string_ref_loc (Extended)
             b.write_all(&row.body_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -152,7 +152,7 @@ impl MailTemplateKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MailTemplateRow {
     pub id: MailTemplateKey,
-    pub subject_lang: LocalizedString,
-    pub body_lang: LocalizedString,
+    pub subject_lang: ExtendedLocalizedString,
+    pub body_lang: ExtendedLocalizedString,
 }
 

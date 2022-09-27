@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::lock::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,19 +24,19 @@ impl DbcTable for DanceMoves {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 64 {
+        if header.record_size != 96 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 64,
+                    expected: 96,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 16 {
+        if header.field_count != 24 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 16,
+                    expected: 24,
                     actual: header.field_count,
                 },
             ));
@@ -73,8 +73,8 @@ impl DbcTable for DanceMoves {
                 String::from_utf8(s)?
             };
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // lock_id: foreign_key (Lock) int32
             let lock_id = LockKey::new(crate::util::read_i32_le(chunk)?.into());
@@ -98,8 +98,8 @@ impl DbcTable for DanceMoves {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 16,
-            record_size: 64,
+            field_count: 24,
+            record_size: 96,
             string_block_size: self.string_block_size(),
         };
 
@@ -131,7 +131,7 @@ impl DbcTable for DanceMoves {
                 b.write_all(&(0_u32).to_le_bytes())?;
             }
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // lock_id: foreign_key (Lock) int32
@@ -202,7 +202,7 @@ pub struct DanceMovesRow {
     pub fallback: i32,
     pub racemask: i32,
     pub internal_name: String,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub lock_id: LockKey,
 }
 

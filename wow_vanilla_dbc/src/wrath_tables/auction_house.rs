@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::faction::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,19 +24,19 @@ impl DbcTable for AuctionHouse {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 52 {
+        if header.record_size != 84 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 52,
+                    expected: 84,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 13 {
+        if header.field_count != 21 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 13,
+                    expected: 21,
                     actual: header.field_count,
                 },
             ));
@@ -64,8 +64,8 @@ impl DbcTable for AuctionHouse {
             // consignment_rate: int32
             let consignment_rate = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(AuctionHouseRow {
@@ -83,8 +83,8 @@ impl DbcTable for AuctionHouse {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 13,
-            record_size: 52,
+            field_count: 21,
+            record_size: 84,
             string_block_size: self.string_block_size(),
         };
 
@@ -104,7 +104,7 @@ impl DbcTable for AuctionHouse {
             // consignment_rate: int32
             b.write_all(&row.consignment_rate.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -168,6 +168,6 @@ pub struct AuctionHouseRow {
     pub faction_id: FactionKey,
     pub deposit_rate: i32,
     pub consignment_rate: i32,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
 }
 

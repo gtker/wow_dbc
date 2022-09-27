@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::gm_survey_questions::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,19 +24,19 @@ impl DbcTable for GMSurveyAnswers {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 48 {
+        if header.record_size != 80 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 48,
+                    expected: 80,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 12 {
+        if header.field_count != 20 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 12,
+                    expected: 20,
                     actual: header.field_count,
                 },
             ));
@@ -61,8 +61,8 @@ impl DbcTable for GMSurveyAnswers {
             // g_m_survey_question_id: foreign_key (GMSurveyQuestions) int32
             let g_m_survey_question_id = GMSurveyQuestionsKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // answer_lang: string_ref_loc
-            let answer_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // answer_lang: string_ref_loc (Extended)
+            let answer_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(GMSurveyAnswersRow {
@@ -79,8 +79,8 @@ impl DbcTable for GMSurveyAnswers {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 12,
-            record_size: 48,
+            field_count: 20,
+            record_size: 80,
             string_block_size: self.string_block_size(),
         };
 
@@ -97,7 +97,7 @@ impl DbcTable for GMSurveyAnswers {
             // g_m_survey_question_id: foreign_key (GMSurveyQuestions) int32
             b.write_all(&(row.g_m_survey_question_id.id as i32).to_le_bytes())?;
 
-            // answer_lang: string_ref_loc
+            // answer_lang: string_ref_loc (Extended)
             b.write_all(&row.answer_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -160,6 +160,6 @@ pub struct GMSurveyAnswersRow {
     pub id: GMSurveyAnswersKey,
     pub sort_index: i32,
     pub g_m_survey_question_id: GMSurveyQuestionsKey,
-    pub answer_lang: LocalizedString,
+    pub answer_lang: ExtendedLocalizedString,
 }
 

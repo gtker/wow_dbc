@@ -2,7 +2,7 @@ use crate::header::{HEADER_SIZE, DbcHeader};
 use crate::header;
 use crate::DbcTable;
 use std::io::Write;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemClass {
@@ -22,19 +22,19 @@ impl DbcTable for ItemClass {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 48 {
+        if header.record_size != 80 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 48,
+                    expected: 80,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 12 {
+        if header.field_count != 20 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 12,
+                    expected: 20,
                     actual: header.field_count,
                 },
             ));
@@ -59,8 +59,8 @@ impl DbcTable for ItemClass {
             // flags: int32
             let flags = crate::util::read_i32_le(chunk)?;
 
-            // class_name_lang: string_ref_loc
-            let class_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // class_name_lang: string_ref_loc (Extended)
+            let class_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(ItemClassRow {
@@ -77,8 +77,8 @@ impl DbcTable for ItemClass {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 12,
-            record_size: 48,
+            field_count: 20,
+            record_size: 80,
             string_block_size: self.string_block_size(),
         };
 
@@ -95,7 +95,7 @@ impl DbcTable for ItemClass {
             // flags: int32
             b.write_all(&row.flags.to_le_bytes())?;
 
-            // class_name_lang: string_ref_loc
+            // class_name_lang: string_ref_loc (Extended)
             b.write_all(&row.class_name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -134,6 +134,6 @@ pub struct ItemClassRow {
     pub class_id: i32,
     pub subclass_map_id: i32,
     pub flags: i32,
-    pub class_name_lang: LocalizedString,
+    pub class_name_lang: ExtendedLocalizedString,
 }
 

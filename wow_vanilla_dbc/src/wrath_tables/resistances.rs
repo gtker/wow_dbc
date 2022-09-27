@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Resistances {
@@ -23,19 +23,19 @@ impl DbcTable for Resistances {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 48 {
+        if header.record_size != 80 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 48,
+                    expected: 80,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 12 {
+        if header.field_count != 20 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 12,
+                    expected: 20,
                     actual: header.field_count,
                 },
             ));
@@ -60,8 +60,8 @@ impl DbcTable for Resistances {
             // fizzle_sound_id: foreign_key (SoundKit) int32
             let fizzle_sound_id = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(ResistancesRow {
@@ -78,8 +78,8 @@ impl DbcTable for Resistances {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 12,
-            record_size: 48,
+            field_count: 20,
+            record_size: 80,
             string_block_size: self.string_block_size(),
         };
 
@@ -96,7 +96,7 @@ impl DbcTable for Resistances {
             // fizzle_sound_id: foreign_key (SoundKit) int32
             b.write_all(&row.fizzle_sound_id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -159,6 +159,6 @@ pub struct ResistancesRow {
     pub id: ResistancesKey,
     pub flags: i32,
     pub fizzle_sound_id: i32,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
 }
 

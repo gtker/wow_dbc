@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeonGroup {
@@ -23,19 +23,19 @@ impl DbcTable for LFGDungeonGroup {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 52 {
+        if header.record_size != 84 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 52,
+                    expected: 84,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 13 {
+        if header.field_count != 21 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 13,
+                    expected: 21,
                     actual: header.field_count,
                 },
             ));
@@ -54,8 +54,8 @@ impl DbcTable for LFGDungeonGroup {
             // id: primary_key (LFGDungeonGroup) int32
             let id = LFGDungeonGroupKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // order_index: int32
             let order_index = crate::util::read_i32_le(chunk)?;
@@ -82,8 +82,8 @@ impl DbcTable for LFGDungeonGroup {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 13,
-            record_size: 52,
+            field_count: 21,
+            record_size: 84,
             string_block_size: self.string_block_size(),
         };
 
@@ -94,7 +94,7 @@ impl DbcTable for LFGDungeonGroup {
             // id: primary_key (LFGDungeonGroup) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // order_index: int32
@@ -164,7 +164,7 @@ impl LFGDungeonGroupKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LFGDungeonGroupRow {
     pub id: LFGDungeonGroupKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub order_index: i32,
     pub parent_group_id: i32,
     pub type_id: i32,

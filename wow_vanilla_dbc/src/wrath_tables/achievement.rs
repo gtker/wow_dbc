@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::achievement_category::*;
 use crate::wrath_tables::faction::*;
 use crate::wrath_tables::map::*;
@@ -27,19 +27,19 @@ impl DbcTable for Achievement {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 152 {
+        if header.record_size != 248 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 152,
+                    expected: 248,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 38 {
+        if header.field_count != 62 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 38,
+                    expected: 62,
                     actual: header.field_count,
                 },
             ));
@@ -67,11 +67,11 @@ impl DbcTable for Achievement {
             // supercedes: foreign_key (Achievement) int32
             let supercedes = AchievementKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // title_lang: string_ref_loc
-            let title_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // title_lang: string_ref_loc (Extended)
+            let title_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // category: foreign_key (Achievement_Category) int32
             let category = Achievement_CategoryKey::new(crate::util::read_i32_le(chunk)?.into());
@@ -88,8 +88,8 @@ impl DbcTable for Achievement {
             // icon_id: foreign_key (SpellIcon) int32
             let icon_id = SpellIconKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // reward_lang: string_ref_loc
-            let reward_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // reward_lang: string_ref_loc (Extended)
+            let reward_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // minimum_criteria: int32
             let minimum_criteria = crate::util::read_i32_le(chunk)?;
@@ -122,8 +122,8 @@ impl DbcTable for Achievement {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 38,
-            record_size: 152,
+            field_count: 62,
+            record_size: 248,
             string_block_size: self.string_block_size(),
         };
 
@@ -143,10 +143,10 @@ impl DbcTable for Achievement {
             // supercedes: foreign_key (Achievement) int32
             b.write_all(&(row.supercedes.id as i32).to_le_bytes())?;
 
-            // title_lang: string_ref_loc
+            // title_lang: string_ref_loc (Extended)
             b.write_all(&row.title_lang.string_indices_as_array(&mut string_index))?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
             // category: foreign_key (Achievement_Category) int32
@@ -164,7 +164,7 @@ impl DbcTable for Achievement {
             // icon_id: foreign_key (SpellIcon) int32
             b.write_all(&(row.icon_id.id as i32).to_le_bytes())?;
 
-            // reward_lang: string_ref_loc
+            // reward_lang: string_ref_loc (Extended)
             b.write_all(&row.reward_lang.string_indices_as_array(&mut string_index))?;
 
             // minimum_criteria: int32
@@ -238,14 +238,14 @@ pub struct AchievementRow {
     pub faction: FactionKey,
     pub instance_id: MapKey,
     pub supercedes: AchievementKey,
-    pub title_lang: LocalizedString,
-    pub description_lang: LocalizedString,
+    pub title_lang: ExtendedLocalizedString,
+    pub description_lang: ExtendedLocalizedString,
     pub category: Achievement_CategoryKey,
     pub points: i32,
     pub ui_order: i32,
     pub flags: i32,
     pub icon_id: SpellIconKey,
-    pub reward_lang: LocalizedString,
+    pub reward_lang: ExtendedLocalizedString,
     pub minimum_criteria: i32,
     pub shares_criteria: AchievementKey,
 }

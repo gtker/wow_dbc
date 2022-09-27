@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -24,19 +24,19 @@ impl DbcTable for WorldSafeLocs {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 56 {
+        if header.record_size != 88 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 56,
+                    expected: 88,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 14 {
+        if header.field_count != 22 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 14,
+                    expected: 22,
                     actual: header.field_count,
                 },
             ));
@@ -61,8 +61,8 @@ impl DbcTable for WorldSafeLocs {
             // loc: float[3]
             let loc = crate::util::read_array_f32::<3>(chunk)?;
 
-            // area_name_lang: string_ref_loc
-            let area_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // area_name_lang: string_ref_loc (Extended)
+            let area_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(WorldSafeLocsRow {
@@ -79,8 +79,8 @@ impl DbcTable for WorldSafeLocs {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 14,
-            record_size: 56,
+            field_count: 22,
+            record_size: 88,
             string_block_size: self.string_block_size(),
         };
 
@@ -100,7 +100,7 @@ impl DbcTable for WorldSafeLocs {
             }
 
 
-            // area_name_lang: string_ref_loc
+            // area_name_lang: string_ref_loc (Extended)
             b.write_all(&row.area_name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -163,6 +163,6 @@ pub struct WorldSafeLocsRow {
     pub id: WorldSafeLocsKey,
     pub continent: MapKey,
     pub loc: [f32; 3],
-    pub area_name_lang: LocalizedString,
+    pub area_name_lang: ExtendedLocalizedString,
 }
 

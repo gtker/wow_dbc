@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::skill_line_category::*;
 use crate::wrath_tables::spell_icon::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for SkillLine {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 128 {
+        if header.record_size != 224 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 128,
+                    expected: 224,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 32 {
+        if header.field_count != 56 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 32,
+                    expected: 56,
                     actual: header.field_count,
                 },
             ));
@@ -62,17 +62,17 @@ impl DbcTable for SkillLine {
             // skill_costs_id: int32
             let skill_costs_id = crate::util::read_i32_le(chunk)?;
 
-            // display_name_lang: string_ref_loc
-            let display_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // display_name_lang: string_ref_loc (Extended)
+            let display_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // spell_icon_id: foreign_key (SpellIcon) int32
             let spell_icon_id = SpellIconKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // alternate_verb_lang: string_ref_loc
-            let alternate_verb_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // alternate_verb_lang: string_ref_loc (Extended)
+            let alternate_verb_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // can_link: int32
             let can_link = crate::util::read_i32_le(chunk)?;
@@ -96,8 +96,8 @@ impl DbcTable for SkillLine {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 32,
-            record_size: 128,
+            field_count: 56,
+            record_size: 224,
             string_block_size: self.string_block_size(),
         };
 
@@ -114,16 +114,16 @@ impl DbcTable for SkillLine {
             // skill_costs_id: int32
             b.write_all(&row.skill_costs_id.to_le_bytes())?;
 
-            // display_name_lang: string_ref_loc
+            // display_name_lang: string_ref_loc (Extended)
             b.write_all(&row.display_name_lang.string_indices_as_array(&mut string_index))?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
             // spell_icon_id: foreign_key (SpellIcon) int32
             b.write_all(&(row.spell_icon_id.id as i32).to_le_bytes())?;
 
-            // alternate_verb_lang: string_ref_loc
+            // alternate_verb_lang: string_ref_loc (Extended)
             b.write_all(&row.alternate_verb_lang.string_indices_as_array(&mut string_index))?;
 
             // can_link: int32
@@ -193,10 +193,10 @@ pub struct SkillLineRow {
     pub id: SkillLineKey,
     pub category_id: SkillLineCategoryKey,
     pub skill_costs_id: i32,
-    pub display_name_lang: LocalizedString,
-    pub description_lang: LocalizedString,
+    pub display_name_lang: ExtendedLocalizedString,
+    pub description_lang: ExtendedLocalizedString,
     pub spell_icon_id: SpellIconKey,
-    pub alternate_verb_lang: LocalizedString,
+    pub alternate_verb_lang: ExtendedLocalizedString,
     pub can_link: i32,
 }
 

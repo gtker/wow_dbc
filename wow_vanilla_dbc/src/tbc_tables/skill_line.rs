@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::tbc_tables::skill_line_category::*;
 use crate::tbc_tables::spell_icon::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for SkillLine {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 88 {
+        if header.record_size != 152 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 88,
+                    expected: 152,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 22 {
+        if header.field_count != 38 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 22,
+                    expected: 38,
                     actual: header.field_count,
                 },
             ));
@@ -62,11 +62,11 @@ impl DbcTable for SkillLine {
             // skill_costs_id: int32
             let skill_costs_id = crate::util::read_i32_le(chunk)?;
 
-            // display_name_lang: string_ref_loc
-            let display_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // display_name_lang: string_ref_loc (Extended)
+            let display_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // spell_icon_id: foreign_key (SpellIcon) int32
             let spell_icon_id = SpellIconKey::new(crate::util::read_i32_le(chunk)?.into());
@@ -88,8 +88,8 @@ impl DbcTable for SkillLine {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 22,
-            record_size: 88,
+            field_count: 38,
+            record_size: 152,
             string_block_size: self.string_block_size(),
         };
 
@@ -106,10 +106,10 @@ impl DbcTable for SkillLine {
             // skill_costs_id: int32
             b.write_all(&row.skill_costs_id.to_le_bytes())?;
 
-            // display_name_lang: string_ref_loc
+            // display_name_lang: string_ref_loc (Extended)
             b.write_all(&row.display_name_lang.string_indices_as_array(&mut string_index))?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
             // spell_icon_id: foreign_key (SpellIcon) int32
@@ -177,8 +177,8 @@ pub struct SkillLineRow {
     pub id: SkillLineKey,
     pub category_id: SkillLineCategoryKey,
     pub skill_costs_id: i32,
-    pub display_name_lang: LocalizedString,
-    pub description_lang: LocalizedString,
+    pub display_name_lang: ExtendedLocalizedString,
+    pub description_lang: ExtendedLocalizedString,
     pub spell_icon_id: SpellIconKey,
 }
 

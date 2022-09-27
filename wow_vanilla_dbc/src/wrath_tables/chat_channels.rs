@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChatChannels {
@@ -23,19 +23,19 @@ impl DbcTable for ChatChannels {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 84 {
+        if header.record_size != 148 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 84,
+                    expected: 148,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 21 {
+        if header.field_count != 37 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 21,
+                    expected: 37,
                     actual: header.field_count,
                 },
             ));
@@ -60,11 +60,11 @@ impl DbcTable for ChatChannels {
             // faction_group: int32
             let faction_group = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // shortcut_lang: string_ref_loc
-            let shortcut_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // shortcut_lang: string_ref_loc (Extended)
+            let shortcut_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(ChatChannelsRow {
@@ -82,8 +82,8 @@ impl DbcTable for ChatChannels {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 21,
-            record_size: 84,
+            field_count: 37,
+            record_size: 148,
             string_block_size: self.string_block_size(),
         };
 
@@ -100,10 +100,10 @@ impl DbcTable for ChatChannels {
             // faction_group: int32
             b.write_all(&row.faction_group.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
-            // shortcut_lang: string_ref_loc
+            // shortcut_lang: string_ref_loc (Extended)
             b.write_all(&row.shortcut_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -168,7 +168,7 @@ pub struct ChatChannelsRow {
     pub id: ChatChannelsKey,
     pub flags: i32,
     pub faction_group: i32,
-    pub name_lang: LocalizedString,
-    pub shortcut_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
+    pub shortcut_lang: ExtendedLocalizedString,
 }
 

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,19 +24,19 @@ impl DbcTable for MapDifficulty {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 60 {
+        if header.record_size != 92 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 60,
+                    expected: 92,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 15 {
+        if header.field_count != 23 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 15,
+                    expected: 23,
                     actual: header.field_count,
                 },
             ));
@@ -61,8 +61,8 @@ impl DbcTable for MapDifficulty {
             // difficulty: int32
             let difficulty = crate::util::read_i32_le(chunk)?;
 
-            // message_lang: string_ref_loc
-            let message_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // message_lang: string_ref_loc (Extended)
+            let message_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // raid_duration: int32
             let raid_duration = crate::util::read_i32_le(chunk)?;
@@ -94,8 +94,8 @@ impl DbcTable for MapDifficulty {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 15,
-            record_size: 60,
+            field_count: 23,
+            record_size: 92,
             string_block_size: self.string_block_size(),
         };
 
@@ -112,7 +112,7 @@ impl DbcTable for MapDifficulty {
             // difficulty: int32
             b.write_all(&row.difficulty.to_le_bytes())?;
 
-            // message_lang: string_ref_loc
+            // message_lang: string_ref_loc (Extended)
             b.write_all(&row.message_lang.string_indices_as_array(&mut string_index))?;
 
             // raid_duration: int32
@@ -192,7 +192,7 @@ pub struct MapDifficultyRow {
     pub id: MapDifficultyKey,
     pub map_id: MapKey,
     pub difficulty: i32,
-    pub message_lang: LocalizedString,
+    pub message_lang: ExtendedLocalizedString,
     pub raid_duration: i32,
     pub max_players: i32,
     pub difficultystring: String,

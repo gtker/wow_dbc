@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::cinematic_sequences::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,19 +24,19 @@ impl DbcTable for ChrClasses {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 144 {
+        if header.record_size != 240 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 144,
+                    expected: 240,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 36 {
+        if header.field_count != 60 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 36,
+                    expected: 60,
                     actual: header.field_count,
                 },
             ));
@@ -67,14 +67,14 @@ impl DbcTable for ChrClasses {
                 String::from_utf8(s)?
             };
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // name_female_lang: string_ref_loc
-            let name_female_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_female_lang: string_ref_loc (Extended)
+            let name_female_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // name_male_lang: string_ref_loc
-            let name_male_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_male_lang: string_ref_loc (Extended)
+            let name_male_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // filename: string_ref
             let filename = {
@@ -117,8 +117,8 @@ impl DbcTable for ChrClasses {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 36,
-            record_size: 144,
+            field_count: 60,
+            record_size: 240,
             string_block_size: self.string_block_size(),
         };
 
@@ -144,13 +144,13 @@ impl DbcTable for ChrClasses {
                 b.write_all(&(0_u32).to_le_bytes())?;
             }
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
-            // name_female_lang: string_ref_loc
+            // name_female_lang: string_ref_loc (Extended)
             b.write_all(&row.name_female_lang.string_indices_as_array(&mut string_index))?;
 
-            // name_male_lang: string_ref_loc
+            // name_male_lang: string_ref_loc (Extended)
             b.write_all(&row.name_male_lang.string_indices_as_array(&mut string_index))?;
 
             // filename: string_ref
@@ -243,9 +243,9 @@ pub struct ChrClassesRow {
     pub damage_bonus_stat: i32,
     pub display_power: i32,
     pub pet_name_token: String,
-    pub name_lang: LocalizedString,
-    pub name_female_lang: LocalizedString,
-    pub name_male_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
+    pub name_female_lang: ExtendedLocalizedString,
+    pub name_male_lang: ExtendedLocalizedString,
     pub filename: String,
     pub spell_class_set: i32,
     pub flags: i32,

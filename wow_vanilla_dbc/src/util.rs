@@ -1,4 +1,4 @@
-use crate::{DbcError, LocalizedString};
+use crate::{DbcError, ExtendedLocalizedString, LocalizedString};
 use std::io::Read;
 
 pub fn read_u8_le(b: &mut &[u8]) -> Result<u8, std::io::Error> {
@@ -86,6 +86,66 @@ pub fn read_localized_string(
 
     Ok(LocalizedString::new(
         en_gb, ko_kr, fr_fr, de_de, en_cn, en_tw, es_es, es_mx, flags,
+    ))
+}
+
+pub fn read_extended_localized_string(
+    chunk: &mut &[u8],
+    string_block: &[u8],
+) -> Result<ExtendedLocalizedString, DbcError> {
+    let en_gb = get_string_as_vec(chunk, string_block)?;
+    let en_gb = String::from_utf8(en_gb)?;
+
+    let ko_kr = get_string_as_vec(chunk, string_block)?;
+    let ko_kr = String::from_utf8(ko_kr)?;
+
+    let fr_fr = get_string_as_vec(chunk, string_block)?;
+    let fr_fr = String::from_utf8(fr_fr)?;
+
+    let de_de = get_string_as_vec(chunk, string_block)?;
+    let de_de = String::from_utf8(de_de)?;
+
+    let en_cn = get_string_as_vec(chunk, string_block)?;
+    let en_cn = String::from_utf8(en_cn)?;
+
+    let en_tw = get_string_as_vec(chunk, string_block)?;
+    let en_tw = String::from_utf8(en_tw)?;
+
+    let es_es = get_string_as_vec(chunk, string_block)?;
+    let es_es = String::from_utf8(es_es)?;
+
+    let es_mx = get_string_as_vec(chunk, string_block)?;
+    let es_mx = String::from_utf8(es_mx)?;
+
+    let ru_ru = get_string_as_vec(chunk, string_block)?;
+    let ru_ru = String::from_utf8(ru_ru)?;
+
+    let ja_jp = get_string_as_vec(chunk, string_block)?;
+    let ja_jp = String::from_utf8(ja_jp)?;
+
+    let pt_pt = get_string_as_vec(chunk, string_block)?;
+    let pt_pt = String::from_utf8(pt_pt)?;
+
+    let it_it = get_string_as_vec(chunk, string_block)?;
+    let it_it = String::from_utf8(it_it)?;
+
+    let unknown_12 = get_string_as_vec(chunk, string_block)?;
+    let unknown_12 = String::from_utf8(unknown_12)?;
+
+    let unknown_13 = get_string_as_vec(chunk, string_block)?;
+    let unknown_13 = String::from_utf8(unknown_13)?;
+
+    let unknown_14 = get_string_as_vec(chunk, string_block)?;
+    let unknown_14 = String::from_utf8(unknown_14)?;
+
+    let unknown_15 = get_string_as_vec(chunk, string_block)?;
+    let unknown_15 = String::from_utf8(unknown_15)?;
+
+    let flags = read_u32_le(chunk)?;
+
+    Ok(ExtendedLocalizedString::new(
+        en_gb, ko_kr, fr_fr, de_de, en_cn, en_tw, es_es, es_mx, ru_ru, ja_jp, pt_pt, it_it,
+        unknown_12, unknown_13, unknown_14, unknown_15, flags,
     ))
 }
 

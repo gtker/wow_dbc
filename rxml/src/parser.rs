@@ -1,10 +1,11 @@
 use crate::types::{Array, DbcDescription, Definer, Enumerator, Field, Type};
+use crate::DbcVersion;
 use heck::ToUpperCamelCase;
 use roxmltree::Node;
 use std::fs::read_to_string;
 use std::path::Path;
 
-pub fn parse_dbc_xml_file(path: &Path) -> DbcDescription {
+pub fn parse_dbc_xml_file(path: &Path, version: DbcVersion) -> DbcDescription {
     let contents = read_to_string(path).unwrap();
     let dbc = roxmltree::Document::parse(&contents).unwrap();
 
@@ -18,9 +19,9 @@ pub fn parse_dbc_xml_file(path: &Path) -> DbcDescription {
         .text()
         .unwrap();
 
-    let enums = parse_definers(&dbc, "enum");
-    let flags = parse_definers(&dbc, "flag");
-    let fields = parse_fields(&dbc, table_name, &enums, &flags);
+    let enums = parse_definers(&dbc, "enum", version);
+    let flags = parse_definers(&dbc, "flag", version);
+    let fields = parse_fields(&dbc, table_name, &enums, &flags, version);
 
     DbcDescription::new(table_name, fields, enums, flags)
 }
@@ -37,7 +38,13 @@ pub const STRING_REF_NAME: &str = "string_ref";
 pub const STRING_REF_LOC_NAME: &str = "string_ref_loc";
 pub const FLOAT_NAME: &str = "float";
 
-fn parse_type(ty: &str, key: &Option<Type>, enums: &[Definer], flags: &[Definer]) -> Type {
+fn parse_type(
+    ty: &str,
+    key: &Option<Type>,
+    enums: &[Definer],
+    flags: &[Definer],
+    version: DbcVersion,
+) -> Type {
     match ty {
         U8_NAME => {
             if let Some(key) = key {
@@ -85,7 +92,11 @@ fn parse_type(ty: &str, key: &Option<Type>, enums: &[Definer], flags: &[Definer]
             if key.is_some() {
                 panic!()
             }
-            Type::StringRefLoc
+            if version == DbcVersion::Vanilla {
+                Type::StringRefLoc
+            } else {
+                Type::ExtendedStringRefLoc
+            }
         }
         STRING_REF_NAME => {
             if key.is_some() {
@@ -117,7 +128,7 @@ fn parse_type(ty: &str, key: &Option<Type>, enums: &[Definer], flags: &[Definer]
                 let size: i32 = size.replace(']', "").parse().unwrap();
 
                 return Type::Array(Box::new(Array::new(
-                    parse_type(ty, &None, enums, flags),
+                    parse_type(ty, &None, enums, flags, version),
                     size,
                 )));
             }
@@ -135,7 +146,7 @@ fn parse_type(ty: &str, key: &Option<Type>, enums: &[Definer], flags: &[Definer]
     }
 }
 
-fn parse_definers(dbc: &Node, definer_ty: &str) -> Vec<Definer> {
+fn parse_definers(dbc: &Node, definer_ty: &str, version: DbcVersion) -> Vec<Definer> {
     let mut enums = Vec::new();
 
     let xml_enums = dbc.children().filter(|a| a.tag_name().name() == definer_ty);
@@ -147,7 +158,7 @@ fn parse_definers(dbc: &Node, definer_ty: &str) -> Vec<Definer> {
             .unwrap()
             .text()
             .unwrap();
-        let ty = parse_type(ty, &None, &enums, &[]);
+        let ty = parse_type(ty, &None, &enums, &[], version);
 
         let name = en
             .descendants()
@@ -195,7 +206,13 @@ fn get_field_name(s: &str) -> String {
     .to_string()
 }
 
-fn parse_fields(dbc: &Node, table_name: &str, enums: &[Definer], flags: &[Definer]) -> Vec<Field> {
+fn parse_fields(
+    dbc: &Node,
+    table_name: &str,
+    enums: &[Definer],
+    flags: &[Definer],
+    version: DbcVersion,
+) -> Vec<Field> {
     let xml_fields = dbc.children().filter(|a| a.tag_name().name() == "field");
 
     let mut fields = Vec::new();
@@ -228,7 +245,7 @@ fn parse_fields(dbc: &Node, table_name: &str, enums: &[Definer], flags: &[Define
             if key_ty == "primary" {
                 Some(Type::PrimaryKey {
                     table: table_name.to_string(),
-                    ty: Box::new(parse_type(ty, &None, enums, flags)),
+                    ty: Box::new(parse_type(ty, &None, enums, flags, version)),
                 })
             } else if key_ty == "foreign" {
                 let table = key
@@ -239,7 +256,7 @@ fn parse_fields(dbc: &Node, table_name: &str, enums: &[Definer], flags: &[Define
                     .unwrap();
                 Some(Type::ForeignKey {
                     table: table.to_string(),
-                    ty: Box::new(parse_type(ty, &None, enums, flags)),
+                    ty: Box::new(parse_type(ty, &None, enums, flags, version)),
                 })
             } else {
                 unreachable!()
@@ -248,7 +265,7 @@ fn parse_fields(dbc: &Node, table_name: &str, enums: &[Definer], flags: &[Define
             None
         };
 
-        let ty = parse_type(ty, &key, enums, flags);
+        let ty = parse_type(ty, &key, enums, flags, version);
 
         fields.push(Field::new(&name, ty))
     }

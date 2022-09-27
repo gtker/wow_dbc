@@ -63,11 +63,22 @@ impl DbcDescription {
         })
     }
 
+    pub fn contains_extended_localized_string(&self) -> bool {
+        self.fields.iter().any(|a| match a.ty() {
+            Type::ExtendedStringRefLoc => true,
+            Type::Array(array) => matches!(array.ty(), Type::ExtendedStringRefLoc),
+            _ => false,
+        })
+    }
+
     pub fn contains_string(&self) -> bool {
         self.fields.iter().any(|a| match a.ty() {
-            Type::StringRef | Type::StringRefLoc => true,
+            Type::ExtendedStringRefLoc | Type::StringRef | Type::StringRefLoc => true,
             Type::Array(array) => {
-                matches!(array.ty(), Type::StringRef | Type::StringRefLoc)
+                matches!(
+                    array.ty(),
+                    Type::ExtendedStringRefLoc | Type::StringRef | Type::StringRefLoc
+                )
             }
             _ => false,
         })
@@ -83,6 +94,7 @@ impl DbcDescription {
         self.fields
             .iter()
             .map(|a| match a.ty() {
+                Type::ExtendedStringRefLoc => 17,
                 Type::StringRefLoc => 9,
                 Type::Array(array) => array.size() as usize,
                 _ => 1,
@@ -187,6 +199,7 @@ pub enum Type {
     Bool32,
     StringRef,
     StringRefLoc,
+    ExtendedStringRefLoc,
     Array(Box<Array>),
     PrimaryKey { table: String, ty: Box<Type> },
     ForeignKey { table: String, ty: Box<Type> },
@@ -206,6 +219,7 @@ impl Type {
             Type::U32 => "u32".to_string(),
             Type::Bool | Type::Bool32 => "bool".to_string(),
             Type::StringRefLoc => "LocalizedString".to_string(),
+            Type::ExtendedStringRefLoc => "ExtendedLocalizedString".to_string(),
             Type::StringRef => "String".to_string(),
             Type::Array(array) => {
                 format!("[{}; {}]", array.ty.rust_str(), array.size)
@@ -229,6 +243,7 @@ impl Type {
             Type::Bool => BOOL_NAME.to_string(),
             Type::Bool32 => BOOL32_NAME.to_string(),
             Type::StringRef => STRING_REF_NAME.to_string(),
+            Type::ExtendedStringRefLoc => format!("{} (Extended)", STRING_REF_LOC_NAME),
             Type::StringRefLoc => STRING_REF_LOC_NAME.to_string(),
             Type::Array(array) => {
                 format!("{ty}[{size}]", ty = array.ty().str(), size = array.size())
@@ -245,6 +260,7 @@ impl Type {
             Type::Bool | Type::I8 | Type::U8 => 1,
             Type::I16 | Type::U16 => 2,
             Type::Float | Type::StringRef | Type::Bool32 | Type::I32 | Type::U32 => 4,
+            Type::ExtendedStringRefLoc => 16 * 4 + 4,
             Type::StringRefLoc => 9 * 4,
             Type::PrimaryKey { ty, .. } | Type::ForeignKey { ty, .. } => ty.row_size_count(),
             Type::Flag(en) | Type::Enum(en) => en.ty.row_size_count(),
@@ -253,7 +269,10 @@ impl Type {
     }
 
     pub fn is_string(&self) -> bool {
-        matches!(self, Type::StringRef | Type::StringRefLoc)
+        matches!(
+            self,
+            Type::StringRef | Type::StringRefLoc | Type::ExtendedStringRefLoc
+        )
     }
 
     pub fn has_custom_array_impl(&self) -> bool {

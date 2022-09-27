@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::tbc_tables::item_visuals::*;
 use crate::tbc_tables::spell_item_enchantment_condition::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for SpellItemEnchantment {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 104 {
+        if header.record_size != 136 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 104,
+                    expected: 136,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 26 {
+        if header.field_count != 34 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 26,
+                    expected: 34,
                     actual: header.field_count,
                 },
             ));
@@ -68,8 +68,8 @@ impl DbcTable for SpellItemEnchantment {
             // effect_arg: int32[3]
             let effect_arg = crate::util::read_array_i32::<3>(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // item_visual: foreign_key (ItemVisuals) int32
             let item_visual = ItemVisualsKey::new(crate::util::read_i32_le(chunk)?.into());
@@ -104,8 +104,8 @@ impl DbcTable for SpellItemEnchantment {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 26,
-            record_size: 104,
+            field_count: 34,
+            record_size: 136,
             string_block_size: self.string_block_size(),
         };
 
@@ -140,7 +140,7 @@ impl DbcTable for SpellItemEnchantment {
             }
 
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // item_visual: foreign_key (ItemVisuals) int32
@@ -217,7 +217,7 @@ pub struct SpellItemEnchantmentRow {
     pub effect_points_min: [i32; 3],
     pub effect_points_max: [i32; 3],
     pub effect_arg: [i32; 3],
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub item_visual: ItemVisualsKey,
     pub flags: i32,
     pub src_item_id: i32,

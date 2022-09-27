@@ -27,11 +27,19 @@ const WRATH_TEST_DIR_NAME: &str = "wrath";
 const BUILD_TESTS: bool = false;
 
 #[derive(Debug, Clone)]
-struct Expansion {
+pub struct Expansion {
     xml_location: &'static str,
     tables_location: &'static str,
     module_name: &'static str,
     test_dir_name: &'static str,
+    version: DbcVersion,
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub enum DbcVersion {
+    Vanilla,
+    Tbc,
+    Wrath,
 }
 
 const EXPANSIONS: [Expansion; 3] = [
@@ -40,18 +48,21 @@ const EXPANSIONS: [Expansion; 3] = [
         tables_location: VANILLA_TABLE_LOCATION,
         module_name: VANILLA_MODULE_NAME,
         test_dir_name: VANILLA_TEST_DIR_NAME,
+        version: DbcVersion::Vanilla,
     },
     Expansion {
         xml_location: TBC_XML_LOCATION,
         tables_location: TBC_TABLE_LOCATION,
         module_name: TBC_MODULE_NAME,
         test_dir_name: TBC_TEST_DIR_NAME,
+        version: DbcVersion::Tbc,
     },
     Expansion {
         xml_location: WRATH_XML_LOCATION,
         tables_location: WRATH_TABLE_LOCATION,
         module_name: WRATH_MODULE_NAME,
         test_dir_name: WRATH_TEST_DIR_NAME,
+        version: DbcVersion::Wrath,
     },
 ];
 
@@ -63,7 +74,7 @@ fn main() {
 
         let mut o = Objects::new();
         for path in paths {
-            let d = parser::parse_dbc_xml_file(&path.path());
+            let d = parser::parse_dbc_xml_file(&path.path(), location.version);
             o.push_description(d);
         }
 

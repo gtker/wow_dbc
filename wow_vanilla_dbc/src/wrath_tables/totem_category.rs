@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TotemCategory {
@@ -23,19 +23,19 @@ impl DbcTable for TotemCategory {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 48 {
+        if header.record_size != 80 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 48,
+                    expected: 80,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 12 {
+        if header.field_count != 20 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 12,
+                    expected: 20,
                     actual: header.field_count,
                 },
             ));
@@ -54,8 +54,8 @@ impl DbcTable for TotemCategory {
             // id: primary_key (TotemCategory) int32
             let id = TotemCategoryKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // totem_category_type: int32
             let totem_category_type = crate::util::read_i32_le(chunk)?;
@@ -78,8 +78,8 @@ impl DbcTable for TotemCategory {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 12,
-            record_size: 48,
+            field_count: 20,
+            record_size: 80,
             string_block_size: self.string_block_size(),
         };
 
@@ -90,7 +90,7 @@ impl DbcTable for TotemCategory {
             // id: primary_key (TotemCategory) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // totem_category_type: int32
@@ -157,7 +157,7 @@ impl TotemCategoryKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TotemCategoryRow {
     pub id: TotemCategoryKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub totem_category_type: i32,
     pub totem_category_mask: i32,
 }

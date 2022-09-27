@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::tbc_tables::area_table::*;
 use crate::tbc_tables::sound_ambience::*;
 use crate::tbc_tables::sound_provider_preferences::*;
@@ -28,19 +28,19 @@ impl DbcTable for WMOAreaTable {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 80 {
+        if header.record_size != 112 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 80,
+                    expected: 112,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 20 {
+        if header.field_count != 28 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 20,
+                    expected: 28,
                     actual: header.field_count,
                 },
             ));
@@ -89,8 +89,8 @@ impl DbcTable for WMOAreaTable {
             // area_table_id: foreign_key (AreaTable) int32
             let area_table_id = AreaTableKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // area_name_lang: string_ref_loc
-            let area_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // area_name_lang: string_ref_loc (Extended)
+            let area_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(WMOAreaTableRow {
@@ -115,8 +115,8 @@ impl DbcTable for WMOAreaTable {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 20,
-            record_size: 80,
+            field_count: 28,
+            record_size: 112,
             string_block_size: self.string_block_size(),
         };
 
@@ -157,7 +157,7 @@ impl DbcTable for WMOAreaTable {
             // area_table_id: foreign_key (AreaTable) int32
             b.write_all(&(row.area_table_id.id as i32).to_le_bytes())?;
 
-            // area_name_lang: string_ref_loc
+            // area_name_lang: string_ref_loc (Extended)
             b.write_all(&row.area_name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -228,6 +228,6 @@ pub struct WMOAreaTableRow {
     pub intro_sound: ZoneIntroMusicTableKey,
     pub flags: i32,
     pub area_table_id: AreaTableKey,
-    pub area_name_lang: LocalizedString,
+    pub area_name_lang: ExtendedLocalizedString,
 }
 

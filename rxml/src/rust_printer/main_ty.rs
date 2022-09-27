@@ -140,7 +140,7 @@ fn print_write_field_ty(s: &mut Writer, name: &str, ty: &Type, o: &Objects, pref
                 ty = en.ty().rust_str(),
             ));
         }
-        Type::StringRefLoc => {
+        Type::ExtendedStringRefLoc | Type::StringRefLoc => {
             s.wln(format!(
                 "b.write_all(&row.{name}.string_indices_as_array(&mut string_index))?;"
             ));
@@ -201,6 +201,7 @@ fn create_string_size_block(s: &mut Writer, d: &DbcDescription) {
                 "if !row.{name}.is_empty() {{ b.write_all(row.{name}.as_bytes())?; b.write_all(&[0])?; }};",
                 name = field.name()
             )),
+            Type::ExtendedStringRefLoc |
             Type::StringRefLoc => {
                 s.wln(format!("row.{name}.string_block_as_array(b)?;", name = field.name()));
             }
@@ -213,6 +214,7 @@ fn create_string_size_block(s: &mut Writer, d: &DbcDescription) {
                             );
                         });
                     }
+                    Type::ExtendedStringRefLoc |
                     Type::StringRefLoc => {
                         s.wln(format!("row.{name}.string_block_as_array(b)?;", name = field.name()));
                     }
@@ -244,7 +246,7 @@ fn create_string_block_size(s: &mut Writer, d: &DbcDescription) {
                 "if !row.{name}.is_empty() {{ sum += row.{name}.len() + 1; }};",
                 name = field.name()
             )),
-            Type::StringRefLoc => {
+            Type::ExtendedStringRefLoc | Type::StringRefLoc => {
                 s.wln(format!(
                     "sum += row.{name}.string_block_size();",
                     name = field.name()
@@ -256,7 +258,7 @@ fn create_string_block_size(s: &mut Writer, d: &DbcDescription) {
                         s.wln("if !s.is_empty() { sum += s.len() + 1; };");
                     });
                 }
-                Type::StringRefLoc => {
+                Type::ExtendedStringRefLoc | Type::StringRefLoc => {
                     s.wln(format!(
                         "sum += row.{name}.string_block_size();",
                         name = field.name()
@@ -414,6 +416,9 @@ fn print_read_field_ty(s: &mut Writer, ty: &Type, o: &Objects) {
         }
         Type::Bool32 => {
             s.wln_no_indent("crate::util::read_u32_le(chunk)? != 0;");
+        }
+        Type::ExtendedStringRefLoc => {
+            s.wln_no_indent("crate::util::read_extended_localized_string(chunk, &string_block)?;");
         }
         Type::StringRefLoc => {
             s.wln_no_indent("crate::util::read_localized_string(chunk, &string_block)?;");

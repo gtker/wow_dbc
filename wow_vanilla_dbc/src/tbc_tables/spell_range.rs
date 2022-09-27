@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct SpellRange {
@@ -23,19 +23,19 @@ impl DbcTable for SpellRange {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 88 {
+        if header.record_size != 152 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 88,
+                    expected: 152,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 22 {
+        if header.field_count != 38 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 22,
+                    expected: 38,
                     actual: header.field_count,
                 },
             ));
@@ -63,11 +63,11 @@ impl DbcTable for SpellRange {
             // flags: int32
             let flags = crate::util::read_i32_le(chunk)?;
 
-            // display_name_lang: string_ref_loc
-            let display_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // display_name_lang: string_ref_loc (Extended)
+            let display_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // display_name_short_lang: string_ref_loc
-            let display_name_short_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // display_name_short_lang: string_ref_loc (Extended)
+            let display_name_short_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(SpellRangeRow {
@@ -86,8 +86,8 @@ impl DbcTable for SpellRange {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 22,
-            record_size: 88,
+            field_count: 38,
+            record_size: 152,
             string_block_size: self.string_block_size(),
         };
 
@@ -107,10 +107,10 @@ impl DbcTable for SpellRange {
             // flags: int32
             b.write_all(&row.flags.to_le_bytes())?;
 
-            // display_name_lang: string_ref_loc
+            // display_name_lang: string_ref_loc (Extended)
             b.write_all(&row.display_name_lang.string_indices_as_array(&mut string_index))?;
 
-            // display_name_short_lang: string_ref_loc
+            // display_name_short_lang: string_ref_loc (Extended)
             b.write_all(&row.display_name_short_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -176,7 +176,7 @@ pub struct SpellRangeRow {
     pub range_min: f32,
     pub range_max: f32,
     pub flags: i32,
-    pub display_name_lang: LocalizedString,
-    pub display_name_short_lang: LocalizedString,
+    pub display_name_lang: ExtendedLocalizedString,
+    pub display_name_short_lang: ExtendedLocalizedString,
 }
 

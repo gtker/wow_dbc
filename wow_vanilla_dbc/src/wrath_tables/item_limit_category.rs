@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemLimitCategory {
@@ -23,19 +23,19 @@ impl DbcTable for ItemLimitCategory {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 48 {
+        if header.record_size != 80 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 48,
+                    expected: 80,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 12 {
+        if header.field_count != 20 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 12,
+                    expected: 20,
                     actual: header.field_count,
                 },
             ));
@@ -54,8 +54,8 @@ impl DbcTable for ItemLimitCategory {
             // id: primary_key (ItemLimitCategory) int32
             let id = ItemLimitCategoryKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // quantity: int32
             let quantity = crate::util::read_i32_le(chunk)?;
@@ -78,8 +78,8 @@ impl DbcTable for ItemLimitCategory {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 12,
-            record_size: 48,
+            field_count: 20,
+            record_size: 80,
             string_block_size: self.string_block_size(),
         };
 
@@ -90,7 +90,7 @@ impl DbcTable for ItemLimitCategory {
             // id: primary_key (ItemLimitCategory) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // quantity: int32
@@ -157,7 +157,7 @@ impl ItemLimitCategoryKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemLimitCategoryRow {
     pub id: ItemLimitCategoryKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub quantity: i32,
     pub flags: i32,
 }

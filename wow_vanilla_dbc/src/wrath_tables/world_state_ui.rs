@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::map::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for WorldStateUI {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 156 {
+        if header.record_size != 252 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 156,
+                    expected: 252,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 39 {
+        if header.field_count != 63 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 39,
+                    expected: 63,
                     actual: header.field_count,
                 },
             ));
@@ -71,11 +71,11 @@ impl DbcTable for WorldStateUI {
                 String::from_utf8(s)?
             };
 
-            // string_lang: string_ref_loc
-            let string_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // string_lang: string_ref_loc (Extended)
+            let string_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // tooltip_lang: string_ref_loc
-            let tooltip_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // tooltip_lang: string_ref_loc (Extended)
+            let tooltip_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // state_variable: int32
             let state_variable = crate::util::read_i32_le(chunk)?;
@@ -89,8 +89,8 @@ impl DbcTable for WorldStateUI {
                 String::from_utf8(s)?
             };
 
-            // dynamic_tooltip_lang: string_ref_loc
-            let dynamic_tooltip_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // dynamic_tooltip_lang: string_ref_loc (Extended)
+            let dynamic_tooltip_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // extended_u_i: string_ref
             let extended_u_i = {
@@ -125,8 +125,8 @@ impl DbcTable for WorldStateUI {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 39,
-            record_size: 156,
+            field_count: 63,
+            record_size: 252,
             string_block_size: self.string_block_size(),
         };
 
@@ -155,10 +155,10 @@ impl DbcTable for WorldStateUI {
                 b.write_all(&(0_u32).to_le_bytes())?;
             }
 
-            // string_lang: string_ref_loc
+            // string_lang: string_ref_loc (Extended)
             b.write_all(&row.string_lang.string_indices_as_array(&mut string_index))?;
 
-            // tooltip_lang: string_ref_loc
+            // tooltip_lang: string_ref_loc (Extended)
             b.write_all(&row.tooltip_lang.string_indices_as_array(&mut string_index))?;
 
             // state_variable: int32
@@ -176,7 +176,7 @@ impl DbcTable for WorldStateUI {
                 b.write_all(&(0_u32).to_le_bytes())?;
             }
 
-            // dynamic_tooltip_lang: string_ref_loc
+            // dynamic_tooltip_lang: string_ref_loc (Extended)
             b.write_all(&row.dynamic_tooltip_lang.string_indices_as_array(&mut string_index))?;
 
             // extended_u_i: string_ref
@@ -266,12 +266,12 @@ pub struct WorldStateUIRow {
     pub area_id: AreaTableKey,
     pub phase_shift: i32,
     pub icon: String,
-    pub string_lang: LocalizedString,
-    pub tooltip_lang: LocalizedString,
+    pub string_lang: ExtendedLocalizedString,
+    pub tooltip_lang: ExtendedLocalizedString,
     pub state_variable: i32,
     pub ty: i32,
     pub dynamic_icon: String,
-    pub dynamic_tooltip_lang: LocalizedString,
+    pub dynamic_tooltip_lang: ExtendedLocalizedString,
     pub extended_u_i: String,
     pub extended_u_i_state_variable: [i32; 3],
 }

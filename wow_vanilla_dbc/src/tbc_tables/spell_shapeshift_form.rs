@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::tbc_tables::creature_type::*;
 use crate::tbc_tables::spell_icon::*;
 
@@ -25,19 +25,19 @@ impl DbcTable for SpellShapeshiftForm {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 108 {
+        if header.record_size != 140 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 108,
+                    expected: 140,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 27 {
+        if header.field_count != 35 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 27,
+                    expected: 35,
                     actual: header.field_count,
                 },
             ));
@@ -59,8 +59,8 @@ impl DbcTable for SpellShapeshiftForm {
             // bonus_action_bar: int32
             let bonus_action_bar = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // flags: int32
             let flags = crate::util::read_i32_le(chunk)?;
@@ -100,8 +100,8 @@ impl DbcTable for SpellShapeshiftForm {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 27,
-            record_size: 108,
+            field_count: 35,
+            record_size: 140,
             string_block_size: self.string_block_size(),
         };
 
@@ -115,7 +115,7 @@ impl DbcTable for SpellShapeshiftForm {
             // bonus_action_bar: int32
             b.write_all(&row.bonus_action_bar.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // flags: int32
@@ -201,7 +201,7 @@ impl SpellShapeshiftFormKey {
 pub struct SpellShapeshiftFormRow {
     pub id: SpellShapeshiftFormKey,
     pub bonus_action_bar: i32,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub flags: i32,
     pub creature_type: CreatureTypeKey,
     pub attack_icon_id: SpellIconKey,

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::cinematic_sequences::*;
 use crate::wrath_tables::creature_display_info::*;
 use crate::wrath_tables::creature_type::*;
@@ -30,19 +30,19 @@ impl DbcTable for ChrRaces {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 180 {
+        if header.record_size != 276 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 180,
+                    expected: 276,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 45 {
+        if header.field_count != 69 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 45,
+                    expected: 69,
                     actual: header.field_count,
                 },
             ));
@@ -106,14 +106,14 @@ impl DbcTable for ChrRaces {
             // alliance: int32
             let alliance = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // name_female_lang: string_ref_loc
-            let name_female_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_female_lang: string_ref_loc (Extended)
+            let name_female_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // name_male_lang: string_ref_loc
-            let name_male_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_male_lang: string_ref_loc (Extended)
+            let name_male_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // facial_hair_customization: string_ref[2]
             let facial_hair_customization = {
@@ -169,8 +169,8 @@ impl DbcTable for ChrRaces {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 45,
-            record_size: 180,
+            field_count: 69,
+            record_size: 276,
             string_block_size: self.string_block_size(),
         };
 
@@ -232,13 +232,13 @@ impl DbcTable for ChrRaces {
             // alliance: int32
             b.write_all(&row.alliance.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
-            // name_female_lang: string_ref_loc
+            // name_female_lang: string_ref_loc (Extended)
             b.write_all(&row.name_female_lang.string_indices_as_array(&mut string_index))?;
 
-            // name_male_lang: string_ref_loc
+            // name_male_lang: string_ref_loc (Extended)
             b.write_all(&row.name_male_lang.string_indices_as_array(&mut string_index))?;
 
             // facial_hair_customization: string_ref[2]
@@ -354,9 +354,9 @@ pub struct ChrRacesRow {
     pub client_file_string: String,
     pub cinematic_sequence_id: CinematicSequencesKey,
     pub alliance: i32,
-    pub name_lang: LocalizedString,
-    pub name_female_lang: LocalizedString,
-    pub name_male_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
+    pub name_female_lang: ExtendedLocalizedString,
+    pub name_male_lang: ExtendedLocalizedString,
     pub facial_hair_customization: [String; 2],
     pub hair_customization: String,
     pub required_expansion: i32,

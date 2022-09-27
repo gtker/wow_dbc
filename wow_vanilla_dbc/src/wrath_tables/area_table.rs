@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::light::*;
 use crate::wrath_tables::map::*;
 use crate::wrath_tables::sound_ambience::*;
@@ -29,19 +29,19 @@ impl DbcTable for AreaTable {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 112 {
+        if header.record_size != 144 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 112,
+                    expected: 144,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 28 {
+        if header.field_count != 36 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 28,
+                    expected: 36,
                     actual: header.field_count,
                 },
             ));
@@ -90,8 +90,8 @@ impl DbcTable for AreaTable {
             // exploration_level: int32
             let exploration_level = crate::util::read_i32_le(chunk)?;
 
-            // area_name_lang: string_ref_loc
-            let area_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // area_name_lang: string_ref_loc (Extended)
+            let area_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // faction_group_mask: int32
             let faction_group_mask = crate::util::read_i32_le(chunk)?;
@@ -136,8 +136,8 @@ impl DbcTable for AreaTable {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 28,
-            record_size: 112,
+            field_count: 36,
+            record_size: 144,
             string_block_size: self.string_block_size(),
         };
 
@@ -178,7 +178,7 @@ impl DbcTable for AreaTable {
             // exploration_level: int32
             b.write_all(&row.exploration_level.to_le_bytes())?;
 
-            // area_name_lang: string_ref_loc
+            // area_name_lang: string_ref_loc (Extended)
             b.write_all(&row.area_name_lang.string_indices_as_array(&mut string_index))?;
 
             // faction_group_mask: int32
@@ -267,7 +267,7 @@ pub struct AreaTableRow {
     pub zone_music: ZoneMusicKey,
     pub intro_sound: ZoneIntroMusicTableKey,
     pub exploration_level: i32,
-    pub area_name_lang: LocalizedString,
+    pub area_name_lang: ExtendedLocalizedString,
     pub faction_group_mask: i32,
     pub liquid_type_id: [i32; 4],
     pub min_elevation: f32,

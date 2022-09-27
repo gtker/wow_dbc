@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::skill_line::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,19 +24,19 @@ impl DbcTable for ItemSet {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 180 {
+        if header.record_size != 212 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 180,
+                    expected: 212,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 45 {
+        if header.field_count != 53 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 45,
+                    expected: 53,
                     actual: header.field_count,
                 },
             ));
@@ -55,8 +55,8 @@ impl DbcTable for ItemSet {
             // id: primary_key (ItemSet) int32
             let id = ItemSetKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // item_id: int32[17]
             let item_id = crate::util::read_array_i32::<17>(chunk)?;
@@ -91,8 +91,8 @@ impl DbcTable for ItemSet {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 45,
-            record_size: 180,
+            field_count: 53,
+            record_size: 212,
             string_block_size: self.string_block_size(),
         };
 
@@ -103,7 +103,7 @@ impl DbcTable for ItemSet {
             // id: primary_key (ItemSet) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // item_id: int32[17]
@@ -188,7 +188,7 @@ impl ItemSetKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemSetRow {
     pub id: ItemSetKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub item_id: [i32; 17],
     pub set_spell_id: [i32; 8],
     pub set_threshold: [i32; 8],

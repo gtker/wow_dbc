@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::faction_template::*;
 use crate::wrath_tables::map::*;
@@ -26,19 +26,19 @@ impl DbcTable for AreaPOI {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 152 {
+        if header.record_size != 216 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 152,
+                    expected: 216,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 38 {
+        if header.field_count != 54 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 38,
+                    expected: 54,
                     actual: header.field_count,
                 },
             ));
@@ -78,11 +78,11 @@ impl DbcTable for AreaPOI {
             // area_id: foreign_key (AreaTable) int32
             let area_id = AreaTableKey::new(crate::util::read_i32_le(chunk)?.into());
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // world_state_id: foreign_key (WorldState) int32
             let world_state_id = crate::util::read_i32_le(chunk)?;
@@ -113,8 +113,8 @@ impl DbcTable for AreaPOI {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 38,
-            record_size: 152,
+            field_count: 54,
+            record_size: 216,
             string_block_size: self.string_block_size(),
         };
 
@@ -152,10 +152,10 @@ impl DbcTable for AreaPOI {
             // area_id: foreign_key (AreaTable) int32
             b.write_all(&(row.area_id.id as i32).to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
             // world_state_id: foreign_key (WorldState) int32
@@ -231,8 +231,8 @@ pub struct AreaPOIRow {
     pub continent_id: MapKey,
     pub flags: i32,
     pub area_id: AreaTableKey,
-    pub name_lang: LocalizedString,
-    pub description_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
+    pub description_lang: ExtendedLocalizedString,
     pub world_state_id: i32,
     pub world_map_link: i32,
 }

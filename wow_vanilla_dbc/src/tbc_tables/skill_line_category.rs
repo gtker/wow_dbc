@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineCategory {
@@ -23,19 +23,19 @@ impl DbcTable for SkillLineCategory {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 44 {
+        if header.record_size != 76 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 44,
+                    expected: 76,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 11 {
+        if header.field_count != 19 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 11,
+                    expected: 19,
                     actual: header.field_count,
                 },
             ));
@@ -54,8 +54,8 @@ impl DbcTable for SkillLineCategory {
             // id: primary_key (SkillLineCategory) int32
             let id = SkillLineCategoryKey::new(crate::util::read_i32_le(chunk)?);
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // sort_index: int32
             let sort_index = crate::util::read_i32_le(chunk)?;
@@ -74,8 +74,8 @@ impl DbcTable for SkillLineCategory {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 11,
-            record_size: 44,
+            field_count: 19,
+            record_size: 76,
             string_block_size: self.string_block_size(),
         };
 
@@ -86,7 +86,7 @@ impl DbcTable for SkillLineCategory {
             // id: primary_key (SkillLineCategory) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // sort_index: int32
@@ -150,7 +150,7 @@ impl SkillLineCategoryKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SkillLineCategoryRow {
     pub id: SkillLineCategoryKey,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub sort_index: i32,
 }
 

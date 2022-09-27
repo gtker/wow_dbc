@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::area_group::*;
 use crate::wrath_tables::faction::*;
 use crate::wrath_tables::power_display::*;
@@ -36,19 +36,19 @@ impl DbcTable for Spell {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 808 {
+        if header.record_size != 936 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 808,
+                    expected: 936,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 202 {
+        if header.field_count != 234 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 202,
+                    expected: 234,
                     actual: header.field_count,
                 },
             ));
@@ -298,17 +298,17 @@ impl DbcTable for Spell {
             // spell_priority: int32
             let spell_priority = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // name_subtext_lang: string_ref_loc
-            let name_subtext_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_subtext_lang: string_ref_loc (Extended)
+            let name_subtext_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // aura_description_lang: string_ref_loc
-            let aura_description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // aura_description_lang: string_ref_loc (Extended)
+            let aura_description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // mana_cost_pct: int32
             let mana_cost_pct = crate::util::read_i32_le(chunk)?;
@@ -495,8 +495,8 @@ impl DbcTable for Spell {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 202,
-            record_size: 808,
+            field_count: 234,
+            record_size: 936,
             string_block_size: self.string_block_size(),
         };
 
@@ -816,16 +816,16 @@ impl DbcTable for Spell {
             // spell_priority: int32
             b.write_all(&row.spell_priority.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
-            // name_subtext_lang: string_ref_loc
+            // name_subtext_lang: string_ref_loc (Extended)
             b.write_all(&row.name_subtext_lang.string_indices_as_array(&mut string_index))?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
-            // aura_description_lang: string_ref_loc
+            // aura_description_lang: string_ref_loc (Extended)
             b.write_all(&row.aura_description_lang.string_indices_as_array(&mut string_index))?;
 
             // mana_cost_pct: int32
@@ -1050,10 +1050,10 @@ pub struct SpellRow {
     pub spell_icon_id: SpellIconKey,
     pub active_icon_id: SpellIconKey,
     pub spell_priority: i32,
-    pub name_lang: LocalizedString,
-    pub name_subtext_lang: LocalizedString,
-    pub description_lang: LocalizedString,
-    pub aura_description_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
+    pub name_subtext_lang: ExtendedLocalizedString,
+    pub description_lang: ExtendedLocalizedString,
+    pub aura_description_lang: ExtendedLocalizedString,
     pub mana_cost_pct: i32,
     pub start_recovery_category: i32,
     pub start_recovery_time: i32,

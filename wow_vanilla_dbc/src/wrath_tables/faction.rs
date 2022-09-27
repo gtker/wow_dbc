@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Faction {
@@ -23,19 +23,19 @@ impl DbcTable for Faction {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 164 {
+        if header.record_size != 228 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 164,
+                    expected: 228,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 41 {
+        if header.field_count != 57 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 41,
+                    expected: 57,
                     actual: header.field_count,
                 },
             ));
@@ -78,11 +78,11 @@ impl DbcTable for Faction {
             // parent_faction_cap: int32[2]
             let parent_faction_cap = crate::util::read_array_i32::<2>(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(FactionRow {
@@ -106,8 +106,8 @@ impl DbcTable for Faction {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 41,
-            record_size: 164,
+            field_count: 57,
+            record_size: 228,
             string_block_size: self.string_block_size(),
         };
 
@@ -160,10 +160,10 @@ impl DbcTable for Faction {
             }
 
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -234,7 +234,7 @@ pub struct FactionRow {
     pub parent_faction_id: FactionKey,
     pub parent_faction_mod: [f32; 2],
     pub parent_faction_cap: [i32; 2],
-    pub name_lang: LocalizedString,
-    pub description_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
+    pub description_lang: ExtendedLocalizedString,
 }
 

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::achievement::*;
 
 #[allow(non_camel_case_types)]
@@ -25,19 +25,19 @@ impl DbcTable for Achievement_Criteria {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 92 {
+        if header.record_size != 124 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 92,
+                    expected: 124,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 23 {
+        if header.field_count != 31 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 23,
+                    expected: 31,
                     actual: header.field_count,
                 },
             ));
@@ -80,8 +80,8 @@ impl DbcTable for Achievement_Criteria {
             // fail_asset: int32
             let fail_asset = crate::util::read_i32_le(chunk)?;
 
-            // description_lang: string_ref_loc
-            let description_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // flags: int32
             let flags = crate::util::read_i32_le(chunk)?;
@@ -124,8 +124,8 @@ impl DbcTable for Achievement_Criteria {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 23,
-            record_size: 92,
+            field_count: 31,
+            record_size: 124,
             string_block_size: self.string_block_size(),
         };
 
@@ -160,7 +160,7 @@ impl DbcTable for Achievement_Criteria {
             // fail_asset: int32
             b.write_all(&row.fail_asset.to_le_bytes())?;
 
-            // description_lang: string_ref_loc
+            // description_lang: string_ref_loc (Extended)
             b.write_all(&row.description_lang.string_indices_as_array(&mut string_index))?;
 
             // flags: int32
@@ -246,7 +246,7 @@ pub struct Achievement_CriteriaRow {
     pub start_asset: i32,
     pub fail_event: i32,
     pub fail_asset: i32,
-    pub description_lang: LocalizedString,
+    pub description_lang: ExtendedLocalizedString,
     pub flags: i32,
     pub timer_start_event: i32,
     pub timer_asset_id: i32,

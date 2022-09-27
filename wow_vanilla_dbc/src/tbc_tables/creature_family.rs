@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CreatureFamily {
@@ -23,19 +23,19 @@ impl DbcTable for CreatureFamily {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 72 {
+        if header.record_size != 104 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 72,
+                    expected: 104,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 18 {
+        if header.field_count != 26 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 18,
+                    expected: 26,
                     actual: header.field_count,
                 },
             ));
@@ -72,8 +72,8 @@ impl DbcTable for CreatureFamily {
             // pet_food_mask: int32
             let pet_food_mask = crate::util::read_i32_le(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // icon_file: string_ref
             let icon_file = {
@@ -101,8 +101,8 @@ impl DbcTable for CreatureFamily {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 18,
-            record_size: 72,
+            field_count: 26,
+            record_size: 104,
             string_block_size: self.string_block_size(),
         };
 
@@ -134,7 +134,7 @@ impl DbcTable for CreatureFamily {
             // pet_food_mask: int32
             b.write_all(&row.pet_food_mask.to_le_bytes())?;
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // icon_file: string_ref
@@ -212,7 +212,7 @@ pub struct CreatureFamilyRow {
     pub max_scale_level: i32,
     pub skill_line: [i32; 2],
     pub pet_food_mask: i32,
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub icon_file: String,
 }
 

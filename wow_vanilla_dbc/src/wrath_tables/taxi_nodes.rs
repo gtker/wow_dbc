@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -24,19 +24,19 @@ impl DbcTable for TaxiNodes {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 64 {
+        if header.record_size != 96 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 64,
+                    expected: 96,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 16 {
+        if header.field_count != 24 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 16,
+                    expected: 24,
                     actual: header.field_count,
                 },
             ));
@@ -61,8 +61,8 @@ impl DbcTable for TaxiNodes {
             // pos: float[3]
             let pos = crate::util::read_array_f32::<3>(chunk)?;
 
-            // name_lang: string_ref_loc
-            let name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
             // mount_creature_id: int32[2]
             let mount_creature_id = crate::util::read_array_i32::<2>(chunk)?;
@@ -83,8 +83,8 @@ impl DbcTable for TaxiNodes {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 16,
-            record_size: 64,
+            field_count: 24,
+            record_size: 96,
             string_block_size: self.string_block_size(),
         };
 
@@ -104,7 +104,7 @@ impl DbcTable for TaxiNodes {
             }
 
 
-            // name_lang: string_ref_loc
+            // name_lang: string_ref_loc (Extended)
             b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
 
             // mount_creature_id: int32[2]
@@ -173,7 +173,7 @@ pub struct TaxiNodesRow {
     pub id: TaxiNodesKey,
     pub continent_id: MapKey,
     pub pos: [f32; 3],
-    pub name_lang: LocalizedString,
+    pub name_lang: ExtendedLocalizedString,
     pub mount_creature_id: [i32; 2],
 }
 

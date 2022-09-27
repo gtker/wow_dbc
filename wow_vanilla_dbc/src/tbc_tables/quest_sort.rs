@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestSort {
@@ -23,19 +23,19 @@ impl DbcTable for QuestSort {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 40 {
+        if header.record_size != 72 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 40,
+                    expected: 72,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 10 {
+        if header.field_count != 18 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 10,
+                    expected: 18,
                     actual: header.field_count,
                 },
             ));
@@ -54,8 +54,8 @@ impl DbcTable for QuestSort {
             // id: primary_key (QuestSort) int32
             let id = QuestSortKey::new(crate::util::read_i32_le(chunk)?);
 
-            // sort_name_lang: string_ref_loc
-            let sort_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // sort_name_lang: string_ref_loc (Extended)
+            let sort_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(QuestSortRow {
@@ -70,8 +70,8 @@ impl DbcTable for QuestSort {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 10,
-            record_size: 40,
+            field_count: 18,
+            record_size: 72,
             string_block_size: self.string_block_size(),
         };
 
@@ -82,7 +82,7 @@ impl DbcTable for QuestSort {
             // id: primary_key (QuestSort) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // sort_name_lang: string_ref_loc
+            // sort_name_lang: string_ref_loc (Extended)
             b.write_all(&row.sort_name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -143,6 +143,6 @@ impl QuestSortKey {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestSortRow {
     pub id: QuestSortKey,
-    pub sort_name_lang: LocalizedString,
+    pub sort_name_lang: ExtendedLocalizedString,
 }
 

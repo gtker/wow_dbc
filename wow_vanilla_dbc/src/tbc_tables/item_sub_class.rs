@@ -2,7 +2,7 @@ use crate::header::{HEADER_SIZE, DbcHeader};
 use crate::header;
 use crate::DbcTable;
 use std::io::Write;
-use crate::LocalizedString;
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ItemSubClass {
@@ -22,19 +22,19 @@ impl DbcTable for ItemSubClass {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 112 {
+        if header.record_size != 176 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 112,
+                    expected: 176,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 28 {
+        if header.field_count != 44 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 28,
+                    expected: 44,
                     actual: header.field_count,
                 },
             ));
@@ -80,11 +80,11 @@ impl DbcTable for ItemSubClass {
             // weapon_swing_size: int32
             let weapon_swing_size = crate::util::read_i32_le(chunk)?;
 
-            // display_name_lang: string_ref_loc
-            let display_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // display_name_lang: string_ref_loc (Extended)
+            let display_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // verbose_name_lang: string_ref_loc
-            let verbose_name_lang = crate::util::read_localized_string(chunk, &string_block)?;
+            // verbose_name_lang: string_ref_loc (Extended)
+            let verbose_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
 
             rows.push(ItemSubClassRow {
@@ -109,8 +109,8 @@ impl DbcTable for ItemSubClass {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 28,
-            record_size: 112,
+            field_count: 44,
+            record_size: 176,
             string_block_size: self.string_block_size(),
         };
 
@@ -148,10 +148,10 @@ impl DbcTable for ItemSubClass {
             // weapon_swing_size: int32
             b.write_all(&row.weapon_swing_size.to_le_bytes())?;
 
-            // display_name_lang: string_ref_loc
+            // display_name_lang: string_ref_loc (Extended)
             b.write_all(&row.display_name_lang.string_indices_as_array(&mut string_index))?;
 
-            // verbose_name_lang: string_ref_loc
+            // verbose_name_lang: string_ref_loc (Extended)
             b.write_all(&row.verbose_name_lang.string_indices_as_array(&mut string_index))?;
 
         }
@@ -199,7 +199,7 @@ pub struct ItemSubClassRow {
     pub weapon_ready_seq: i32,
     pub weapon_attack_seq: i32,
     pub weapon_swing_size: i32,
-    pub display_name_lang: LocalizedString,
-    pub verbose_name_lang: LocalizedString,
+    pub display_name_lang: ExtendedLocalizedString,
+    pub verbose_name_lang: ExtendedLocalizedString,
 }
 
