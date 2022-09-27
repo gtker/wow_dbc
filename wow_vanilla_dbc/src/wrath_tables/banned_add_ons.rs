@@ -3,17 +3,16 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::wrath_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PvpDifficulty {
-    pub rows: Vec<PvpDifficultyRow>,
+pub struct BannedAddOns {
+    pub rows: Vec<BannedAddOnsRow>,
 }
 
-impl DbcTable for PvpDifficulty {
-    type Row = PvpDifficultyRow;
+impl DbcTable for BannedAddOns {
+    type Row = BannedAddOnsRow;
 
-    fn filename() -> &'static str { "PvpDifficulty.dbc" }
+    fn filename() -> &'static str { "BannedAddOns.dbc" }
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -23,19 +22,19 @@ impl DbcTable for PvpDifficulty {
         b.read_exact(&mut header)?;
         let header = header::parse_header(&header)?;
 
-        if header.record_size != 24 {
+        if header.record_size != 44 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 24,
+                    expected: 44,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 6 {
+        if header.field_count != 11 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 6,
+                    expected: 11,
                     actual: header.field_count,
                 },
             ));
@@ -49,66 +48,65 @@ impl DbcTable for PvpDifficulty {
         for mut chunk in r.chunks(header.record_size as usize) {
             let chunk = &mut chunk;
 
-            // id: primary_key (PvpDifficulty) int32
-            let id = PvpDifficultyKey::new(crate::util::read_i32_le(chunk)?);
+            // id: primary_key (BannedAddOns) int32
+            let id = BannedAddOnsKey::new(crate::util::read_i32_le(chunk)?);
 
-            // map_id: foreign_key (Map) int32
-            let map_id = MapKey::new(crate::util::read_i32_le(chunk)?.into());
+            // name_m_d5: int32[4]
+            let name_m_d5 = crate::util::read_array_i32::<4>(chunk)?;
 
-            // range_index: int32
-            let range_index = crate::util::read_i32_le(chunk)?;
+            // version_m_d5: int32[4]
+            let version_m_d5 = crate::util::read_array_i32::<4>(chunk)?;
 
-            // min_level: int32
-            let min_level = crate::util::read_i32_le(chunk)?;
+            // last_modified: int32
+            let last_modified = crate::util::read_i32_le(chunk)?;
 
-            // max_level: int32
-            let max_level = crate::util::read_i32_le(chunk)?;
-
-            // difficulty: int32
-            let difficulty = crate::util::read_i32_le(chunk)?;
+            // flags: int32
+            let flags = crate::util::read_i32_le(chunk)?;
 
 
-            rows.push(PvpDifficultyRow {
+            rows.push(BannedAddOnsRow {
                 id,
-                map_id,
-                range_index,
-                min_level,
-                max_level,
-                difficulty,
+                name_m_d5,
+                version_m_d5,
+                last_modified,
+                flags,
             });
         }
 
-        Ok(PvpDifficulty { rows, })
+        Ok(BannedAddOns { rows, })
     }
 
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 6,
-            record_size: 24,
+            field_count: 11,
+            record_size: 44,
             string_block_size: 1,
         };
 
         b.write_all(&header.write_header())?;
 
         for row in &self.rows {
-            // id: primary_key (PvpDifficulty) int32
+            // id: primary_key (BannedAddOns) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // map_id: foreign_key (Map) int32
-            b.write_all(&(row.map_id.id as i32).to_le_bytes())?;
+            // name_m_d5: int32[4]
+            for i in row.name_m_d5 {
+                b.write_all(&i.to_le_bytes())?;
+            }
 
-            // range_index: int32
-            b.write_all(&row.range_index.to_le_bytes())?;
 
-            // min_level: int32
-            b.write_all(&row.min_level.to_le_bytes())?;
+            // version_m_d5: int32[4]
+            for i in row.version_m_d5 {
+                b.write_all(&i.to_le_bytes())?;
+            }
 
-            // max_level: int32
-            b.write_all(&row.max_level.to_le_bytes())?;
 
-            // difficulty: int32
-            b.write_all(&row.difficulty.to_le_bytes())?;
+            // last_modified: int32
+            b.write_all(&row.last_modified.to_le_bytes())?;
+
+            // flags: int32
+            b.write_all(&row.flags.to_le_bytes())?;
 
         }
 
@@ -119,8 +117,8 @@ impl DbcTable for PvpDifficulty {
 
 }
 
-impl Indexable for PvpDifficulty {
-    type PrimaryKey = PvpDifficultyKey;
+impl Indexable for BannedAddOns {
+    type PrimaryKey = BannedAddOnsKey;
     fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row> {
         self.rows.iter().find(|a| a.id.id == key.id)
     }
@@ -132,11 +130,11 @@ impl Indexable for PvpDifficulty {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
-pub struct PvpDifficultyKey {
+pub struct BannedAddOnsKey {
     pub id: i32
 }
 
-impl PvpDifficultyKey {
+impl BannedAddOnsKey {
     pub const fn new(id: i32) -> Self {
         Self { id }
     }
@@ -144,12 +142,11 @@ impl PvpDifficultyKey {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PvpDifficultyRow {
-    pub id: PvpDifficultyKey,
-    pub map_id: MapKey,
-    pub range_index: i32,
-    pub min_level: i32,
-    pub max_level: i32,
-    pub difficulty: i32,
+pub struct BannedAddOnsRow {
+    pub id: BannedAddOnsKey,
+    pub name_m_d5: [i32; 4],
+    pub version_m_d5: [i32; 4],
+    pub last_modified: i32,
+    pub flags: i32,
 }
 

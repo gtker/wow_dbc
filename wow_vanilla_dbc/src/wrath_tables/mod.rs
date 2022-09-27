@@ -10,7 +10,7 @@ pub mod attack_anim_kits;
 pub mod attack_anim_types;
 pub mod auction_house;
 pub mod bank_bag_slot_prices;
-pub mod banned_addons;
+pub mod banned_add_ons;
 pub mod barber_shop_style;
 pub mod battlemaster_list;
 pub mod camera_shakes;

@@ -70,13 +70,18 @@ fn main() {
         let mut modules = Vec::with_capacity(o.descriptions().len());
 
         for d in o.descriptions() {
-            let s = rust_printer::create_table(&d, &o, location.module_name, location.test_dir_name);
+            let s =
+                rust_printer::create_table(&d, &o, location.module_name, location.test_dir_name);
 
             modules.push(s.file_name());
 
             overwrite_if_not_same_contents(
                 s.inner(),
-                Path::new(&format!("{}/{}.rs", location.tables_location, s.file_name())),
+                Path::new(&format!(
+                    "{}/{}.rs",
+                    location.tables_location,
+                    s.file_name()
+                )),
             );
         }
 

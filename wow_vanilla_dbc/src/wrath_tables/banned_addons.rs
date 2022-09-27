@@ -150,3 +150,17 @@ pub struct BannedAddonsRow {
     pub flags: i32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn banned_addons() {
+        let contents = include_bytes!("../../../wrath-dbc/BannedAddons.dbc");
+        let actual = BannedAddons::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = BannedAddons::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

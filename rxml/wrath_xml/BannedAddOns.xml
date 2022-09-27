@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dbc>
-<name>BannedAddons</name>
+<name>BannedAddOns</name>
 
 <field>
     <name>id</name>

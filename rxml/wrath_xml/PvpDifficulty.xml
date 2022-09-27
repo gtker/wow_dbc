@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dbc>
-<name>PVPDifficulty</name>
+<name>PvpDifficulty</name>
 
 <field>
     <name>id</name>
