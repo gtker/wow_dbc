@@ -19,6 +19,10 @@ impl Writer {
     }
 
     pub fn file_name(&self) -> String {
+        format!("{}.rs", self.module_name())
+    }
+
+    pub fn module_name(&self) -> String {
         self.name.to_snake_case()
     }
 
