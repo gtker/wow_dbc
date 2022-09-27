@@ -8,12 +8,12 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-wow_vanilla_dbc = { version = "0.1" }
+wow_vanilla_dbc = { version = "0.1", features = ["vanilla", "tbc", "wrath"] }
 ```
 
 Or add it with [cargo edit](https://github.com/killercup/cargo-edit):
 ```bash
-cargo add wow_vanilla_dbc
+cargo add wow_vanilla_dbc --features "vanilla tbc wrath"
 ```
 
 And then [check out the docs](https://docs.rs/wow_vanilla_dbc/latest/).

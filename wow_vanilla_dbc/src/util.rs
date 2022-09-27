@@ -1,4 +1,7 @@
-use crate::{DbcError, ExtendedLocalizedString, LocalizedString};
+#[cfg(any(feature = "tbc", feature = "wrath"))]
+use crate::ExtendedLocalizedString;
+
+use crate::{DbcError, LocalizedString};
 use std::io::Read;
 
 pub fn read_u8_le(b: &mut &[u8]) -> Result<u8, std::io::Error> {
@@ -89,6 +92,7 @@ pub fn read_localized_string(
     ))
 }
 
+#[cfg(any(feature = "tbc", feature = "wrath"))]
 pub fn read_extended_localized_string(
     chunk: &mut &[u8],
     string_block: &[u8],

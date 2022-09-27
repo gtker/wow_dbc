@@ -10,3 +10,12 @@ categories = ["games", "game-development", "game-engines", "parser-implementatio
 readme = "README.md"
 authors = ["Gtker <github@gtker.com"]
 
+[features]
+default = ["vanilla", "tbc", "wrath"]
+vanilla = []
+tbc = []
+wrath = []
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

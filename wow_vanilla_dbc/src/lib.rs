@@ -24,13 +24,23 @@
 //!
 //! ```toml
 //! [dependencies]
-//! wow_vanilla_dbc = { version = "0.1" }
+//! wow_vanilla_dbc = { version = "0.1", features = ["vanilla", "tbc", "wrath"] }
 //! ```
 //!
 //! Or add it with [cargo edit](https://github.com/killercup/cargo-edit):
 //! ```bash
-//! cargo add wow_vanilla_dbc
+//! cargo add wow_vanilla_dbc --features "vanilla tbc wrath"
 //! ```
+//!
+//! # Features
+//!
+//! By default no features are enabled.
+//! The following features are valid:
+//! * `vanilla`, for 1.12 client data.
+//! * `tbc`, for 2.4.3.8606 client data.
+//! * `wrath`, for 3.3.5.12340 client data.
+//!
+//! To add only a specific version, remove the unneeded ones from the `features` list above.
 //!
 //! # Tests
 //!
@@ -40,6 +50,8 @@
 //! The DBC files must be placed in the root of the repository.
 //!
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![forbid(unsafe_code)]
 // This requires fields knowing about the sizes of enums
 #![allow(clippy::useless_conversion)]
@@ -62,12 +74,15 @@ pub(crate) mod error;
 pub(crate) mod header;
 
 #[allow(missing_docs)]
+#[cfg(feature = "vanilla")]
 pub mod vanilla_tables;
 
 #[allow(missing_docs)]
+#[cfg(feature = "tbc")]
 pub mod tbc_tables;
 
 #[allow(missing_docs)]
+#[cfg(feature = "wrath")]
 pub mod wrath_tables;
 
 mod util;
@@ -78,6 +93,7 @@ pub use error::*;
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg(any(feature = "tbc", feature = "wrath"))]
 pub struct ExtendedLocalizedString {
     /// English, Great Britain
     pub en_gb: String,
@@ -118,6 +134,7 @@ pub struct ExtendedLocalizedString {
     pub flags: u32,
 }
 
+#[cfg(any(feature = "tbc", feature = "wrath"))]
 impl ExtendedLocalizedString {
     #[allow(clippy::too_many_arguments)]
     pub(crate) const fn new(
