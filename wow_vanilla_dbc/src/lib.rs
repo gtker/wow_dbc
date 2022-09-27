@@ -1,4 +1,4 @@
-//! Implementation of the [DBC (`DataBaseClient`) file format for World of Warcraft 1.12](https://wowdev.wiki/DBC).
+//! Implementation of the [DBC (`DataBaseClient`) file format for World of Warcraft 1.12, 2.4.3.8606, and 3.3.5.12340](https://wowdev.wiki/DBC).
 //! This is auto generated from `.xml` files [in the github repository](https://github.com/gtker/wow_vanilla_dbc/tree/main/rxml/xml).
 //!
 //! DBC files are inside [the MPQ files](https://wowdev.wiki/MPQ) that are included with the client.
@@ -20,7 +20,7 @@
 //!
 //! # Installation
 //!
-//! To add only the synchronous methods add the following to your `Cargo.toml`:
+//! Add the following to your `Cargo.toml`:
 //!
 //! ```toml
 //! [dependencies]
@@ -37,6 +37,7 @@
 //! Published builds do not have any tests for individual tables,
 //! but these can be built by changing `BUILD_TESTS` in `rxml/src/main.rs` of the repository.
 //! These require the original DBC files from the client which can not be republished.
+//! The DBC files must be placed in the root of the repository.
 //!
 
 #![forbid(unsafe_code)]

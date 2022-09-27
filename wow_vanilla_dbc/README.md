@@ -1,6 +1,6 @@
 # `wow_vanilla_dbc`
 
-Implementation of the [DBC (DataBaseClient) file formats for World of Warcraft 1.12](https://wowdev.wiki/DBC).
+Implementation of the [DBC (DataBaseClient) file formats for World of Warcraft 1.12, 2.4.3.8606, and 3.3.5.12340](https://wowdev.wiki/DBC).
 
 ## Usage
 
