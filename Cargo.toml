@@ -2,5 +2,5 @@
 
 members = [
     "rxml",
-    "wow_vanilla_dbc",
+    "wow_dbc",
 ]

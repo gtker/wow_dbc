@@ -1,5 +1,5 @@
 //! Implementation of the [DBC (`DataBaseClient`) file format for World of Warcraft 1.12, 2.4.3.8606, and 3.3.5.12340](https://wowdev.wiki/DBC).
-//! This is auto generated from `.xml` files [in the github repository](https://github.com/gtker/wow_vanilla_dbc/tree/main/rxml/xml).
+//! This is auto generated from `.xml` files [in the github repository](https://github.com/gtker/wow_dbc/tree/main/rxml/xml).
 //!
 //! DBC files are inside [the MPQ files](https://wowdev.wiki/MPQ) that are included with the client.
 //! This library does not deal with MPQ files.
@@ -24,12 +24,12 @@
 //!
 //! ```toml
 //! [dependencies]
-//! wow_vanilla_dbc = { version = "0.1", features = ["vanilla", "tbc", "wrath"] }
+//! wow_dbc = { version = "0.1", features = ["vanilla", "tbc", "wrath"] }
 //! ```
 //!
 //! Or add it with [cargo edit](https://github.com/killercup/cargo-edit):
 //! ```bash
-//! cargo add wow_vanilla_dbc --features "vanilla tbc wrath"
+//! cargo add wow_dbc --features "vanilla tbc wrath"
 //! ```
 //!
 //! # Features

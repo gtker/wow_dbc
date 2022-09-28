@@ -26,7 +26,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "wow_vanilla_dbc"
+name = "wow_dbc"
 version = "0.1.0"
 
 [[package]]

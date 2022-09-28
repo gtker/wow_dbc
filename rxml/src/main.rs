@@ -23,7 +23,7 @@ fn xml_location(version: DbcVersion) -> PathBuf {
 
 fn table_location(version: DbcVersion) -> PathBuf {
     workspace_directory()
-        .join("wow_vanilla_dbc")
+        .join("wow_dbc")
         .join("src")
         .join(version.module_name())
 }
