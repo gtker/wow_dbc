@@ -11,7 +11,7 @@ readme = "README.md"
 authors = ["Gtker <github@gtker.com"]
 
 [features]
-default = ["vanilla", "tbc", "wrath"]
+default = []
 vanilla = []
 tbc = []
 wrath = []

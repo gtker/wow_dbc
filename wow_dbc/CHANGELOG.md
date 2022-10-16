@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: Changed `Indexable::get` and `Indexable::get_mut` parameters from `&Self::PrimaryKey` to `impl Into<Self::PrimaryKey>`.
 This is in order to reduce the boilerplate needed for calling the functions with values that aren't from another `wow_dbc` table.
 This makes it possible to do `table.get(value)` instead of `table.get(TableKey::new(value))`
+* BREAKING: Removed all default features. This prevents people from mistakenly not disabling the expansions that they do not need and bloating compile times as well as IDE suggestions.
 
 ### Deprecated
 
