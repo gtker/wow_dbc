@@ -162,9 +162,37 @@ impl WowError_StringsKey {
 
 }
 
+impl From<i8> for WowError_StringsKey {
+    fn from(v: i8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<i16> for WowError_StringsKey {
+    fn from(v: i16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<i32> for WowError_StringsKey {
     fn from(v: i32) -> Self {
         Self::new(v)
+    }
+
+}
+
+impl From<u8> for WowError_StringsKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for WowError_StringsKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
     }
 
 }

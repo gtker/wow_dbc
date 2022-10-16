@@ -139,11 +139,9 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
 }
 
 fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
-    for key in d.primary_keys() {
-        let native_ty = match key.ty() {
-            Type::PrimaryKey { ty, .. } => ty.rust_str(),
-            _ => unreachable!(),
-        };
+    for (key, ty) in d.primary_keys() {
+        let native_ty = ty.rust_str();
+
         if not_pascal_case_name(d.name()) {
             s.wln("#[allow(non_camel_case_types)]");
         }
@@ -161,17 +159,34 @@ fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
             );
         });
 
-        s.bodyn(
-            format!(
-                "impl From<{native_ty}> for {primary_key}",
-                primary_key = key.ty().rust_str()
-            ),
-            |s| {
-                s.bodyn(format!("fn from(v: {native_ty}) -> Self"), |s| {
+        create_primary_key_froms(s, key, ty);
+    }
+}
+
+fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
+    let primary_key = key.ty().rust_str();
+
+    let from_tys = match ty {
+        Type::I8 => [Type::I8].as_slice(),
+        Type::I16 => [Type::I8, Type::I16, Type::U8].as_slice(),
+        Type::I32 => [Type::I8, Type::I16, Type::I32, Type::U8, Type::U16].as_slice(),
+        Type::U8 => [Type::U8].as_slice(),
+        Type::U16 => [Type::U8, Type::U16].as_slice(),
+        Type::U32 => [Type::U8, Type::U16, Type::U32].as_slice(),
+        _ => unreachable!("invalid primary key"),
+    };
+
+    for t in from_tys {
+        let t = t.rust_str();
+        s.bodyn(format!("impl From<{t}> for {primary_key}",), |s| {
+            s.bodyn(format!("fn from(v: {t}) -> Self"), |s| {
+                if t == ty.rust_str() {
                     s.wln("Self::new(v)");
-                });
-            },
-        );
+                } else {
+                    s.wln("Self::new(v.into())");
+                }
+            });
+        });
     }
 }
 

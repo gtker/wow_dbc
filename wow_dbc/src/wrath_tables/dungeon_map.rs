@@ -160,9 +160,37 @@ impl DungeonMapKey {
 
 }
 
+impl From<i8> for DungeonMapKey {
+    fn from(v: i8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<i16> for DungeonMapKey {
+    fn from(v: i16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<i32> for DungeonMapKey {
     fn from(v: i32) -> Self {
         Self::new(v)
+    }
+
+}
+
+impl From<u8> for DungeonMapKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for DungeonMapKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
     }
 
 }

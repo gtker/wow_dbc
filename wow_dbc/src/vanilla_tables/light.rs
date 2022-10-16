@@ -162,6 +162,20 @@ impl LightKey {
 
 }
 
+impl From<u8> for LightKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for LightKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<u32> for LightKey {
     fn from(v: u32) -> Self {
         Self::new(v)

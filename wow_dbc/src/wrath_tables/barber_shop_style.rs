@@ -187,9 +187,37 @@ impl BarberShopStyleKey {
 
 }
 
+impl From<i8> for BarberShopStyleKey {
+    fn from(v: i8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<i16> for BarberShopStyleKey {
+    fn from(v: i16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<i32> for BarberShopStyleKey {
     fn from(v: i32) -> Self {
         Self::new(v)
+    }
+
+}
+
+impl From<u8> for BarberShopStyleKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for BarberShopStyleKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
     }
 
 }

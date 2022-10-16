@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * `Hash`, `PartialOrd`, `Ord`, `Default` traits for types that support it.
-* `From<{native_ty}` for primary keys.
+* `From<{native_ty}` and all integer types with a `From<{native_ty}>` for primary keys.
 
 ### Changed
 

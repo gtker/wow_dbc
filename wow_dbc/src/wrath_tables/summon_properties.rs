@@ -145,9 +145,37 @@ impl SummonPropertiesKey {
 
 }
 
+impl From<i8> for SummonPropertiesKey {
+    fn from(v: i8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<i16> for SummonPropertiesKey {
+    fn from(v: i16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<i32> for SummonPropertiesKey {
     fn from(v: i32) -> Self {
         Self::new(v)
+    }
+
+}
+
+impl From<u8> for SummonPropertiesKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for SummonPropertiesKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
     }
 
 }

@@ -167,6 +167,20 @@ impl PackageKey {
 
 }
 
+impl From<u8> for PackageKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for PackageKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<u32> for PackageKey {
     fn from(v: u32) -> Self {
         Self::new(v)

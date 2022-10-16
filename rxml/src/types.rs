@@ -34,10 +34,16 @@ impl DbcDescription {
         &self.flags
     }
 
-    pub fn primary_keys(&self) -> Vec<&Field> {
+    pub fn primary_keys(&self) -> Vec<(&Field, &Type)> {
         self.fields
             .iter()
-            .filter(|a| matches!(a.ty(), Type::PrimaryKey { .. }))
+            .filter_map(|a| {
+                if let Type::PrimaryKey { ty, .. } = a.ty() {
+                    Some((a, ty.as_ref()))
+                } else {
+                    None
+                }
+            })
             .collect()
     }
 

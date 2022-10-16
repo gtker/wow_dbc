@@ -150,6 +150,20 @@ impl ItemVisualEffectsKey {
 
 }
 
+impl From<u8> for ItemVisualEffectsKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for ItemVisualEffectsKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<u32> for ItemVisualEffectsKey {
     fn from(v: u32) -> Self {
         Self::new(v)

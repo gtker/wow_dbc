@@ -131,6 +131,20 @@ impl WeaponSwingSounds2Key {
 
 }
 
+impl From<u8> for WeaponSwingSounds2Key {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for WeaponSwingSounds2Key {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<u32> for WeaponSwingSounds2Key {
     fn from(v: u32) -> Self {
         Self::new(v)

@@ -150,9 +150,37 @@ impl FootprintTexturesKey {
 
 }
 
+impl From<i8> for FootprintTexturesKey {
+    fn from(v: i8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<i16> for FootprintTexturesKey {
+    fn from(v: i16) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
 impl From<i32> for FootprintTexturesKey {
     fn from(v: i32) -> Self {
         Self::new(v)
+    }
+
+}
+
+impl From<u8> for FootprintTexturesKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+
+}
+
+impl From<u16> for FootprintTexturesKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
     }
 
 }
