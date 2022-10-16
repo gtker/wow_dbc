@@ -7,7 +7,7 @@ use crate::ExtendedLocalizedString;
 use crate::wrath_tables::faction::*;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeons {
     pub rows: Vec<LFGDungeonsRow>,
 }
@@ -248,7 +248,7 @@ impl LFGDungeons {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LFGDungeonsKey {
     pub id: i32
 }
@@ -260,7 +260,7 @@ impl LFGDungeonsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
     pub name_lang: ExtendedLocalizedString,

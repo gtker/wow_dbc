@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::vanilla_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TaxiNodes {
     pub rows: Vec<TaxiNodesRow>,
 }
@@ -167,7 +167,7 @@ impl TaxiNodes {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TaxiNodesKey {
     pub id: u32
 }
@@ -179,7 +179,7 @@ impl TaxiNodesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TaxiNodesRow {
     pub id: TaxiNodesKey,
     pub map: MapKey,

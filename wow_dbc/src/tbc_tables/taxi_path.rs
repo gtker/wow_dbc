@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::taxi_nodes::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TaxiPath {
     pub rows: Vec<TaxiPathRow>,
 }
@@ -117,7 +117,7 @@ impl Indexable for TaxiPath {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TaxiPathKey {
     pub id: i32
 }
@@ -129,7 +129,7 @@ impl TaxiPathKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TaxiPathRow {
     pub id: TaxiPathKey,
     pub from_taxi_node: TaxiNodesKey,

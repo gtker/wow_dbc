@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::spell_visual_effect_name::*;
 use crate::wrath_tables::spell_visual_kit::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualKitModelAttach {
     pub rows: Vec<SpellVisualKitModelAttachRow>,
 }
@@ -149,7 +149,7 @@ impl Indexable for SpellVisualKitModelAttach {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKitModelAttachKey {
     pub id: i32
 }
@@ -161,7 +161,7 @@ impl SpellVisualKitModelAttachKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualKitModelAttachRow {
     pub id: SpellVisualKitModelAttachKey,
     pub parent_spell_visual_kit_id: SpellVisualKitKey,

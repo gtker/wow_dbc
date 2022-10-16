@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct BannedAddOns {
     pub rows: Vec<BannedAddOnsRow>,
 }
@@ -129,7 +129,7 @@ impl Indexable for BannedAddOns {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct BannedAddOnsKey {
     pub id: i32
 }
@@ -141,7 +141,7 @@ impl BannedAddOnsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct BannedAddOnsRow {
     pub id: BannedAddOnsKey,
     pub name_m_d5: [i32; 4],

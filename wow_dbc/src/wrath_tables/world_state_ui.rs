@@ -7,7 +7,7 @@ use crate::ExtendedLocalizedString;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldStateUI {
     pub rows: Vec<WorldStateUIRow>,
 }
@@ -247,7 +247,7 @@ impl WorldStateUI {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldStateUIKey {
     pub id: i32
 }
@@ -259,7 +259,7 @@ impl WorldStateUIKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldStateUIRow {
     pub id: WorldStateUIKey,
     pub map_id: MapKey,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponImpactSounds {
     pub rows: Vec<WeaponImpactSoundsRow>,
 }
@@ -129,7 +129,7 @@ impl Indexable for WeaponImpactSounds {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WeaponImpactSoundsKey {
     pub id: u32
 }
@@ -141,7 +141,7 @@ impl WeaponImpactSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponImpactSoundsRow {
     pub id: WeaponImpactSoundsKey,
     pub weapon_subclass: i32,

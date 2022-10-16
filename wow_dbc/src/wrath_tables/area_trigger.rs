@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaTrigger {
     pub rows: Vec<AreaTriggerRow>,
 }
@@ -148,7 +148,7 @@ impl Indexable for AreaTrigger {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AreaTriggerKey {
     pub id: i32
 }
@@ -160,7 +160,7 @@ impl AreaTriggerKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaTriggerRow {
     pub id: AreaTriggerKey,
     pub continent_id: MapKey,

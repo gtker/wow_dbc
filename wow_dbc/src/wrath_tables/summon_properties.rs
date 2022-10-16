@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::faction_template::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SummonProperties {
     pub rows: Vec<SummonPropertiesRow>,
 }
@@ -131,7 +131,7 @@ impl Indexable for SummonProperties {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SummonPropertiesKey {
     pub id: i32
 }
@@ -143,7 +143,7 @@ impl SummonPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SummonPropertiesRow {
     pub id: SummonPropertiesKey,
     pub control: i32,

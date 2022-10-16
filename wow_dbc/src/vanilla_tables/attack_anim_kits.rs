@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::animation_data::*;
 use crate::vanilla_tables::attack_anim_types::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AttackAnimKits {
     pub rows: Vec<AttackAnimKitsRow>,
 }
@@ -125,7 +125,7 @@ impl Indexable for AttackAnimKits {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AttackAnimKitsKey {
     pub id: u32
 }
@@ -137,7 +137,7 @@ impl AttackAnimKitsKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum AttackHand {
     MainHand,
     OffHand,
@@ -173,7 +173,7 @@ impl Default for AttackHand {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AttackAnimKitsRow {
     pub id: AttackAnimKitsKey,
     pub animation_data: AnimationDataKey,

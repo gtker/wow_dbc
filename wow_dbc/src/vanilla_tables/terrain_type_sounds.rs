@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TerrainTypeSounds {
     pub rows: Vec<TerrainTypeSoundsRow>,
 }
@@ -95,7 +95,7 @@ impl Indexable for TerrainTypeSounds {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TerrainTypeSoundsKey {
     pub id: u32
 }
@@ -107,7 +107,7 @@ impl TerrainTypeSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TerrainTypeSoundsRow {
     pub id: TerrainTypeSoundsKey,
 }

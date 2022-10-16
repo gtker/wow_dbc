@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ObjectEffectModifier {
     pub rows: Vec<ObjectEffectModifierRow>,
 }
@@ -126,7 +126,7 @@ impl Indexable for ObjectEffectModifier {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ObjectEffectModifierKey {
     pub id: i32
 }
@@ -138,7 +138,7 @@ impl ObjectEffectModifierKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ObjectEffectModifierRow {
     pub id: ObjectEffectModifierKey,
     pub input_type: i32,

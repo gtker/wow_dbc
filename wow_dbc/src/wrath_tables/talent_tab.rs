@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 use crate::wrath_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TalentTab {
     pub rows: Vec<TalentTabRow>,
 }
@@ -182,7 +182,7 @@ impl TalentTab {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TalentTabKey {
     pub id: i32
 }
@@ -194,7 +194,7 @@ impl TalentTabKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TalentTabRow {
     pub id: TalentTabKey,
     pub name_lang: ExtendedLocalizedString,

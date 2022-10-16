@@ -13,7 +13,7 @@ use crate::vanilla_tables::sound_provider_preferences::*;
 use crate::vanilla_tables::zone_intro_music_table::*;
 use crate::vanilla_tables::zone_music::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaTable {
     pub rows: Vec<AreaTableRow>,
 }
@@ -241,7 +241,7 @@ impl AreaTable {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AreaTableKey {
     pub id: u32
 }
@@ -253,7 +253,7 @@ impl AreaTableKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
 pub struct AreaFlags {
     value: i32,
 }
@@ -269,7 +269,7 @@ impl AreaFlags {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaTableRow {
     pub id: AreaTableKey,
     pub map: MapKey,

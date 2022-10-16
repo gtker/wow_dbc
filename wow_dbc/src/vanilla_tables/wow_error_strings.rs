@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WowError_Strings {
     pub rows: Vec<WowError_StringsRow>,
 }
@@ -148,7 +148,7 @@ impl WowError_Strings {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WowError_StringsKey {
     pub id: u32
 }
@@ -161,7 +161,7 @@ impl WowError_StringsKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WowError_StringsRow {
     pub id: WowError_StringsKey,
     pub name: String,

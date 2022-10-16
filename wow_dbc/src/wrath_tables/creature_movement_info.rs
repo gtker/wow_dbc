@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureMovementInfo {
     pub rows: Vec<CreatureMovementInfoRow>,
 }
@@ -102,7 +102,7 @@ impl Indexable for CreatureMovementInfo {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureMovementInfoKey {
     pub id: i32
 }
@@ -114,7 +114,7 @@ impl CreatureMovementInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureMovementInfoRow {
     pub id: CreatureMovementInfoKey,
     pub smooth_facing_chase_rate: f32,

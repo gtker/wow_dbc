@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PowerDisplay {
     pub rows: Vec<PowerDisplayRow>,
 }
@@ -164,7 +164,7 @@ impl PowerDisplay {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct PowerDisplayKey {
     pub id: i32
 }
@@ -176,7 +176,7 @@ impl PowerDisplayKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PowerDisplayRow {
     pub id: PowerDisplayKey,
     pub actual_type: i32,

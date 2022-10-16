@@ -7,7 +7,7 @@ use crate::wrath_tables::dungeon_map::*;
 use crate::wrath_tables::map::*;
 use crate::wrath_tables::wmo_area_table::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DungeonMapChunk {
     pub rows: Vec<DungeonMapChunkRow>,
 }
@@ -126,7 +126,7 @@ impl Indexable for DungeonMapChunk {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DungeonMapChunkKey {
     pub id: i32
 }
@@ -138,7 +138,7 @@ impl DungeonMapChunkKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DungeonMapChunkRow {
     pub id: DungeonMapChunkKey,
     pub map_id: MapKey,

@@ -7,7 +7,7 @@ use crate::wrath_tables::sound_ambience::*;
 use crate::wrath_tables::sound_provider_preferences::*;
 use crate::wrath_tables::zone_music::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldChunkSounds {
     pub rows: Vec<WorldChunkSoundsRow>,
 }
@@ -154,7 +154,7 @@ impl Indexable for WorldChunkSounds {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldChunkSoundsKey {
     pub id: i32
 }
@@ -166,7 +166,7 @@ impl WorldChunkSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldChunkSoundsRow {
     pub id: WorldChunkSoundsKey,
     pub chunk_x: i32,

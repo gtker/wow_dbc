@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MapDifficulty {
     pub rows: Vec<MapDifficultyRow>,
 }
@@ -175,7 +175,7 @@ impl MapDifficulty {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MapDifficultyKey {
     pub id: i32
 }
@@ -187,7 +187,7 @@ impl MapDifficultyKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MapDifficultyRow {
     pub id: MapDifficultyKey,
     pub map_id: MapKey,

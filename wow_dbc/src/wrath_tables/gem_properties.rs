@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::spell_item_enchantment::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GemProperties {
     pub rows: Vec<GemPropertiesRow>,
 }
@@ -124,7 +124,7 @@ impl Indexable for GemProperties {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GemPropertiesKey {
     pub id: i32
 }
@@ -136,7 +136,7 @@ impl GemPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GemPropertiesRow {
     pub id: GemPropertiesKey,
     pub enchant_id: SpellItemEnchantmentKey,

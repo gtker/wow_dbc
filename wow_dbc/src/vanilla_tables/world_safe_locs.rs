@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 use crate::vanilla_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorldSafeLocs {
     pub rows: Vec<WorldSafeLocsRow>,
 }
@@ -157,7 +157,7 @@ impl WorldSafeLocs {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldSafeLocsKey {
     pub id: u32
 }
@@ -169,7 +169,7 @@ impl WorldSafeLocsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorldSafeLocsRow {
     pub id: WorldSafeLocsKey,
     pub map: MapKey,

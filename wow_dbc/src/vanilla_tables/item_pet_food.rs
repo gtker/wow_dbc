@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemPetFood {
     pub rows: Vec<ItemPetFoodRow>,
 }
@@ -128,7 +128,7 @@ impl ItemPetFood {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemPetFoodKey {
     pub id: u32
 }
@@ -140,7 +140,7 @@ impl ItemPetFoodKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemPetFoodRow {
     pub id: ItemPetFoodKey,
     pub name: LocalizedString,

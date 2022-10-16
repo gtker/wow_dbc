@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ObjectEffectGroup {
     pub rows: Vec<ObjectEffectGroupRow>,
 }
@@ -136,7 +136,7 @@ impl ObjectEffectGroup {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ObjectEffectGroupKey {
     pub id: i32
 }
@@ -148,7 +148,7 @@ impl ObjectEffectGroupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ObjectEffectGroupRow {
     pub id: ObjectEffectGroupKey,
     pub name: String,

@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::Gender;
 use crate::vanilla_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharSections {
     pub rows: Vec<CharSectionsRow>,
 }
@@ -197,7 +197,7 @@ impl CharSections {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharSectionsKey {
     pub id: u32
 }
@@ -209,7 +209,7 @@ impl CharSectionsKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum SelectionType {
     BaseSkin,
     Face,
@@ -254,7 +254,7 @@ impl Default for SelectionType {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharSectionsRow {
     pub id: CharSectionsKey,
     pub race: ChrRacesKey,

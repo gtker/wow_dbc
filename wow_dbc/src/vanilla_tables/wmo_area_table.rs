@@ -10,7 +10,7 @@ use crate::vanilla_tables::sound_provider_preferences::*;
 use crate::vanilla_tables::zone_intro_music_table::*;
 use crate::vanilla_tables::zone_music::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WMOAreaTable {
     pub rows: Vec<WMOAreaTableRow>,
 }
@@ -203,7 +203,7 @@ impl WMOAreaTable {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WMOAreaTableKey {
     pub id: u32
 }
@@ -215,7 +215,7 @@ impl WMOAreaTableKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WMOAreaTableRow {
     pub id: WMOAreaTableKey,
     pub wmo_id: u32,

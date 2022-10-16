@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PvpDifficulty {
     pub rows: Vec<PvpDifficultyRow>,
 }
@@ -131,7 +131,7 @@ impl Indexable for PvpDifficulty {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct PvpDifficultyKey {
     pub id: i32
 }
@@ -143,7 +143,7 @@ impl PvpDifficultyKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PvpDifficultyRow {
     pub id: PvpDifficultyKey,
     pub map_id: MapKey,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellEffectCameraShakes {
     pub rows: Vec<SpellEffectCameraShakesRow>,
 }
@@ -105,7 +105,7 @@ impl Indexable for SpellEffectCameraShakes {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellEffectCameraShakesKey {
     pub id: u32
 }
@@ -117,7 +117,7 @@ impl SpellEffectCameraShakesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellEffectCameraShakesRow {
     pub id: SpellEffectCameraShakesKey,
     pub camera_shake: [u32; 3],

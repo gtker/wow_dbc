@@ -7,7 +7,7 @@ use crate::Gender;
 use crate::vanilla_tables::chr_races::*;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundCharacterMacroLines {
     pub rows: Vec<SoundCharacterMacroLinesRow>,
 }
@@ -126,7 +126,7 @@ impl Indexable for SoundCharacterMacroLines {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundCharacterMacroLinesKey {
     pub id: u32
 }
@@ -138,7 +138,7 @@ impl SoundCharacterMacroLinesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundCharacterMacroLinesRow {
     pub id: SoundCharacterMacroLinesKey,
     pub unknown: u32,

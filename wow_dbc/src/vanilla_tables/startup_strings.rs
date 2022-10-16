@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::LocalizedString;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Startup_Strings {
     pub rows: Vec<Startup_StringsRow>,
 }
@@ -148,7 +148,7 @@ impl Startup_Strings {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct Startup_StringsKey {
     pub id: u32
 }
@@ -161,7 +161,7 @@ impl Startup_StringsKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Startup_StringsRow {
     pub id: Startup_StringsKey,
     pub name: String,

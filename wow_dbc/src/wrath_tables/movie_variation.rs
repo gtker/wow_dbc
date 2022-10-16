@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::file_data::*;
 use crate::wrath_tables::movie::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieVariation {
     pub rows: Vec<MovieVariationRow>,
 }
@@ -111,7 +111,7 @@ impl Indexable for MovieVariation {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MovieVariationKey {
     pub id: i32
 }
@@ -123,7 +123,7 @@ impl MovieVariationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieVariationRow {
     pub id: MovieVariationKey,
     pub movie_id: MovieKey,

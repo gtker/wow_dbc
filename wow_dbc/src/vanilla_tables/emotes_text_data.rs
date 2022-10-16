@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EmotesTextData {
     pub rows: Vec<EmotesTextDataRow>,
 }
@@ -128,7 +128,7 @@ impl EmotesTextData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EmotesTextDataKey {
     pub id: u32
 }
@@ -140,7 +140,7 @@ impl EmotesTextDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EmotesTextDataRow {
     pub id: EmotesTextDataKey,
     pub text: LocalizedString,

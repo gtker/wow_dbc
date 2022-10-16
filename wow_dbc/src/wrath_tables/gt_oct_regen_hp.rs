@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtOCTRegenHP {
     pub rows: Vec<gtOCTRegenHPRow>,
 }
@@ -82,7 +82,7 @@ impl DbcTable for gtOCTRegenHP {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtOCTRegenHPRow {
     pub data: f32,
 }

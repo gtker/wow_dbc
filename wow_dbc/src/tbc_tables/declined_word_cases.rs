@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::declined_word::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeclinedWordCases {
     pub rows: Vec<DeclinedWordCasesRow>,
 }
@@ -151,7 +151,7 @@ impl DeclinedWordCases {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DeclinedWordCasesKey {
     pub id: i32
 }
@@ -163,7 +163,7 @@ impl DeclinedWordCasesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeclinedWordCasesRow {
     pub id: DeclinedWordCasesKey,
     pub declined_word_id: DeclinedWordKey,

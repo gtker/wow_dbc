@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Package {
     pub rows: Vec<PackageRow>,
 }
@@ -153,7 +153,7 @@ impl Package {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct PackageKey {
     pub id: i32
 }
@@ -165,7 +165,7 @@ impl PackageKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PackageRow {
     pub id: PackageKey,
     pub icon: String,

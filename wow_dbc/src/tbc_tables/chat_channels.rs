@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChatChannels {
     pub rows: Vec<ChatChannelsRow>,
 }
@@ -151,7 +151,7 @@ impl ChatChannels {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChatChannelsKey {
     pub id: i32
 }
@@ -163,7 +163,7 @@ impl ChatChannelsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChatChannelsRow {
     pub id: ChatChannelsKey,
     pub flags: i32,

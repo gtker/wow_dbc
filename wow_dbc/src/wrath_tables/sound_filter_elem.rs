@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_filter::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundFilterElem {
     pub rows: Vec<SoundFilterElemRow>,
 }
@@ -127,7 +127,7 @@ impl Indexable for SoundFilterElem {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundFilterElemKey {
     pub id: i32
 }
@@ -139,7 +139,7 @@ impl SoundFilterElemKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundFilterElemRow {
     pub id: SoundFilterElemKey,
     pub sound_filter_id: SoundFilterKey,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ParticleColor {
     pub rows: Vec<ParticleColorRow>,
 }
@@ -125,7 +125,7 @@ impl Indexable for ParticleColor {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ParticleColorKey {
     pub id: i32
 }
@@ -137,7 +137,7 @@ impl ParticleColorKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ParticleColorRow {
     pub id: ParticleColorKey,
     pub start: [i32; 3],

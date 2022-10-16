@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::faction::*;
 use crate::vanilla_tables::faction_group::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionTemplate {
     pub rows: Vec<FactionTemplateRow>,
 }
@@ -152,7 +152,7 @@ impl Indexable for FactionTemplate {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct FactionTemplateKey {
     pub id: u32
 }
@@ -164,7 +164,7 @@ impl FactionTemplateKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
 pub struct Flags {
     value: u32,
 }
@@ -180,7 +180,7 @@ impl Flags {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionTemplateRow {
     pub id: FactionTemplateKey,
     pub faction: FactionKey,

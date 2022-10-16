@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemVisuals {
     pub rows: Vec<ItemVisualsRow>,
 }
@@ -105,7 +105,7 @@ impl Indexable for ItemVisuals {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemVisualsKey {
     pub id: i32
 }
@@ -117,7 +117,7 @@ impl ItemVisualsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemVisualsRow {
     pub id: ItemVisualsKey,
     pub slot: [i32; 5],

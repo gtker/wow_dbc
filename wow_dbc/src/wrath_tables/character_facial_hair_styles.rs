@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::wrath_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharacterFacialHairStyles {
     pub rows: Vec<CharacterFacialHairStylesRow>,
 }
@@ -107,7 +107,7 @@ impl DbcTable for CharacterFacialHairStyles {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharacterFacialHairStylesRow {
     pub race_id: ChrRacesKey,
     pub sex_id: i32,

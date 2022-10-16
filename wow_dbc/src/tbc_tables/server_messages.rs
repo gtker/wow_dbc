@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ServerMessages {
     pub rows: Vec<ServerMessagesRow>,
 }
@@ -128,7 +128,7 @@ impl ServerMessages {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ServerMessagesKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl ServerMessagesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ServerMessagesRow {
     pub id: ServerMessagesKey,
     pub text_lang: ExtendedLocalizedString,

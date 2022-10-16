@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::item_extended_cost::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemCondExtCosts {
     pub rows: Vec<ItemCondExtCostsRow>,
 }
@@ -117,7 +117,7 @@ impl Indexable for ItemCondExtCosts {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemCondExtCostsKey {
     pub id: i32
 }
@@ -129,7 +129,7 @@ impl ItemCondExtCostsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemCondExtCostsRow {
     pub id: ItemCondExtCostsKey,
     pub cond_extended_cost: i32,

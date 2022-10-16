@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellMissileMotion {
     pub rows: Vec<SpellMissileMotionRow>,
 }
@@ -168,7 +168,7 @@ impl SpellMissileMotion {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellMissileMotionKey {
     pub id: i32
 }
@@ -180,7 +180,7 @@ impl SpellMissileMotionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellMissileMotionRow {
     pub id: SpellMissileMotionKey,
     pub name: String,

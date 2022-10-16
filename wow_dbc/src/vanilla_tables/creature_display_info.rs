@@ -10,7 +10,7 @@ use crate::vanilla_tables::creature_sound_data::*;
 use crate::vanilla_tables::npc_sounds::*;
 use crate::vanilla_tables::unit_blood::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfo {
     pub rows: Vec<CreatureDisplayInfoRow>,
 }
@@ -215,7 +215,7 @@ impl CreatureDisplayInfo {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureDisplayInfoKey {
     pub id: u32
 }
@@ -227,7 +227,7 @@ impl CreatureDisplayInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfoRow {
     pub id: CreatureDisplayInfoKey,
     pub model: CreatureModelDataKey,

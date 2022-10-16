@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeons {
     pub rows: Vec<LFGDungeonsRow>,
 }
@@ -156,7 +156,7 @@ impl LFGDungeons {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LFGDungeonsKey {
     pub id: u32
 }
@@ -168,7 +168,7 @@ impl LFGDungeonsKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum InstanceType {
     GroupInstance,
     RaidInstance,
@@ -210,7 +210,7 @@ impl Default for InstanceType {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum Faction {
     Neutral,
     Horde,
@@ -249,7 +249,7 @@ impl Default for Faction {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
     pub name: LocalizedString,

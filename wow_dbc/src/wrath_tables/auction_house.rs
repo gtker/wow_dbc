@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 use crate::wrath_tables::faction::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AuctionHouse {
     pub rows: Vec<AuctionHouseRow>,
 }
@@ -150,7 +150,7 @@ impl AuctionHouse {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AuctionHouseKey {
     pub id: i32
 }
@@ -162,7 +162,7 @@ impl AuctionHouseKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AuctionHouseRow {
     pub id: AuctionHouseKey,
     pub faction_id: FactionKey,

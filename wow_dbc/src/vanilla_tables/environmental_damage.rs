@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::spell_visual_kit::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EnvironmentalDamage {
     pub rows: Vec<EnvironmentalDamageRow>,
 }
@@ -110,7 +110,7 @@ impl Indexable for EnvironmentalDamage {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EnvironmentalDamageKey {
     pub id: u32
 }
@@ -122,7 +122,7 @@ impl EnvironmentalDamageKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EnvironmentalDamageRow {
     pub id: EnvironmentalDamageKey,
     pub en: i32,

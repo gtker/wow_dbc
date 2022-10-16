@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::light_skybox::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LightParams {
     pub rows: Vec<LightParamsRow>,
 }
@@ -152,7 +152,7 @@ impl Indexable for LightParams {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LightParamsKey {
     pub id: i32
 }
@@ -164,7 +164,7 @@ impl LightParamsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LightParamsRow {
     pub id: LightParamsKey,
     pub highlight_sky: i32,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Exhaustion {
     pub rows: Vec<ExhaustionRow>,
 }
@@ -163,7 +163,7 @@ impl Exhaustion {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ExhaustionKey {
     pub id: i32
 }
@@ -175,7 +175,7 @@ impl ExhaustionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ExhaustionRow {
     pub id: ExhaustionKey,
     pub xp: i32,

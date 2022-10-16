@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::taxi_path::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LoadingScreenTaxiSplines {
     pub rows: Vec<LoadingScreenTaxiSplinesRow>,
 }
@@ -130,7 +130,7 @@ impl Indexable for LoadingScreenTaxiSplines {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LoadingScreenTaxiSplinesKey {
     pub id: i32
 }
@@ -142,7 +142,7 @@ impl LoadingScreenTaxiSplinesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LoadingScreenTaxiSplinesRow {
     pub id: LoadingScreenTaxiSplinesKey,
     pub path_id: TaxiPathKey,

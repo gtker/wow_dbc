@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::map::*;
 use crate::wrath_tables::sound_entries_advanced::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundEmitters {
     pub rows: Vec<SoundEmittersRow>,
 }
@@ -172,7 +172,7 @@ impl SoundEmitters {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundEmittersKey {
     pub id: i32
 }
@@ -184,7 +184,7 @@ impl SoundEmittersKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundEmittersRow {
     pub id: SoundEmittersKey,
     pub position: [f32; 3],

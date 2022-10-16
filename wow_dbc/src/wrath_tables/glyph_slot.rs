@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GlyphSlot {
     pub rows: Vec<GlyphSlotRow>,
 }
@@ -109,7 +109,7 @@ impl Indexable for GlyphSlot {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GlyphSlotKey {
     pub id: i32
 }
@@ -121,7 +121,7 @@ impl GlyphSlotKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GlyphSlotRow {
     pub id: GlyphSlotKey,
     pub ty: i32,

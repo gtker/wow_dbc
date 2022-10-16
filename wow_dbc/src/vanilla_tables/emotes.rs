@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::animation_data::*;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Emotes {
     pub rows: Vec<EmotesRow>,
 }
@@ -173,7 +173,7 @@ impl Emotes {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EmotesKey {
     pub id: u32
 }
@@ -185,7 +185,7 @@ impl EmotesKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum EmoteSpecProc {
     NoLoop,
     Loop,
@@ -224,7 +224,7 @@ impl Default for EmoteSpecProc {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
 pub struct EmoteFlags {
     value: i32,
 }
@@ -240,7 +240,7 @@ impl EmoteFlags {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EmotesRow {
     pub id: EmotesKey,
     pub emote_slash_command: String,

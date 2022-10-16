@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CinematicSequences {
     pub rows: Vec<CinematicSequencesRow>,
 }
@@ -113,7 +113,7 @@ impl Indexable for CinematicSequences {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CinematicSequencesKey {
     pub id: i32
 }
@@ -125,7 +125,7 @@ impl CinematicSequencesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CinematicSequencesRow {
     pub id: CinematicSequencesKey,
     pub sound_id: SoundEntriesKey,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellFocusObject {
     pub rows: Vec<SpellFocusObjectRow>,
 }
@@ -128,7 +128,7 @@ impl SpellFocusObject {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellFocusObjectKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl SpellFocusObjectKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellFocusObjectRow {
     pub id: SpellFocusObjectKey,
     pub name_lang: ExtendedLocalizedString,

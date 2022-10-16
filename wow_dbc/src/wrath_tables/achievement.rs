@@ -9,7 +9,7 @@ use crate::wrath_tables::faction::*;
 use crate::wrath_tables::map::*;
 use crate::wrath_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Achievement {
     pub rows: Vec<AchievementRow>,
 }
@@ -220,7 +220,7 @@ impl Achievement {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AchievementKey {
     pub id: i32
 }
@@ -232,7 +232,7 @@ impl AchievementKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AchievementRow {
     pub id: AchievementKey,
     pub faction: FactionKey,

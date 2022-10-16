@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyQuestions {
     pub rows: Vec<GMSurveyQuestionsRow>,
 }
@@ -128,7 +128,7 @@ impl GMSurveyQuestions {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GMSurveyQuestionsKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl GMSurveyQuestionsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyQuestionsRow {
     pub id: GMSurveyQuestionsKey,
     pub question_lang: ExtendedLocalizedString,

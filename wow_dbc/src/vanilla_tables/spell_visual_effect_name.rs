@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualEffectName {
     pub rows: Vec<SpellVisualEffectNameRow>,
 }
@@ -168,7 +168,7 @@ impl SpellVisualEffectName {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualEffectNameKey {
     pub id: u32
 }
@@ -180,7 +180,7 @@ impl SpellVisualEffectNameKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualEffectNameRow {
     pub id: SpellVisualEffectNameKey,
     pub name: String,

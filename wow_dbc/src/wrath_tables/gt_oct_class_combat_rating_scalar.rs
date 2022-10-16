@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtOCTClassCombatRatingScalar {
     pub rows: Vec<gtOCTClassCombatRatingScalarRow>,
 }
@@ -102,7 +102,7 @@ impl Indexable for gtOCTClassCombatRatingScalar {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct gtOCTClassCombatRatingScalarKey {
     pub id: i32
 }
@@ -114,7 +114,7 @@ impl gtOCTClassCombatRatingScalarKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtOCTClassCombatRatingScalarRow {
     pub id: gtOCTClassCombatRatingScalarKey,
     pub data: f32,

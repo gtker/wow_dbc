@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct VehicleSeat {
     pub rows: Vec<VehicleSeatRow>,
 }
@@ -484,7 +484,7 @@ impl Indexable for VehicleSeat {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VehicleSeatKey {
     pub id: i32
 }
@@ -496,7 +496,7 @@ impl VehicleSeatKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct VehicleSeatRow {
     pub id: VehicleSeatKey,
     pub field_3_3_5_12213_001: f32,

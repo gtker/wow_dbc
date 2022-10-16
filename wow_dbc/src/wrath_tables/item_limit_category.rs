@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemLimitCategory {
     pub rows: Vec<ItemLimitCategoryRow>,
 }
@@ -142,7 +142,7 @@ impl ItemLimitCategory {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemLimitCategoryKey {
     pub id: i32
 }
@@ -154,7 +154,7 @@ impl ItemLimitCategoryKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemLimitCategoryRow {
     pub id: ItemLimitCategoryKey,
     pub name_lang: ExtendedLocalizedString,

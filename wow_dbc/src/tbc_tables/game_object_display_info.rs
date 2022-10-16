@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct GameObjectDisplayInfo {
     pub rows: Vec<GameObjectDisplayInfoRow>,
 }
@@ -166,7 +166,7 @@ impl GameObjectDisplayInfo {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GameObjectDisplayInfoKey {
     pub id: i32
 }
@@ -178,7 +178,7 @@ impl GameObjectDisplayInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct GameObjectDisplayInfoRow {
     pub id: GameObjectDisplayInfoKey,
     pub model_name: String,

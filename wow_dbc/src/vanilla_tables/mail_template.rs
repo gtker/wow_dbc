@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MailTemplate {
     pub rows: Vec<MailTemplateRow>,
 }
@@ -128,7 +128,7 @@ impl MailTemplate {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MailTemplateKey {
     pub id: u32
 }
@@ -140,7 +140,7 @@ impl MailTemplateKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MailTemplateRow {
     pub id: MailTemplateKey,
     pub body: LocalizedString,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HolidayNames {
     pub rows: Vec<HolidayNamesRow>,
 }
@@ -128,7 +128,7 @@ impl HolidayNames {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct HolidayNamesKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl HolidayNamesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HolidayNamesRow {
     pub id: HolidayNamesKey,
     pub name_lang: ExtendedLocalizedString,

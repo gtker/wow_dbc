@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 use crate::wrath_tables::skill_line::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemSet {
     pub rows: Vec<ItemSetRow>,
 }
@@ -173,7 +173,7 @@ impl ItemSet {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemSetKey {
     pub id: i32
 }
@@ -185,7 +185,7 @@ impl ItemSetKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemSetRow {
     pub id: ItemSetKey,
     pub name_lang: ExtendedLocalizedString,

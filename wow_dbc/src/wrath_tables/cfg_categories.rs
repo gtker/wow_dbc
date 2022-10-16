@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_Categories {
     pub rows: Vec<Cfg_CategoriesRow>,
 }
@@ -151,7 +151,7 @@ impl Cfg_Categories {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct Cfg_CategoriesKey {
     pub id: i32
 }
@@ -164,7 +164,7 @@ impl Cfg_CategoriesKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_CategoriesRow {
     pub id: Cfg_CategoriesKey,
     pub locale_mask: i32,

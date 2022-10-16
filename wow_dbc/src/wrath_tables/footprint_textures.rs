@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FootprintTextures {
     pub rows: Vec<FootprintTexturesRow>,
 }
@@ -136,7 +136,7 @@ impl FootprintTextures {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct FootprintTexturesKey {
     pub id: i32
 }
@@ -148,7 +148,7 @@ impl FootprintTexturesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FootprintTexturesRow {
     pub id: FootprintTexturesKey,
     pub footstep_filename: String,

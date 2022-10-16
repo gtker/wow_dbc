@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMTicketCategory {
     pub rows: Vec<GMTicketCategoryRow>,
 }
@@ -128,7 +128,7 @@ impl GMTicketCategory {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GMTicketCategoryKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl GMTicketCategoryKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMTicketCategoryRow {
     pub id: GMTicketCategoryKey,
     pub category_lang: ExtendedLocalizedString,

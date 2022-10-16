@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellDispelType {
     pub rows: Vec<SpellDispelTypeRow>,
 }
@@ -160,7 +160,7 @@ impl SpellDispelType {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellDispelTypeKey {
     pub id: i32
 }
@@ -172,7 +172,7 @@ impl SpellDispelTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellDispelTypeRow {
     pub id: SpellDispelTypeKey,
     pub name_lang: ExtendedLocalizedString,

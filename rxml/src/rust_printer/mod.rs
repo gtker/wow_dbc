@@ -73,10 +73,31 @@ fn print_derives(s: &mut Writer, fields: &[Field]) {
     if can_derive_eq(fields) {
         s.w_no_indent(", Eq");
     }
+
+    s.w(", PartialOrd");
+
+    if can_derive_ord(fields) {
+        s.w(", Ord");
+    }
+
+    if can_derive_hash(fields) {
+        s.w(", Hash");
+    }
+
     s.wln_no_indent(")]");
 }
 
+fn can_derive_hash(fields: &[Field]) -> bool {
+    does_not_contain_float(fields)
+}
+fn can_derive_ord(fields: &[Field]) -> bool {
+    does_not_contain_float(fields)
+}
 fn can_derive_eq(fields: &[Field]) -> bool {
+    does_not_contain_float(fields)
+}
+
+fn does_not_contain_float(fields: &[Field]) -> bool {
     for field in fields {
         match field.ty() {
             Type::Float => return false,
@@ -126,7 +147,7 @@ fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
         if not_pascal_case_name(d.name()) {
             s.wln("#[allow(non_camel_case_types)]");
         }
-        s.wln("#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]");
+        s.wln("#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]");
         s.new_struct(key.ty().rust_str(), |s| {
             s.wln(format!("pub id: {}", native_ty));
         });
@@ -148,7 +169,7 @@ fn create_enums(s: &mut Writer, d: &DbcDescription) {
             continue;
         }
 
-        s.wln("#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]");
+        s.wln("#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]");
         s.new_enum(en.name(), |s| {
             for enumerator in en.enumerators() {
                 s.wln(format!("{},", enumerator.name()));
@@ -211,7 +232,7 @@ fn create_enums(s: &mut Writer, d: &DbcDescription) {
 
 fn create_flags(s: &mut Writer, d: &DbcDescription) {
     for en in d.flags() {
-        s.wln("#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Default)]");
+        s.wln("#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]");
         s.new_struct(en.name(), |s| {
             s.wln(format!("value: {},", en.ty().rust_str()));
         });

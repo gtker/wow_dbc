@@ -11,7 +11,7 @@ use crate::vanilla_tables::faction_template::*;
 use crate::vanilla_tables::sound_entries::*;
 use crate::vanilla_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ChrRaces {
     pub rows: Vec<ChrRacesRow>,
 }
@@ -321,7 +321,7 @@ impl ChrRaces {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChrRacesKey {
     pub id: u32
 }
@@ -333,7 +333,7 @@ impl ChrRacesKey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum BaseLanguage {
     Horde,
     Alliance,
@@ -369,7 +369,7 @@ impl Default for BaseLanguage {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
 pub struct Flags {
     value: u32,
 }
@@ -385,7 +385,7 @@ impl Flags {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ChrRacesRow {
     pub id: ChrRacesKey,
     pub flags: Flags,

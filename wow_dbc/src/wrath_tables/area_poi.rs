@@ -8,7 +8,7 @@ use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::faction_template::*;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaPOI {
     pub rows: Vec<AreaPOIRow>,
 }
@@ -209,7 +209,7 @@ impl AreaPOI {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AreaPOIKey {
     pub id: i32
 }
@@ -221,7 +221,7 @@ impl AreaPOIKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaPOIRow {
     pub id: AreaPOIKey,
     pub importance: i32,

@@ -92,7 +92,7 @@ pub use error::*;
 /// DBCs from the English version of the game will only have English version strings, while other localizations will have other languages.
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 #[cfg(any(feature = "tbc", feature = "wrath"))]
 pub struct ExtendedLocalizedString {
     /// English, Great Britain
@@ -255,7 +255,7 @@ impl ExtendedLocalizedString {
 /// DBCs from the English version of the game will only have English version strings, while other localizations will have other languages.
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct LocalizedString {
     /// English, Great Britain
     pub en_gb: String,
@@ -371,7 +371,7 @@ impl LocalizedString {
 }
 
 #[allow(missing_docs)]
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum Gender {
     Male,
     Female,
@@ -411,7 +411,7 @@ impl Default for Gender {
 }
 
 #[allow(missing_docs)]
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum SizeClass {
     None,
     Small,

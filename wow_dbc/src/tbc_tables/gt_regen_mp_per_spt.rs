@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtRegenMPPerSpt {
     pub rows: Vec<gtRegenMPPerSptRow>,
 }
@@ -82,7 +82,7 @@ impl DbcTable for gtRegenMPPerSpt {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtRegenMPPerSptRow {
     pub data: f32,
 }

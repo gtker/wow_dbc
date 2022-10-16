@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtChanceToMeleeCrit {
     pub rows: Vec<gtChanceToMeleeCritRow>,
 }
@@ -82,7 +82,7 @@ impl DbcTable for gtChanceToMeleeCrit {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtChanceToMeleeCritRow {
     pub data: f32,
 }

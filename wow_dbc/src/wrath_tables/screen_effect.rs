@@ -7,7 +7,7 @@ use crate::wrath_tables::light_params::*;
 use crate::wrath_tables::sound_ambience::*;
 use crate::wrath_tables::zone_music::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ScreenEffect {
     pub rows: Vec<ScreenEffectRow>,
 }
@@ -177,7 +177,7 @@ impl ScreenEffect {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ScreenEffectKey {
     pub id: i32
 }
@@ -189,7 +189,7 @@ impl ScreenEffectKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ScreenEffectRow {
     pub id: ScreenEffectKey,
     pub name: String,

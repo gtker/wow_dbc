@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundEntriesAdvanced {
     pub rows: Vec<SoundEntriesAdvancedRow>,
 }
@@ -291,7 +291,7 @@ impl SoundEntriesAdvanced {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundEntriesAdvancedKey {
     pub id: i32
 }
@@ -303,7 +303,7 @@ impl SoundEntriesAdvancedKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundEntriesAdvancedRow {
     pub id: SoundEntriesAdvancedKey,
     pub sound_entry_id: SoundEntriesKey,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CurrencyCategory {
     pub rows: Vec<CurrencyCategoryRow>,
 }
@@ -135,7 +135,7 @@ impl CurrencyCategory {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CurrencyCategoryKey {
     pub id: i32
 }
@@ -147,7 +147,7 @@ impl CurrencyCategoryKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CurrencyCategoryRow {
     pub id: CurrencyCategoryKey,
     pub flags: i32,

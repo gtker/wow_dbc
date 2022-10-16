@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::object_effect_group::*;
 use crate::wrath_tables::object_effect_package::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ObjectEffectPackageElem {
     pub rows: Vec<ObjectEffectPackageElemRow>,
 }
@@ -118,7 +118,7 @@ impl Indexable for ObjectEffectPackageElem {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ObjectEffectPackageElemKey {
     pub id: i32
 }
@@ -130,7 +130,7 @@ impl ObjectEffectPackageElemKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ObjectEffectPackageElemRow {
     pub id: ObjectEffectPackageElemKey,
     pub object_effect_package_id: ObjectEffectPackageKey,

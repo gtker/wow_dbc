@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::Gender;
 use crate::vanilla_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairTextures {
     pub rows: Vec<CharHairTexturesRow>,
 }
@@ -142,7 +142,7 @@ impl Indexable for CharHairTextures {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharHairTexturesKey {
     pub id: u32
 }
@@ -154,7 +154,7 @@ impl CharHairTexturesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairTexturesRow {
     pub id: CharHairTexturesKey,
     pub race: ChrRacesKey,

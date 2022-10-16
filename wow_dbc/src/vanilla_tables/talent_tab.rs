@@ -8,7 +8,7 @@ use crate::vanilla_tables::chr_classes::*;
 use crate::vanilla_tables::chr_races::*;
 use crate::vanilla_tables::spell_icon::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TalentTab {
     pub rows: Vec<TalentTabRow>,
 }
@@ -177,7 +177,7 @@ impl TalentTab {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TalentTabKey {
     pub id: u32
 }
@@ -189,7 +189,7 @@ impl TalentTabKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TalentTabRow {
     pub id: TalentTabKey,
     pub name: LocalizedString,

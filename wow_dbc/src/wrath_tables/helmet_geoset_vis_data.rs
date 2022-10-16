@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HelmetGeosetVisData {
     pub rows: Vec<HelmetGeosetVisDataRow>,
 }
@@ -105,7 +105,7 @@ impl Indexable for HelmetGeosetVisData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct HelmetGeosetVisDataKey {
     pub id: i32
 }
@@ -117,7 +117,7 @@ impl HelmetGeosetVisDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HelmetGeosetVisDataRow {
     pub id: HelmetGeosetVisDataKey,
     pub hide_geoset: [i32; 7],

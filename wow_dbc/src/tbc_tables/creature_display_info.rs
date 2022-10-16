@@ -10,7 +10,7 @@ use crate::tbc_tables::npc_sounds::*;
 use crate::tbc_tables::particle_color::*;
 use crate::tbc_tables::unit_blood::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfo {
     pub rows: Vec<CreatureDisplayInfoRow>,
 }
@@ -240,7 +240,7 @@ impl CreatureDisplayInfo {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureDisplayInfoKey {
     pub id: i32
 }
@@ -252,7 +252,7 @@ impl CreatureDisplayInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfoRow {
     pub id: CreatureDisplayInfoKey,
     pub model_id: CreatureModelDataKey,

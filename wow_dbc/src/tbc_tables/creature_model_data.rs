@@ -8,7 +8,7 @@ use crate::tbc_tables::footprint_textures::*;
 use crate::tbc_tables::material::*;
 use crate::tbc_tables::unit_blood::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureModelData {
     pub rows: Vec<CreatureModelDataRow>,
 }
@@ -262,7 +262,7 @@ impl CreatureModelData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureModelDataKey {
     pub id: i32
 }
@@ -274,7 +274,7 @@ impl CreatureModelDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureModelDataRow {
     pub id: CreatureModelDataKey,
     pub flags: i32,

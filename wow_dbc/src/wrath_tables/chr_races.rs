@@ -12,7 +12,7 @@ use crate::wrath_tables::languages::*;
 use crate::wrath_tables::sound_entries::*;
 use crate::wrath_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChrRaces {
     pub rows: Vec<ChrRacesRow>,
 }
@@ -326,7 +326,7 @@ impl ChrRaces {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChrRacesKey {
     pub id: i32
 }
@@ -338,7 +338,7 @@ impl ChrRacesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChrRacesRow {
     pub id: ChrRacesKey,
     pub flags: i32,

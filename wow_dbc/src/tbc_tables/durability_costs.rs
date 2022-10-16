@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DurabilityCosts {
     pub rows: Vec<DurabilityCostsRow>,
 }
@@ -115,7 +115,7 @@ impl Indexable for DurabilityCosts {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DurabilityCostsKey {
     pub id: i32
 }
@@ -127,7 +127,7 @@ impl DurabilityCostsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DurabilityCostsRow {
     pub id: DurabilityCostsKey,
     pub weapon_sub_class_cost: [i32; 21],

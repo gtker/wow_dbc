@@ -18,7 +18,7 @@ use crate::wrath_tables::spell_mechanic::*;
 use crate::wrath_tables::spell_missile::*;
 use crate::wrath_tables::spell_rune_cost::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Spell {
     pub rows: Vec<SpellRow>,
 }
@@ -958,7 +958,7 @@ impl Spell {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellKey {
     pub id: i32
 }
@@ -970,7 +970,7 @@ impl SpellKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellRow {
     pub id: SpellKey,
     pub category: SpellCategoryKey,

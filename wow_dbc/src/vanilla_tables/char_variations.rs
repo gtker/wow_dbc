@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Gender;
 use crate::vanilla_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharVariations {
     pub rows: Vec<CharVariationsRow>,
 }
@@ -115,7 +115,7 @@ impl DbcTable for CharVariations {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharVariationsRow {
     pub id: ChrRacesKey,
     pub gender: Gender,

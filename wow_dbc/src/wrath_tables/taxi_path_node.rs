@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::map::*;
 use crate::wrath_tables::taxi_path::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TaxiPathNode {
     pub rows: Vec<TaxiPathNodeRow>,
 }
@@ -156,7 +156,7 @@ impl Indexable for TaxiPathNode {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TaxiPathNodeKey {
     pub id: i32
 }
@@ -168,7 +168,7 @@ impl TaxiPathNodeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TaxiPathNodeRow {
     pub id: TaxiPathNodeKey,
     pub path_id: TaxiPathKey,

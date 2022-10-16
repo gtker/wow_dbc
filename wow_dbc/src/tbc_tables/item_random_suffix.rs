@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemRandomSuffix {
     pub rows: Vec<ItemRandomSuffixRow>,
 }
@@ -166,7 +166,7 @@ impl ItemRandomSuffix {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemRandomSuffixKey {
     pub id: i32
 }
@@ -178,7 +178,7 @@ impl ItemRandomSuffixKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemRandomSuffixRow {
     pub id: ItemRandomSuffixKey,
     pub name_lang: ExtendedLocalizedString,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::vanilla_tables::gm_survey_surveys::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyCurrentSurvey {
     pub rows: Vec<GMSurveyCurrentSurveyRow>,
 }
@@ -90,7 +90,7 @@ impl DbcTable for GMSurveyCurrentSurvey {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum Language {
     English,
     Korean,
@@ -144,7 +144,7 @@ impl Default for Language {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyCurrentSurveyRow {
     pub language: Language,
     pub gm_survey: GMSurveySurveysKey,

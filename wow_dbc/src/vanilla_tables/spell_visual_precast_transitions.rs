@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellVisualPrecastTransitions {
     pub rows: Vec<SpellVisualPrecastTransitionsRow>,
 }
@@ -154,7 +154,7 @@ impl SpellVisualPrecastTransitions {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualPrecastTransitionsKey {
     pub id: u32
 }
@@ -166,7 +166,7 @@ impl SpellVisualPrecastTransitionsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellVisualPrecastTransitionsRow {
     pub id: SpellVisualPrecastTransitionsKey,
     pub load_animation: String,

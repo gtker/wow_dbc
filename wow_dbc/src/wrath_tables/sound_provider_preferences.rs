@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundProviderPreferences {
     pub rows: Vec<SoundProviderPreferencesRow>,
 }
@@ -290,7 +290,7 @@ impl SoundProviderPreferences {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundProviderPreferencesKey {
     pub id: i32
 }
@@ -302,7 +302,7 @@ impl SoundProviderPreferencesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundProviderPreferencesRow {
     pub id: SoundProviderPreferencesKey,
     pub description: String,

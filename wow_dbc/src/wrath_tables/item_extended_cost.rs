@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::item_purchase_group::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemExtendedCost {
     pub rows: Vec<ItemExtendedCostRow>,
 }
@@ -151,7 +151,7 @@ impl Indexable for ItemExtendedCost {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemExtendedCostKey {
     pub id: i32
 }
@@ -163,7 +163,7 @@ impl ItemExtendedCostKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemExtendedCostRow {
     pub id: ItemExtendedCostKey,
     pub honor_points: i32,

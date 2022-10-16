@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Weather {
     pub rows: Vec<WeatherRow>,
 }
@@ -168,7 +168,7 @@ impl Weather {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WeatherKey {
     pub id: i32
 }
@@ -180,7 +180,7 @@ impl WeatherKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WeatherRow {
     pub id: WeatherKey,
     pub ambience_id: SoundEntriesKey,

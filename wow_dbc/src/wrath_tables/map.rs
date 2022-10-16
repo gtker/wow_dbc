@@ -7,7 +7,7 @@ use crate::ExtendedLocalizedString;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::loading_screens::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Map {
     pub rows: Vec<MapRow>,
 }
@@ -253,7 +253,7 @@ impl Map {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MapKey {
     pub id: i32
 }
@@ -265,7 +265,7 @@ impl MapKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct MapRow {
     pub id: MapKey,
     pub directory: String,

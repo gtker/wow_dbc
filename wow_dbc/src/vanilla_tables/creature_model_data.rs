@@ -7,7 +7,7 @@ use crate::SizeClass;
 use crate::vanilla_tables::footprint_textures::*;
 use crate::vanilla_tables::unit_blood::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureModelData {
     pub rows: Vec<CreatureModelDataRow>,
 }
@@ -237,7 +237,7 @@ impl CreatureModelData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureModelDataKey {
     pub id: u32
 }
@@ -249,7 +249,7 @@ impl CreatureModelDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureModelDataRow {
     pub id: CreatureModelDataKey,
     pub flags: i32,

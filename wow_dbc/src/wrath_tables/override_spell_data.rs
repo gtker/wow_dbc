@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OverrideSpellData {
     pub rows: Vec<OverrideSpellDataRow>,
 }
@@ -112,7 +112,7 @@ impl Indexable for OverrideSpellData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct OverrideSpellDataKey {
     pub id: i32
 }
@@ -124,7 +124,7 @@ impl OverrideSpellDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OverrideSpellDataRow {
     pub id: OverrideSpellDataKey,
     pub spells: [i32; 10],

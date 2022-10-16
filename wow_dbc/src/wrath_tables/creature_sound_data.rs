@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::footstep_terrain_lookup::*;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureSoundData {
     pub rows: Vec<CreatureSoundDataRow>,
 }
@@ -313,7 +313,7 @@ impl Indexable for CreatureSoundData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureSoundDataKey {
     pub id: i32
 }
@@ -325,7 +325,7 @@ impl CreatureSoundDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureSoundDataRow {
     pub id: CreatureSoundDataKey,
     pub sound_exertion_id: SoundEntriesKey,

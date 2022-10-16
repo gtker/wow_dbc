@@ -7,7 +7,7 @@ use crate::tbc_tables::animation_data::*;
 use crate::tbc_tables::sound_entries::*;
 use crate::tbc_tables::spell_effect_camera_shakes::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualKit {
     pub rows: Vec<SpellVisualKitRow>,
 }
@@ -256,7 +256,7 @@ impl Indexable for SpellVisualKit {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKitKey {
     pub id: i32
 }
@@ -268,7 +268,7 @@ impl SpellVisualKitKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualKitRow {
     pub id: SpellVisualKitKey,
     pub kit_type: i32,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::animation_data::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TransportAnimation {
     pub rows: Vec<TransportAnimationRow>,
 }
@@ -138,7 +138,7 @@ impl Indexable for TransportAnimation {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TransportAnimationKey {
     pub id: u32
 }
@@ -150,7 +150,7 @@ impl TransportAnimationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TransportAnimationRow {
     pub id: TransportAnimationKey,
     pub transport: u32,

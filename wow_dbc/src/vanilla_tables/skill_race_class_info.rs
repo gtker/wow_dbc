@@ -9,7 +9,7 @@ use crate::vanilla_tables::skill_costs_data::*;
 use crate::vanilla_tables::skill_line::*;
 use crate::vanilla_tables::skill_tiers::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillRaceClassInfo {
     pub rows: Vec<SkillRaceClassInfoRow>,
 }
@@ -149,7 +149,7 @@ impl Indexable for SkillRaceClassInfo {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SkillRaceClassInfoKey {
     pub id: u32
 }
@@ -161,7 +161,7 @@ impl SkillRaceClassInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillRaceClassInfoRow {
     pub id: SkillRaceClassInfoKey,
     pub skill_line: SkillLineKey,

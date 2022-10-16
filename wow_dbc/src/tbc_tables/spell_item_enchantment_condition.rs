@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellItemEnchantmentCondition {
     pub rows: Vec<SpellItemEnchantmentConditionRow>,
 }
@@ -183,7 +183,7 @@ impl Indexable for SpellItemEnchantmentCondition {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellItemEnchantmentConditionKey {
     pub id: i32
 }
@@ -195,7 +195,7 @@ impl SpellItemEnchantmentConditionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellItemEnchantmentConditionRow {
     pub id: SpellItemEnchantmentConditionKey,
     pub lt_operand_type: [i8; 5],

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VocalUISounds {
     pub rows: Vec<VocalUISoundsRow>,
 }
@@ -130,7 +130,7 @@ impl Indexable for VocalUISounds {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VocalUISoundsKey {
     pub id: i32
 }
@@ -142,7 +142,7 @@ impl VocalUISoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VocalUISoundsRow {
     pub id: VocalUISoundsKey,
     pub vocal_u_i_enum: i32,

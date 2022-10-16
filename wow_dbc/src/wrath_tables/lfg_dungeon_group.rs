@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonGroup {
     pub rows: Vec<LFGDungeonGroupRow>,
 }
@@ -149,7 +149,7 @@ impl LFGDungeonGroup {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LFGDungeonGroupKey {
     pub id: i32
 }
@@ -161,7 +161,7 @@ impl LFGDungeonGroupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonGroupRow {
     pub id: LFGDungeonGroupKey,
     pub name_lang: ExtendedLocalizedString,

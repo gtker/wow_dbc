@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtNPCManaCostScaler {
     pub rows: Vec<gtNPCManaCostScalerRow>,
 }
@@ -82,7 +82,7 @@ impl DbcTable for gtNPCManaCostScaler {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtNPCManaCostScalerRow {
     pub data: f32,
 }

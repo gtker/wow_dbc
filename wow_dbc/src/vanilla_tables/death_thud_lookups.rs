@@ -7,7 +7,7 @@ use crate::SizeClass;
 use crate::vanilla_tables::sound_entries::*;
 use crate::vanilla_tables::terrain_type::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookups {
     pub rows: Vec<DeathThudLookupsRow>,
 }
@@ -126,7 +126,7 @@ impl Indexable for DeathThudLookups {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DeathThudLookupsKey {
     pub id: u32
 }
@@ -138,7 +138,7 @@ impl DeathThudLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookupsRow {
     pub id: DeathThudLookupsKey,
     pub size: SizeClass,

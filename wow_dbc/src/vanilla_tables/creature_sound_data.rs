@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CreatureSoundData {
     pub rows: Vec<CreatureSoundDataRow>,
 }
@@ -299,7 +299,7 @@ impl Indexable for CreatureSoundData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureSoundDataKey {
     pub id: u32
 }
@@ -311,7 +311,7 @@ impl CreatureSoundDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CreatureSoundDataRow {
     pub id: CreatureSoundDataKey,
     pub sound_exertion: SoundEntriesKey,

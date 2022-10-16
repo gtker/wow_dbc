@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DurabilityQuality {
     pub rows: Vec<DurabilityQualityRow>,
 }
@@ -102,7 +102,7 @@ impl Indexable for DurabilityQuality {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DurabilityQualityKey {
     pub id: u32
 }
@@ -114,7 +114,7 @@ impl DurabilityQualityKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DurabilityQualityRow {
     pub id: DurabilityQualityKey,
     pub data: f32,

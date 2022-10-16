@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellChainEffects {
     pub rows: Vec<SpellChainEffectsRow>,
 }
@@ -178,7 +178,7 @@ impl SpellChainEffects {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellChainEffectsKey {
     pub id: u32
 }
@@ -190,7 +190,7 @@ impl SpellChainEffectsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellChainEffectsRow {
     pub id: SpellChainEffectsKey,
     pub average_seg_len: f32,

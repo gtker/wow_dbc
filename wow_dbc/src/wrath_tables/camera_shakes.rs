@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CameraShakes {
     pub rows: Vec<CameraShakesRow>,
 }
@@ -144,7 +144,7 @@ impl Indexable for CameraShakes {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CameraShakesKey {
     pub id: i32
 }
@@ -156,7 +156,7 @@ impl CameraShakesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CameraShakesRow {
     pub id: CameraShakesKey,
     pub shake_type: i32,

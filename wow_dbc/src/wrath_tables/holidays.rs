@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::holiday_descriptions::*;
 use crate::wrath_tables::holiday_names::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Holidays {
     pub rows: Vec<HolidaysRow>,
 }
@@ -217,7 +217,7 @@ impl Holidays {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct HolidaysKey {
     pub id: i32
 }
@@ -229,7 +229,7 @@ impl HolidaysKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HolidaysRow {
     pub id: HolidaysKey,
     pub duration: [i32; 10],

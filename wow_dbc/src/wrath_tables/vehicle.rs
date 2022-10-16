@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::vehicle_ui_indicator::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Vehicle {
     pub rows: Vec<VehicleRow>,
 }
@@ -374,7 +374,7 @@ impl Vehicle {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VehicleKey {
     pub id: i32
 }
@@ -386,7 +386,7 @@ impl VehicleKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct VehicleRow {
     pub id: VehicleKey,
     pub flags: i32,

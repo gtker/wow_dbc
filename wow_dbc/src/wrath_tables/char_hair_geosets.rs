@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairGeosets {
     pub rows: Vec<CharHairGeosetsRow>,
 }
@@ -131,7 +131,7 @@ impl Indexable for CharHairGeosets {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharHairGeosetsKey {
     pub id: i32
 }
@@ -143,7 +143,7 @@ impl CharHairGeosetsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairGeosetsRow {
     pub id: CharHairGeosetsKey,
     pub race_id: ChrRacesKey,

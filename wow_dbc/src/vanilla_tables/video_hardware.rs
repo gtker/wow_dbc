@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VideoHardware {
     pub rows: Vec<VideoHardwareRow>,
 }
@@ -105,7 +105,7 @@ impl Indexable for VideoHardware {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VideoHardwareKey {
     pub id: u32
 }
@@ -117,7 +117,7 @@ impl VideoHardwareKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VideoHardwareRow {
     pub id: VideoHardwareKey,
     pub unknown: [u32; 21],

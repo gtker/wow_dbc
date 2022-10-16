@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GroundEffectDoodad {
     pub rows: Vec<GroundEffectDoodadRow>,
 }
@@ -143,7 +143,7 @@ impl GroundEffectDoodad {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GroundEffectDoodadKey {
     pub id: i32
 }
@@ -155,7 +155,7 @@ impl GroundEffectDoodadKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GroundEffectDoodadRow {
     pub id: GroundEffectDoodadKey,
     pub doodadpath: String,

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PaperDollItemFrame {
     pub rows: Vec<PaperDollItemFrameRow>,
 }
@@ -141,7 +141,7 @@ impl PaperDollItemFrame {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PaperDollItemFrameRow {
     pub item_button_name: String,
     pub slot_icon: String,

@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct QuestSort {
     pub rows: Vec<QuestSortRow>,
 }
@@ -128,7 +128,7 @@ impl QuestSort {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct QuestSortKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl QuestSortKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct QuestSortRow {
     pub id: QuestSortKey,
     pub sort_name_lang: ExtendedLocalizedString,

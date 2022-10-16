@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::LocalizedString;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_Categories {
     pub rows: Vec<Cfg_CategoriesRow>,
 }
@@ -123,7 +123,7 @@ impl Cfg_Categories {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum Category {
     One,
     Two,
@@ -165,7 +165,7 @@ impl Default for Category {
 
 }
 
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum Region {
     UnitedStates,
     Korea,
@@ -217,7 +217,7 @@ impl Default for Region {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_CategoriesRow {
     pub category: Category,
     pub region: Region,

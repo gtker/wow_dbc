@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonExpansion {
     pub rows: Vec<LFGDungeonExpansionRow>,
 }
@@ -144,7 +144,7 @@ impl Indexable for LFGDungeonExpansion {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LFGDungeonExpansionKey {
     pub id: i32
 }
@@ -156,7 +156,7 @@ impl LFGDungeonExpansionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonExpansionRow {
     pub id: LFGDungeonExpansionKey,
     pub lfg_id: i32,

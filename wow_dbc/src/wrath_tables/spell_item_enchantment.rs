@@ -8,7 +8,7 @@ use crate::wrath_tables::item_visuals::*;
 use crate::wrath_tables::skill_line::*;
 use crate::wrath_tables::spell_item_enchantment_condition::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellItemEnchantment {
     pub rows: Vec<SpellItemEnchantmentRow>,
 }
@@ -227,7 +227,7 @@ impl SpellItemEnchantment {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellItemEnchantmentKey {
     pub id: i32
 }
@@ -239,7 +239,7 @@ impl SpellItemEnchantmentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellItemEnchantmentRow {
     pub id: SpellItemEnchantmentKey,
     pub charges: i32,

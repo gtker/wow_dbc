@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 use crate::wrath_tables::gm_survey_questions::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyAnswers {
     pub rows: Vec<GMSurveyAnswersRow>,
 }
@@ -143,7 +143,7 @@ impl GMSurveyAnswers {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GMSurveyAnswersKey {
     pub id: i32
 }
@@ -155,7 +155,7 @@ impl GMSurveyAnswersKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyAnswersRow {
     pub id: GMSurveyAnswersKey,
     pub sort_index: i32,

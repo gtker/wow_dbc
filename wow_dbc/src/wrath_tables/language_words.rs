@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::languages::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LanguageWords {
     pub rows: Vec<LanguageWordsRow>,
 }
@@ -144,7 +144,7 @@ impl LanguageWords {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LanguageWordsKey {
     pub id: i32
 }
@@ -156,7 +156,7 @@ impl LanguageWordsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LanguageWordsRow {
     pub id: LanguageWordsKey,
     pub language_id: LanguagesKey,

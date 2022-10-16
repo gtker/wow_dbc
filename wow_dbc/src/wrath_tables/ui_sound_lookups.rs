@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UISoundLookups {
     pub rows: Vec<UISoundLookupsRow>,
 }
@@ -144,7 +144,7 @@ impl UISoundLookups {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct UISoundLookupsKey {
     pub id: i32
 }
@@ -156,7 +156,7 @@ impl UISoundLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UISoundLookupsRow {
     pub id: UISoundLookupsKey,
     pub sound_id: SoundEntriesKey,

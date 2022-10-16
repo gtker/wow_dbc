@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LoadingScreens {
     pub rows: Vec<LoadingScreensRow>,
 }
@@ -161,7 +161,7 @@ impl LoadingScreens {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LoadingScreensKey {
     pub id: i32
 }
@@ -173,7 +173,7 @@ impl LoadingScreensKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LoadingScreensRow {
     pub id: LoadingScreensKey,
     pub name: String,

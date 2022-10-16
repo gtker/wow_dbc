@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorldMapArea {
     pub rows: Vec<WorldMapAreaRow>,
 }
@@ -201,7 +201,7 @@ impl WorldMapArea {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapAreaKey {
     pub id: i32
 }
@@ -213,7 +213,7 @@ impl WorldMapAreaKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorldMapAreaRow {
     pub id: WorldMapAreaKey,
     pub map_id: MapKey,

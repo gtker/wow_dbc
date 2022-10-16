@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellRuneCost {
     pub rows: Vec<SpellRuneCostRow>,
 }
@@ -123,7 +123,7 @@ impl Indexable for SpellRuneCost {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellRuneCostKey {
     pub id: i32
 }
@@ -135,7 +135,7 @@ impl SpellRuneCostKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellRuneCostRow {
     pub id: SpellRuneCostKey,
     pub blood: i32,

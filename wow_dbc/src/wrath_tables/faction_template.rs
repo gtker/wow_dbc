@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::faction::*;
 use crate::wrath_tables::faction_group::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionTemplate {
     pub rows: Vec<FactionTemplateRow>,
 }
@@ -152,7 +152,7 @@ impl Indexable for FactionTemplate {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct FactionTemplateKey {
     pub id: i32
 }
@@ -164,7 +164,7 @@ impl FactionTemplateKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionTemplateRow {
     pub id: FactionTemplateKey,
     pub faction: FactionKey,

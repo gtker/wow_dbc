@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TeamContributionPoints {
     pub rows: Vec<TeamContributionPointsRow>,
 }
@@ -102,7 +102,7 @@ impl Indexable for TeamContributionPoints {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TeamContributionPointsKey {
     pub id: i32
 }
@@ -114,7 +114,7 @@ impl TeamContributionPointsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TeamContributionPointsRow {
     pub id: TeamContributionPointsKey,
     pub data: f32,

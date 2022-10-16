@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::vanilla_tables::chr_races::*;
 use crate::vanilla_tables::sound_entries::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VocalUISounds {
     pub rows: Vec<VocalUISoundsRow>,
 }
@@ -139,7 +139,7 @@ impl Indexable for VocalUISounds {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VocalUISoundsKey {
     pub id: u32
 }
@@ -151,7 +151,7 @@ impl VocalUISoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VocalUISoundsRow {
     pub id: VocalUISoundsKey,
     pub vocal_ui_enum: i32,

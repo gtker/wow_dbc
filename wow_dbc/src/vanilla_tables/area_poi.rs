@@ -9,7 +9,7 @@ use crate::vanilla_tables::faction::*;
 use crate::vanilla_tables::map::*;
 use crate::vanilla_tables::world_state_ui::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaPOI {
     pub rows: Vec<AreaPOIRow>,
 }
@@ -211,7 +211,7 @@ impl AreaPOI {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AreaPOIKey {
     pub id: u32
 }
@@ -223,7 +223,7 @@ impl AreaPOIKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaPOIRow {
     pub id: AreaPOIKey,
     pub importance: i32,

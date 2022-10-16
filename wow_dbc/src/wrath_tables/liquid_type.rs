@@ -8,7 +8,7 @@ use crate::wrath_tables::liquid_material::*;
 use crate::wrath_tables::sound_entries::*;
 use crate::wrath_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LiquidType {
     pub rows: Vec<LiquidTypeRow>,
 }
@@ -296,7 +296,7 @@ impl LiquidType {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LiquidTypeKey {
     pub id: i32
 }
@@ -308,7 +308,7 @@ impl LiquidTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LiquidTypeRow {
     pub id: LiquidTypeKey,
     pub name: String,

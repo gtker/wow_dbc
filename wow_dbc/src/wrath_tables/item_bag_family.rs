@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemBagFamily {
     pub rows: Vec<ItemBagFamilyRow>,
 }
@@ -128,7 +128,7 @@ impl ItemBagFamily {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemBagFamilyKey {
     pub id: i32
 }
@@ -140,7 +140,7 @@ impl ItemBagFamilyKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemBagFamilyRow {
     pub id: ItemBagFamilyKey,
     pub name_lang: ExtendedLocalizedString,

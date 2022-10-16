@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellVisualKitAreaModel {
     pub rows: Vec<SpellVisualKitAreaModelRow>,
 }
@@ -143,7 +143,7 @@ impl SpellVisualKitAreaModel {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKitAreaModelKey {
     pub id: i32
 }
@@ -155,7 +155,7 @@ impl SpellVisualKitAreaModelKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellVisualKitAreaModelRow {
     pub id: SpellVisualKitAreaModelKey,
     pub name: String,

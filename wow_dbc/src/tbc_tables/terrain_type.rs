@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TerrainType {
     pub rows: Vec<TerrainTypeRow>,
 }
@@ -151,7 +151,7 @@ impl TerrainType {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TerrainTypeRow {
     pub terrain_id: i32,
     pub terrain_desc: String,

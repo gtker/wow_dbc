@@ -8,7 +8,7 @@ use crate::vanilla_tables::chr_races::*;
 use crate::vanilla_tables::skill_line::*;
 use crate::vanilla_tables::spell::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillLineAbility {
     pub rows: Vec<SkillLineAbilityRow>,
 }
@@ -193,7 +193,7 @@ impl Indexable for SkillLineAbility {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SkillLineAbilityKey {
     pub id: u32
 }
@@ -205,7 +205,7 @@ impl SkillLineAbilityKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillLineAbilityRow {
     pub id: SkillLineAbilityKey,
     pub skill_line: SkillLineKey,

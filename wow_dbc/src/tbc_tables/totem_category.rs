@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::ExtendedLocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TotemCategory {
     pub rows: Vec<TotemCategoryRow>,
 }
@@ -142,7 +142,7 @@ impl TotemCategory {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TotemCategoryKey {
     pub id: i32
 }
@@ -154,7 +154,7 @@ impl TotemCategoryKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TotemCategoryRow {
     pub id: TotemCategoryKey,
     pub name_lang: ExtendedLocalizedString,

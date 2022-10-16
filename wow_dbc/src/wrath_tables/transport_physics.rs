@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TransportPhysics {
     pub rows: Vec<TransportPhysicsRow>,
 }
@@ -165,7 +165,7 @@ impl Indexable for TransportPhysics {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TransportPhysicsKey {
     pub id: i32
 }
@@ -177,7 +177,7 @@ impl TransportPhysicsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TransportPhysicsRow {
     pub id: TransportPhysicsKey,
     pub wave_amp: f32,

@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LightSkybox {
     pub rows: Vec<LightSkyboxRow>,
 }
@@ -143,7 +143,7 @@ impl LightSkybox {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LightSkyboxKey {
     pub id: i32
 }
@@ -155,7 +155,7 @@ impl LightSkyboxKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LightSkyboxRow {
     pub id: LightSkyboxKey,
     pub name: String,

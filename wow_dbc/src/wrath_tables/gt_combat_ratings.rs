@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtCombatRatings {
     pub rows: Vec<gtCombatRatingsRow>,
 }
@@ -82,7 +82,7 @@ impl DbcTable for gtCombatRatings {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct gtCombatRatingsRow {
     pub data: f32,
 }

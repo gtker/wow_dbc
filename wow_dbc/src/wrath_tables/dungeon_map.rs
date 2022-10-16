@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::area_table::*;
 use crate::wrath_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DungeonMap {
     pub rows: Vec<DungeonMapRow>,
 }
@@ -146,7 +146,7 @@ impl Indexable for DungeonMap {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DungeonMapKey {
     pub id: i32
 }
@@ -158,7 +158,7 @@ impl DungeonMapKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DungeonMapRow {
     pub id: DungeonMapKey,
     pub map_id: MapKey,

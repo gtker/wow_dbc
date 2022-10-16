@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::LocalizedString;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellMechanic {
     pub rows: Vec<SpellMechanicRow>,
 }
@@ -128,7 +128,7 @@ impl SpellMechanic {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellMechanicKey {
     pub id: u32
 }
@@ -140,7 +140,7 @@ impl SpellMechanicKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellMechanicRow {
     pub id: SpellMechanicKey,
     pub state_name: LocalizedString,

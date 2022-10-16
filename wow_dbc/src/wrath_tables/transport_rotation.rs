@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TransportRotation {
     pub rows: Vec<TransportRotationRow>,
 }
@@ -119,7 +119,7 @@ impl Indexable for TransportRotation {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TransportRotationKey {
     pub id: i32
 }
@@ -131,7 +131,7 @@ impl TransportRotationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TransportRotationRow {
     pub id: TransportRotationKey,
     pub game_objects_id: i32,

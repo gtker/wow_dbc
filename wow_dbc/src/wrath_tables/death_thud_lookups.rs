@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::wrath_tables::sound_entries::*;
 use crate::wrath_tables::terrain_type_sounds::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookups {
     pub rows: Vec<DeathThudLookupsRow>,
 }
@@ -125,7 +125,7 @@ impl Indexable for DeathThudLookups {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DeathThudLookupsKey {
     pub id: i32
 }
@@ -137,7 +137,7 @@ impl DeathThudLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookupsRow {
     pub id: DeathThudLookupsKey,
     pub size_class: i32,

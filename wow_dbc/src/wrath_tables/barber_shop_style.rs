@@ -6,7 +6,7 @@ use crate::Indexable;
 use crate::ExtendedLocalizedString;
 use crate::wrath_tables::chr_races::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct BarberShopStyle {
     pub rows: Vec<BarberShopStyleRow>,
 }
@@ -173,7 +173,7 @@ impl BarberShopStyle {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct BarberShopStyleKey {
     pub id: i32
 }
@@ -185,7 +185,7 @@ impl BarberShopStyleKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct BarberShopStyleRow {
     pub id: BarberShopStyleKey,
     pub ty: i32,

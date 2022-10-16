@@ -4,7 +4,7 @@ use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AreaGroup {
     pub rows: Vec<AreaGroupRow>,
 }
@@ -112,7 +112,7 @@ impl Indexable for AreaGroup {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AreaGroupKey {
     pub id: i32
 }
@@ -124,7 +124,7 @@ impl AreaGroupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AreaGroupRow {
     pub id: AreaGroupKey,
     pub area_id: [i32; 6],

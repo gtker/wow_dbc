@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::Indexable;
 use crate::tbc_tables::map::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorldMapTransforms {
     pub rows: Vec<WorldMapTransformsRow>,
 }
@@ -140,7 +140,7 @@ impl Indexable for WorldMapTransforms {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapTransformsKey {
     pub id: i32
 }
@@ -152,7 +152,7 @@ impl WorldMapTransformsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorldMapTransformsRow {
     pub id: WorldMapTransformsKey,
     pub map_id: MapKey,
