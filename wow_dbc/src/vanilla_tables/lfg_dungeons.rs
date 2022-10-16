@@ -124,11 +124,13 @@ impl DbcTable for LFGDungeons {
 
 impl Indexable for LFGDungeons {
     type PrimaryKey = LFGDungeonsKey;
-    fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row> {
+    fn get(&self, key: impl Into<Self::PrimaryKey>) -> Option<&Self::Row> {
+        let key = key.into();
         self.rows.iter().find(|a| a.id.id == key.id)
     }
 
-    fn get_mut(&mut self, key: &Self::PrimaryKey) -> Option<&mut Self::Row> {
+    fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row> {
+        let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
 
@@ -164,6 +166,13 @@ pub struct LFGDungeonsKey {
 impl LFGDungeonsKey {
     pub const fn new(id: u32) -> Self {
         Self { id }
+    }
+
+}
+
+impl From<u32> for LFGDungeonsKey {
+    fn from(v: u32) -> Self {
+        Self::new(v)
     }
 
 }

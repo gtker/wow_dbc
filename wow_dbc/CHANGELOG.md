@@ -9,7 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* `Hash`, `PartialOrd`, `Ord`, `Default` traits for types that support it.
+* `From<{native_ty}` for primary keys.
+
 ### Changed
+
+* BREAKING: Changed `Indexable::get` and `Indexable::get_mut` parameters from `&Self::PrimaryKey` to `impl Into<Self::PrimaryKey>`.
+This is in order to reduce the boilerplate needed for calling the functions with values that aren't from another `wow_dbc` table.
+This makes it possible to do `table.get(value)` instead of `table.get(TableKey::new(value))`
 
 ### Deprecated
 

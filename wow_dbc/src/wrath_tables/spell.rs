@@ -920,11 +920,13 @@ impl DbcTable for Spell {
 
 impl Indexable for Spell {
     type PrimaryKey = SpellKey;
-    fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row> {
+    fn get(&self, key: impl Into<Self::PrimaryKey>) -> Option<&Self::Row> {
+        let key = key.into();
         self.rows.iter().find(|a| a.id.id == key.id)
     }
 
-    fn get_mut(&mut self, key: &Self::PrimaryKey) -> Option<&mut Self::Row> {
+    fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row> {
+        let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
 
@@ -966,6 +968,13 @@ pub struct SpellKey {
 impl SpellKey {
     pub const fn new(id: i32) -> Self {
         Self { id }
+    }
+
+}
+
+impl From<i32> for SpellKey {
+    fn from(v: i32) -> Self {
+        Self::new(v)
     }
 
 }

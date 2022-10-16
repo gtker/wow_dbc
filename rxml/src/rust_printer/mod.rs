@@ -160,6 +160,18 @@ fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
                 },
             );
         });
+
+        s.bodyn(
+            format!(
+                "impl From<{native_ty}> for {primary_key}",
+                primary_key = key.ty().rust_str()
+            ),
+            |s| {
+                s.bodyn(format!("fn from(v: {native_ty}) -> Self"), |s| {
+                    s.wln("Self::new(v)");
+                });
+            },
+        );
     }
 }
 

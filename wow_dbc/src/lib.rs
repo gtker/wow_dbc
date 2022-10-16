@@ -500,9 +500,9 @@ pub trait Indexable: DbcTable {
 
     /// Gets the primary key, if present. Internally this is just [`std::iter::Iterator::find`] since the
     /// items are not guaranteed to be ordered nor even be present.
-    fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row>;
+    fn get(&self, key: impl Into<Self::PrimaryKey>) -> Option<&Self::Row>;
 
     /// Gets the primary key, if present. Internally this is just [`std::iter::Iterator::find`] since the
     /// items are not guaranteed to be ordered nor even be present.
-    fn get_mut(&mut self, key: &Self::PrimaryKey) -> Option<&mut Self::Row>;
+    fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row>;
 }

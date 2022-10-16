@@ -111,11 +111,13 @@ impl DbcTable for Achievement_Category {
 
 impl Indexable for Achievement_Category {
     type PrimaryKey = Achievement_CategoryKey;
-    fn get(&self, key: &Self::PrimaryKey) -> Option<&Self::Row> {
+    fn get(&self, key: impl Into<Self::PrimaryKey>) -> Option<&Self::Row> {
+        let key = key.into();
         self.rows.iter().find(|a| a.id.id == key.id)
     }
 
-    fn get_mut(&mut self, key: &Self::PrimaryKey) -> Option<&mut Self::Row> {
+    fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row> {
+        let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
 
@@ -152,6 +154,13 @@ pub struct Achievement_CategoryKey {
 impl Achievement_CategoryKey {
     pub const fn new(id: i32) -> Self {
         Self { id }
+    }
+
+}
+
+impl From<i32> for Achievement_CategoryKey {
+    fn from(v: i32) -> Self {
+        Self::new(v)
     }
 
 }
