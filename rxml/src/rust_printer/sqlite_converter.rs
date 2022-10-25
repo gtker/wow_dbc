@@ -187,7 +187,7 @@ fn create_insert(s: &mut Writer, description: &DbcDescription) {
             _ => {}
         }
 
-        s.w(format!("{}", field.name()));
+        s.w(field.name());
         if i != description.fields().len() - 1 {
             s.wln_no_indent(",");
         } else {
@@ -339,8 +339,8 @@ fn create_table_ty(ty: &Type) -> &'static str {
         | Type::Bool
         | Type::Bool32 => "INTEGER",
         Type::ExtendedStringRefLoc | Type::StringRefLoc | Type::StringRef => "TEXT",
-        Type::PrimaryKey { ty, .. } => create_table_ty(&ty),
-        Type::ForeignKey { ty, .. } => create_table_ty(&ty),
+        Type::PrimaryKey { ty, .. } => create_table_ty(ty),
+        Type::ForeignKey { ty, .. } => create_table_ty(ty),
         Type::Float => "REAL",
     }
 }

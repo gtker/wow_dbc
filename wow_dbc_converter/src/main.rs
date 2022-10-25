@@ -77,7 +77,7 @@ fn main() {
         };
         input_directory
             .filter_map(|a| {
-                if let Some(a) = a.ok() {
+                if let Ok(a) = a {
                     if let Some(extension) = a.path().extension() {
                         if extension.to_string_lossy().as_ref() == "dbc" {
                             Some(a.path())
@@ -118,7 +118,7 @@ fn main() {
             }
         };
 
-        if contents.len() == 0 {
+        if contents.is_empty() {
             println!(
                 "'{}' is an empty file. This can happend for some Vanilla files.",
                 file.display()

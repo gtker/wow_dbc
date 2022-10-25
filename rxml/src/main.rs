@@ -85,7 +85,7 @@ fn main() {
         let mut modules = Vec::with_capacity(o.descriptions().len());
 
         for d in o.descriptions() {
-            let s = rust_printer::create_table(&d, &o, version);
+            let s = rust_printer::create_table(d, &o, version);
 
             modules.push(s.module_name());
 
