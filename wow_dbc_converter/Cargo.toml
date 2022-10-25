@@ -6,5 +6,6 @@ edition = "2021"
 [features]
 
 [dependencies]
-wow_dbc = { version = "0.2.0", path = "../wow_dbc", features = ["vanilla", "tbc", "wrath"] }
+wow_dbc = { path = "../wow_dbc", features = ["vanilla", "tbc", "wrath"] }
 rusqlite = { version = "0.28.0", features = ["bundled"] }
+clap = { version = "4.0.25", features = ["derive"] }

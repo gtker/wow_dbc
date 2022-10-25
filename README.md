@@ -7,6 +7,7 @@ The project is split into the subdirectories:
 
 * `rxml`: Auto generates the definitions from the `.xml` files in `rxml/xml`.
 * `wow_dbc`: Rust library for the DBC reading and writing. [On crates.io](https://crates.io/crates/wow_dbc) and [docs.rs](https://docs.rs/wow_dbc/latest/wow_dbc/).
+* `wow_dbc_converter`: Executable that converts DBC files to SQLite databases (Vanilla, TBC and Wrath supported).
 
 ## License
 
