@@ -20,8 +20,7 @@ pub fn sqlite_converter(
 }
 
 fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: &Objects) {
-    s.open_curly("pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], options: &Options) -> Result<(), SqliteError>");
-    s.wln("let mut conn = Connection::open(&options.output_path)?;");
+    s.open_curly("pub(crate) fn write_to_sqlite(conn: &mut Connection, file_name: &str, file_contents: &mut &[u8]) -> Result<(), SqliteError>");
 
     s.open_curly("match file_name");
 
@@ -346,7 +345,7 @@ fn create_table_ty(ty: &Type) -> &'static str {
 }
 
 fn includes(s: &mut Writer, version: DbcVersion) {
-    s.wln("use crate::{Options, SqliteError};");
+    s.wln("use crate::SqliteError;");
     s.wln("use rusqlite::{Connection, params};");
     s.wln("use wow_dbc::DbcTable;");
 

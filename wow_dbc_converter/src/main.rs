@@ -10,6 +10,7 @@ use std::path::PathBuf;
 use std::process::exit;
 
 use clap::Parser;
+use rusqlite::Connection;
 
 /// Convert DBC files to SQLite databases
 #[derive(Parser, Debug)]
@@ -142,12 +143,22 @@ fn apply_file(options: &Options, file: &PathBuf) {
     let file_name = file_name.to_string_lossy();
     let file_name = file_name.as_ref();
 
+    let mut conn = match Connection::open(&options.output_path) {
+        Ok(e) => e,
+        Err(e) => {
+            fatal_error(format!(
+                "Unable to open SQLite database '{}' because of error: '{}'",
+                options.output_path.display(),
+                e
+            ));
+        }
+    };
     match options.expansion {
         Expansion::Vanilla => {
             match vanilla_tables_sqlite::write_to_sqlite(
+                &mut conn,
                 file_name,
                 &mut contents.as_slice(),
-                &options,
             ) {
                 Ok(_) => {}
                 Err(e) => {
@@ -164,7 +175,7 @@ fn apply_file(options: &Options, file: &PathBuf) {
             }
         }
         Expansion::BurningCrusade => {
-            match tbc_tables_sqlite::write_to_sqlite(file_name, &mut contents.as_slice(), &options)
+            match tbc_tables_sqlite::write_to_sqlite(&mut conn, file_name, &mut contents.as_slice())
             {
                 Ok(_) => {}
                 Err(e) => {
@@ -182,9 +193,9 @@ fn apply_file(options: &Options, file: &PathBuf) {
         }
         Expansion::Wrath => {
             match wrath_tables_sqlite::write_to_sqlite(
+                &mut conn,
                 file_name,
                 &mut contents.as_slice(),
-                &options,
             ) {
                 Ok(_) => {}
                 Err(e) => {

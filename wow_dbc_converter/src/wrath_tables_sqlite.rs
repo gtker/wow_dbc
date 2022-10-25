@@ -1,10 +1,9 @@
-use crate::{Options, SqliteError};
+use crate::SqliteError;
 use rusqlite::{Connection, params};
 use wow_dbc::DbcTable;
 use wow_dbc::wrath_tables::*;
 
-pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], options: &Options) -> Result<(), SqliteError> {
-    let mut conn = Connection::open(&options.output_path)?;
+pub(crate) fn write_to_sqlite(conn: &mut Connection, file_name: &str, file_contents: &mut &[u8]) -> Result<(), SqliteError> {
     match file_name {
         "Cfg_Categories.dbc" => {
             let data = cfg_categories::Cfg_Categories::read(file_contents)?;
