@@ -4,8 +4,9 @@ mod vanilla_tables_sqlite;
 mod wrath_tables_sqlite;
 
 pub(crate) use error::*;
+use std::fmt::{Display, Formatter};
 
-use std::fs::{create_dir, read, read_dir};
+use std::fs::{create_dir_all, read, read_dir};
 use std::path::PathBuf;
 use std::process::exit;
 
@@ -50,6 +51,20 @@ pub(crate) enum Expansion {
     Vanilla,
     BurningCrusade,
     Wrath,
+}
+
+impl Display for Expansion {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Expansion::Vanilla => "Vanilla (1.12.x.y)",
+                Expansion::BurningCrusade => "The Burning Crusade (2.4.3.8606)",
+                Expansion::Wrath => "Wrath of the Lich King (3.3.5.12340)",
+            }
+        )
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -252,38 +267,67 @@ fn options(args: Args) -> Options {
     };
 
     let output_path = if let Some(p) = args.output_path {
-        if !p.exists() && p.extension().is_none() {
-            println!("Output directory '{}' does not exist.", p.display());
-            if args.strict_mode {
-                println!("Exiting.");
-                exit(1);
+        if p.exists() {
+            println!("Output path '{}' exists.", p.display());
+            if !p.is_file() {
+                println!("Output path '{}' is not a file.", p.display());
+                p.join(default_file_name)
             } else {
-                println!(
-                    "Attempting to create directory '{}' and continuing.",
-                    p.display()
-                );
-                match create_dir(&p) {
-                    Ok(_) => {
-                        println!("Successfully created directory '{}'", p.display());
-                        println!("Continuing.");
-                    }
-                    Err(_) => {
-                        println!("Failed to create directory '{}'", p.display());
+                println!("Output path '{}' is a file.", p.display());
+                p
+            }
+        } else {
+            println!("Output path '{}' does not exist.", p.display());
+
+            if let Some(parent) = p.parent() {
+                if parent.exists() {
+                    println!("Parent '{}' exists.", parent.display());
+                    println!("Creating new file at '{}'", p.display());
+
+                    p
+                } else {
+                    if args.strict_mode {
                         println!("Exiting.");
                         exit(1);
                     }
-                }
-            }
-        }
 
-        if p.is_dir() {
-            p.join(default_file_name)
-        } else {
-            p
+                    println!("Creating path '{}' and all parents.", p.display());
+
+                    match create_dir_all(&parent) {
+                        Ok(_) => {
+                            println!("Successfully created directory '{}'", parent.display());
+                        }
+                        Err(e) => {
+                            println!("Failed to create directory '{}': '{}'", parent.display(), e);
+                            println!("Exiting.");
+                            exit(1);
+                        }
+                    }
+
+                    p
+                }
+            } else {
+                println!("Parent for '{}' does not exist.", p.display());
+
+                p.join(default_file_name)
+            }
         }
     } else {
         cwd.join(default_file_name)
     };
+
+    println!();
+    println!("Input path: '{}'", input_path.display());
+    println!("Output path: '{}'", output_path.display());
+    println!(
+        "Strict mode: {}",
+        if args.strict_mode {
+            "Enabled"
+        } else {
+            "Disabled"
+        }
+    );
+    println!("DBC Version: {}", args.dbc_version);
 
     Options {
         input_path,
