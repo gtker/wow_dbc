@@ -2,7 +2,7 @@ use heck::ToSnakeCase;
 use std::fmt::Write;
 
 pub struct Writer {
-    name: String,
+    name: Option<String>,
     inner: String,
     indentation: u8,
 }
@@ -19,12 +19,20 @@ impl Writer {
     }
 
     pub fn module_name(&self) -> String {
-        self.name.to_snake_case()
+        self.name.as_ref().unwrap().to_snake_case()
+    }
+
+    pub fn new_no_name() -> Self {
+        Self {
+            name: None,
+            inner: String::with_capacity(8000),
+            indentation: 0,
+        }
     }
 
     pub fn new(name: &str) -> Self {
         Self {
-            name: name.to_string(),
+            name: Some(name.to_string()),
             inner: String::with_capacity(8000),
             indentation: 0,
         }

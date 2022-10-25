@@ -3,4 +3,5 @@
 members = [
     "rxml",
     "wow_dbc",
+    "wow_dbc_converter",
 ]

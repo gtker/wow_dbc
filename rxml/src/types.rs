@@ -193,6 +193,34 @@ impl Field {
     }
 }
 
+pub(crate) const fn string_ref_loc_members() -> &'static [&'static str] {
+    &[
+        "en_gb", "ko_kr", "fr_fr", "de_de", "en_cn", "en_tw", "es_es", "es_mx", "flags",
+    ]
+}
+
+pub(crate) const fn extended_string_ref_loc_members() -> &'static [&'static str] {
+    &[
+        "en_gb",
+        "ko_kr",
+        "fr_fr",
+        "de_de",
+        "en_cn",
+        "en_tw",
+        "es_es",
+        "es_mx",
+        "ru_ru",
+        "ja_jp",
+        "pt_pt",
+        "it_it",
+        "unknown_12",
+        "unknown_13",
+        "unknown_14",
+        "unknown_15",
+        "flags",
+    ]
+}
+
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Type {
     I8,

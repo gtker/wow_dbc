@@ -5,6 +5,7 @@ pub(crate) mod types;
 pub(crate) mod writer;
 
 use crate::file_utils::overwrite_if_not_same_contents;
+use crate::rust_printer::sqlite_converter;
 use crate::types::DbcDescription;
 use crate::writer::Writer;
 use std::path::PathBuf;
@@ -26,6 +27,14 @@ fn table_location(version: DbcVersion) -> PathBuf {
         .join("wow_dbc")
         .join("src")
         .join(version.module_name())
+}
+
+fn converter_location(version: DbcVersion, ty: &str) -> PathBuf {
+    let version = version.module_name();
+    workspace_directory()
+        .join("wow_dbc_converter")
+        .join("src")
+        .join(format!("{version}_{ty}.rs"))
 }
 
 const BUILD_TESTS: bool = false;
@@ -95,6 +104,10 @@ fn main() {
         let mut mod_rs_path = table_location(version);
         mod_rs_path.push("mod.rs");
         overwrite_if_not_same_contents(module_file.inner(), &mod_rs_path);
+
+        let sqlite_conversion = sqlite_converter(o.descriptions(), version, &o);
+        let file_path = converter_location(version, "sqlite");
+        overwrite_if_not_same_contents(sqlite_conversion.inner(), &file_path)
     }
 }
 

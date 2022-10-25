@@ -1,0 +1,10 @@
+[package]
+name = "wow_dbc_converter"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+
+[dependencies]
+wow_dbc = { version = "0.2.0", path = "../wow_dbc", features = ["vanilla", "tbc", "wrath"] }
+rusqlite = { version = "0.28.0", features = ["bundled"] }

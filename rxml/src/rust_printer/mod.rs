@@ -3,6 +3,9 @@ use crate::{DbcDescription, DbcVersion, Objects, Writer, BUILD_TESTS};
 use heck::ToSnakeCase;
 
 mod main_ty;
+mod sqlite_converter;
+
+pub use sqlite_converter::sqlite_converter;
 
 fn not_pascal_case_name(s: &str) -> bool {
     s.contains('_')
