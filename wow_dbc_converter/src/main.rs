@@ -67,12 +67,11 @@ fn main() {
         let input_directory = match read_dir(&options.input_path) {
             Ok(e) => e,
             Err(e) => {
-                println!(
+                fatal_error(format!(
                     "Unable to open directory for reading: '{}' with error '{}'",
                     options.input_path.display(),
                     e
-                );
-                exit(1);
+                ));
             }
         };
         input_directory
@@ -95,126 +94,129 @@ fn main() {
     } else if options.input_path.is_file() {
         vec![options.input_path.clone()]
     } else {
-        println!(
+        fatal_error(format!(
             "Input directory '{}' is not either a directory or a file.",
             options.input_path.display()
-        );
-        println!("Exiting.");
-        exit(1);
+        ));
     };
 
-    for file in files {
-        let contents = match read(&file) {
-            Ok(e) => e,
-            Err(e) => {
-                println!("Failed to read file '{}': '{}'.", file.display(), e);
-                if options.strict_mode {
-                    println!("Exiting.");
-                    exit(1);
-                } else {
-                    println!("Skipping file and continuing.");
-                    continue;
-                }
-            }
-        };
+    files.iter().for_each(|a| apply_file(&options, a));
+}
 
-        if contents.is_empty() {
-            println!(
+fn apply_file(options: &Options, file: &PathBuf) {
+    let contents = match read(&file) {
+        Ok(e) => e,
+        Err(e) => {
+            recoverable_error(
+                format!("Failed to read file '{}': '{}'.", file.display(), e),
+                "Skipping file and continuing",
+                &options,
+            );
+            return;
+        }
+    };
+
+    if contents.is_empty() {
+        recoverable_error(
+            format!(
                 "'{}' is an empty file. This can happend for some Vanilla files.",
                 file.display()
+            ),
+            "Skipping file and continuing",
+            &options,
+        );
+        return;
+    }
+
+    let file_name = match file.file_name() {
+        Some(e) => e,
+        None => {
+            recoverable_error(
+                format!("Failed to get file name for '{}'", file.display()),
+                "Skipping file and continuing",
+                &options,
             );
-            println!("Skipping file and continuing.");
-            continue;
+            return;
         }
+    };
+    let file_name = file_name.to_string_lossy();
+    let file_name = file_name.as_ref();
 
-        let file_name = match file.file_name() {
-            Some(e) => e,
-            None => {
-                println!("Failed to get file name for '{}'", file.display());
-                if options.strict_mode {
-                    println!("Exiting.");
-                    exit(1);
-                } else {
-                    println!("Skipping file and continuing.");
-                    continue;
-                }
-            }
-        };
-        let file_name = file_name.to_string_lossy();
-        let file_name = file_name.as_ref();
-
-        match options.expansion {
-            Expansion::Vanilla => {
-                match vanilla_tables_sqlite::write_to_sqlite(
-                    file_name,
-                    &mut contents.as_slice(),
-                    &options,
-                ) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        println!(
+    match options.expansion {
+        Expansion::Vanilla => {
+            match vanilla_tables_sqlite::write_to_sqlite(
+                file_name,
+                &mut contents.as_slice(),
+                &options,
+            ) {
+                Ok(_) => {}
+                Err(e) => {
+                    recoverable_error(
+                        format!(
                             "Error occurred during processing of '{}': '{}'",
                             file.display(),
                             e
-                        );
-                        if options.strict_mode {
-                            println!("Exiting.");
-                            exit(1);
-                        } else {
-                            println!("Skipping file and continuing.");
-                            continue;
-                        }
-                    }
+                        ),
+                        "Skipping file and continuing",
+                        &options,
+                    );
                 }
             }
-            Expansion::BurningCrusade => {
-                match tbc_tables_sqlite::write_to_sqlite(
-                    file_name,
-                    &mut contents.as_slice(),
-                    &options,
-                ) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        println!(
+        }
+        Expansion::BurningCrusade => {
+            match tbc_tables_sqlite::write_to_sqlite(file_name, &mut contents.as_slice(), &options)
+            {
+                Ok(_) => {}
+                Err(e) => {
+                    recoverable_error(
+                        format!(
                             "Error occurred during processing of '{}': '{}'",
                             file.display(),
                             e
-                        );
-                        if options.strict_mode {
-                            println!("Exiting.");
-                            exit(1);
-                        } else {
-                            println!("Skipping file and continuing.");
-                            continue;
-                        }
-                    }
+                        ),
+                        "Skipping file and continuing",
+                        &options,
+                    );
                 }
             }
-            Expansion::Wrath => {
-                match wrath_tables_sqlite::write_to_sqlite(
-                    file_name,
-                    &mut contents.as_slice(),
-                    &options,
-                ) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        println!(
+        }
+        Expansion::Wrath => {
+            match wrath_tables_sqlite::write_to_sqlite(
+                file_name,
+                &mut contents.as_slice(),
+                &options,
+            ) {
+                Ok(_) => {}
+                Err(e) => {
+                    recoverable_error(
+                        format!(
                             "Error occurred during processing of '{}': '{}'",
                             file.display(),
                             e
-                        );
-                        if options.strict_mode {
-                            println!("Exiting.");
-                            exit(1);
-                        } else {
-                            println!("Skipping file and continuing.");
-                            continue;
-                        }
-                    }
+                        ),
+                        "Skipping file and continuing",
+                        &options,
+                    );
                 }
             }
         }
     }
+}
+
+fn recoverable_error(error: impl AsRef<str>, continue_text: impl AsRef<str>, options: &Options) {
+    println!("{}", error.as_ref());
+    if options.strict_mode {
+        println!("Exiting.");
+        exit(1);
+    } else {
+        println!("{}", continue_text.as_ref());
+    }
+}
+
+fn fatal_error(error: impl AsRef<str>) -> ! {
+    println!("{}", error.as_ref());
+    println!("Exiting.");
+    exit(1);
 }
 
 fn options(args: Args) -> Options {
