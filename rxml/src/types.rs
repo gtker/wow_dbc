@@ -3,7 +3,7 @@ use crate::parser::{
     STRING_REF_NAME, U16_NAME, U32_NAME, U8_NAME,
 };
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct DbcDescription {
     name: String,
     fields: Vec<Field>,
@@ -124,7 +124,7 @@ impl DbcDescription {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Definer {
     name: String,
     ty: Type,
@@ -150,7 +150,7 @@ impl Definer {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Enumerator {
     name: String,
     value: i32,
@@ -171,7 +171,7 @@ impl Enumerator {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Field {
     name: String,
     ty: Type,
@@ -221,7 +221,7 @@ pub(crate) const fn extended_string_ref_loc_members() -> &'static [&'static str]
     ]
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Type {
     I8,
     I16,
@@ -314,7 +314,7 @@ impl Type {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Array {
     ty: Type,
     size: i32,

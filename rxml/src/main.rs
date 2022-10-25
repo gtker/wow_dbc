@@ -82,6 +82,8 @@ fn main() {
             o.push_description(d);
         }
 
+        o.descriptions.sort();
+
         let mut modules = Vec::with_capacity(o.descriptions().len());
 
         for d in o.descriptions() {
