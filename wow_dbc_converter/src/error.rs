@@ -1,0 +1,32 @@
+use std::error::Error;
+use std::fmt::{Display, Formatter};
+use wow_dbc::DbcError;
+
+#[derive(Debug)]
+pub(crate) enum SqliteError {
+    Rusqlite(rusqlite::Error),
+    DbcError(DbcError),
+}
+
+impl Display for SqliteError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SqliteError::Rusqlite(v) => v.fmt(f),
+            SqliteError::DbcError(v) => v.fmt(f),
+        }
+    }
+}
+
+impl Error for SqliteError {}
+
+impl From<rusqlite::Error> for SqliteError {
+    fn from(v: rusqlite::Error) -> Self {
+        Self::Rusqlite(v)
+    }
+}
+
+impl From<DbcError> for SqliteError {
+    fn from(v: DbcError) -> Self {
+        Self::DbcError(v)
+    }
+}

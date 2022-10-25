@@ -1,6 +1,9 @@
+mod error;
 mod tbc_tables_sqlite;
 mod vanilla_tables_sqlite;
 mod wrath_tables_sqlite;
+
+pub(crate) use error::*;
 
 use std::fs::read_dir;
 use std::path::PathBuf;
@@ -47,7 +50,8 @@ fn main() {
             file_name.as_ref(),
             &mut file_contents.as_slice(),
             &vanilla,
-        );
+        )
+        .unwrap();
     }
 
     let tbc = Options {
@@ -64,7 +68,8 @@ fn main() {
 
         let file_contents = std::fs::read(file.path()).unwrap();
 
-        tbc_tables_sqlite::write_to_sqlite(file_name.as_ref(), &mut file_contents.as_slice(), &tbc);
+        tbc_tables_sqlite::write_to_sqlite(file_name.as_ref(), &mut file_contents.as_slice(), &tbc)
+            .unwrap();
     }
 
     let wrath = Options {
@@ -85,6 +90,7 @@ fn main() {
             file_name.as_ref(),
             &mut file_contents.as_slice(),
             &wrath,
-        );
+        )
+        .unwrap();
     }
 }

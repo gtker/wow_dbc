@@ -1,16 +1,16 @@
-use crate::Options;
+use crate::{Options, SqliteError};
 use rusqlite::{Connection, params};
 use wow_dbc::DbcTable;
 use wow_dbc::wrath_tables::*;
 
-pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], options: &Options) {
-    let mut conn = Connection::open(&options.sqlite_path).unwrap();
+pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], options: &Options) -> Result<(), SqliteError> {
+    let mut conn = Connection::open(&options.sqlite_path)?;
     match file_name {
         "BannedAddOns.dbc" => {
-            let data = banned_add_ons::BannedAddOns::read(file_contents).unwrap();
+            let data = banned_add_ons::BannedAddOns::read(file_contents)?;
             let (table, insert) = BannedAddOns();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -25,29 +25,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.version_m_d5[3],
                 row.last_modified,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundFilter.dbc" => {
-            let data = sound_filter::SoundFilter::read(file_contents).unwrap();
+            let data = sound_filter::SoundFilter::read(file_contents)?;
             let (table, insert) = SoundFilter();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "HolidayNames.dbc" => {
-            let data = holiday_names::HolidayNames::read(file_contents).unwrap();
+            let data = holiday_names::HolidayNames::read(file_contents)?;
             let (table, insert) = HolidayNames();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -69,15 +69,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "NameGen.dbc" => {
-            let data = name_gen::NameGen::read(file_contents).unwrap();
+            let data = name_gen::NameGen::read(file_contents)?;
             let (table, insert) = NameGen();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -85,15 +85,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name,
                 row.race_id.id,
                 row.sex,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SheatheSoundLookups.dbc" => {
-            let data = sheathe_sound_lookups::SheatheSoundLookups::read(file_contents).unwrap();
+            let data = sheathe_sound_lookups::SheatheSoundLookups::read(file_contents)?;
             let (table, insert) = SheatheSoundLookups();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -104,15 +104,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.check_material,
                 row.sheathe_sound,
                 row.unsheathe_sound,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemRandomProperties.dbc" => {
-            let data = item_random_properties::ItemRandomProperties::read(file_contents).unwrap();
+            let data = item_random_properties::ItemRandomProperties::read(file_contents)?;
             let (table, insert) = ItemRandomProperties();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -140,30 +140,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GlyphSlot.dbc" => {
-            let data = glyph_slot::GlyphSlot::read(file_contents).unwrap();
+            let data = glyph_slot::GlyphSlot::read(file_contents)?;
             let (table, insert) = GlyphSlot();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.ty,
                 row.tooltip,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Exhaustion.dbc" => {
-            let data = exhaustion::Exhaustion::read(file_contents).unwrap();
+            let data = exhaustion::Exhaustion::read(file_contents)?;
             let (table, insert) = Exhaustion();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -190,15 +190,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 row.threshold,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "VehicleUIIndSeat.dbc" => {
-            let data = vehicle_ui_ind_seat::VehicleUIIndSeat::read(file_contents).unwrap();
+            let data = vehicle_ui_ind_seat::VehicleUIIndSeat::read(file_contents)?;
             let (table, insert) = VehicleUIIndSeat();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -207,15 +207,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.virtual_seat_index,
                 row.x_pos,
                 row.y_pos,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CurrencyTypes.dbc" => {
-            let data = currency_types::CurrencyTypes::read(file_contents).unwrap();
+            let data = currency_types::CurrencyTypes::read(file_contents)?;
             let (table, insert) = CurrencyTypes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -223,15 +223,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.item_id.id,
                 row.category_id.id,
                 row.bit_index,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "RandPropPoints.dbc" => {
-            let data = rand_prop_points::RandPropPoints::read(file_contents).unwrap();
+            let data = rand_prop_points::RandPropPoints::read(file_contents)?;
             let (table, insert) = RandPropPoints();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -251,28 +251,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.good[2],
                 row.good[3],
                 row.good[4],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtRegenMPPerSpt.dbc" => {
-            let data = gt_regen_mp_per_spt::gtRegenMPPerSpt::read(file_contents).unwrap();
+            let data = gt_regen_mp_per_spt::gtRegenMPPerSpt::read(file_contents)?;
             let (table, insert) = gtRegenMPPerSpt();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LockType.dbc" => {
-            let data = lock_type::LockType::read(file_contents).unwrap();
+            let data = lock_type::LockType::read(file_contents)?;
             let (table, insert) = LockType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -329,30 +329,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.verb_lang.unknown_15,
                 &row.verb_lang.flags,
                 &row.cursor_name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "PaperDollItemFrame.dbc" => {
-            let data = paper_doll_item_frame::PaperDollItemFrame::read(file_contents).unwrap();
+            let data = paper_doll_item_frame::PaperDollItemFrame::read(file_contents)?;
             let (table, insert) = PaperDollItemFrame();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 &row.item_button_name,
                 &row.slot_icon,
                 row.slot_number,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellVisualKit.dbc" => {
-            let data = spell_visual_kit::SpellVisualKit::read(file_contents).unwrap();
+            let data = spell_visual_kit::SpellVisualKit::read(file_contents)?;
             let (table, insert) = SpellVisualKit();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -394,15 +394,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.char_param_three[2],
                 row.char_param_three[3],
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellEffectCameraShakes.dbc" => {
-            let data = spell_effect_camera_shakes::SpellEffectCameraShakes::read(file_contents).unwrap();
+            let data = spell_effect_camera_shakes::SpellEffectCameraShakes::read(file_contents)?;
             let (table, insert) = SpellEffectCameraShakes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -410,15 +410,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.camera_shake[0],
                 row.camera_shake[1],
                 row.camera_shake[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemDisplayInfo.dbc" => {
-            let data = item_display_info::ItemDisplayInfo::read(file_contents).unwrap();
+            let data = item_display_info::ItemDisplayInfo::read(file_contents)?;
             let (table, insert) = ItemDisplayInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -447,15 +447,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.texture[7],
                 row.item_visual,
                 row.particle_color_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Achievement.dbc" => {
-            let data = achievement::Achievement::read(file_contents).unwrap();
+            let data = achievement::Achievement::read(file_contents)?;
             let (table, insert) = Achievement();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -521,15 +521,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.reward_lang.flags,
                 row.minimum_criteria,
                 row.shares_criteria.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LFGDungeonGroup.dbc" => {
-            let data = lfg_dungeon_group::LFGDungeonGroup::read(file_contents).unwrap();
+            let data = lfg_dungeon_group::LFGDungeonGroup::read(file_contents)?;
             let (table, insert) = LFGDungeonGroup();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -554,15 +554,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.order_index,
                 row.parent_group_id,
                 row.type_id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharSections.dbc" => {
-            let data = char_sections::CharSections::read(file_contents).unwrap();
+            let data = char_sections::CharSections::read(file_contents)?;
             let (table, insert) = CharSections();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -576,15 +576,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.flags,
                 row.variation_index,
                 row.color_index,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "PetPersonality.dbc" => {
-            let data = pet_personality::PetPersonality::read(file_contents).unwrap();
+            let data = pet_personality::PetPersonality::read(file_contents)?;
             let (table, insert) = PetPersonality();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -612,15 +612,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.happiness_damage[0],
                 row.happiness_damage[1],
                 row.happiness_damage[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellDuration.dbc" => {
-            let data = spell_duration::SpellDuration::read(file_contents).unwrap();
+            let data = spell_duration::SpellDuration::read(file_contents)?;
             let (table, insert) = SpellDuration();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -628,15 +628,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.duration,
                 row.duration_per_level,
                 row.max_duration,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Holidays.dbc" => {
-            let data = holidays::Holidays::read(file_contents).unwrap();
+            let data = holidays::Holidays::read(file_contents)?;
             let (table, insert) = Holidays();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -695,15 +695,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.priority,
                 row.calendar_filter_type,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemSubClassMask.dbc" => {
-            let data = item_sub_class_mask::ItemSubClassMask::read(file_contents).unwrap();
+            let data = item_sub_class_mask::ItemSubClassMask::read(file_contents)?;
             let (table, insert) = ItemSubClassMask();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -726,15 +726,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "EmotesTextData.dbc" => {
-            let data = emotes_text_data::EmotesTextData::read(file_contents).unwrap();
+            let data = emotes_text_data::EmotesTextData::read(file_contents)?;
             let (table, insert) = EmotesTextData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -756,15 +756,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.text_lang.unknown_14,
                 &row.text_lang.unknown_15,
                 &row.text_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellVisual.dbc" => {
-            let data = spell_visual::SpellVisual::read(file_contents).unwrap();
+            let data = spell_visual::SpellVisual::read(file_contents)?;
             let (table, insert) = SpellVisual();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -800,15 +800,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.missile_impact_offset[0],
                 row.missile_impact_offset[1],
                 row.missile_impact_offset[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemGroupSounds.dbc" => {
-            let data = item_group_sounds::ItemGroupSounds::read(file_contents).unwrap();
+            let data = item_group_sounds::ItemGroupSounds::read(file_contents)?;
             let (table, insert) = ItemGroupSounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -817,15 +817,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.sound[1],
                 row.sound[2],
                 row.sound[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TransportAnimation.dbc" => {
-            let data = transport_animation::TransportAnimation::read(file_contents).unwrap();
+            let data = transport_animation::TransportAnimation::read(file_contents)?;
             let (table, insert) = TransportAnimation();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -836,15 +836,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.pos[1],
                 row.pos[2],
                 row.sequence_id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldMapArea.dbc" => {
-            let data = world_map_area::WorldMapArea::read(file_contents).unwrap();
+            let data = world_map_area::WorldMapArea::read(file_contents)?;
             let (table, insert) = WorldMapArea();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -859,29 +859,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.display_map_id.id,
                 row.default_dungeon_floor,
                 row.parent_world_map_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DeclinedWord.dbc" => {
-            let data = declined_word::DeclinedWord::read(file_contents).unwrap();
+            let data = declined_word::DeclinedWord::read(file_contents)?;
             let (table, insert) = DeclinedWord();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.word,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TotemCategory.dbc" => {
-            let data = totem_category::TotemCategory::read(file_contents).unwrap();
+            let data = totem_category::TotemCategory::read(file_contents)?;
             let (table, insert) = TotemCategory();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -905,15 +905,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.flags,
                 row.totem_category_type,
                 row.totem_category_mask,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellRadius.dbc" => {
-            let data = spell_radius::SpellRadius::read(file_contents).unwrap();
+            let data = spell_radius::SpellRadius::read(file_contents)?;
             let (table, insert) = SpellRadius();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -921,15 +921,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.radius,
                 row.radius_per_level,
                 row.radius_max,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "VocalUISounds.dbc" => {
-            let data = vocal_ui_sounds::VocalUISounds::read(file_contents).unwrap();
+            let data = vocal_ui_sounds::VocalUISounds::read(file_contents)?;
             let (table, insert) = VocalUISounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -940,15 +940,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.normal_sound_id[1],
                 row.pissed_sound_id[0],
                 row.pissed_sound_id[1],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GMSurveyQuestions.dbc" => {
-            let data = gm_survey_questions::GMSurveyQuestions::read(file_contents).unwrap();
+            let data = gm_survey_questions::GMSurveyQuestions::read(file_contents)?;
             let (table, insert) = GMSurveyQuestions();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -970,15 +970,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.question_lang.unknown_14,
                 &row.question_lang.unknown_15,
                 &row.question_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemExtendedCost.dbc" => {
-            let data = item_extended_cost::ItemExtendedCost::read(file_contents).unwrap();
+            let data = item_extended_cost::ItemExtendedCost::read(file_contents)?;
             let (table, insert) = ItemExtendedCost();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -998,30 +998,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.item_count[4],
                 row.required_arena_rating,
                 row.item_purchase_group.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "MovieVariation.dbc" => {
-            let data = movie_variation::MovieVariation::read(file_contents).unwrap();
+            let data = movie_variation::MovieVariation::read(file_contents)?;
             let (table, insert) = MovieVariation();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.movie_id.id,
                 row.file_data_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Startup_Strings.dbc" => {
-            let data = startup_strings::Startup_Strings::read(file_contents).unwrap();
+            let data = startup_strings::Startup_Strings::read(file_contents)?;
             let (table, insert) = Startup_Strings();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1044,15 +1044,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.message_lang.unknown_14,
                 &row.message_lang.unknown_15,
                 &row.message_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldMapOverlay.dbc" => {
-            let data = world_map_overlay::WorldMapOverlay::read(file_contents).unwrap();
+            let data = world_map_overlay::WorldMapOverlay::read(file_contents)?;
             let (table, insert) = WorldMapOverlay();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1073,44 +1073,44 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.hit_rect_left,
                 row.hit_rect_bottom,
                 row.hit_rect_right,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DurabilityQuality.dbc" => {
-            let data = durability_quality::DurabilityQuality::read(file_contents).unwrap();
+            let data = durability_quality::DurabilityQuality::read(file_contents)?;
             let (table, insert) = DurabilityQuality();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GroundEffectDoodad.dbc" => {
-            let data = ground_effect_doodad::GroundEffectDoodad::read(file_contents).unwrap();
+            let data = ground_effect_doodad::GroundEffectDoodad::read(file_contents)?;
             let (table, insert) = GroundEffectDoodad();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.doodadpath,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "QuestXP.dbc" => {
-            let data = quest_xp::QuestXP::read(file_contents).unwrap();
+            let data = quest_xp::QuestXP::read(file_contents)?;
             let (table, insert) = QuestXP();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1125,30 +1125,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.difficulty[7],
                 row.difficulty[8],
                 row.difficulty[9],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "NamesProfanity.dbc" => {
-            let data = names_profanity::NamesProfanity::read(file_contents).unwrap();
+            let data = names_profanity::NamesProfanity::read(file_contents)?;
             let (table, insert) = NamesProfanity();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
                 row.language,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DurabilityCosts.dbc" => {
-            let data = durability_costs::DurabilityCosts::read(file_contents).unwrap();
+            let data = durability_costs::DurabilityCosts::read(file_contents)?;
             let (table, insert) = DurabilityCosts();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1182,15 +1182,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.armor_sub_class_cost[5],
                 row.armor_sub_class_cost[6],
                 row.armor_sub_class_cost[7],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellVisualEffectName.dbc" => {
-            let data = spell_visual_effect_name::SpellVisualEffectName::read(file_contents).unwrap();
+            let data = spell_visual_effect_name::SpellVisualEffectName::read(file_contents)?;
             let (table, insert) = SpellVisualEffectName();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1201,29 +1201,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.scale,
                 row.min_allowed_scale,
                 row.max_allowed_scale,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellIcon.dbc" => {
-            let data = spell_icon::SpellIcon::read(file_contents).unwrap();
+            let data = spell_icon::SpellIcon::read(file_contents)?;
             let (table, insert) = SpellIcon();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.texture_filename,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundWaterType.dbc" => {
-            let data = sound_water_type::SoundWaterType::read(file_contents).unwrap();
+            let data = sound_water_type::SoundWaterType::read(file_contents)?;
             let (table, insert) = SoundWaterType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1231,15 +1231,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.sound_type,
                 row.sound_subtype,
                 row.sound_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellItemEnchantment.dbc" => {
-            let data = spell_item_enchantment::SpellItemEnchantment::read(file_contents).unwrap();
+            let data = spell_item_enchantment::SpellItemEnchantment::read(file_contents)?;
             let (table, insert) = SpellItemEnchantment();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1281,15 +1281,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.required_skill_id.id,
                 row.required_skill_rank,
                 row.min_level,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "UnitBlood.dbc" => {
-            let data = unit_blood::UnitBlood::read(file_contents).unwrap();
+            let data = unit_blood::UnitBlood::read(file_contents)?;
             let (table, insert) = UnitBlood();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1303,44 +1303,44 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.ground_blood[2],
                 row.ground_blood[3],
                 row.ground_blood[4],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellVisualKitAreaModel.dbc" => {
-            let data = spell_visual_kit_area_model::SpellVisualKitAreaModel::read(file_contents).unwrap();
+            let data = spell_visual_kit_area_model::SpellVisualKitAreaModel::read(file_contents)?;
             let (table, insert) = SpellVisualKitAreaModel();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
                 row.enum_id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellDescriptionVariables.dbc" => {
-            let data = spell_description_variables::SpellDescriptionVariables::read(file_contents).unwrap();
+            let data = spell_description_variables::SpellDescriptionVariables::read(file_contents)?;
             let (table, insert) = SpellDescriptionVariables();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.variables,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "HelmetGeosetVisData.dbc" => {
-            let data = helmet_geoset_vis_data::HelmetGeosetVisData::read(file_contents).unwrap();
+            let data = helmet_geoset_vis_data::HelmetGeosetVisData::read(file_contents)?;
             let (table, insert) = HelmetGeosetVisData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1352,29 +1352,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.hide_geoset[4],
                 row.hide_geoset[5],
                 row.hide_geoset[6],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureMovementInfo.dbc" => {
-            let data = creature_movement_info::CreatureMovementInfo::read(file_contents).unwrap();
+            let data = creature_movement_info::CreatureMovementInfo::read(file_contents)?;
             let (table, insert) = CreatureMovementInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.smooth_facing_chase_rate,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GameTips.dbc" => {
-            let data = game_tips::GameTips::read(file_contents).unwrap();
+            let data = game_tips::GameTips::read(file_contents)?;
             let (table, insert) = GameTips();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1396,15 +1396,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.text_lang.unknown_14,
                 &row.text_lang.unknown_15,
                 &row.text_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "EmotesText.dbc" => {
-            let data = emotes_text::EmotesText::read(file_contents).unwrap();
+            let data = emotes_text::EmotesText::read(file_contents)?;
             let (table, insert) = EmotesText();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1427,15 +1427,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.emote_text[13],
                 row.emote_text[14],
                 row.emote_text[15],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellDispelType.dbc" => {
-            let data = spell_dispel_type::SpellDispelType::read(file_contents).unwrap();
+            let data = spell_dispel_type::SpellDispelType::read(file_contents)?;
             let (table, insert) = SpellDispelType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1460,15 +1460,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.mask,
                 row.immunity_possible,
                 &row.internal_name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TalentTab.dbc" => {
-            let data = talent_tab::TalentTab::read(file_contents).unwrap();
+            let data = talent_tab::TalentTab::read(file_contents)?;
             let (table, insert) = TalentTab();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1496,15 +1496,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.category_enum_id,
                 row.order_index,
                 &row.background_file,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WeaponSwingSounds2.dbc" => {
-            let data = weapon_swing_sounds2::WeaponSwingSounds2::read(file_contents).unwrap();
+            let data = weapon_swing_sounds2::WeaponSwingSounds2::read(file_contents)?;
             let (table, insert) = WeaponSwingSounds2();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1512,15 +1512,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.swing_type,
                 row.crit,
                 row.sound_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharVariations.dbc" => {
-            let data = char_variations::CharVariations::read(file_contents).unwrap();
+            let data = char_variations::CharVariations::read(file_contents)?;
             let (table, insert) = CharVariations();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1530,15 +1530,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.texture_hold_layer[1],
                 row.texture_hold_layer[2],
                 row.texture_hold_layer[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Resistances.dbc" => {
-            let data = resistances::Resistances::read(file_contents).unwrap();
+            let data = resistances::Resistances::read(file_contents)?;
             let (table, insert) = Resistances();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1562,30 +1562,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "EnvironmentalDamage.dbc" => {
-            let data = environmental_damage::EnvironmentalDamage::read(file_contents).unwrap();
+            let data = environmental_damage::EnvironmentalDamage::read(file_contents)?;
             let (table, insert) = EnvironmentalDamage();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.enum_id,
                 row.visualkit_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "FactionGroup.dbc" => {
-            let data = faction_group::FactionGroup::read(file_contents).unwrap();
+            let data = faction_group::FactionGroup::read(file_contents)?;
             let (table, insert) = FactionGroup();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1609,15 +1609,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldStateUI.dbc" => {
-            let data = world_state_ui::WorldStateUI::read(file_contents).unwrap();
+            let data = world_state_ui::WorldStateUI::read(file_contents)?;
             let (table, insert) = WorldStateUI();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1684,15 +1684,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.extended_u_i_state_variable[0],
                 row.extended_u_i_state_variable[1],
                 row.extended_u_i_state_variable[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ObjectEffect.dbc" => {
-            let data = object_effect::ObjectEffect::read(file_contents).unwrap();
+            let data = object_effect::ObjectEffect::read(file_contents)?;
             let (table, insert) = ObjectEffect();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1708,15 +1708,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.offset[1],
                 row.offset[2],
                 row.object_effect_modifier_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldChunkSounds.dbc" => {
-            let data = world_chunk_sounds::WorldChunkSounds::read(file_contents).unwrap();
+            let data = world_chunk_sounds::WorldChunkSounds::read(file_contents)?;
             let (table, insert) = WorldChunkSounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1729,29 +1729,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.zone_music_id.id,
                 row.sound_ambience_id.id,
                 row.sound_provider_preferences_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellCategory.dbc" => {
-            let data = spell_category::SpellCategory::read(file_contents).unwrap();
+            let data = spell_category::SpellCategory::read(file_contents)?;
             let (table, insert) = SpellCategory();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Item.dbc" => {
-            let data = item::Item::read(file_contents).unwrap();
+            let data = item::Item::read(file_contents)?;
             let (table, insert) = Item();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1763,15 +1763,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.display_info_id,
                 row.inventory_type,
                 row.sheathe_type,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemSubClass.dbc" => {
-            let data = item_sub_class::ItemSubClass::read(file_contents).unwrap();
+            let data = item_sub_class::ItemSubClass::read(file_contents)?;
             let (table, insert) = ItemSubClass();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1819,15 +1819,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.verbose_name_lang.unknown_14,
                 &row.verbose_name_lang.unknown_15,
                 &row.verbose_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Stationery.dbc" => {
-            let data = stationery::Stationery::read(file_contents).unwrap();
+            let data = stationery::Stationery::read(file_contents)?;
             let (table, insert) = Stationery();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1835,30 +1835,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.item_id.id,
                 &row.texture,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "NamesReserved.dbc" => {
-            let data = names_reserved::NamesReserved::read(file_contents).unwrap();
+            let data = names_reserved::NamesReserved::read(file_contents)?;
             let (table, insert) = NamesReserved();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
                 row.language,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldMapContinent.dbc" => {
-            let data = world_map_continent::WorldMapContinent::read(file_contents).unwrap();
+            let data = world_map_continent::WorldMapContinent::read(file_contents)?;
             let (table, insert) = WorldMapContinent();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1876,15 +1876,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.taxi_max[0],
                 row.taxi_max[1],
                 row.world_map_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GemProperties.dbc" => {
-            let data = gem_properties::GemProperties::read(file_contents).unwrap();
+            let data = gem_properties::GemProperties::read(file_contents)?;
             let (table, insert) = GemProperties();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1893,28 +1893,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.maxcount_inv,
                 row.maxcount_item,
                 row.ty,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TerrainTypeSounds.dbc" => {
-            let data = terrain_type_sounds::TerrainTypeSounds::read(file_contents).unwrap();
+            let data = terrain_type_sounds::TerrainTypeSounds::read(file_contents)?;
             let (table, insert) = TerrainTypeSounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GroundEffectTexture.dbc" => {
-            let data = ground_effect_texture::GroundEffectTexture::read(file_contents).unwrap();
+            let data = ground_effect_texture::GroundEffectTexture::read(file_contents)?;
             let (table, insert) = GroundEffectTexture();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1929,15 +1929,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.doodad_weight[3],
                 row.density,
                 row.sound,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Emotes.dbc" => {
-            let data = emotes::Emotes::read(file_contents).unwrap();
+            let data = emotes::Emotes::read(file_contents)?;
             let (table, insert) = Emotes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1948,15 +1948,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.emote_spec_proc,
                 row.emote_spec_proc_param,
                 row.event_sound_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "FactionTemplate.dbc" => {
-            let data = faction_template::FactionTemplate::read(file_contents).unwrap();
+            let data = faction_template::FactionTemplate::read(file_contents)?;
             let (table, insert) = FactionTemplate();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -1974,15 +1974,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.friend[1],
                 row.friend[2],
                 row.friend[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DestructibleModelData.dbc" => {
-            let data = destructible_model_data::DestructibleModelData::read(file_contents).unwrap();
+            let data = destructible_model_data::DestructibleModelData::read(file_contents)?;
             let (table, insert) = DestructibleModelData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2005,15 +2005,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.do_not_highlight,
                 row.heal_effect,
                 row.heal_effect_speed,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Vehicle.dbc" => {
-            let data = vehicle::Vehicle::read(file_contents).unwrap();
+            let data = vehicle::Vehicle::read(file_contents)?;
             let (table, insert) = Vehicle();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2057,15 +2057,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.power_display_id[0],
                 row.power_display_id[1],
                 row.power_display_id[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SummonProperties.dbc" => {
-            let data = summon_properties::SummonProperties::read(file_contents).unwrap();
+            let data = summon_properties::SummonProperties::read(file_contents)?;
             let (table, insert) = SummonProperties();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2075,15 +2075,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.title,
                 row.slot,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DungeonMap.dbc" => {
-            let data = dungeon_map::DungeonMap::read(file_contents).unwrap();
+            let data = dungeon_map::DungeonMap::read(file_contents)?;
             let (table, insert) = DungeonMap();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2095,15 +2095,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.min_y,
                 row.max_y,
                 row.parent_world_map_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ServerMessages.dbc" => {
-            let data = server_messages::ServerMessages::read(file_contents).unwrap();
+            let data = server_messages::ServerMessages::read(file_contents)?;
             let (table, insert) = ServerMessages();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2125,15 +2125,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.text_lang.unknown_14,
                 &row.text_lang.unknown_15,
                 &row.text_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellMissileMotion.dbc" => {
-            let data = spell_missile_motion::SpellMissileMotion::read(file_contents).unwrap();
+            let data = spell_missile_motion::SpellMissileMotion::read(file_contents)?;
             let (table, insert) = SpellMissileMotion();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2142,29 +2142,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.script_body,
                 row.flags,
                 row.missile_count,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ObjectEffectPackage.dbc" => {
-            let data = object_effect_package::ObjectEffectPackage::read(file_contents).unwrap();
+            let data = object_effect_package::ObjectEffectPackage::read(file_contents)?;
             let (table, insert) = ObjectEffectPackage();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemBagFamily.dbc" => {
-            let data = item_bag_family::ItemBagFamily::read(file_contents).unwrap();
+            let data = item_bag_family::ItemBagFamily::read(file_contents)?;
             let (table, insert) = ItemBagFamily();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2186,15 +2186,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "MapDifficulty.dbc" => {
-            let data = map_difficulty::MapDifficulty::read(file_contents).unwrap();
+            let data = map_difficulty::MapDifficulty::read(file_contents)?;
             let (table, insert) = MapDifficulty();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2221,15 +2221,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.raid_duration,
                 row.max_players,
                 &row.difficultystring,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemPetFood.dbc" => {
-            let data = item_pet_food::ItemPetFood::read(file_contents).unwrap();
+            let data = item_pet_food::ItemPetFood::read(file_contents)?;
             let (table, insert) = ItemPetFood();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2251,30 +2251,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "PetitionType.dbc" => {
-            let data = petition_type::PetitionType::read(file_contents).unwrap();
+            let data = petition_type::PetitionType::read(file_contents)?;
             let (table, insert) = PetitionType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
                 row.ty,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ChrRaces.dbc" => {
-            let data = chr_races::ChrRaces::read(file_contents).unwrap();
+            let data = chr_races::ChrRaces::read(file_contents)?;
             let (table, insert) = ChrRaces();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2347,15 +2347,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.facial_hair_customization[1],
                 &row.hair_customization,
                 row.required_expansion,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AreaTrigger.dbc" => {
-            let data = area_trigger::AreaTrigger::read(file_contents).unwrap();
+            let data = area_trigger::AreaTrigger::read(file_contents)?;
             let (table, insert) = AreaTrigger();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2369,15 +2369,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.box_width,
                 row.box_height,
                 row.box_yaw,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "BattlemasterList.dbc" => {
-            let data = battlemaster_list::BattlemasterList::read(file_contents).unwrap();
+            let data = battlemaster_list::BattlemasterList::read(file_contents)?;
             let (table, insert) = BattlemasterList();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2413,15 +2413,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.holiday_world_state,
                 row.min_level,
                 row.max_level,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SkillCostsData.dbc" => {
-            let data = skill_costs_data::SkillCostsData::read(file_contents).unwrap();
+            let data = skill_costs_data::SkillCostsData::read(file_contents)?;
             let (table, insert) = SkillCostsData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2430,15 +2430,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.cost[0],
                 row.cost[1],
                 row.cost[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Cfg_Configs.dbc" => {
-            let data = cfg_configs::Cfg_Configs::read(file_contents).unwrap();
+            let data = cfg_configs::Cfg_Configs::read(file_contents)?;
             let (table, insert) = Cfg_Configs();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2446,15 +2446,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.realm_type,
                 row.player_killing_allowed,
                 row.roleplaying,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellItemEnchantmentCondition.dbc" => {
-            let data = spell_item_enchantment_condition::SpellItemEnchantmentCondition::read(file_contents).unwrap();
+            let data = spell_item_enchantment_condition::SpellItemEnchantmentCondition::read(file_contents)?;
             let (table, insert) = SpellItemEnchantmentCondition();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2489,15 +2489,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.logic[2],
                 row.logic[3],
                 row.logic[4],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WMOAreaTable.dbc" => {
-            let data = wmo_area_table::WMOAreaTable::read(file_contents).unwrap();
+            let data = wmo_area_table::WMOAreaTable::read(file_contents)?;
             let (table, insert) = WMOAreaTable();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2529,15 +2529,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.area_name_lang.unknown_14,
                 &row.area_name_lang.unknown_15,
                 &row.area_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GMSurveySurveys.dbc" => {
-            let data = gm_survey_surveys::GMSurveySurveys::read(file_contents).unwrap();
+            let data = gm_survey_surveys::GMSurveySurveys::read(file_contents)?;
             let (table, insert) = GMSurveySurveys();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2552,29 +2552,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.q[7],
                 row.q[8],
                 row.q[9],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AttackAnimTypes.dbc" => {
-            let data = attack_anim_types::AttackAnimTypes::read(file_contents).unwrap();
+            let data = attack_anim_types::AttackAnimTypes::read(file_contents)?;
             let (table, insert) = AttackAnimTypes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.anim_id,
                 &row.anim_name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureFamily.dbc" => {
-            let data = creature_family::CreatureFamily::read(file_contents).unwrap();
+            let data = creature_family::CreatureFamily::read(file_contents)?;
             let (table, insert) = CreatureFamily();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2606,28 +2606,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 &row.icon_file,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtCombatRatings.dbc" => {
-            let data = gt_combat_ratings::gtCombatRatings::read(file_contents).unwrap();
+            let data = gt_combat_ratings::gtCombatRatings::read(file_contents)?;
             let (table, insert) = gtCombatRatings();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ScalingStatValues.dbc" => {
-            let data = scaling_stat_values::ScalingStatValues::read(file_contents).unwrap();
+            let data = scaling_stat_values::ScalingStatValues::read(file_contents)?;
             let (table, insert) = ScalingStatValues();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2655,71 +2655,71 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.leather_chest_armor,
                 row.mail_chest_armor,
                 row.plate_chest_armor,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharBaseInfo.dbc" => {
-            let data = char_base_info::CharBaseInfo::read(file_contents).unwrap();
+            let data = char_base_info::CharBaseInfo::read(file_contents)?;
             let (table, insert) = CharBaseInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.race_id.id,
                 row.class_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GMSurveyCurrentSurvey.dbc" => {
-            let data = gm_survey_current_survey::GMSurveyCurrentSurvey::read(file_contents).unwrap();
+            let data = gm_survey_current_survey::GMSurveyCurrentSurvey::read(file_contents)?;
             let (table, insert) = GMSurveyCurrentSurvey();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.gm_survey_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LanguageWords.dbc" => {
-            let data = language_words::LanguageWords::read(file_contents).unwrap();
+            let data = language_words::LanguageWords::read(file_contents)?;
             let (table, insert) = LanguageWords();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.language_id.id,
                 &row.word,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtChanceToMeleeCritBase.dbc" => {
-            let data = gt_chance_to_melee_crit_base::gtChanceToMeleeCritBase::read(file_contents).unwrap();
+            let data = gt_chance_to_melee_crit_base::gtChanceToMeleeCritBase::read(file_contents)?;
             let (table, insert) = gtChanceToMeleeCritBase();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureSoundData.dbc" => {
-            let data = creature_sound_data::CreatureSoundData::read(file_contents).unwrap();
+            let data = creature_sound_data::CreatureSoundData::read(file_contents)?;
             let (table, insert) = CreatureSoundData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2761,15 +2761,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.submerge_sound_id.id,
                 row.submerged_sound_id.id,
                 row.creature_sound_data_id_pet.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemPurchaseGroup.dbc" => {
-            let data = item_purchase_group::ItemPurchaseGroup::read(file_contents).unwrap();
+            let data = item_purchase_group::ItemPurchaseGroup::read(file_contents)?;
             let (table, insert) = ItemPurchaseGroup();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2799,15 +2799,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CinematicCamera.dbc" => {
-            let data = cinematic_camera::CinematicCamera::read(file_contents).unwrap();
+            let data = cinematic_camera::CinematicCamera::read(file_contents)?;
             let (table, insert) = CinematicCamera();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2818,15 +2818,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.origin[1],
                 row.origin[2],
                 row.origin_facing,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundEntries.dbc" => {
-            let data = sound_entries::SoundEntries::read(file_contents).unwrap();
+            let data = sound_entries::SoundEntries::read(file_contents)?;
             let (table, insert) = SoundEntries();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2860,15 +2860,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.distance_cutoff,
                 row.e_a_x_def,
                 row.sound_entries_advanced_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Languages.dbc" => {
-            let data = languages::Languages::read(file_contents).unwrap();
+            let data = languages::Languages::read(file_contents)?;
             let (table, insert) = Languages();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2890,15 +2890,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Package.dbc" => {
-            let data = package::Package::read(file_contents).unwrap();
+            let data = package::Package::read(file_contents)?;
             let (table, insert) = Package();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2922,15 +2922,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DungeonMapChunk.dbc" => {
-            let data = dungeon_map_chunk::DungeonMapChunk::read(file_contents).unwrap();
+            let data = dungeon_map_chunk::DungeonMapChunk::read(file_contents)?;
             let (table, insert) = DungeonMapChunk();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2939,15 +2939,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.w_m_o_group_id.id,
                 row.dungeon_map_id.id,
                 row.min_z,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellMechanic.dbc" => {
-            let data = spell_mechanic::SpellMechanic::read(file_contents).unwrap();
+            let data = spell_mechanic::SpellMechanic::read(file_contents)?;
             let (table, insert) = SpellMechanic();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -2969,15 +2969,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.state_name_lang.unknown_14,
                 &row.state_name_lang.unknown_15,
                 &row.state_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LFGDungeons.dbc" => {
-            let data = lfg_dungeons::LFGDungeons::read(file_contents).unwrap();
+            let data = lfg_dungeons::LFGDungeons::read(file_contents)?;
             let (table, insert) = LFGDungeons();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3030,15 +3030,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.description_lang.unknown_14,
                 &row.description_lang.unknown_15,
                 &row.description_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SkillLine.dbc" => {
-            let data = skill_line::SkillLine::read(file_contents).unwrap();
+            let data = skill_line::SkillLine::read(file_contents)?;
             let (table, insert) = SkillLine();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3098,15 +3098,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.alternate_verb_lang.unknown_15,
                 &row.alternate_verb_lang.flags,
                 row.can_link,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureModelData.dbc" => {
-            let data = creature_model_data::CreatureModelData::read(file_contents).unwrap();
+            let data = creature_model_data::CreatureModelData::read(file_contents)?;
             let (table, insert) = CreatureModelData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3138,43 +3138,43 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.missile_collision_radius,
                 row.missile_collision_push,
                 row.missile_collision_raise,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "MovieFileData.dbc" => {
-            let data = movie_file_data::MovieFileData::read(file_contents).unwrap();
+            let data = movie_file_data::MovieFileData::read(file_contents)?;
             let (table, insert) = MovieFileData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.file_data_id.id,
                 row.resolution,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "StableSlotPrices.dbc" => {
-            let data = stable_slot_prices::StableSlotPrices::read(file_contents).unwrap();
+            let data = stable_slot_prices::StableSlotPrices::read(file_contents)?;
             let (table, insert) = StableSlotPrices();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.cost,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LightFloatBand.dbc" => {
-            let data = light_float_band::LightFloatBand::read(file_contents).unwrap();
+            let data = light_float_band::LightFloatBand::read(file_contents)?;
             let (table, insert) = LightFloatBand();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3212,15 +3212,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.data[13],
                 row.data[14],
                 row.data[15],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Lock.dbc" => {
-            let data = lock::Lock::read(file_contents).unwrap();
+            let data = lock::Lock::read(file_contents)?;
             let (table, insert) = Lock();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3257,15 +3257,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.action[5],
                 row.action[6],
                 row.action[7],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LoadingScreens.dbc" => {
-            let data = loading_screens::LoadingScreens::read(file_contents).unwrap();
+            let data = loading_screens::LoadingScreens::read(file_contents)?;
             let (table, insert) = LoadingScreens();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3273,15 +3273,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name,
                 &row.file_name,
                 row.has_wide_screen,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemClass.dbc" => {
-            let data = item_class::ItemClass::read(file_contents).unwrap();
+            let data = item_class::ItemClass::read(file_contents)?;
             let (table, insert) = ItemClass();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3305,15 +3305,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.class_name_lang.unknown_14,
                 &row.class_name_lang.unknown_15,
                 &row.class_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "EmotesTextSound.dbc" => {
-            let data = emotes_text_sound::EmotesTextSound::read(file_contents).unwrap();
+            let data = emotes_text_sound::EmotesTextSound::read(file_contents)?;
             let (table, insert) = EmotesTextSound();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3322,29 +3322,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.race_id.id,
                 row.sex_id,
                 row.sound_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemVisualEffects.dbc" => {
-            let data = item_visual_effects::ItemVisualEffects::read(file_contents).unwrap();
+            let data = item_visual_effects::ItemVisualEffects::read(file_contents)?;
             let (table, insert) = ItemVisualEffects();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.model,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GameObjectArtKit.dbc" => {
-            let data = game_object_art_kit::GameObjectArtKit::read(file_contents).unwrap();
+            let data = game_object_art_kit::GameObjectArtKit::read(file_contents)?;
             let (table, insert) = GameObjectArtKit();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3356,15 +3356,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.attach_model[1],
                 row.attach_model[2],
                 row.attach_model[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SkillRaceClassInfo.dbc" => {
-            let data = skill_race_class_info::SkillRaceClassInfo::read(file_contents).unwrap();
+            let data = skill_race_class_info::SkillRaceClassInfo::read(file_contents)?;
             let (table, insert) = SkillRaceClassInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3376,15 +3376,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.min_level,
                 row.skill_tier_id.id,
                 row.skill_cost_index,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AuctionHouse.dbc" => {
-            let data = auction_house::AuctionHouse::read(file_contents).unwrap();
+            let data = auction_house::AuctionHouse::read(file_contents)?;
             let (table, insert) = AuctionHouse();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3409,28 +3409,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtRegenHPPerSpt.dbc" => {
-            let data = gt_regen_hp_per_spt::gtRegenHPPerSpt::read(file_contents).unwrap();
+            let data = gt_regen_hp_per_spt::gtRegenHPPerSpt::read(file_contents)?;
             let (table, insert) = gtRegenHPPerSpt();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ScreenEffect.dbc" => {
-            let data = screen_effect::ScreenEffect::read(file_contents).unwrap();
+            let data = screen_effect::ScreenEffect::read(file_contents)?;
             let (table, insert) = ScreenEffect();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3444,15 +3444,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.light_params_id.id,
                 row.sound_ambience_id.id,
                 row.zone_music_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellShapeshiftForm.dbc" => {
-            let data = spell_shapeshift_form::SpellShapeshiftForm::read(file_contents).unwrap();
+            let data = spell_shapeshift_form::SpellShapeshiftForm::read(file_contents)?;
             let (table, insert) = SpellShapeshiftForm();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3491,15 +3491,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.preset_spell_id[5],
                 row.preset_spell_id[6],
                 row.preset_spell_id[7],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharHairGeosets.dbc" => {
-            let data = char_hair_geosets::CharHairGeosets::read(file_contents).unwrap();
+            let data = char_hair_geosets::CharHairGeosets::read(file_contents)?;
             let (table, insert) = CharHairGeosets();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3509,15 +3509,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.variation_id,
                 row.geoset_id,
                 row.showscalp,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DeathThudLookups.dbc" => {
-            let data = death_thud_lookups::DeathThudLookups::read(file_contents).unwrap();
+            let data = death_thud_lookups::DeathThudLookups::read(file_contents)?;
             let (table, insert) = DeathThudLookups();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3526,15 +3526,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.terrain_type_sound_id.id,
                 row.sound_entry_id.id,
                 row.sound_entry_id_water.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemVisuals.dbc" => {
-            let data = item_visuals::ItemVisuals::read(file_contents).unwrap();
+            let data = item_visuals::ItemVisuals::read(file_contents)?;
             let (table, insert) = ItemVisuals();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3544,28 +3544,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.slot[2],
                 row.slot[3],
                 row.slot[4],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtOCTRegenMP.dbc" => {
-            let data = gt_oct_regen_mp::gtOCTRegenMP::read(file_contents).unwrap();
+            let data = gt_oct_regen_mp::gtOCTRegenMP::read(file_contents)?;
             let (table, insert) = gtOCTRegenMP();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LightParams.dbc" => {
-            let data = light_params::LightParams::read(file_contents).unwrap();
+            let data = light_params::LightParams::read(file_contents)?;
             let (table, insert) = LightParams();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3578,15 +3578,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.ocean_shallow_alpha,
                 row.ocean_deep_alpha,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellMissile.dbc" => {
-            let data = spell_missile::SpellMissile::read(file_contents).unwrap();
+            let data = spell_missile::SpellMissile::read(file_contents)?;
             let (table, insert) = SpellMissile();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3605,57 +3605,57 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.gravity,
                 row.max_duration,
                 row.collision_radius,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtOCTRegenHP.dbc" => {
-            let data = gt_oct_regen_hp::gtOCTRegenHP::read(file_contents).unwrap();
+            let data = gt_oct_regen_hp::gtOCTRegenHP::read(file_contents)?;
             let (table, insert) = gtOCTRegenHP();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GameTables.dbc" => {
-            let data = game_tables::GameTables::read(file_contents).unwrap();
+            let data = game_tables::GameTables::read(file_contents)?;
             let (table, insert) = GameTables();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 &row.name,
                 row.num_rows,
                 row.num_columns,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtOCTClassCombatRatingScalar.dbc" => {
-            let data = gt_oct_class_combat_rating_scalar::gtOCTClassCombatRatingScalar::read(file_contents).unwrap();
+            let data = gt_oct_class_combat_rating_scalar::gtOCTClassCombatRatingScalar::read(file_contents)?;
             let (table, insert) = gtOCTClassCombatRatingScalar();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "FootstepTerrainLookup.dbc" => {
-            let data = footstep_terrain_lookup::FootstepTerrainLookup::read(file_contents).unwrap();
+            let data = footstep_terrain_lookup::FootstepTerrainLookup::read(file_contents)?;
             let (table, insert) = FootstepTerrainLookup();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3664,15 +3664,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.terrain_sound_id,
                 row.sound_id.id,
                 row.sound_id_splash.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GMTicketCategory.dbc" => {
-            let data = gm_ticket_category::GMTicketCategory::read(file_contents).unwrap();
+            let data = gm_ticket_category::GMTicketCategory::read(file_contents)?;
             let (table, insert) = GMTicketCategory();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3694,30 +3694,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.category_lang.unknown_14,
                 &row.category_lang.unknown_15,
                 &row.category_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LightSkybox.dbc" => {
-            let data = light_skybox::LightSkybox::read(file_contents).unwrap();
+            let data = light_skybox::LightSkybox::read(file_contents)?;
             let (table, insert) = LightSkybox();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TransportRotation.dbc" => {
-            let data = transport_rotation::TransportRotation::read(file_contents).unwrap();
+            let data = transport_rotation::TransportRotation::read(file_contents)?;
             let (table, insert) = TransportRotation();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3728,15 +3728,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.rot[1],
                 row.rot[2],
                 row.rot[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureSpellData.dbc" => {
-            let data = creature_spell_data::CreatureSpellData::read(file_contents).unwrap();
+            let data = creature_spell_data::CreatureSpellData::read(file_contents)?;
             let (table, insert) = CreatureSpellData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3749,30 +3749,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.availability[1],
                 row.availability[2],
                 row.availability[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LiquidMaterial.dbc" => {
-            let data = liquid_material::LiquidMaterial::read(file_contents).unwrap();
+            let data = liquid_material::LiquidMaterial::read(file_contents)?;
             let (table, insert) = LiquidMaterial();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.l_v_f,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "NPCSounds.dbc" => {
-            let data = npc_sounds::NPCSounds::read(file_contents).unwrap();
+            let data = npc_sounds::NPCSounds::read(file_contents)?;
             let (table, insert) = NPCSounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3781,15 +3781,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.sound_id[1],
                 row.sound_id[2],
                 row.sound_id[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "QuestSort.dbc" => {
-            let data = quest_sort::QuestSort::read(file_contents).unwrap();
+            let data = quest_sort::QuestSort::read(file_contents)?;
             let (table, insert) = QuestSort();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3811,15 +3811,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.sort_name_lang.unknown_14,
                 &row.sort_name_lang.unknown_15,
                 &row.sort_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "MailTemplate.dbc" => {
-            let data = mail_template::MailTemplate::read(file_contents).unwrap();
+            let data = mail_template::MailTemplate::read(file_contents)?;
             let (table, insert) = MailTemplate();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3858,15 +3858,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.body_lang.unknown_14,
                 &row.body_lang.unknown_15,
                 &row.body_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ChrClasses.dbc" => {
-            let data = chr_classes::ChrClasses::read(file_contents).unwrap();
+            let data = chr_classes::ChrClasses::read(file_contents)?;
             let (table, insert) = ChrClasses();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3930,15 +3930,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.flags,
                 row.cinematic_sequence_id.id,
                 row.required_expansion,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemSet.dbc" => {
-            let data = item_set::ItemSet::read(file_contents).unwrap();
+            let data = item_set::ItemSet::read(file_contents)?;
             let (table, insert) = ItemSet();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -3995,15 +3995,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.set_threshold[7],
                 row.required_skill.id,
                 row.required_skill_rank,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "BarberShopStyle.dbc" => {
-            let data = barber_shop_style::BarberShopStyle::read(file_contents).unwrap();
+            let data = barber_shop_style::BarberShopStyle::read(file_contents)?;
             let (table, insert) = BarberShopStyle();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4047,28 +4047,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.race.id,
                 row.sex,
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtChanceToSpellCritBase.dbc" => {
-            let data = gt_chance_to_spell_crit_base::gtChanceToSpellCritBase::read(file_contents).unwrap();
+            let data = gt_chance_to_spell_crit_base::gtChanceToSpellCritBase::read(file_contents)?;
             let (table, insert) = gtChanceToSpellCritBase();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GMSurveyAnswers.dbc" => {
-            let data = gm_survey_answers::GMSurveyAnswers::read(file_contents).unwrap();
+            let data = gm_survey_answers::GMSurveyAnswers::read(file_contents)?;
             let (table, insert) = GMSurveyAnswers();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4092,15 +4092,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.answer_lang.unknown_14,
                 &row.answer_lang.unknown_15,
                 &row.answer_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellRuneCost.dbc" => {
-            let data = spell_rune_cost::SpellRuneCost::read(file_contents).unwrap();
+            let data = spell_rune_cost::SpellRuneCost::read(file_contents)?;
             let (table, insert) = SpellRuneCost();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4109,30 +4109,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.unholy,
                 row.frost,
                 row.runic_power,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "UISoundLookups.dbc" => {
-            let data = ui_sound_lookups::UISoundLookups::read(file_contents).unwrap();
+            let data = ui_sound_lookups::UISoundLookups::read(file_contents)?;
             let (table, insert) = UISoundLookups();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.sound_id.id,
                 &row.sound_name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AnimationData.dbc" => {
-            let data = animation_data::AnimationData::read(file_contents).unwrap();
+            let data = animation_data::AnimationData::read(file_contents)?;
             let (table, insert) = AnimationData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4144,15 +4144,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.fallback.id,
                 row.behavior_id.id,
                 row.behavior_tier,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellRange.dbc" => {
-            let data = spell_range::SpellRange::read(file_contents).unwrap();
+            let data = spell_range::SpellRange::read(file_contents)?;
             let (table, insert) = SpellRange();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4196,15 +4196,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.display_name_short_lang.unknown_14,
                 &row.display_name_short_lang.unknown_15,
                 &row.display_name_short_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharTitles.dbc" => {
-            let data = char_titles::CharTitles::read(file_contents).unwrap();
+            let data = char_titles::CharTitles::read(file_contents)?;
             let (table, insert) = CharTitles();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4245,15 +4245,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name1_lang.unknown_15,
                 &row.name1_lang.flags,
                 row.mask_id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TransportPhysics.dbc" => {
-            let data = transport_physics::TransportPhysics::read(file_contents).unwrap();
+            let data = transport_physics::TransportPhysics::read(file_contents)?;
             let (table, insert) = TransportPhysics();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4268,15 +4268,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.max_bank_turn_speed,
                 row.speed_damp_thresh,
                 row.speed_damp,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WowError_Strings.dbc" => {
-            let data = wow_error_strings::WowError_Strings::read(file_contents).unwrap();
+            let data = wow_error_strings::WowError_Strings::read(file_contents)?;
             let (table, insert) = WowError_Strings();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4299,15 +4299,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.description_lang.unknown_14,
                 &row.description_lang.unknown_15,
                 &row.description_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellVisualKitModelAttach.dbc" => {
-            let data = spell_visual_kit_model_attach::SpellVisualKitModelAttach::read(file_contents).unwrap();
+            let data = spell_visual_kit_model_attach::SpellVisualKitModelAttach::read(file_contents)?;
             let (table, insert) = SpellVisualKitModelAttach();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4321,15 +4321,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.yaw,
                 row.pitch,
                 row.roll,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "OverrideSpellData.dbc" => {
-            let data = override_spell_data::OverrideSpellData::read(file_contents).unwrap();
+            let data = override_spell_data::OverrideSpellData::read(file_contents)?;
             let (table, insert) = OverrideSpellData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4345,15 +4345,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.spells[8],
                 row.spells[9],
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TerrainType.dbc" => {
-            let data = terrain_type::TerrainType::read(file_contents).unwrap();
+            let data = terrain_type::TerrainType::read(file_contents)?;
             let (table, insert) = TerrainType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4363,15 +4363,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.footstep_spray_walk,
                 row.sound_id,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ObjectEffectModifier.dbc" => {
-            let data = object_effect_modifier::ObjectEffectModifier::read(file_contents).unwrap();
+            let data = object_effect_modifier::ObjectEffectModifier::read(file_contents)?;
             let (table, insert) = ObjectEffectModifier();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4383,15 +4383,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.param[1],
                 row.param[2],
                 row.param[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "PvpDifficulty.dbc" => {
-            let data = pvp_difficulty::PvpDifficulty::read(file_contents).unwrap();
+            let data = pvp_difficulty::PvpDifficulty::read(file_contents)?;
             let (table, insert) = PvpDifficulty();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4401,15 +4401,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.min_level,
                 row.max_level,
                 row.difficulty,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundFilterElem.dbc" => {
-            let data = sound_filter_elem::SoundFilterElem::read(file_contents).unwrap();
+            let data = sound_filter_elem::SoundFilterElem::read(file_contents)?;
             let (table, insert) = SoundFilterElem();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4426,15 +4426,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.params[6],
                 row.params[7],
                 row.params[8],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "QuestInfo.dbc" => {
-            let data = quest_info::QuestInfo::read(file_contents).unwrap();
+            let data = quest_info::QuestInfo::read(file_contents)?;
             let (table, insert) = QuestInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4456,15 +4456,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.info_name_lang.unknown_14,
                 &row.info_name_lang.unknown_15,
                 &row.info_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GameObjectDisplayInfo.dbc" => {
-            let data = game_object_display_info::GameObjectDisplayInfo::read(file_contents).unwrap();
+            let data = game_object_display_info::GameObjectDisplayInfo::read(file_contents)?;
             let (table, insert) = GameObjectDisplayInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4487,15 +4487,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.geo_box_max[1],
                 row.geo_box_max[2],
                 row.object_effect_package_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellFocusObject.dbc" => {
-            let data = spell_focus_object::SpellFocusObject::read(file_contents).unwrap();
+            let data = spell_focus_object::SpellFocusObject::read(file_contents)?;
             let (table, insert) = SpellFocusObject();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4517,15 +4517,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CurrencyCategory.dbc" => {
-            let data = currency_category::CurrencyCategory::read(file_contents).unwrap();
+            let data = currency_category::CurrencyCategory::read(file_contents)?;
             let (table, insert) = CurrencyCategory();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4548,28 +4548,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtChanceToMeleeCrit.dbc" => {
-            let data = gt_chance_to_melee_crit::gtChanceToMeleeCrit::read(file_contents).unwrap();
+            let data = gt_chance_to_melee_crit::gtChanceToMeleeCrit::read(file_contents)?;
             let (table, insert) = gtChanceToMeleeCrit();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SkillLineCategory.dbc" => {
-            let data = skill_line_category::SkillLineCategory::read(file_contents).unwrap();
+            let data = skill_line_category::SkillLineCategory::read(file_contents)?;
             let (table, insert) = SkillLineCategory();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4592,15 +4592,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 row.sort_index,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "QuestFactionReward.dbc" => {
-            let data = quest_faction_reward::QuestFactionReward::read(file_contents).unwrap();
+            let data = quest_faction_reward::QuestFactionReward::read(file_contents)?;
             let (table, insert) = QuestFactionReward();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4615,15 +4615,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.difficulty[7],
                 row.difficulty[8],
                 row.difficulty[9],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Faction.dbc" => {
-            let data = faction::Faction::read(file_contents).unwrap();
+            let data = faction::Faction::read(file_contents)?;
             let (table, insert) = Faction();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4684,15 +4684,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.description_lang.unknown_14,
                 &row.description_lang.unknown_15,
                 &row.description_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundSamplePreferences.dbc" => {
-            let data = sound_sample_preferences::SoundSamplePreferences::read(file_contents).unwrap();
+            let data = sound_sample_preferences::SoundSamplePreferences::read(file_contents)?;
             let (table, insert) = SoundSamplePreferences();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4713,15 +4713,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.e_a_x3_sample_exclusion,
                 row.field_0_6_0_3592_015,
                 row.field_0_6_0_3592_016,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Achievement_Criteria.dbc" => {
-            let data = achievement_criteria::Achievement_Criteria::read(file_contents).unwrap();
+            let data = achievement_criteria::Achievement_Criteria::read(file_contents)?;
             let (table, insert) = Achievement_Criteria();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4756,15 +4756,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.timer_asset_id,
                 row.timer_time,
                 row.ui_order,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Weather.dbc" => {
-            let data = weather::Weather::read(file_contents).unwrap();
+            let data = weather::Weather::read(file_contents)?;
             let (table, insert) = Weather();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4776,15 +4776,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.effect_color[1],
                 row.effect_color[2],
                 &row.effect_texture,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharacterFacialHairStyles.dbc" => {
-            let data = character_facial_hair_styles::CharacterFacialHairStyles::read(file_contents).unwrap();
+            let data = character_facial_hair_styles::CharacterFacialHairStyles::read(file_contents)?;
             let (table, insert) = CharacterFacialHairStyles();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4796,28 +4796,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.geoset[2],
                 row.geoset[3],
                 row.geoset[4],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtBarberShopCostBase.dbc" => {
-            let data = gt_barber_shop_cost_base::gtBarberShopCostBase::read(file_contents).unwrap();
+            let data = gt_barber_shop_cost_base::gtBarberShopCostBase::read(file_contents)?;
             let (table, insert) = gtBarberShopCostBase();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Map.dbc" => {
-            let data = map::Map::read(file_contents).unwrap();
+            let data = map::Map::read(file_contents)?;
             let (table, insert) = Map();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4887,30 +4887,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.expansion_id,
                 row.raid_offset,
                 row.max_players,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ChatProfanity.dbc" => {
-            let data = chat_profanity::ChatProfanity::read(file_contents).unwrap();
+            let data = chat_profanity::ChatProfanity::read(file_contents)?;
             let (table, insert) = ChatProfanity();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.text,
                 row.language,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldMapTransforms.dbc" => {
-            let data = world_map_transforms::WorldMapTransforms::read(file_contents).unwrap();
+            let data = world_map_transforms::WorldMapTransforms::read(file_contents)?;
             let (table, insert) = WorldMapTransforms();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4924,15 +4924,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.region_offset[0],
                 row.region_offset[1],
                 row.new_dungeon_map_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AreaGroup.dbc" => {
-            let data = area_group::AreaGroup::read(file_contents).unwrap();
+            let data = area_group::AreaGroup::read(file_contents)?;
             let (table, insert) = AreaGroup();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4944,15 +4944,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.area_id[4],
                 row.area_id[5],
                 row.next_area_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LFGDungeonExpansion.dbc" => {
-            let data = lfg_dungeon_expansion::LFGDungeonExpansion::read(file_contents).unwrap();
+            let data = lfg_dungeon_expansion::LFGDungeonExpansion::read(file_contents)?;
             let (table, insert) = LFGDungeonExpansion();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -4964,15 +4964,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.hard_level_max,
                 row.target_level_min,
                 row.target_level_max,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AreaPOI.dbc" => {
-            let data = area_poi::AreaPOI::read(file_contents).unwrap();
+            let data = area_poi::AreaPOI::read(file_contents)?;
             let (table, insert) = AreaPOI();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5030,15 +5030,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.description_lang.flags,
                 row.world_state_id,
                 row.world_map_link,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ZoneMusic.dbc" => {
-            let data = zone_music::ZoneMusic::read(file_contents).unwrap();
+            let data = zone_music::ZoneMusic::read(file_contents)?;
             let (table, insert) = ZoneMusic();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5050,15 +5050,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.silence_interval_max[1],
                 row.sounds[0],
                 row.sounds[1],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WeaponImpactSounds.dbc" => {
-            let data = weapon_impact_sounds::WeaponImpactSounds::read(file_contents).unwrap();
+            let data = weapon_impact_sounds::WeaponImpactSounds::read(file_contents)?;
             let (table, insert) = WeaponImpactSounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5085,15 +5085,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.crit_impact_sound_id[7],
                 row.crit_impact_sound_id[8],
                 row.crit_impact_sound_id[9],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ParticleColor.dbc" => {
-            let data = particle_color::ParticleColor::read(file_contents).unwrap();
+            let data = particle_color::ParticleColor::read(file_contents)?;
             let (table, insert) = ParticleColor();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5107,15 +5107,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.end[0],
                 row.end[1],
                 row.end[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ZoneIntroMusicTable.dbc" => {
-            let data = zone_intro_music_table::ZoneIntroMusicTable::read(file_contents).unwrap();
+            let data = zone_intro_music_table::ZoneIntroMusicTable::read(file_contents)?;
             let (table, insert) = ZoneIntroMusicTable();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5124,15 +5124,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.sound_id.id,
                 row.priority,
                 row.min_delay_minutes,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharHairTextures.dbc" => {
-            let data = char_hair_textures::CharHairTextures::read(file_contents).unwrap();
+            let data = char_hair_textures::CharHairTextures::read(file_contents)?;
             let (table, insert) = CharHairTextures();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5144,30 +5144,30 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.field_0_5_3_3368_005_the_x_in_hair_xy_blp,
                 row.field_0_5_3_3368_006,
                 row.field_0_5_3_3368_007,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "FileData.dbc" => {
-            let data = file_data::FileData::read(file_contents).unwrap();
+            let data = file_data::FileData::read(file_contents)?;
             let (table, insert) = FileData();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.filename,
                 &row.filepath,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Cfg_Categories.dbc" => {
-            let data = cfg_categories::Cfg_Categories::read(file_contents).unwrap();
+            let data = cfg_categories::Cfg_Categories::read(file_contents)?;
             let (table, insert) = Cfg_Categories();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5192,15 +5192,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_14,
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SkillTiers.dbc" => {
-            let data = skill_tiers::SkillTiers::read(file_contents).unwrap();
+            let data = skill_tiers::SkillTiers::read(file_contents)?;
             let (table, insert) = SkillTiers();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5237,15 +5237,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.value[13],
                 row.value[14],
                 row.value[15],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AttackAnimKits.dbc" => {
-            let data = attack_anim_kits::AttackAnimKits::read(file_contents).unwrap();
+            let data = attack_anim_kits::AttackAnimKits::read(file_contents)?;
             let (table, insert) = AttackAnimKits();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5254,15 +5254,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.anim_type_id,
                 row.anim_frequency,
                 row.which_hand,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LoadingScreenTaxiSplines.dbc" => {
-            let data = loading_screen_taxi_splines::LoadingScreenTaxiSplines::read(file_contents).unwrap();
+            let data = loading_screen_taxi_splines::LoadingScreenTaxiSplines::read(file_contents)?;
             let (table, insert) = LoadingScreenTaxiSplines();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5285,15 +5285,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.locy[6],
                 row.locy[7],
                 row.leg_index,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "UnitBloodLevels.dbc" => {
-            let data = unit_blood_levels::UnitBloodLevels::read(file_contents).unwrap();
+            let data = unit_blood_levels::UnitBloodLevels::read(file_contents)?;
             let (table, insert) = UnitBloodLevels();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5301,15 +5301,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.violencelevel[0],
                 row.violencelevel[1],
                 row.violencelevel[2],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "VideoHardware.dbc" => {
-            let data = video_hardware::VideoHardware::read(file_contents).unwrap();
+            let data = video_hardware::VideoHardware::read(file_contents)?;
             let (table, insert) = VideoHardware();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5336,15 +5336,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.fix_lag,
                 row.multisample,
                 row.atlasdisable,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldSafeLocs.dbc" => {
-            let data = world_safe_locs::WorldSafeLocs::read(file_contents).unwrap();
+            let data = world_safe_locs::WorldSafeLocs::read(file_contents)?;
             let (table, insert) = WorldSafeLocs();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5370,15 +5370,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.area_name_lang.unknown_14,
                 &row.area_name_lang.unknown_15,
                 &row.area_name_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureDisplayInfo.dbc" => {
-            let data = creature_display_info::CreatureDisplayInfo::read(file_contents).unwrap();
+            let data = creature_display_info::CreatureDisplayInfo::read(file_contents)?;
             let (table, insert) = CreatureDisplayInfo();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5398,15 +5398,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.particle_color_id.id,
                 row.creature_geoset_data,
                 row.object_effect_package_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CameraShakes.dbc" => {
-            let data = camera_shakes::CameraShakes::read(file_contents).unwrap();
+            let data = camera_shakes::CameraShakes::read(file_contents)?;
             let (table, insert) = CameraShakes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5418,29 +5418,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.duration,
                 row.phase,
                 row.coefficient,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "BankBagSlotPrices.dbc" => {
-            let data = bank_bag_slot_prices::BankBagSlotPrices::read(file_contents).unwrap();
+            let data = bank_bag_slot_prices::BankBagSlotPrices::read(file_contents)?;
             let (table, insert) = BankBagSlotPrices();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.cost,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundEntriesAdvanced.dbc" => {
-            let data = sound_entries_advanced::SoundEntriesAdvanced::read(file_contents).unwrap();
+            let data = sound_entries_advanced::SoundEntriesAdvanced::read(file_contents)?;
             let (table, insert) = SoundEntriesAdvanced();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5468,15 +5468,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.outside_volume,
                 row.outer_radius2_d,
                 &row.name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureType.dbc" => {
-            let data = creature_type::CreatureType::read(file_contents).unwrap();
+            let data = creature_type::CreatureType::read(file_contents)?;
             let (table, insert) = CreatureType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5499,15 +5499,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Light.dbc" => {
-            let data = light::Light::read(file_contents).unwrap();
+            let data = light::Light::read(file_contents)?;
             let (table, insert) = Light();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5526,15 +5526,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.light_params_id[5],
                 row.light_params_id[6],
                 row.light_params_id[7],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ScalingStatDistribution.dbc" => {
-            let data = scaling_stat_distribution::ScalingStatDistribution::read(file_contents).unwrap();
+            let data = scaling_stat_distribution::ScalingStatDistribution::read(file_contents)?;
             let (table, insert) = ScalingStatDistribution();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5560,15 +5560,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.bonus[8],
                 row.bonus[9],
                 row.maxlevel,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CreatureDisplayInfoExtra.dbc" => {
-            let data = creature_display_info_extra::CreatureDisplayInfoExtra::read(file_contents).unwrap();
+            let data = creature_display_info_extra::CreatureDisplayInfoExtra::read(file_contents)?;
             let (table, insert) = CreatureDisplayInfoExtra();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5593,43 +5593,43 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.n_p_c_item_display[10],
                 row.flags,
                 &row.bake_name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtNPCManaCostScaler.dbc" => {
-            let data = gt_npc_mana_cost_scaler::gtNPCManaCostScaler::read(file_contents).unwrap();
+            let data = gt_npc_mana_cost_scaler::gtNPCManaCostScaler::read(file_contents)?;
             let (table, insert) = gtNPCManaCostScaler();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellVisualPrecastTransitions.dbc" => {
-            let data = spell_visual_precast_transitions::SpellVisualPrecastTransitions::read(file_contents).unwrap();
+            let data = spell_visual_precast_transitions::SpellVisualPrecastTransitions::read(file_contents)?;
             let (table, insert) = SpellVisualPrecastTransitions();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.precast_load_anim_name,
                 &row.precast_hold_anim_name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CinematicSequences.dbc" => {
-            let data = cinematic_sequences::CinematicSequences::read(file_contents).unwrap();
+            let data = cinematic_sequences::CinematicSequences::read(file_contents)?;
             let (table, insert) = CinematicSequences();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5643,15 +5643,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.camera[5],
                 row.camera[6],
                 row.camera[7],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "AreaTable.dbc" => {
-            let data = area_table::AreaTable::read(file_contents).unwrap();
+            let data = area_table::AreaTable::read(file_contents)?;
             let (table, insert) = AreaTable();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5691,29 +5691,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.min_elevation,
                 row.ambient_multiplier,
                 row.light_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "FootprintTextures.dbc" => {
-            let data = footprint_textures::FootprintTextures::read(file_contents).unwrap();
+            let data = footprint_textures::FootprintTextures::read(file_contents)?;
             let (table, insert) = FootprintTextures();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.footstep_filename,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Achievement_Category.dbc" => {
-            let data = achievement_category::Achievement_Category::read(file_contents).unwrap();
+            let data = achievement_category::Achievement_Category::read(file_contents)?;
             let (table, insert) = Achievement_Category();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5737,15 +5737,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 row.ui_order,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DeclinedWordCases.dbc" => {
-            let data = declined_word_cases::DeclinedWordCases::read(file_contents).unwrap();
+            let data = declined_word_cases::DeclinedWordCases::read(file_contents)?;
             let (table, insert) = DeclinedWordCases();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5753,15 +5753,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.declined_word_id.id,
                 row.case_index,
                 &row.declined_word,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LightIntBand.dbc" => {
-            let data = light_int_band::LightIntBand::read(file_contents).unwrap();
+            let data = light_int_band::LightIntBand::read(file_contents)?;
             let (table, insert) = LightIntBand();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5799,15 +5799,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.data[13],
                 row.data[14],
                 row.data[15],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "HolidayDescriptions.dbc" => {
-            let data = holiday_descriptions::HolidayDescriptions::read(file_contents).unwrap();
+            let data = holiday_descriptions::HolidayDescriptions::read(file_contents)?;
             let (table, insert) = HolidayDescriptions();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5829,15 +5829,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.description_lang.unknown_14,
                 &row.description_lang.unknown_15,
                 &row.description_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellCastTimes.dbc" => {
-            let data = spell_cast_times::SpellCastTimes::read(file_contents).unwrap();
+            let data = spell_cast_times::SpellCastTimes::read(file_contents)?;
             let (table, insert) = SpellCastTimes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5845,45 +5845,45 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.base,
                 row.per_level,
                 row.minimum,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Movie.dbc" => {
-            let data = movie::Movie::read(file_contents).unwrap();
+            let data = movie::Movie::read(file_contents)?;
             let (table, insert) = Movie();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.filename,
                 row.volume,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundAmbience.dbc" => {
-            let data = sound_ambience::SoundAmbience::read(file_contents).unwrap();
+            let data = sound_ambience::SoundAmbience::read(file_contents)?;
             let (table, insert) = SoundAmbience();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.ambience_id[0],
                 row.ambience_id[1],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "VehicleSeat.dbc" => {
-            let data = vehicle_seat::VehicleSeat::read(file_contents).unwrap();
+            let data = vehicle_seat::VehicleSeat::read(file_contents)?;
             let (table, insert) = VehicleSeat();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5945,15 +5945,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.field_3_3_5_12213_053,
                 row.field_3_3_5_12213_054,
                 row.field_3_3_5_12213_055,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ObjectEffectPackageElem.dbc" => {
-            let data = object_effect_package_elem::ObjectEffectPackageElem::read(file_contents).unwrap();
+            let data = object_effect_package_elem::ObjectEffectPackageElem::read(file_contents)?;
             let (table, insert) = ObjectEffectPackageElem();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5961,15 +5961,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.object_effect_package_id.id,
                 row.object_effect_group_id.id,
                 row.state_type,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellDifficulty.dbc" => {
-            let data = spell_difficulty::SpellDifficulty::read(file_contents).unwrap();
+            let data = spell_difficulty::SpellDifficulty::read(file_contents)?;
             let (table, insert) = SpellDifficulty();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5978,15 +5978,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.difficulty_spell_id[1],
                 row.difficulty_spell_id[2],
                 row.difficulty_spell_id[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "PowerDisplay.dbc" => {
-            let data = power_display::PowerDisplay::read(file_contents).unwrap();
+            let data = power_display::PowerDisplay::read(file_contents)?;
             let (table, insert) = PowerDisplay();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -5996,15 +5996,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.red,
                 row.green,
                 row.blue,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TaxiPath.dbc" => {
-            let data = taxi_path::TaxiPath::read(file_contents).unwrap();
+            let data = taxi_path::TaxiPath::read(file_contents)?;
             let (table, insert) = TaxiPath();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6012,15 +6012,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.from_taxi_node.id,
                 row.to_taxi_node.id,
                 row.cost,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundEmitters.dbc" => {
-            let data = sound_emitters::SoundEmitters::read(file_contents).unwrap();
+            let data = sound_emitters::SoundEmitters::read(file_contents)?;
             let (table, insert) = SoundEmitters();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6034,15 +6034,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.sound_entry_advanced_id.id,
                 row.map_id.id,
                 &row.name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "CharStartOutfit.dbc" => {
-            let data = char_start_outfit::CharStartOutfit::read(file_contents).unwrap();
+            let data = char_start_outfit::CharStartOutfit::read(file_contents)?;
             let (table, insert) = CharStartOutfit();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6123,15 +6123,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.inventory_type[21],
                 row.inventory_type[22],
                 row.inventory_type[23],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DanceMoves.dbc" => {
-            let data = dance_moves::DanceMoves::read(file_contents).unwrap();
+            let data = dance_moves::DanceMoves::read(file_contents)?;
             let (table, insert) = DanceMoves();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6159,15 +6159,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 row.lock_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemRandomSuffix.dbc" => {
-            let data = item_random_suffix::ItemRandomSuffix::read(file_contents).unwrap();
+            let data = item_random_suffix::ItemRandomSuffix::read(file_contents)?;
             let (table, insert) = ItemRandomSuffix();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6200,15 +6200,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.allocation_pct[2],
                 row.allocation_pct[3],
                 row.allocation_pct[4],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "GlyphProperties.dbc" => {
-            let data = glyph_properties::GlyphProperties::read(file_contents).unwrap();
+            let data = glyph_properties::GlyphProperties::read(file_contents)?;
             let (table, insert) = GlyphProperties();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6216,29 +6216,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.spell_id.id,
                 row.glyph_slot_flags,
                 row.spell_icon_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpamMessages.dbc" => {
-            let data = spam_messages::SpamMessages::read(file_contents).unwrap();
+            let data = spam_messages::SpamMessages::read(file_contents)?;
             let (table, insert) = SpamMessages();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.text,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "LiquidType.dbc" => {
-            let data = liquid_type::LiquidType::read(file_contents).unwrap();
+            let data = liquid_type::LiquidType::read(file_contents)?;
             let (table, insert) = LiquidType();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6287,29 +6287,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.int[1],
                 row.int[2],
                 row.int[3],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ObjectEffectGroup.dbc" => {
-            let data = object_effect_group::ObjectEffectGroup::read(file_contents).unwrap();
+            let data = object_effect_group::ObjectEffectGroup::read(file_contents)?;
             let (table, insert) = ObjectEffectGroup();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Material.dbc" => {
-            let data = material::Material::read(file_contents).unwrap();
+            let data = material::Material::read(file_contents)?;
             let (table, insert) = Material();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6318,29 +6318,29 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.foley_sound_id,
                 row.sheathe_sound_id,
                 row.unsheathe_sound_id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "VehicleUIIndicator.dbc" => {
-            let data = vehicle_ui_indicator::VehicleUIIndicator::read(file_contents).unwrap();
+            let data = vehicle_ui_indicator::VehicleUIIndicator::read(file_contents)?;
             let (table, insert) = VehicleUIIndicator();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.background_texture,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ChatChannels.dbc" => {
-            let data = chat_channels::ChatChannels::read(file_contents).unwrap();
+            let data = chat_channels::ChatChannels::read(file_contents)?;
             let (table, insert) = ChatChannels();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6381,15 +6381,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.shortcut_lang.unknown_14,
                 &row.shortcut_lang.unknown_15,
                 &row.shortcut_lang.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "WorldStateZoneSounds.dbc" => {
-            let data = world_state_zone_sounds::WorldStateZoneSounds::read(file_contents).unwrap();
+            let data = world_state_zone_sounds::WorldStateZoneSounds::read(file_contents)?;
             let (table, insert) = WorldStateZoneSounds();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6401,28 +6401,28 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.zone_music_id.id,
                 row.sound_ambience_id.id,
                 row.sound_provider_preferences_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "gtChanceToSpellCrit.dbc" => {
-            let data = gt_chance_to_spell_crit::gtChanceToSpellCrit::read(file_contents).unwrap();
+            let data = gt_chance_to_spell_crit::gtChanceToSpellCrit::read(file_contents)?;
             let (table, insert) = gtChanceToSpellCrit();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SoundProviderPreferences.dbc" => {
-            let data = sound_provider_preferences::SoundProviderPreferences::read(file_contents).unwrap();
+            let data = sound_provider_preferences::SoundProviderPreferences::read(file_contents)?;
             let (table, insert) = SoundProviderPreferences();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6450,15 +6450,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.e_a_x3_modulation_depth,
                 row.e_a_x3_h_f_reference,
                 row.e_a_x3_l_f_reference,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Talent.dbc" => {
-            let data = talent::Talent::read(file_contents).unwrap();
+            let data = talent::Talent::read(file_contents)?;
             let (table, insert) = Talent();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6485,15 +6485,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.required_spell_id.id,
                 row.category_mask[0],
                 row.category_mask[1],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "Spell.dbc" => {
-            let data = spell::Spell::read(file_contents).unwrap();
+            let data = spell::Spell::read(file_contents)?;
             let (table, insert) = Spell();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6731,15 +6731,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.effect_bonus_coefficient[2],
                 row.description_variables_id.id,
                 row.difficulty,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "DungeonEncounter.dbc" => {
-            let data = dungeon_encounter::DungeonEncounter::read(file_contents).unwrap();
+            let data = dungeon_encounter::DungeonEncounter::read(file_contents)?;
             let (table, insert) = DungeonEncounter();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6766,15 +6766,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.unknown_15,
                 &row.name_lang.flags,
                 row.spell_icon_id.id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TaxiPathNode.dbc" => {
-            let data = taxi_path_node::TaxiPathNode::read(file_contents).unwrap();
+            let data = taxi_path_node::TaxiPathNode::read(file_contents)?;
             let (table, insert) = TaxiPathNode();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6789,15 +6789,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.delay,
                 row.arrival_event_id,
                 row.departure_event_id,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TaxiNodes.dbc" => {
-            let data = taxi_nodes::TaxiNodes::read(file_contents).unwrap();
+            let data = taxi_nodes::TaxiNodes::read(file_contents)?;
             let (table, insert) = TaxiNodes();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6825,15 +6825,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.flags,
                 row.mount_creature_id[0],
                 row.mount_creature_id[1],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemCondExtCosts.dbc" => {
-            let data = item_cond_ext_costs::ItemCondExtCosts::read(file_contents).unwrap();
+            let data = item_cond_ext_costs::ItemCondExtCosts::read(file_contents)?;
             let (table, insert) = ItemCondExtCosts();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6841,15 +6841,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.cond_extended_cost,
                 row.item_extended_cost_entry.id,
                 row.arena_season,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "ItemLimitCategory.dbc" => {
-            let data = item_limit_category::ItemLimitCategory::read(file_contents).unwrap();
+            let data = item_limit_category::ItemLimitCategory::read(file_contents)?;
             let (table, insert) = ItemLimitCategory();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6873,15 +6873,15 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 &row.name_lang.flags,
                 row.quantity,
                 row.flags,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SpellChainEffects.dbc" => {
-            let data = spell_chain_effects::SpellChainEffects::read(file_contents).unwrap();
+            let data = spell_chain_effects::SpellChainEffects::read(file_contents)?;
             let (table, insert) = SpellChainEffects();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -6933,57 +6933,57 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.render_layer,
                 row.texture_length,
                 row.wave_phase,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "StringLookups.dbc" => {
-            let data = string_lookups::StringLookups::read(file_contents).unwrap();
+            let data = string_lookups::StringLookups::read(file_contents)?;
             let (table, insert) = StringLookups();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.string,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "TeamContributionPoints.dbc" => {
-            let data = team_contribution_points::TeamContributionPoints::read(file_contents).unwrap();
+            let data = team_contribution_points::TeamContributionPoints::read(file_contents)?;
             let (table, insert) = TeamContributionPoints();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 row.data,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "PageTextMaterial.dbc" => {
-            let data = page_text_material::PageTextMaterial::read(file_contents).unwrap();
+            let data = page_text_material::PageTextMaterial::read(file_contents)?;
             let (table, insert) = PageTextMaterial();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
                 row.id.id,
                 &row.name,
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         "SkillLineAbility.dbc" => {
-            let data = skill_line_ability::SkillLineAbility::read(file_contents).unwrap();
+            let data = skill_line_ability::SkillLineAbility::read(file_contents)?;
             let (table, insert) = SkillLineAbility();
-            let tx = conn.transaction().unwrap();
-            tx.execute(table, ()).unwrap();
+            let tx = conn.transaction()?;
+            tx.execute(table, ())?;
 
             for row in data.rows() {
                 tx.execute(insert, params![
@@ -7001,12 +7001,13 @@ pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], option
                 row.trivial_skill_line_rank_low,
                 row.character_points[0],
                 row.character_points[1],
-                ]).unwrap();
+                ])?;
             }
-            tx.commit().unwrap();
+            tx.commit()?;
         }
         _ => {}
     }
+    Ok(())
 }
 #[allow(non_snake_case)]
 pub(crate) fn BannedAddOns() -> (&'static str, &'static str) {

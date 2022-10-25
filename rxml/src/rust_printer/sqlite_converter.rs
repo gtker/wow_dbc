@@ -20,8 +20,8 @@ pub fn sqlite_converter(
 }
 
 fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: &Objects) {
-    s.open_curly("pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], options: &Options)");
-    s.wln("let mut conn = Connection::open(&options.sqlite_path).unwrap();");
+    s.open_curly("pub(crate) fn write_to_sqlite(file_name: &str, file_contents: &mut &[u8], options: &Options) -> Result<(), SqliteError>");
+    s.wln("let mut conn = Connection::open(&options.sqlite_path)?;");
 
     s.open_curly("match file_name");
 
@@ -29,13 +29,13 @@ fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: 
         s.open_curly(format!("\"{}.dbc\" =>", description.name()));
 
         s.wln(format!(
-            "let data = {module}::{ty}::read(file_contents).unwrap();",
+            "let data = {module}::{ty}::read(file_contents)?;",
             module = description.name().to_snake_case(),
             ty = description.name(),
         ));
         s.wln(format!("let (table, insert) = {}();", description.name()));
-        s.wln("let tx = conn.transaction().unwrap();");
-        s.wln("tx.execute(table, ()).unwrap();");
+        s.wln("let tx = conn.transaction()?;");
+        s.wln("tx.execute(table, ())?;");
         s.newline();
 
         s.open_curly("for row in data.rows()");
@@ -84,17 +84,19 @@ fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: 
             }
         }
 
-        s.wln("]).unwrap();");
+        s.wln("])?;");
 
         s.closing_curly(); // for row in data.rows()
 
-        s.wln("tx.commit().unwrap();");
+        s.wln("tx.commit()?;");
 
         s.closing_curly(); // => {
     }
 
     s.wln("_ => {}");
     s.closing_curly(); // match file_name
+
+    s.wln("Ok(())");
 
     s.closing_curly(); // fn write_to_sqlite
 }
@@ -344,7 +346,7 @@ fn create_table_ty(ty: &Type) -> &'static str {
 }
 
 fn includes(s: &mut Writer, version: DbcVersion) {
-    s.wln("use crate::Options;");
+    s.wln("use crate::{Options, SqliteError};");
     s.wln("use rusqlite::{Connection, params};");
     s.wln("use wow_dbc::DbcTable;");
 
