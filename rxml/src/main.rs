@@ -112,8 +112,8 @@ impl Objects {
         Self::default()
     }
 
-    pub fn descriptions(&self) -> Vec<DbcDescription> {
-        self.descriptions.clone()
+    pub fn descriptions(&self) -> &[DbcDescription] {
+        &self.descriptions
     }
 
     pub fn table_exists(&self, table_name: &str) -> bool {
