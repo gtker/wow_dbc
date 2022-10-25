@@ -18,7 +18,7 @@ use rusqlite::Connection;
 struct Args {
     /// Output path of the SQLite file.
     ///
-    /// If this is a directory a file named 'dbcs.sqlite' will be created in that directory.
+    /// If this is a directory a file named '{dbc_version}_dbcs.sqlite' will be created in that directory.
     /// Otherwise the full filename will be used.
     ///
     /// Defaults to the current working directory.
@@ -245,6 +245,12 @@ fn options(args: Args) -> Options {
         cwd.clone()
     };
 
+    let default_file_name = match args.dbc_version {
+        Expansion::Vanilla => "vanilla_dbcs.sqlite",
+        Expansion::BurningCrusade => "burning_crusade_dbcs.sqlite",
+        Expansion::Wrath => "wrath_dbcs.sqlite",
+    };
+
     let output_path = if let Some(p) = args.output_path {
         if !p.exists() && p.extension().is_none() {
             println!("Output directory '{}' does not exist.", p.display());
@@ -271,12 +277,12 @@ fn options(args: Args) -> Options {
         }
 
         if p.is_dir() {
-            p.join("dbc.sqlite")
+            p.join(default_file_name)
         } else {
             p
         }
     } else {
-        cwd.join("dbcs.sqlite")
+        cwd.join(default_file_name)
     };
 
     Options {
