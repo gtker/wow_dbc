@@ -71,14 +71,14 @@ impl DbcTable for Map {
             // map_name_lang: string_ref_loc (Extended)
             let map_name_lang = crate::util::read_extended_localized_string(chunk, &string_block)?;
 
-            // field_0_8_0_3734_004: int32
-            let field_0_8_0_3734_004 = crate::util::read_i32_le(chunk)?;
+            // min_level: int32
+            let min_level = crate::util::read_i32_le(chunk)?;
 
-            // field_0_8_0_3734_005: int32
-            let field_0_8_0_3734_005 = crate::util::read_i32_le(chunk)?;
+            // max_level: int32
+            let max_level = crate::util::read_i32_le(chunk)?;
 
-            // field_1_5_0_4442_006: int32
-            let field_1_5_0_4442_006 = crate::util::read_i32_le(chunk)?;
+            // max_players: int32
+            let max_players = crate::util::read_i32_le(chunk)?;
 
             // field_0_7_0_3694_006: int32
             let field_0_7_0_3694_006 = crate::util::read_i32_le(chunk)?;
@@ -147,9 +147,9 @@ impl DbcTable for Map {
                 instance_type,
                 p_v_p,
                 map_name_lang,
-                field_0_8_0_3734_004,
-                field_0_8_0_3734_005,
-                field_1_5_0_4442_006,
+                min_level,
+                max_level,
+                max_players,
                 field_0_7_0_3694_006,
                 field_0_7_0_3694_007,
                 field_0_7_0_3694_008,
@@ -209,14 +209,14 @@ impl DbcTable for Map {
             // map_name_lang: string_ref_loc (Extended)
             b.write_all(&row.map_name_lang.string_indices_as_array(&mut string_index))?;
 
-            // field_0_8_0_3734_004: int32
-            b.write_all(&row.field_0_8_0_3734_004.to_le_bytes())?;
+            // min_level: int32
+            b.write_all(&row.min_level.to_le_bytes())?;
 
-            // field_0_8_0_3734_005: int32
-            b.write_all(&row.field_0_8_0_3734_005.to_le_bytes())?;
+            // max_level: int32
+            b.write_all(&row.max_level.to_le_bytes())?;
 
-            // field_1_5_0_4442_006: int32
-            b.write_all(&row.field_1_5_0_4442_006.to_le_bytes())?;
+            // max_players: int32
+            b.write_all(&row.max_players.to_le_bytes())?;
 
             // field_0_7_0_3694_006: int32
             b.write_all(&row.field_0_7_0_3694_006.to_le_bytes())?;
@@ -392,9 +392,9 @@ pub struct MapRow {
     pub instance_type: i32,
     pub p_v_p: i32,
     pub map_name_lang: ExtendedLocalizedString,
-    pub field_0_8_0_3734_004: i32,
-    pub field_0_8_0_3734_005: i32,
-    pub field_1_5_0_4442_006: i32,
+    pub min_level: i32,
+    pub max_level: i32,
+    pub max_players: i32,
     pub field_0_7_0_3694_006: i32,
     pub field_0_7_0_3694_007: f32,
     pub field_0_7_0_3694_008: f32,

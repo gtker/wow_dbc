@@ -31,17 +31,17 @@
 </field>
 
 <field>
-    <name>field_0_8_0_3734_004</name>
+    <name>min_level</name>
     <type>int32</type>
 </field>
 
 <field>
-    <name>field_0_8_0_3734_005</name>
+    <name>max_level</name>
     <type>int32</type>
 </field>
 
 <field>
-    <name>field_1_5_0_4442_006</name>
+    <name>max_players</name>
     <type>int32</type>
 </field>
 
