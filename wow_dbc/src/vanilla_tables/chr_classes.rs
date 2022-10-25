@@ -259,7 +259,7 @@ impl TryFrom<i32> for PowerType {
 }
 
 impl PowerType {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Mana => 0,
             Self::Rage => 1,

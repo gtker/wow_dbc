@@ -193,12 +193,20 @@ pub struct Flags {
 }
 
 impl Flags {
-    const fn new(value: u32) -> Self {
+    pub const fn new(value: u32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> u32 {
+    pub const fn as_int(&self) -> u32 {
         self.value
+    }
+
+    pub const fn pvp_flagged(&self) -> bool {
+        (self.value & 2048) != 0
+    }
+
+    pub const fn attack_pvping_players(&self) -> bool {
+        (self.value & 4096) != 0
     }
 
 }

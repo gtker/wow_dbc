@@ -174,7 +174,7 @@ impl TryFrom<i32> for FluidSpeed {
 }
 
 impl FluidSpeed {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Still => 0,
             Self::Slow => 4,

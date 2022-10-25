@@ -186,7 +186,7 @@ impl TryFrom<i32> for Scalp {
 }
 
 impl Scalp {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Hair => 0,
             Self::Bald => 1,

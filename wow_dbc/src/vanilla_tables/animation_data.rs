@@ -212,12 +212,28 @@ pub struct WeaponFlags {
 }
 
 impl WeaponFlags {
-    const fn new(value: i32) -> Self {
+    pub const fn new(value: i32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         self.value
+    }
+
+    pub const fn weapon_not_affected_by_animation(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn sheathe_weapons_automatically(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn sheathe_weapons_automatically2(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn unsheathe_weapons(&self) -> bool {
+        (self.value & 32) != 0
     }
 
 }

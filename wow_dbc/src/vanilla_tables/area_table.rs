@@ -282,12 +282,52 @@ pub struct AreaFlags {
 }
 
 impl AreaFlags {
-    const fn new(value: i32) -> Self {
+    pub const fn new(value: i32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         self.value
+    }
+
+    pub const fn area_flag_snow(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn area_flag_unk(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn area_flag_development(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn area_flag_unk2(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn area_flag_unk3(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn area_flag_city_slave(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn area_flag_city_allow_duels(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn area_flag_unk4(&self) -> bool {
+        (self.value & 128) != 0
+    }
+
+    pub const fn area_flag_city(&self) -> bool {
+        (self.value & 256) != 0
+    }
+
+    pub const fn area_flag_test(&self) -> bool {
+        (self.value & 512) != 0
     }
 
 }

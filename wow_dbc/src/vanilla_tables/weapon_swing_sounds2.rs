@@ -173,7 +173,7 @@ impl TryFrom<i32> for SwingType {
 }
 
 impl SwingType {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Light => 0,
             Self::Medium => 1,

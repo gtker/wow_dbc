@@ -179,7 +179,7 @@ impl TryFrom<i32> for AttackHand {
 }
 
 impl AttackHand {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::MainHand => 0,
             Self::OffHand => 1,

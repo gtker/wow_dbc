@@ -343,7 +343,7 @@ impl TryFrom<i32> for SoundType {
 }
 
 impl SoundType {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Unused => 0,
             Self::Spells => 1,

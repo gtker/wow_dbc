@@ -214,7 +214,7 @@ impl TryFrom<i32> for InstanceType {
 }
 
 impl InstanceType {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::GroupInstance => 1,
             Self::RaidInstance => 2,
@@ -254,7 +254,7 @@ impl TryFrom<i32> for Faction {
 }
 
 impl Faction {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Neutral => -1,
             Self::Horde => 0,

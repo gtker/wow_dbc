@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* `as_int` and `new` functions for flags.
+* `as_int` functions for enums.
+* Functions to check if an enumerator is set for flags.
+
 ### Changed
 
 ### Deprecated

@@ -193,12 +193,48 @@ pub struct ChannelFlags {
 }
 
 impl ChannelFlags {
-    const fn new(value: i32) -> Self {
+    pub const fn new(value: i32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn initial(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn zone_dependency(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn global(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn trade(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn city_only(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn city_only2(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn defence(&self) -> bool {
+        (self.value & 65536) != 0
+    }
+
+    pub const fn unselected(&self) -> bool {
+        (self.value & 262144) != 0
     }
 
 }

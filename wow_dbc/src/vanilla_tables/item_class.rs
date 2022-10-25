@@ -196,7 +196,7 @@ impl TryFrom<i32> for Class {
 }
 
 impl Class {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Item => 0,
             Self::Weapon => 1,

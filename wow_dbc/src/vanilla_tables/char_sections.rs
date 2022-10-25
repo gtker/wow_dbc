@@ -257,7 +257,7 @@ impl TryFrom<i32> for SelectionType {
 }
 
 impl SelectionType {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::BaseSkin => 0,
             Self::Face => 1,

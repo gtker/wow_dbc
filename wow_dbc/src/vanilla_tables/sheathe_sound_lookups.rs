@@ -195,7 +195,7 @@ impl TryFrom<i32> for ItemEnvTypes {
 }
 
 impl ItemEnvTypes {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Shield => 0,
             Self::MetalWeapon => 1,

@@ -396,7 +396,8 @@ impl TryFrom<i8> for Gender {
 }
 
 impl Gender {
-    const fn as_int(&self) -> i32 {
+    #[allow(missing_docs)]
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Male => 0,
             Self::Female => 1,
@@ -437,7 +438,8 @@ impl TryFrom<i32> for SizeClass {
 }
 
 impl SizeClass {
-    const fn as_int(&self) -> i32 {
+    #[allow(missing_docs)]
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::None => -1,
             Self::Small => 0,

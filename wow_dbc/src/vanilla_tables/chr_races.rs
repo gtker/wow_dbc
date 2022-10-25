@@ -375,7 +375,7 @@ impl TryFrom<u32> for BaseLanguage {
 }
 
 impl BaseLanguage {
-    const fn as_int(&self) -> u32 {
+    pub const fn as_int(&self) -> u32 {
         match self {
             Self::Horde => 1,
             Self::Alliance => 7,
@@ -398,12 +398,32 @@ pub struct Flags {
 }
 
 impl Flags {
-    const fn new(value: u32) -> Self {
+    pub const fn new(value: u32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> u32 {
+    pub const fn as_int(&self) -> u32 {
         self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn not_playable(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn bare_feet(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn can_current_form_mount(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn unknown2(&self) -> bool {
+        (self.value & 8) != 0
     }
 
 }

@@ -246,12 +246,44 @@ pub struct ReputationRaceMask {
 }
 
 impl ReputationRaceMask {
-    const fn new(value: i32) -> Self {
+    pub const fn new(value: i32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         self.value
+    }
+
+    pub const fn human(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn orc(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn dwarf(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn night_elf(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn undead(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn tauren(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn gnome(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn troll(&self) -> bool {
+        (self.value & 128) != 0
     }
 
 }
@@ -262,12 +294,36 @@ pub struct ReputationFlags {
 }
 
 impl ReputationFlags {
-    const fn new(value: i32) -> Self {
+    pub const fn new(value: i32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         self.value
+    }
+
+    pub const fn visible_to_client(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn enable_at_war(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn hide_in_client(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn force_hide_in_client(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn force_at_peace(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn faction_inactive(&self) -> bool {
+        (self.value & 32) != 0
     }
 
 }

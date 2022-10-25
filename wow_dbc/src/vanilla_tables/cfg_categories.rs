@@ -146,7 +146,7 @@ impl TryFrom<i32> for Category {
 }
 
 impl Category {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::One => 1,
             Self::Two => 2,
@@ -194,7 +194,7 @@ impl TryFrom<i32> for Region {
 }
 
 impl Region {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::UnitedStates => 1,
             Self::Korea => 2,

@@ -300,7 +300,7 @@ impl TryFrom<i32> for InstanceType {
 }
 
 impl InstanceType {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Normal => 0,
             Self::Group => 1,

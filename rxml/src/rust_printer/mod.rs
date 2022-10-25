@@ -231,7 +231,7 @@ fn create_enums(s: &mut Writer, d: &DbcDescription) {
 
         s.bodyn(format!("impl {name}", name = en.name()), |s| {
             s.bodyn(
-                format!("const fn as_int(&self) -> {}", en.ty().rust_str()),
+                format!("pub const fn as_int(&self) -> {}", en.ty().rust_str()),
                 |s| {
                     s.bodyn("match self", |s| {
                         for enumerator in en.enumerators() {
@@ -266,18 +266,34 @@ fn create_flags(s: &mut Writer, d: &DbcDescription) {
 
         s.bodyn(format!("impl {name}", name = en.name()), |s| {
             s.bodyn(
-                format!("const fn new(value: {}) -> Self", en.ty().rust_str()),
+                format!("pub const fn new(value: {}) -> Self", en.ty().rust_str()),
                 |s| {
                     s.wln("Self { value }");
                 },
             );
 
             s.bodyn(
-                format!("const fn as_int(&self) -> {}", en.ty().rust_str()),
+                format!("pub const fn as_int(&self) -> {}", en.ty().rust_str()),
                 |s| {
                     s.wln("self.value");
                 },
             );
+
+            for enumerator in en.enumerators() {
+                s.bodyn(
+                    format!(
+                        "pub const fn {}(&self) -> bool",
+                        enumerator.name().to_snake_case()
+                    ),
+                    |s| {
+                        if enumerator.value() != 0 {
+                            s.wln(format!("(self.value & {}) != 0", enumerator.value()));
+                        } else {
+                            s.wln("self.value == 0");
+                        }
+                    },
+                );
+            }
         });
     }
 }

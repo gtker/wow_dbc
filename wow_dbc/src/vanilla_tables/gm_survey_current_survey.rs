@@ -121,7 +121,7 @@ impl TryFrom<i32> for Language {
 }
 
 impl Language {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::English => 0,
             Self::Korean => 1,

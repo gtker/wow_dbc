@@ -207,7 +207,7 @@ impl TryFrom<i32> for Type {
 }
 
 impl Type {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::Fire => 0,
             Self::Slime => 2,

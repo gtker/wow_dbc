@@ -229,7 +229,7 @@ impl TryFrom<i32> for EmoteSpecProc {
 }
 
 impl EmoteSpecProc {
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         match self {
             Self::NoLoop => 0,
             Self::Loop => 1,
@@ -253,12 +253,32 @@ pub struct EmoteFlags {
 }
 
 impl EmoteFlags {
-    const fn new(value: i32) -> Self {
+    pub const fn new(value: i32) -> Self {
         Self { value }
     }
 
-    const fn as_int(&self) -> i32 {
+    pub const fn as_int(&self) -> i32 {
         self.value
+    }
+
+    pub const fn talk(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn question(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn exclamation(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn shout(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn laugh(&self) -> bool {
+        (self.value & 128) != 0
     }
 
 }
