@@ -14,10 +14,6 @@ impl Writer {
         &self.inner
     }
 
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-
     pub fn file_name(&self) -> String {
         format!("{}.rs", self.module_name())
     }
@@ -113,9 +109,5 @@ impl Writer {
         }
 
         self.indentation -= 1;
-    }
-
-    pub fn print(&self) {
-        println!("{}", self.inner);
     }
 }

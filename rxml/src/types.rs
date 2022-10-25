@@ -303,9 +303,3 @@ impl Array {
         self.size
     }
 }
-
-#[derive(Debug, Clone)]
-pub enum Key {
-    Primary,
-    Foreign { table: String },
-}

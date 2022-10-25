@@ -1,8 +1,8 @@
 mod file_utils;
-pub mod parser;
+pub(crate) mod parser;
 mod rust_printer;
-pub mod types;
-pub mod writer;
+pub(crate) mod types;
+pub(crate) mod writer;
 
 use crate::file_utils::overwrite_if_not_same_contents;
 use crate::types::DbcDescription;
