@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.2.0] - 2022-10-25
+
+### Added
+
 * `Hash`, `PartialOrd`, `Ord`, `Default` traits for types that support it.
 * `From<{native_ty}` and all integer types with a `From<{native_ty}>` for primary keys.
 
@@ -19,14 +33,6 @@ This is in order to reduce the boilerplate needed for calling the functions with
 This makes it possible to do `table.get(value)` instead of `table.get(TableKey::new(value))`
 * BREAKING: Removed all default features. This prevents people from mistakenly not disabling the expansions that they do not need and bloating compile times as well as IDE suggestions.
 
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
 ## [0.1.0] - 2022-09-29
 
 ### Added
@@ -34,3 +40,4 @@ This makes it possible to do `table.get(value)` instead of `table.get(TableKey::
 * Initial release.
 
 [0.1.0]: https://github.com/gtker/wow_dbc/tree/58484817c75947a97c05a0ed1fbf02f0bc6baa74
+[0.2.0]: https://github.com/gtker/wow_dbc/releases/tag/v0.2.0
