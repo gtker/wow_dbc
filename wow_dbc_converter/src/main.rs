@@ -247,7 +247,7 @@ fn fatal_error(error: impl AsRef<str>) -> ! {
 
 fn options(args: Args) -> Options {
     let cwd = if let Ok(cwd) = std::env::current_dir() {
-        cwd
+        cwd.canonicalize().unwrap_or(cwd)
     } else {
         println!("Current working directory is invalid.");
         println!("Exiting.");
@@ -255,7 +255,7 @@ fn options(args: Args) -> Options {
     };
 
     let input_path = if let Some(p) = args.input_path {
-        p
+        p.canonicalize().unwrap_or(p)
     } else {
         cwd.clone()
     };
@@ -315,6 +315,7 @@ fn options(args: Args) -> Options {
     } else {
         cwd.join(default_file_name)
     };
+    let output_path = output_path.canonicalize().unwrap_or(output_path);
 
     println!();
     println!("Input path: '{}'", input_path.display());
