@@ -22,6 +22,9 @@ pub fn sqlite_converter(
 fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: &Objects) {
     s.open_curly("pub(crate) fn write_to_sqlite(conn: &mut Connection, file_name: &str, file_contents: &mut &[u8]) -> Result<(), SqliteError>");
 
+    s.wln("let tx = conn.transaction()?;");
+    s.newline();
+
     s.open_curly("match file_name");
 
     for description in descriptions {
@@ -33,7 +36,6 @@ fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: 
             ty = description.name(),
         ));
         s.wln(format!("let (table, insert) = {}();", description.name()));
-        s.wln("let tx = conn.transaction()?;");
         s.wln("tx.execute(table, ())?;");
         s.newline();
 
@@ -87,14 +89,16 @@ fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: 
 
         s.closing_curly(); // for row in data.rows()
 
-        s.wln("tx.commit()?;");
-
         s.closing_curly(); // => {
     }
 
     s.wln("v => return Err(SqliteError::FilenameNotFound { name: v.to_string() }),");
     s.closing_curly(); // match file_name
 
+    s.newline();
+    s.wln("tx.commit()?;");
+
+    s.newline();
     s.wln("Ok(())");
 
     s.closing_curly(); // fn write_to_sqlite
