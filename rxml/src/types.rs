@@ -153,11 +153,11 @@ impl Definer {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Enumerator {
     name: String,
-    value: i32,
+    value: isize,
 }
 
 impl Enumerator {
-    pub fn new(name: &str, value: i32) -> Self {
+    pub fn new(name: &str, value: isize) -> Self {
         Self {
             name: name.to_string(),
             value,
@@ -166,7 +166,7 @@ impl Enumerator {
     pub fn name(&self) -> &str {
         &self.name
     }
-    pub fn value(&self) -> i32 {
+    pub fn value(&self) -> isize {
         self.value
     }
 }

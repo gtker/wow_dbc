@@ -82,11 +82,20 @@ impl DbcTable for Spell {
             // mechanic: foreign_key (SpellMechanic) uint32
             let mechanic = SpellMechanicKey::new(crate::util::read_u32_le(chunk)?.into());
 
-            // attributes: int32
-            let attributes = crate::util::read_i32_le(chunk)?;
+            // attributes: Attributes
+            let attributes = Attributes::new(crate::util::read_u32_le(chunk)?);
 
-            // attributes_ex: int32[4]
-            let attributes_ex = crate::util::read_array_i32::<4>(chunk)?;
+            // attributes_ex1: AttributesEx1
+            let attributes_ex1 = AttributesEx1::new(crate::util::read_u32_le(chunk)?);
+
+            // attributes_ex2: AttributesEx2
+            let attributes_ex2 = AttributesEx2::new(crate::util::read_u32_le(chunk)?);
+
+            // attributes_ex3: AttributesEx3
+            let attributes_ex3 = AttributesEx3::new(crate::util::read_u32_le(chunk)?);
+
+            // attributes_ex4: AttributesEx4
+            let attributes_ex4 = AttributesEx4::new(crate::util::read_u32_le(chunk)?);
 
             // shapeshift_mask: foreign_key (SpellShapeshiftForm) uint32
             let shapeshift_mask = SpellShapeshiftFormKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -322,7 +331,10 @@ impl DbcTable for Spell {
                 dispel_type,
                 mechanic,
                 attributes,
-                attributes_ex,
+                attributes_ex1,
+                attributes_ex2,
+                attributes_ex3,
+                attributes_ex4,
                 shapeshift_mask,
                 shapeshift_exclude,
                 targets,
@@ -434,14 +446,20 @@ impl DbcTable for Spell {
             // mechanic: foreign_key (SpellMechanic) uint32
             b.write_all(&(row.mechanic.id as u32).to_le_bytes())?;
 
-            // attributes: int32
-            b.write_all(&row.attributes.to_le_bytes())?;
+            // attributes: Attributes
+            b.write_all(&(row.attributes.as_int() as u32).to_le_bytes())?;
 
-            // attributes_ex: int32[4]
-            for i in row.attributes_ex {
-                b.write_all(&i.to_le_bytes())?;
-            }
+            // attributes_ex1: AttributesEx1
+            b.write_all(&(row.attributes_ex1.as_int() as u32).to_le_bytes())?;
 
+            // attributes_ex2: AttributesEx2
+            b.write_all(&(row.attributes_ex2.as_int() as u32).to_le_bytes())?;
+
+            // attributes_ex3: AttributesEx3
+            b.write_all(&(row.attributes_ex3.as_int() as u32).to_le_bytes())?;
+
+            // attributes_ex4: AttributesEx4
+            b.write_all(&(row.attributes_ex4.as_int() as u32).to_le_bytes())?;
 
             // shapeshift_mask: foreign_key (SpellShapeshiftForm) uint32
             b.write_all(&(row.shapeshift_mask.id as u32).to_le_bytes())?;
@@ -824,6 +842,670 @@ impl From<u32> for SpellKey {
 
 }
 
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
+pub struct Attributes {
+    value: u32,
+}
+
+impl Attributes {
+    pub const fn new(value: u32) -> Self {
+        Self { value }
+    }
+
+    pub const fn as_int(&self) -> u32 {
+        self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn proc_failure_burns_charge(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn uses_ranged_slot(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn on_next_swing_no_damage(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn need_exotic_ammo(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn is_ability(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn is_tradeskill(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn passive(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn do_not_display(&self) -> bool {
+        (self.value & 128) != 0
+    }
+
+    pub const fn do_not_log(&self) -> bool {
+        (self.value & 256) != 0
+    }
+
+    pub const fn held_item_only(&self) -> bool {
+        (self.value & 512) != 0
+    }
+
+    pub const fn on_next_swing(&self) -> bool {
+        (self.value & 1024) != 0
+    }
+
+    pub const fn wearer_casts_proc_trigger(&self) -> bool {
+        (self.value & 2048) != 0
+    }
+
+    pub const fn daytime_only(&self) -> bool {
+        (self.value & 4096) != 0
+    }
+
+    pub const fn night_only(&self) -> bool {
+        (self.value & 8192) != 0
+    }
+
+    pub const fn only_indoors(&self) -> bool {
+        (self.value & 16384) != 0
+    }
+
+    pub const fn only_outdoors(&self) -> bool {
+        (self.value & 32768) != 0
+    }
+
+    pub const fn not_shapeshift(&self) -> bool {
+        (self.value & 65536) != 0
+    }
+
+    pub const fn only_stealthed(&self) -> bool {
+        (self.value & 131072) != 0
+    }
+
+    pub const fn do_not_sheath(&self) -> bool {
+        (self.value & 262144) != 0
+    }
+
+    pub const fn scales_with_creature_level(&self) -> bool {
+        (self.value & 524288) != 0
+    }
+
+    pub const fn cancels_auto_attack_combat(&self) -> bool {
+        (self.value & 1048576) != 0
+    }
+
+    pub const fn no_active_defense(&self) -> bool {
+        (self.value & 2097152) != 0
+    }
+
+    pub const fn track_target_in_cast_player_only(&self) -> bool {
+        (self.value & 4194304) != 0
+    }
+
+    pub const fn allow_cast_while_dead(&self) -> bool {
+        (self.value & 8388608) != 0
+    }
+
+    pub const fn allow_while_mounted(&self) -> bool {
+        (self.value & 16777216) != 0
+    }
+
+    pub const fn cooldown_on_event(&self) -> bool {
+        (self.value & 33554432) != 0
+    }
+
+    pub const fn aura_is_debuff(&self) -> bool {
+        (self.value & 67108864) != 0
+    }
+
+    pub const fn allow_while_sitting(&self) -> bool {
+        (self.value & 134217728) != 0
+    }
+
+    pub const fn not_in_combat_only_peaceful(&self) -> bool {
+        (self.value & 268435456) != 0
+    }
+
+    pub const fn no_immunities(&self) -> bool {
+        (self.value & 536870912) != 0
+    }
+
+    pub const fn heartbeat_resist(&self) -> bool {
+        (self.value & 1073741824) != 0
+    }
+
+    pub const fn no_aura_cancel(&self) -> bool {
+        (self.value & 2147483648) != 0
+    }
+
+}
+
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
+pub struct AttributesEx1 {
+    value: u32,
+}
+
+impl AttributesEx1 {
+    pub const fn new(value: u32) -> Self {
+        Self { value }
+    }
+
+    pub const fn as_int(&self) -> u32 {
+        self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn no_aura_cancel(&self) -> bool {
+        (self.value & 2147483648) != 0
+    }
+
+    pub const fn dismiss_pet_first(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn use_all_mana(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn is_channeled(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn no_redirection(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn no_skill_increase(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn allow_while_stealthed(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn is_self_channeled(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn no_reflection(&self) -> bool {
+        (self.value & 128) != 0
+    }
+
+    pub const fn only_peaceful_targets(&self) -> bool {
+        (self.value & 256) != 0
+    }
+
+    pub const fn initiates_combat_enables_auto_attack(&self) -> bool {
+        (self.value & 512) != 0
+    }
+
+    pub const fn no_threat(&self) -> bool {
+        (self.value & 1024) != 0
+    }
+
+    pub const fn aura_unique(&self) -> bool {
+        (self.value & 2048) != 0
+    }
+
+    pub const fn failure_breaks_stealth(&self) -> bool {
+        (self.value & 4096) != 0
+    }
+
+    pub const fn toggle_farsight(&self) -> bool {
+        (self.value & 8192) != 0
+    }
+
+    pub const fn track_target_in_channel(&self) -> bool {
+        (self.value & 16384) != 0
+    }
+
+    pub const fn immunity_purges_effect(&self) -> bool {
+        (self.value & 32768) != 0
+    }
+
+    pub const fn immunity_to_hostile_and_friendly_effects(&self) -> bool {
+        (self.value & 65536) != 0
+    }
+
+    pub const fn no_autocast_ai(&self) -> bool {
+        (self.value & 131072) != 0
+    }
+
+    pub const fn prevents_anim(&self) -> bool {
+        (self.value & 262144) != 0
+    }
+
+    pub const fn exclude_caster(&self) -> bool {
+        (self.value & 524288) != 0
+    }
+
+    pub const fn finishing_move_damage(&self) -> bool {
+        (self.value & 1048576) != 0
+    }
+
+    pub const fn threat_only_on_miss(&self) -> bool {
+        (self.value & 2097152) != 0
+    }
+
+    pub const fn finishing_move_duration(&self) -> bool {
+        (self.value & 4194304) != 0
+    }
+
+    pub const fn unk23(&self) -> bool {
+        (self.value & 8388608) != 0
+    }
+
+    pub const fn special_skillup(&self) -> bool {
+        (self.value & 16777216) != 0
+    }
+
+    pub const fn aura_stays_after_combat(&self) -> bool {
+        (self.value & 33554432) != 0
+    }
+
+    pub const fn require_all_targets(&self) -> bool {
+        (self.value & 67108864) != 0
+    }
+
+    pub const fn discount_power_on_miss(&self) -> bool {
+        (self.value & 134217728) != 0
+    }
+
+    pub const fn no_aura_icon(&self) -> bool {
+        (self.value & 268435456) != 0
+    }
+
+    pub const fn name_in_channel_bar(&self) -> bool {
+        (self.value & 536870912) != 0
+    }
+
+    pub const fn combo_on_block(&self) -> bool {
+        (self.value & 1073741824) != 0
+    }
+
+    pub const fn cast_when_learned(&self) -> bool {
+        (self.value & 2147483648) != 0
+    }
+
+}
+
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
+pub struct AttributesEx2 {
+    value: u32,
+}
+
+impl AttributesEx2 {
+    pub const fn new(value: u32) -> Self {
+        Self { value }
+    }
+
+    pub const fn as_int(&self) -> u32 {
+        self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn allow_dead_target(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn no_shapeshift_ui(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn ignore_line_of_sight(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn allow_low_level_buff(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn use_shapeshift_bar(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn auto_repeat(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn cannot_cast_on_tapped(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn do_not_report_spell_failure(&self) -> bool {
+        (self.value & 128) != 0
+    }
+
+    pub const fn include_in_advanced_combat_log(&self) -> bool {
+        (self.value & 256) != 0
+    }
+
+    pub const fn always_cast_as_unit(&self) -> bool {
+        (self.value & 512) != 0
+    }
+
+    pub const fn special_taming_flag(&self) -> bool {
+        (self.value & 1024) != 0
+    }
+
+    pub const fn no_target_per_second_costs(&self) -> bool {
+        (self.value & 2048) != 0
+    }
+
+    pub const fn chain_from_caster(&self) -> bool {
+        (self.value & 4096) != 0
+    }
+
+    pub const fn enchant_own_item_only(&self) -> bool {
+        (self.value & 8192) != 0
+    }
+
+    pub const fn allow_while_invisible(&self) -> bool {
+        (self.value & 16384) != 0
+    }
+
+    pub const fn unk15(&self) -> bool {
+        (self.value & 32768) != 0
+    }
+
+    pub const fn no_active_pets(&self) -> bool {
+        (self.value & 65536) != 0
+    }
+
+    pub const fn do_not_reset_combat_timers(&self) -> bool {
+        (self.value & 131072) != 0
+    }
+
+    pub const fn req_dead_pet(&self) -> bool {
+        (self.value & 262144) != 0
+    }
+
+    pub const fn allow_while_not_shapeshifted(&self) -> bool {
+        (self.value & 524288) != 0
+    }
+
+    pub const fn initiate_combat_post_cast(&self) -> bool {
+        (self.value & 1048576) != 0
+    }
+
+    pub const fn fail_on_all_targets_immune(&self) -> bool {
+        (self.value & 2097152) != 0
+    }
+
+    pub const fn no_initial_threat(&self) -> bool {
+        (self.value & 4194304) != 0
+    }
+
+    pub const fn proc_cooldown_on_failure(&self) -> bool {
+        (self.value & 8388608) != 0
+    }
+
+    pub const fn item_cast_with_owner_skill(&self) -> bool {
+        (self.value & 16777216) != 0
+    }
+
+    pub const fn dont_block_mana_regen(&self) -> bool {
+        (self.value & 33554432) != 0
+    }
+
+    pub const fn no_school_immunities(&self) -> bool {
+        (self.value & 67108864) != 0
+    }
+
+    pub const fn ignore_weaponskill(&self) -> bool {
+        (self.value & 134217728) != 0
+    }
+
+    pub const fn not_an_action(&self) -> bool {
+        (self.value & 268435456) != 0
+    }
+
+    pub const fn cant_crit(&self) -> bool {
+        (self.value & 536870912) != 0
+    }
+
+    pub const fn active_threat(&self) -> bool {
+        (self.value & 1073741824) != 0
+    }
+
+    pub const fn retain_item_cast(&self) -> bool {
+        (self.value & 2147483648) != 0
+    }
+
+}
+
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
+pub struct AttributesEx3 {
+    value: u32,
+}
+
+impl AttributesEx3 {
+    pub const fn new(value: u32) -> Self {
+        Self { value }
+    }
+
+    pub const fn as_int(&self) -> u32 {
+        self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn pvp_enabling(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn no_proc_equip_requirement(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn no_casting_bar_text(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn completely_blocked(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn no_res_timer(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn no_durability_loss(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn no_avoidance(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn dot_stacking_rule(&self) -> bool {
+        (self.value & 128) != 0
+    }
+
+    pub const fn only_on_player(&self) -> bool {
+        (self.value & 256) != 0
+    }
+
+    pub const fn not_a_proc(&self) -> bool {
+        (self.value & 512) != 0
+    }
+
+    pub const fn requires_main_hand_weapon(&self) -> bool {
+        (self.value & 1024) != 0
+    }
+
+    pub const fn only_battlegrounds(&self) -> bool {
+        (self.value & 2048) != 0
+    }
+
+    pub const fn only_on_ghosts(&self) -> bool {
+        (self.value & 4096) != 0
+    }
+
+    pub const fn hide_channel_bar(&self) -> bool {
+        (self.value & 8192) != 0
+    }
+
+    pub const fn hide_in_raid_filter(&self) -> bool {
+        (self.value & 16384) != 0
+    }
+
+    pub const fn normal_ranged_attack(&self) -> bool {
+        (self.value & 32768) != 0
+    }
+
+    pub const fn suppress_caster_procs(&self) -> bool {
+        (self.value & 65536) != 0
+    }
+
+    pub const fn suppress_target_procs(&self) -> bool {
+        (self.value & 131072) != 0
+    }
+
+    pub const fn always_hit(&self) -> bool {
+        (self.value & 262144) != 0
+    }
+
+    pub const fn instant_target_procs(&self) -> bool {
+        (self.value & 524288) != 0
+    }
+
+    pub const fn allow_aura_while_dead(&self) -> bool {
+        (self.value & 1048576) != 0
+    }
+
+    pub const fn only_proc_outdoors(&self) -> bool {
+        (self.value & 2097152) != 0
+    }
+
+    pub const fn casting_cancels_autorepeat(&self) -> bool {
+        (self.value & 4194304) != 0
+    }
+
+    pub const fn no_damage_history(&self) -> bool {
+        (self.value & 8388608) != 0
+    }
+
+    pub const fn requires_offhand_weapon(&self) -> bool {
+        (self.value & 16777216) != 0
+    }
+
+    pub const fn treat_as_periodic(&self) -> bool {
+        (self.value & 33554432) != 0
+    }
+
+    pub const fn can_proc_from_procs(&self) -> bool {
+        (self.value & 67108864) != 0
+    }
+
+    pub const fn only_proc_on_caster(&self) -> bool {
+        (self.value & 134217728) != 0
+    }
+
+    pub const fn ignore_caster_and_target_restrictions(&self) -> bool {
+        (self.value & 268435456) != 0
+    }
+
+    pub const fn ignore_caster_modifiers(&self) -> bool {
+        (self.value & 536870912) != 0
+    }
+
+    pub const fn do_not_display_range(&self) -> bool {
+        (self.value & 1073741824) != 0
+    }
+
+    pub const fn not_on_aoe_immune(&self) -> bool {
+        (self.value & 2147483648) != 0
+    }
+
+}
+
+#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
+pub struct AttributesEx4 {
+    value: u32,
+}
+
+impl AttributesEx4 {
+    pub const fn new(value: u32) -> Self {
+        Self { value }
+    }
+
+    pub const fn as_int(&self) -> u32 {
+        self.value
+    }
+
+    pub const fn none(&self) -> bool {
+        self.value == 0
+    }
+
+    pub const fn no_cast_log(&self) -> bool {
+        (self.value & 1) != 0
+    }
+
+    pub const fn class_trigger_only_on_target(&self) -> bool {
+        (self.value & 2) != 0
+    }
+
+    pub const fn aura_expires_offline(&self) -> bool {
+        (self.value & 4) != 0
+    }
+
+    pub const fn no_helpful_threat(&self) -> bool {
+        (self.value & 8) != 0
+    }
+
+    pub const fn no_harmful_threat(&self) -> bool {
+        (self.value & 16) != 0
+    }
+
+    pub const fn allow_client_targeting(&self) -> bool {
+        (self.value & 32) != 0
+    }
+
+    pub const fn cannot_be_stolen(&self) -> bool {
+        (self.value & 64) != 0
+    }
+
+    pub const fn allow_cast_while_casting(&self) -> bool {
+        (self.value & 128) != 0
+    }
+
+    pub const fn ignore_damage_taken_modifiers(&self) -> bool {
+        (self.value & 256) != 0
+    }
+
+    pub const fn combat_feedback_when_usable(&self) -> bool {
+        (self.value & 512) != 0
+    }
+
+    pub const fn weapon_speed_cost_scaling(&self) -> bool {
+        (self.value & 1024) != 0
+    }
+
+    pub const fn no_partial_immunity(&self) -> bool {
+        (self.value & 2048) != 0
+    }
+
+}
+
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellRow {
     pub id: SpellKey,
@@ -832,8 +1514,11 @@ pub struct SpellRow {
     pub cast_ui: i32,
     pub dispel_type: SpellDispelTypeKey,
     pub mechanic: SpellMechanicKey,
-    pub attributes: i32,
-    pub attributes_ex: [i32; 4],
+    pub attributes: Attributes,
+    pub attributes_ex1: AttributesEx1,
+    pub attributes_ex2: AttributesEx2,
+    pub attributes_ex3: AttributesEx3,
+    pub attributes_ex4: AttributesEx4,
     pub shapeshift_mask: SpellShapeshiftFormKey,
     pub shapeshift_exclude: SpellShapeshiftFormKey,
     pub targets: i32,

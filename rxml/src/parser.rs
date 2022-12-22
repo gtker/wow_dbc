@@ -181,10 +181,10 @@ fn parse_definers(dbc: &Node, definer_ty: &str, version: DbcVersion) -> Vec<Defi
             let name = option.attribute("name").unwrap().to_upper_camel_case();
 
             let value = option.attribute("value").unwrap();
-            let value: i32 = if value.contains("0x") {
-                i32::from_str_radix(&value.replace("0x", ""), 16).unwrap()
+            let value: isize = if value.contains("0x") {
+                isize::from_str_radix(&value.replace("0x", ""), 16).unwrap()
             } else {
-                value.parse::<i32>().unwrap()
+                value.parse::<isize>().unwrap()
             };
 
             enumerators.push(Enumerator::new(&name, value));
