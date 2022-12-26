@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+* ints on `Spell.dbc` to enums/flags.
+
 ### Deprecated
 
 ### Removed
