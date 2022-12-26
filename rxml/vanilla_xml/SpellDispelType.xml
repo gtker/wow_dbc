@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <dbc>
-	<name>SpellDispelType</name>
-	
-	<field>
-		<type>uint32</type>
-		<name>id</name>
-		<key>
-			<type>primary</type>
-		</key>
-	</field>
+    <name>SpellDispelType</name>
+    
+    <field>
+        <type>uint32</type>
+        <name>id</name>
+        <key>
+            <type>primary</type>
+        </key>
+    </field>
 
-	<field>
-		<type>string_ref_loc</type>
-		<name>name</name>
-	</field>
+    <field>
+        <type>string_ref_loc</type>
+        <name>name</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>mask</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>mask</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>immunity_possible</name>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>immunity_possible</name>
+    </field>
 </dbc>

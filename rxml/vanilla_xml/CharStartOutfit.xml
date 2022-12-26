@@ -1,64 +1,64 @@
 <?xml version="1.0"?>
 <dbc>
-	<name>CharStartOutfit</name>
-	
-	<field>
-		<type>uint32</type>
-		<name>id</name>
-		<key>
-			<type>primary</type>
-		</key>
-	</field>
+    <name>CharStartOutfit</name>
+    
+    <field>
+        <type>uint32</type>
+        <name>id</name>
+        <key>
+            <type>primary</type>
+        </key>
+    </field>
 
-	<field>
-		<type>uint8</type>
-		<name>race</name>
-		<key ignore-type-mismatch="true">
-			<type>foreign</type>
-			<parent>ChrRaces</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint8</type>
+        <name>race</name>
+        <key ignore-type-mismatch="true">
+            <type>foreign</type>
+            <parent>ChrRaces</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint8</type>
-		<name>class_</name>
-		<key ignore-type-mismatch="true">
-			<type>foreign</type>
-			<parent>ChrClasses</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint8</type>
+        <name>class_</name>
+        <key ignore-type-mismatch="true">
+            <type>foreign</type>
+            <parent>ChrClasses</parent>
+        </key>
+    </field>
 
-	<enum>
-		<type>int8</type>
-		<name>Gender</name>
-		<options>
-			<option name="male" value="0x00" />
-			<option name="female" value="0x01" />
-		</options>
-	</enum>
+    <enum>
+        <type>int8</type>
+        <name>Gender</name>
+        <options>
+            <option name="male" value="0x00" />
+            <option name="female" value="0x01" />
+        </options>
+    </enum>
 
-	<field>
-		<type>Gender</type>
-		<name>gender</name>
-	</field>
+    <field>
+        <type>Gender</type>
+        <name>gender</name>
+    </field>
 
-	<field>
-		<type>int8</type>
-		<name>outfit_id</name>
-	</field>
+    <field>
+        <type>int8</type>
+        <name>outfit_id</name>
+    </field>
 
-	<field>
-		<type>int32[12]</type>
-		<name>item_id</name>
-	</field>
+    <field>
+        <type>int32[12]</type>
+        <name>item_id</name>
+    </field>
 
-	<field>
-		<type>int32[12]</type>
-		<name>display_id</name>
-	</field>
+    <field>
+        <type>int32[12]</type>
+        <name>display_id</name>
+    </field>
 
-	<field>
-		<type>int32[12]</type>
-		<name>inv_slot_id</name>
-	</field>
+    <field>
+        <type>int32[12]</type>
+        <name>inv_slot_id</name>
+    </field>
 </dbc>

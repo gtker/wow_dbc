@@ -1,37 +1,37 @@
 <?xml version="1.0"?>
 <dbc>
-	<name>CharacterFacialHairStyles</name>
-	
-	<field>
-		<type>uint32</type>
-		<name>race</name>
-		<key>
-			<type>foreign</type>
-			<parent>ChrRaces</parent>
-		</key>
-	</field>
+    <name>CharacterFacialHairStyles</name>
+    
+    <field>
+        <type>uint32</type>
+        <name>race</name>
+        <key>
+            <type>foreign</type>
+            <parent>ChrRaces</parent>
+        </key>
+    </field>
 
-	<enum>
-		<type>int32</type>
-		<name>Gender</name>
-		<options>
-			<option name="male" value="0x00" />
-			<option name="female" value="0x01" />
-		</options>
-	</enum>
+    <enum>
+        <type>int32</type>
+        <name>Gender</name>
+        <options>
+            <option name="male" value="0x00" />
+            <option name="female" value="0x01" />
+        </options>
+    </enum>
 
-	<field>
-		<type>Gender</type>
-		<name>gender</name>
-	</field>
+    <field>
+        <type>Gender</type>
+        <name>gender</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>variation_id</name>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>variation_id</name>
+    </field>
 
-	<field>
-		<type>int32[6]</type>
-		<name>geoset</name>
-	</field>
+    <field>
+        <type>int32[6]</type>
+        <name>geoset</name>
+    </field>
 </dbc>

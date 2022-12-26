@@ -1,60 +1,60 @@
 <?xml version="1.0"?>
 <dbc comment="todo, size is correct but number of fields isn't">
-	<name>Spell</name>
-	
-	<field>
-		<type>uint32</type>
-		<name>id</name>
-		<key>
-			<type>primary</type>
-		</key>
-	</field>
+    <name>Spell</name>
+    
+    <field>
+        <type>uint32</type>
+        <name>id</name>
+        <key>
+            <type>primary</type>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>school</name>
-		<key>
-			<type>foreign</type>
-			<parent>Resistances</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>school</name>
+        <key>
+            <type>foreign</type>
+            <parent>Resistances</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>category</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellCategory</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>category</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellCategory</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>cast_ui</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>cast_ui</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>dispel_type</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellDispelType</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>dispel_type</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellDispelType</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>mechanic</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellMechanic</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>mechanic</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellMechanic</parent>
+        </key>
+    </field>
 
     <flag>
-		<type>uint32</type>
-		<name>Attributes</name>
-		<options>
+        <type>uint32</type>
+        <name>Attributes</name>
+        <options>
             <option name="none" value="0x00" />
             <option name="proc_failure_burns_charge" value="0x00000001" />
             <option name="uses_ranged_slot" value="0x00000002" />
@@ -88,18 +88,18 @@
             <option name="no_immunities" value="0x20000000" />
             <option name="heartbeat_resist" value="0x40000000" />
             <option name="no_aura_cancel" value="0x80000000" />
-		</options>
-	</flag>
+        </options>
+    </flag>
 
-	<field>
-		<type>Attributes</type>
-		<name>attributes</name>
-	</field>
+    <field>
+        <type>Attributes</type>
+        <name>attributes</name>
+    </field>
 
     <flag>
-		<type>uint32</type>
-		<name>AttributesEx1</name>
-		<options>
+        <type>uint32</type>
+        <name>AttributesEx1</name>
+        <options>
             <option name="none" value="0x00" />
             <option name="no_aura_cancel" value="0x80000000" />
             <option name="dismiss_pet_first" value="0x00000001" />
@@ -134,18 +134,18 @@
             <option name="name_in_channel_bar" value="0x20000000" />
             <option name="combo_on_block" value="0x40000000" />
             <option name="cast_when_learned" value="0x80000000" />
-		</options>
-	</flag>
+        </options>
+    </flag>
 
-	<field>
-		<type>AttributesEx1</type>
-		<name>attributes_ex1</name>
-	</field>
+    <field>
+        <type>AttributesEx1</type>
+        <name>attributes_ex1</name>
+    </field>
 
     <flag>
-		<type>uint32</type>
-		<name>AttributesEx2</name>
-		<options>
+        <type>uint32</type>
+        <name>AttributesEx2</name>
+        <options>
             <option name="none" value="0x00" />
             <option name="allow_dead_target" value="0x00000001" />
             <option name="no_shapeshift_ui" value="0x00000002" />
@@ -179,18 +179,18 @@
             <option name="cant_crit" value="0x20000000" />
             <option name="active_threat" value="0x40000000" />
             <option name="retain_item_cast" value="0x80000000" />
-		</options>
-	</flag>
+        </options>
+    </flag>
 
-	<field>
-		<type>AttributesEx2</type>
-		<name>attributes_ex2</name>
-	</field>
+    <field>
+        <type>AttributesEx2</type>
+        <name>attributes_ex2</name>
+    </field>
 
     <flag>
-		<type>uint32</type>
-		<name>AttributesEx3</name>
-		<options>
+        <type>uint32</type>
+        <name>AttributesEx3</name>
+        <options>
             <option name="none" value="0x00" />
             <option name="pvp_enabling" value="0x00000001" />
             <option name="no_proc_equip_requirement" value="0x00000002" />
@@ -224,18 +224,18 @@
             <option name="ignore_caster_modifiers" value="0x20000000" />
             <option name="do_not_display_range" value="0x40000000" />
             <option name="not_on_aoe_immune" value="0x80000000" />
-		</options>
-	</flag>
+        </options>
+    </flag>
 
-	<field>
-		<type>AttributesEx3</type>
-		<name>attributes_ex3</name>
-	</field>
+    <field>
+        <type>AttributesEx3</type>
+        <name>attributes_ex3</name>
+    </field>
 
     <flag>
-		<type>uint32</type>
-		<name>AttributesEx4</name>
-		<options>
+        <type>uint32</type>
+        <name>AttributesEx4</name>
+        <options>
             <option name="none" value="0x00" />
             <option name="no_cast_log" value="0x00000001" />
             <option name="class_trigger_only_on_target" value="0x00000002" />
@@ -249,283 +249,283 @@
             <option name="combat_feedback_when_usable" value="0x00000200" />
             <option name="weapon_speed_cost_scaling" value="0x00000400" />
             <option name="no_partial_immunity" value="0x00000800" />
-		</options>
-	</flag>
+        </options>
+    </flag>
 
 
-	<field>
-		<type>AttributesEx4</type>
-		<name>attributes_ex4</name>
-	</field>
+    <field>
+        <type>AttributesEx4</type>
+        <name>attributes_ex4</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>shapeshift_mask</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellShapeshiftForm</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>shapeshift_mask</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellShapeshiftForm</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>shapeshift_exclude</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellShapeshiftForm</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>shapeshift_exclude</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellShapeshiftForm</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>targets</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>targets</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>target_creature_type</name>
-		<key>
-			<type>foreign</type>
-			<parent>CreatureType</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>target_creature_type</name>
+        <key>
+            <type>foreign</type>
+            <parent>CreatureType</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>requires_spell_focus</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellFocusObject</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>requires_spell_focus</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellFocusObject</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>caster_aura_state</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>caster_aura_state</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>target_aura_state</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>target_aura_state</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>casting_time_index</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellCastTimes</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>casting_time_index</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellCastTimes</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>recovery_time</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>recovery_time</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>category_recovery_time</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>category_recovery_time</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>aura_interrupt_flags</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>aura_interrupt_flags</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>channel_interrupt_flags</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>channel_interrupt_flags</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>proc_type_mask</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>proc_type_mask</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>proc_chance</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>proc_chance</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>proc_charges</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>proc_charges</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>max_level</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>max_level</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>base_level</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>base_level</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>spell_level</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>spell_level</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>duration</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellDuration</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>duration</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellDuration</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>power_type</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>power_type</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>mana_cost</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>mana_cost</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>mana_cost_per_level</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>mana_cost_per_level</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>mana_cost_per_second</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>mana_cost_per_second</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>mana_cost_per_second_per_level</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>mana_cost_per_second_per_level</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>range</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellRange</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>range</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellRange</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>float</type>
-		<name>speed</name>
-	</field>
+    <field>
+        <type>float</type>
+        <name>speed</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>modal_next_spell</name>
-		<key>
-			<type>foreign</type>
-			<parent>Spell</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>modal_next_spell</name>
+        <key>
+            <type>foreign</type>
+            <parent>Spell</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>stack_amount</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>stack_amount</name>
+    </field>
 
-	<field>
-		<type>int32[2]</type>
-		<name>totem</name>
-	</field>
+    <field>
+        <type>int32[2]</type>
+        <name>totem</name>
+    </field>
 
-	<field>
-		<type>int32[8]</type>
-		<name>reagent</name>
-	</field>
+    <field>
+        <type>int32[8]</type>
+        <name>reagent</name>
+    </field>
 
-	<field>
-		<type>int32[8]</type>
-		<name>reagent_count</name>
-	</field>
+    <field>
+        <type>int32[8]</type>
+        <name>reagent_count</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>equipped_item_class</name>
-		<key>
-			<type>foreign</type>
-			<parent>ItemClass</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>equipped_item_class</name>
+        <key>
+            <type>foreign</type>
+            <parent>ItemClass</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>equipped_item_subclass</name>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>equipped_item_subclass</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>equipped_item_inventory_type</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>equipped_item_inventory_type</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>effect</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>effect</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>effect_die_sides</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>effect_die_sides</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>effect_base_dice</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>effect_base_dice</name>
+    </field>
 
-	<field>
-		<type>float[3]</type>
-		<name>effect_dice_per_level</name>
-	</field>
+    <field>
+        <type>float[3]</type>
+        <name>effect_dice_per_level</name>
+    </field>
 
-	<field>
-		<type>float[3]</type>
-		<name>effect_real_points_per_level</name>
-	</field>
+    <field>
+        <type>float[3]</type>
+        <name>effect_real_points_per_level</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>effect_base_points</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>effect_base_points</name>
+    </field>
 
-	<field>
-		<type>uint32[3]</type>
-		<name>effect_mechanic</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellMechanic</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32[3]</type>
+        <name>effect_mechanic</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellMechanic</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>implicit_target_a</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>implicit_target_a</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>implicit_target_b</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>implicit_target_b</name>
+    </field>
 
-	<field>
-		<type>uint32[3]</type>
-		<name>effect_radius</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellRadius</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32[3]</type>
+        <name>effect_radius</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellRadius</parent>
+        </key>
+    </field>
 
-	<enum>
-		<type>int32</type>
-		<name>EffectAura</name>
-		<options>
+    <enum>
+        <type>int32</type>
+        <name>EffectAura</name>
+        <options>
             <option name="none" value="0" />
             <option name="bind_sight" value="1" />
             <option name="mod_possess" value="2" />
@@ -718,177 +718,177 @@
             <option name="mod_rating" value="189" />
             <option name="mod_faction_reputation_gain" value="190" />
             <option name="use_normal_movement_speed" value="191" />
-		</options>
-	</enum>
+        </options>
+    </enum>
 
-	<field>
-		<type>EffectAura[3]</type>
-		<name>effect_aura</name>
-	</field>
+    <field>
+        <type>EffectAura[3]</type>
+        <name>effect_aura</name>
+    </field>
 
-	<field>
-		<type>float[3]</type>
-		<name>effect_amplitude</name>
-	</field>
+    <field>
+        <type>float[3]</type>
+        <name>effect_amplitude</name>
+    </field>
 
-	<field>
-		<type>float[3]</type>
-		<name>effect_multiple_values</name>
-	</field>
+    <field>
+        <type>float[3]</type>
+        <name>effect_multiple_values</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>effect_chain_target</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>effect_chain_target</name>
+    </field>
 
-	<field>
-		<type>int32[3]</type>
-		<name>effect_item_type</name>
-	</field>
+    <field>
+        <type>int32[3]</type>
+        <name>effect_item_type</name>
+    </field>
 
-	<field>
-		<type>uint32[3]</type>
-		<name>effect_misc_value</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellItemEnchantment</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32[3]</type>
+        <name>effect_misc_value</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellItemEnchantment</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>uint32[3]</type>
-		<name>effect_trigger_spell</name>
-		<key>
-			<type>foreign</type>
-			<parent>Spell</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32[3]</type>
+        <name>effect_trigger_spell</name>
+        <key>
+            <type>foreign</type>
+            <parent>Spell</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>float[3]</type>
-		<name>effect_points_per_combo</name>
-	</field>
+    <field>
+        <type>float[3]</type>
+        <name>effect_points_per_combo</name>
+    </field>
 
-	<field>
-		<type>int32[2]</type>
-		<name>spell_visual</name>
-	</field>
+    <field>
+        <type>int32[2]</type>
+        <name>spell_visual</name>
+    </field>
 
-	<field>
-		<type>uint32</type>
-		<name>spell_icon</name>
-		<key>
-			<type>foreign</type>
-			<parent>SpellIcon</parent>
-		</key>
-	</field>
+    <field>
+        <type>uint32</type>
+        <name>spell_icon</name>
+        <key>
+            <type>foreign</type>
+            <parent>SpellIcon</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>active_icon</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>active_icon</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>spell_priority</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>spell_priority</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>unknown_flag</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>unknown_flag</name>
+    </field>
 
-	<field>
-		<type>string_ref_loc</type>
-		<name>name</name>
-	</field>
+    <field>
+        <type>string_ref_loc</type>
+        <name>name</name>
+    </field>
 
-	<field>
-		<type>string_ref_loc</type>
-		<name>name_subtext</name>
-	</field>
+    <field>
+        <type>string_ref_loc</type>
+        <name>name_subtext</name>
+    </field>
 
-	<field>
-		<type>string_ref_loc</type>
-		<name>description</name>
-	</field>
+    <field>
+        <type>string_ref_loc</type>
+        <name>description</name>
+    </field>
 
-	<field>
-		<type>string_ref_loc</type>
-		<name>aura_description</name>
-	</field>
+    <field>
+        <type>string_ref_loc</type>
+        <name>aura_description</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>mana_cost_percent</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>mana_cost_percent</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>start_recovery_category</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>start_recovery_category</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>start_recovery_time</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>start_recovery_time</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>max_target_level</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>max_target_level</name>
+    </field>
 
-	<field comment="todo">
-		<type>uint32</type>
-		<name>spell_class_set</name>
-		<key>
-			<type>foreign</type>
-			<parent>ChrClasses</parent>
-		</key>
-	</field>
+    <field comment="todo">
+        <type>uint32</type>
+        <name>spell_class_set</name>
+        <key>
+            <type>foreign</type>
+            <parent>ChrClasses</parent>
+        </key>
+    </field>
 
-	<field>
-		<type>int32[2]</type>
-		<name>spell_class_mask</name>
-	</field>
+    <field>
+        <type>int32[2]</type>
+        <name>spell_class_mask</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>max_targets</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>max_targets</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>defence_type</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>defence_type</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>prevention_type</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>prevention_type</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>stance_bar_order</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>stance_bar_order</name>
+    </field>
 
-	<field>
-		<type>float[3]</type>
-		<name>damage_multiplier</name>
-	</field>
+    <field>
+        <type>float[3]</type>
+        <name>damage_multiplier</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>min_faction</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>min_faction</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>min_reputation</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>min_reputation</name>
+    </field>
 
-	<field>
-		<type>int32</type>
-		<name>required_aura_vision</name>
-	</field>
+    <field>
+        <type>int32</type>
+        <name>required_aura_vision</name>
+    </field>
 </dbc>
