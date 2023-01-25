@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+<!-- next-header -->
+## [Unreleased] - ReleaseDate
 
 ### Added
 
@@ -16,14 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * ints on `Spell.dbc` to enums/flags.
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.2.0] - 2022-10-25
 
@@ -45,5 +38,7 @@ This makes it possible to do `table.get(value)` instead of `table.get(TableKey::
 
 * Initial release.
 
+<!-- next-url -->
+[Unreleased]: https://github.com/gtker/wow_dbc/compare/v0.2.0...HEAD
 [0.1.0]: https://github.com/gtker/wow_dbc/tree/58484817c75947a97c05a0ed1fbf02f0bc6baa74
 [0.2.0]: https://github.com/gtker/wow_dbc/releases/tag/v0.2.0
