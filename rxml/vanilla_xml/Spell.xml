@@ -78,7 +78,7 @@
             <option name="scales_with_creature_level" value="0x00080000" />
             <option name="cancels_auto_attack_combat" value="0x00100000" />
             <option name="no_active_defense" value="0x00200000" />
-            <option name="track_target_in_cast_player_only=" value="0x00400000" />
+            <option name="track_target_in_cast_player_only" value="0x00400000" />
             <option name="allow_cast_while_dead" value="0x00800000" />
             <option name="allow_while_mounted" value="0x01000000" />
             <option name="cooldown_on_event" value="0x02000000" />
