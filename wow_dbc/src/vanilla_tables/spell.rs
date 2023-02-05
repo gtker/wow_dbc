@@ -1621,10 +1621,6 @@ impl AttributesEx1 {
         self.value == 0
     }
 
-    pub const fn no_aura_cancel(&self) -> bool {
-        (self.value & 2147483648) != 0
-    }
-
     pub const fn dismiss_pet_first(&self) -> bool {
         (self.value & 1) != 0
     }

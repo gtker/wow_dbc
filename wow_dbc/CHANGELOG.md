@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * ints on `Spell.dbc` to enums/flags.
 
+### Removed
+
+* BREAKING: Extra `no_aura_cancel` function on `AttributesEx1`. This was mistakenly copied from `Attributes`.
+
 ## [0.2.0] - 2022-10-25
 
 ### Added

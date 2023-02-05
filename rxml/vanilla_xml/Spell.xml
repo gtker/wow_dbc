@@ -101,7 +101,6 @@
         <name>AttributesEx1</name>
         <options>
             <option name="none" value="0x00" />
-            <option name="no_aura_cancel" value="0x80000000" />
             <option name="dismiss_pet_first" value="0x00000001" />
             <option name="use_all_mana" value="0x00000002" />
             <option name="is_channeled" value="0x00000004" />
