@@ -166,7 +166,7 @@ impl<const S: usize> ConstSkillRaceClassInfo<S> {
             panic!("invalid field count, expected 8")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SkillRaceClassInfoRow {
                 id: SkillRaceClassInfoKey::new(0),

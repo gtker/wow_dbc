@@ -174,9 +174,9 @@ impl<const S: usize> ConstSpellShapeshiftForm<S> {
             panic!("invalid field count, expected 14")
         }
 
-        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
         let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             ConstSpellShapeshiftFormRow {
                 id: SpellShapeshiftFormKey::new(0),

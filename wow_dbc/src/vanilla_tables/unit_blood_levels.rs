@@ -122,7 +122,7 @@ impl<const S: usize> ConstUnitBloodLevels<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             UnitBloodLevelsRow {
                 id: UnitBloodLevelsKey::new(0),

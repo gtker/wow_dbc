@@ -126,7 +126,7 @@ impl<const S: usize> ConstGlyphSlot<S> {
             panic!("invalid field count, expected 3")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             GlyphSlotRow {
                 id: GlyphSlotKey::new(0),

@@ -128,7 +128,7 @@ impl<const S: usize> ConstMovieVariation<S> {
             panic!("invalid field count, expected 3")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             MovieVariationRow {
                 id: MovieVariationKey::new(0),

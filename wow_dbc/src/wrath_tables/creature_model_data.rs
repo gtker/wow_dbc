@@ -339,9 +339,9 @@ impl<const S: usize> ConstCreatureModelData<S> {
             panic!("invalid field count, expected 28")
         }
 
-        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
         let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             ConstCreatureModelDataRow {
                 id: CreatureModelDataKey::new(0),

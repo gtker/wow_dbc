@@ -133,7 +133,7 @@ impl<const S: usize> ConstItem<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             ItemRow {
                 id: ItemKey::new(0),

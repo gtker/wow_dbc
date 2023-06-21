@@ -159,7 +159,7 @@ impl<const S: usize> ConstLock<S> {
             panic!("invalid field count, expected 33")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             LockRow {
                 id: LockKey::new(0),

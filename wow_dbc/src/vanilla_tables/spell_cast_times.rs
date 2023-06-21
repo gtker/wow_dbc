@@ -133,7 +133,7 @@ impl<const S: usize> ConstSpellCastTimes<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellCastTimesRow {
                 id: SpellCastTimesKey::new(0),

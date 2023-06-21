@@ -146,7 +146,7 @@ impl<const S: usize> ConstGroundEffectTexture<S> {
             panic!("invalid field count, expected 11")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             GroundEffectTextureRow {
                 id: GroundEffectTextureKey::new(0),

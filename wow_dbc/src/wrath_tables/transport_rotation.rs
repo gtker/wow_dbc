@@ -136,7 +136,7 @@ impl<const S: usize> ConstTransportRotation<S> {
             panic!("invalid field count, expected 7")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             TransportRotationRow {
                 id: TransportRotationKey::new(0),

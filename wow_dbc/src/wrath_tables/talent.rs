@@ -188,7 +188,7 @@ impl<const S: usize> ConstTalent<S> {
             panic!("invalid field count, expected 23")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             TalentRow {
                 id: TalentKey::new(0),

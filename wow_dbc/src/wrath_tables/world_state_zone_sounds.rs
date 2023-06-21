@@ -152,7 +152,7 @@ impl<const S: usize> ConstWorldStateZoneSounds<S> {
             panic!("invalid field count, expected 8")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             WorldStateZoneSoundsRow {
                 world_state_id: 0,

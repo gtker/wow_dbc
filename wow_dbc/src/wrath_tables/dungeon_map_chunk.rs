@@ -143,7 +143,7 @@ impl<const S: usize> ConstDungeonMapChunk<S> {
             panic!("invalid field count, expected 5")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             DungeonMapChunkRow {
                 id: DungeonMapChunkKey::new(0),

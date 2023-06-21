@@ -501,7 +501,7 @@ impl<const S: usize> ConstVehicleSeat<S> {
             panic!("invalid field count, expected 58")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             VehicleSeatRow {
                 id: VehicleSeatKey::new(0),

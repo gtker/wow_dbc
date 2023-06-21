@@ -134,7 +134,7 @@ impl<const S: usize> ConstSoundWaterType<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SoundWaterTypeRow {
                 id: SoundWaterTypeKey::new(0),

@@ -129,7 +129,7 @@ impl<const S: usize> ConstOverrideSpellData<S> {
             panic!("invalid field count, expected 12")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             OverrideSpellDataRow {
                 id: OverrideSpellDataKey::new(0),

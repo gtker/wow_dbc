@@ -112,7 +112,7 @@ impl<const S: usize> ConstTerrainTypeSounds<S> {
             panic!("invalid field count, expected 1")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             TerrainTypeSoundsRow {
                 id: TerrainTypeSoundsKey::new(0),

@@ -134,7 +134,7 @@ impl<const S: usize> ConstItemCondExtCosts<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             ItemCondExtCostsRow {
                 id: ItemCondExtCostsKey::new(0),

@@ -168,7 +168,7 @@ impl<const S: usize> ConstItemExtendedCost<S> {
             panic!("invalid field count, expected 16")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             ItemExtendedCostRow {
                 id: ItemExtendedCostKey::new(0),

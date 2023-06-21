@@ -330,7 +330,7 @@ impl<const S: usize> ConstCreatureSoundData<S> {
             panic!("invalid field count, expected 38")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CreatureSoundDataRow {
                 id: CreatureSoundDataKey::new(0),

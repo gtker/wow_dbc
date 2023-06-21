@@ -140,7 +140,7 @@ impl<const S: usize> ConstSpellRuneCost<S> {
             panic!("invalid field count, expected 5")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellRuneCostRow {
                 id: SpellRuneCostKey::new(0),

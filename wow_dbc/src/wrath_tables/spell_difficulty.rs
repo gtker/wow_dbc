@@ -122,7 +122,7 @@ impl<const S: usize> ConstSpellDifficulty<S> {
             panic!("invalid field count, expected 5")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellDifficultyRow {
                 id: SpellDifficultyKey::new(0),

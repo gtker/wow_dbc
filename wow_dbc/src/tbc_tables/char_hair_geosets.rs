@@ -148,7 +148,7 @@ impl<const S: usize> ConstCharHairGeosets<S> {
             panic!("invalid field count, expected 6")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CharHairGeosetsRow {
                 id: CharHairGeosetsKey::new(0),

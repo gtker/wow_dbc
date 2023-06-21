@@ -144,7 +144,7 @@ impl<const S: usize> ConstSoundFilterElem<S> {
             panic!("invalid field count, expected 13")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SoundFilterElemRow {
                 id: SoundFilterElemKey::new(0),

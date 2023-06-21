@@ -170,7 +170,7 @@ impl<const S: usize> ConstTaxiPathNode<S> {
             panic!("invalid field count, expected 9")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             TaxiPathNodeRow {
                 id: TaxiPathNodeKey::new(0),

@@ -139,7 +139,7 @@ impl<const S: usize> ConstLightFloatBand<S> {
             panic!("invalid field count, expected 34")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             LightFloatBandRow {
                 id: LightFloatBandKey::new(0),

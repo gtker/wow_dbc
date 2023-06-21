@@ -132,7 +132,7 @@ impl<const S: usize> ConstSkillTiers<S> {
             panic!("invalid field count, expected 33")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SkillTiersRow {
                 id: SkillTiersKey::new(0),

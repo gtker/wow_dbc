@@ -141,7 +141,7 @@ impl<const S: usize> ConstGemProperties<S> {
             panic!("invalid field count, expected 5")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             GemPropertiesRow {
                 id: GemPropertiesKey::new(0),

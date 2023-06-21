@@ -127,7 +127,7 @@ impl<const S: usize> ConstEnvironmentalDamage<S> {
             panic!("invalid field count, expected 3")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             EnvironmentalDamageRow {
                 id: EnvironmentalDamageKey::new(0),

@@ -122,7 +122,7 @@ impl<const S: usize> ConstVideoHardware<S> {
             panic!("invalid field count, expected 22")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             VideoHardwareRow {
                 id: VideoHardwareKey::new(0),

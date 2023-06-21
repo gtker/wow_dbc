@@ -157,7 +157,7 @@ impl<const S: usize> ConstWorldMapTransforms<S> {
             panic!("invalid field count, expected 9")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             WorldMapTransformsRow {
                 id: WorldMapTransformsKey::new(0),

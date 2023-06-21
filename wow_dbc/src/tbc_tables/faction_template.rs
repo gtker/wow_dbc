@@ -169,7 +169,7 @@ impl<const S: usize> ConstFactionTemplate<S> {
             panic!("invalid field count, expected 14")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             FactionTemplateRow {
                 id: FactionTemplateKey::new(0),

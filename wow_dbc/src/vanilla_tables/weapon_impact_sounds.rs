@@ -146,7 +146,7 @@ impl<const S: usize> ConstWeaponImpactSounds<S> {
             panic!("invalid field count, expected 23")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             WeaponImpactSoundsRow {
                 id: WeaponImpactSoundsKey::new(0),

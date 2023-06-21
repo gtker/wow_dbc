@@ -147,7 +147,7 @@ impl<const S: usize> ConstLoadingScreenTaxiSplines<S> {
             panic!("invalid field count, expected 19")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             LoadingScreenTaxiSplinesRow {
                 id: LoadingScreenTaxiSplinesKey::new(0),

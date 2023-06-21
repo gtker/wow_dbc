@@ -130,7 +130,7 @@ impl<const S: usize> ConstCinematicSequences<S> {
             panic!("invalid field count, expected 10")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CinematicSequencesRow {
                 id: CinematicSequencesKey::new(0),

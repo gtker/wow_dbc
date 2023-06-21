@@ -200,7 +200,7 @@ impl<const S: usize> ConstSpellItemEnchantmentCondition<S> {
             panic!("invalid field count, expected 31")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellItemEnchantmentConditionRow {
                 id: SpellItemEnchantmentConditionKey::new(0),

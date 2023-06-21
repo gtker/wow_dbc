@@ -210,7 +210,7 @@ impl<const S: usize> ConstSpellMissile<S> {
             panic!("invalid field count, expected 15")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellMissileRow {
                 id: SpellMissileKey::new(0),

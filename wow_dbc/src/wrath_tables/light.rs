@@ -154,7 +154,7 @@ impl<const S: usize> ConstLight<S> {
             panic!("invalid field count, expected 15")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             LightRow {
                 id: LightKey::new(0),

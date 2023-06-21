@@ -155,7 +155,7 @@ impl<const S: usize> ConstTransportAnimation<S> {
             panic!("invalid field count, expected 7")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             TransportAnimationRow {
                 id: TransportAnimationKey::new(0),

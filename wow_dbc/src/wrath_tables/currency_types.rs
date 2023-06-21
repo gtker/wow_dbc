@@ -135,7 +135,7 @@ impl<const S: usize> ConstCurrencyTypes<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CurrencyTypesRow {
                 id: CurrencyTypesKey::new(0),

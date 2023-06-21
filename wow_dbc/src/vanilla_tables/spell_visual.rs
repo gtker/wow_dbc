@@ -219,7 +219,7 @@ impl<const S: usize> ConstSpellVisual<S> {
             panic!("invalid field count, expected 16")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellVisualRow {
                 id: SpellVisualKey::new(0),

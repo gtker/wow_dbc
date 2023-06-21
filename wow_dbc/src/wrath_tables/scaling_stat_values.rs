@@ -273,7 +273,7 @@ impl<const S: usize> ConstScalingStatValues<S> {
             panic!("invalid field count, expected 24")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             ScalingStatValuesRow {
                 id: ScalingStatValuesKey::new(0),

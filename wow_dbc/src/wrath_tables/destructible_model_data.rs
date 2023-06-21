@@ -238,7 +238,7 @@ impl<const S: usize> ConstDestructibleModelData<S> {
             panic!("invalid field count, expected 19")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             DestructibleModelDataRow {
                 id: DestructibleModelDataKey::new(0),

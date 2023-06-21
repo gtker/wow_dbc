@@ -87,11 +87,13 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects, row_name: &str) 
     );
 
     if d.contains_string() {
-        s.wln("let string_block = (header.record_count * header.record_size) as usize;");
+        s.wln(
+            "let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;",
+        );
         s.wln("let string_block = crate::util::subslice(b, string_block..b.len());");
     }
 
-    s.wln("let mut b_offset = 20;");
+    s.wln("let mut b_offset = HEADER_SIZE;");
     s.wln("let mut rows = [");
     s.inc_indent();
 

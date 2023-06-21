@@ -142,7 +142,7 @@ impl<const S: usize> ConstRandPropPoints<S> {
             panic!("invalid field count, expected 16")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             RandPropPointsRow {
                 id: RandPropPointsKey::new(0),

@@ -119,7 +119,7 @@ impl<const S: usize> ConstCreatureMovementInfo<S> {
             panic!("invalid field count, expected 2")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CreatureMovementInfoRow {
                 id: CreatureMovementInfoKey::new(0),

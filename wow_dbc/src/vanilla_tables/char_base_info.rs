@@ -106,7 +106,7 @@ impl<const S: usize> ConstCharBaseInfo<S> {
             panic!("invalid field count, expected 2")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CharBaseInfoRow {
                 race: ChrRacesKey::new(0),

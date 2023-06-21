@@ -182,7 +182,7 @@ impl<const S: usize> ConstTransportPhysics<S> {
             panic!("invalid field count, expected 11")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             TransportPhysicsRow {
                 id: TransportPhysicsKey::new(0),

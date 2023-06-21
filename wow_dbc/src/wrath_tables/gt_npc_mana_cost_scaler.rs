@@ -97,7 +97,7 @@ impl<const S: usize> ConstgtNPCManaCostScaler<S> {
             panic!("invalid field count, expected 1")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             gtNPCManaCostScalerRow {
                 data: 0.0,

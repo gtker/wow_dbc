@@ -122,7 +122,7 @@ impl<const S: usize> ConstGMSurveySurveys<S> {
             panic!("invalid field count, expected 11")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             GMSurveySurveysRow {
                 id: GMSurveySurveysKey::new(0),

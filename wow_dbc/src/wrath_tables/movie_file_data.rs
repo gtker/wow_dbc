@@ -105,7 +105,7 @@ impl<const S: usize> ConstMovieFileData<S> {
             panic!("invalid field count, expected 2")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             MovieFileDataRow {
                 file_data_id: FileDataKey::new(0),

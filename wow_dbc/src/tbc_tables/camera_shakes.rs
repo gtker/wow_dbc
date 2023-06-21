@@ -161,7 +161,7 @@ impl<const S: usize> ConstCameraShakes<S> {
             panic!("invalid field count, expected 8")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             CameraShakesRow {
                 id: CameraShakesKey::new(0),

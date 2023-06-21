@@ -133,7 +133,7 @@ impl<const S: usize> ConstSpellDuration<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             SpellDurationRow {
                 id: SpellDurationKey::new(0),

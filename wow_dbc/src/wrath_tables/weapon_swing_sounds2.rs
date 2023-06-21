@@ -134,7 +134,7 @@ impl<const S: usize> ConstWeaponSwingSounds2<S> {
             panic!("invalid field count, expected 4")
         }
 
-        let mut b_offset = 20;
+        let mut b_offset = HEADER_SIZE;
         let mut rows = [
             WeaponSwingSounds2Row {
                 id: WeaponSwingSounds2Key::new(0),
