@@ -407,27 +407,13 @@ fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     s.newline();
 
     s.wln("const HEADER: DbcHeader = crate::header::parse_header_panic(CONTENTS);");
-    s.wln("const SIZE: usize = HEADER.field_count as usize;");
+    s.wln("const SIZE: usize = HEADER.record_count as usize;");
     s.wln(format!(
         "const C: Const{ty}<SIZE> = Const{ty}::const_read(CONTENTS, &HEADER);"
     ));
 
-    /* TODO: Const test
-
-    #[test]
-    fn use_it() {
-        const DATA: &[u8] = include_bytes!("../../../vanilla-dbc/AttackAnimKits.dbc");
-
-        const HEADER: DbcHeader = parse_header_panic(DATA);
-        const SIZE: usize = HEADER.field_count as usize;
-        const ANIM: ConstAttackAnimKits<SIZE> = ConstAttackAnimKits::const_read(DATA, &HEADER);
-        const ROWS: &[AttackAnimKitsRow] = &ANIM.rows;
-
-        for anim in ROWS {}
-    }
-
-
-         */
+    s.wln("let c = C.to_owned();");
+    s.wln("assert_eq!(c, new);");
 
     s.closing_curly(); // fn
     s.closing_curly(); // mod test
