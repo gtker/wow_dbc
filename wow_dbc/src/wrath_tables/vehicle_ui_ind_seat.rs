@@ -186,6 +186,18 @@ impl<const S: usize> ConstVehicleUIIndSeat<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> VehicleUIIndSeat {
+        VehicleUIIndSeat {
+            rows: self.rows.iter().map(|s| VehicleUIIndSeatRow {
+                id: s.id,
+                vehicle_u_i_indicator_id: s.vehicle_u_i_indicator_id,
+                virtual_seat_index: s.virtual_seat_index,
+                x_pos: s.x_pos,
+                y_pos: s.y_pos,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

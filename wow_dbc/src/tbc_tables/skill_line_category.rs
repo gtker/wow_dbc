@@ -205,6 +205,16 @@ impl<const S: usize> ConstSkillLineCategory<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SkillLineCategory {
+        SkillLineCategory {
+            rows: self.rows.iter().map(|s| SkillLineCategoryRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                sort_index: s.sort_index,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

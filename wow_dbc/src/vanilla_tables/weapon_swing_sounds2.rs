@@ -176,6 +176,17 @@ impl<const S: usize> ConstWeaponSwingSounds2<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WeaponSwingSounds2 {
+        WeaponSwingSounds2 {
+            rows: self.rows.iter().map(|s| WeaponSwingSounds2Row {
+                id: s.id,
+                swing_type: s.swing_type,
+                critical: s.critical,
+                sound: s.sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

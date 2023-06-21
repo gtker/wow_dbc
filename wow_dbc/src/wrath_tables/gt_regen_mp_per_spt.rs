@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtRegenMPPerSpt<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtRegenMPPerSpt {
+        gtRegenMPPerSpt {
+            rows: self.rows.iter().map(|s| gtRegenMPPerSptRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

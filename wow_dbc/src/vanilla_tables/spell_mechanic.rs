@@ -184,6 +184,15 @@ impl<const S: usize> ConstSpellMechanic<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellMechanic {
+        SpellMechanic {
+            rows: self.rows.iter().map(|s| SpellMechanicRow {
+                id: s.id,
+                state_name: s.state_name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

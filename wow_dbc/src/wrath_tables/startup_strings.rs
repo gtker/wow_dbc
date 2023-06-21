@@ -218,6 +218,16 @@ impl<const S: usize> ConstStartup_Strings<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Startup_Strings {
+        Startup_Strings {
+            rows: self.rows.iter().map(|s| Startup_StringsRow {
+                id: s.id,
+                name: s.name.to_string(),
+                message_lang: s.message_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

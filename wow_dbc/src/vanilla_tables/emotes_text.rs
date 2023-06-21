@@ -221,6 +221,17 @@ impl<const S: usize> ConstEmotesText<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> EmotesText {
+        EmotesText {
+            rows: self.rows.iter().map(|s| EmotesTextRow {
+                id: s.id,
+                name: s.name.to_string(),
+                emote: s.emote,
+                emote_text_data: s.emote_text_data,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -174,6 +174,17 @@ impl<const S: usize> ConstCfg_Configs<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Cfg_Configs {
+        Cfg_Configs {
+            rows: self.rows.iter().map(|s| Cfg_ConfigsRow {
+                id: s.id,
+                realm_type: s.realm_type,
+                player_killing_allowed: s.player_killing_allowed,
+                roleplaying: s.roleplaying,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

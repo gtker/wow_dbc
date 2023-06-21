@@ -251,6 +251,18 @@ impl<const S: usize> ConstCharTitles<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharTitles {
+        CharTitles {
+            rows: self.rows.iter().map(|s| CharTitlesRow {
+                id: s.id,
+                condition_id: s.condition_id,
+                name_lang: s.name_lang.to_string(),
+                name1_lang: s.name1_lang.to_string(),
+                mask_id: s.mask_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -258,6 +258,16 @@ impl<const S: usize> ConstGameObjectArtKit<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GameObjectArtKit {
+        GameObjectArtKit {
+            rows: self.rows.iter().map(|s| GameObjectArtKitRow {
+                id: s.id,
+                texture_variation: s.texture_variation.map(|a| a.to_string()),
+                attach_model: s.attach_model.map(|a| a.to_string()),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

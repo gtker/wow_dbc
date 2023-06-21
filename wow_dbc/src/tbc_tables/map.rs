@@ -655,6 +655,41 @@ impl<const S: usize> ConstMap<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Map {
+        Map {
+            rows: self.rows.iter().map(|s| MapRow {
+                id: s.id,
+                directory: s.directory.to_string(),
+                instance_type: s.instance_type,
+                p_v_p: s.p_v_p,
+                map_name_lang: s.map_name_lang.to_string(),
+                min_level: s.min_level,
+                max_level: s.max_level,
+                max_players: s.max_players,
+                field_0_7_0_3694_006: s.field_0_7_0_3694_006,
+                field_0_7_0_3694_007: s.field_0_7_0_3694_007,
+                field_0_7_0_3694_008: s.field_0_7_0_3694_008,
+                area_table_id: s.area_table_id,
+                map_description0_lang: s.map_description0_lang.to_string(),
+                map_description1_lang: s.map_description1_lang.to_string(),
+                loading_screen_id: s.loading_screen_id,
+                field_1_5_0_4442_014: s.field_1_5_0_4442_014,
+                field_1_7_0_4671_015: s.field_1_7_0_4671_015,
+                minimap_icon_scale: s.minimap_icon_scale,
+                field_2_0_0_5610_018_lang: s.field_2_0_0_5610_018_lang.to_string(),
+                field_2_0_0_5610_019_lang: s.field_2_0_0_5610_019_lang.to_string(),
+                field_2_0_0_5610_020_lang: s.field_2_0_0_5610_020_lang.to_string(),
+                corpse_map_id: s.corpse_map_id,
+                corpse: s.corpse,
+                field_2_0_3_6299_023: s.field_2_0_3_6299_023,
+                field_2_0_3_6299_024: s.field_2_0_3_6299_024,
+                field_2_0_3_6299_025: s.field_2_0_3_6299_025,
+                time_of_day_override: s.time_of_day_override,
+                expansion_id: s.expansion_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

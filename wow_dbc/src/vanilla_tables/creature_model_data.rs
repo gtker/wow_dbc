@@ -370,6 +370,29 @@ impl<const S: usize> ConstCreatureModelData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureModelData {
+        CreatureModelData {
+            rows: self.rows.iter().map(|s| CreatureModelDataRow {
+                id: s.id,
+                flags: s.flags,
+                model_path: s.model_path.to_string(),
+                size: s.size,
+                model_scale: s.model_scale,
+                blood: s.blood,
+                footprint_texture: s.footprint_texture,
+                footprint_texture_length: s.footprint_texture_length,
+                footprint_texture_width: s.footprint_texture_width,
+                footprint_texture_scale: s.footprint_texture_scale,
+                foley_material: s.foley_material,
+                footstep_shake_size: s.footstep_shake_size,
+                death_thud_shake_size: s.death_thud_shake_size,
+                collision_width: s.collision_width,
+                collision_height: s.collision_height,
+                mount_height: s.mount_height,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

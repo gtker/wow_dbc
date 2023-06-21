@@ -203,6 +203,17 @@ impl<const S: usize> ConstItemClass<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemClass {
+        ItemClass {
+            rows: self.rows.iter().map(|s| ItemClassRow {
+                class_id: s.class_id,
+                subclass_map_id: s.subclass_map_id,
+                flags: s.flags,
+                class_name_lang: s.class_name_lang.to_string(),
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

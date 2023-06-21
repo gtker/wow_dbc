@@ -182,6 +182,15 @@ impl<const S: usize> ConstSpellDescriptionVariables<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellDescriptionVariables {
+        SpellDescriptionVariables {
+            rows: self.rows.iter().map(|s| SpellDescriptionVariablesRow {
+                id: s.id,
+                variables: s.variables.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

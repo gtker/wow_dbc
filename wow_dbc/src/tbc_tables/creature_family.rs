@@ -306,6 +306,22 @@ impl<const S: usize> ConstCreatureFamily<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureFamily {
+        CreatureFamily {
+            rows: self.rows.iter().map(|s| CreatureFamilyRow {
+                id: s.id,
+                min_scale: s.min_scale,
+                min_scale_level: s.min_scale_level,
+                max_scale: s.max_scale,
+                max_scale_level: s.max_scale_level,
+                skill_line: s.skill_line,
+                pet_food_mask: s.pet_food_mask,
+                name_lang: s.name_lang.to_string(),
+                icon_file: s.icon_file.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

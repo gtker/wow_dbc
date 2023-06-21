@@ -158,6 +158,15 @@ impl<const S: usize> ConstVideoHardware<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> VideoHardware {
+        VideoHardware {
+            rows: self.rows.iter().map(|s| VideoHardwareRow {
+                id: s.id,
+                unknown: s.unknown,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

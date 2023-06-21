@@ -452,6 +452,30 @@ impl<const S: usize> ConstMap<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Map {
+        Map {
+            rows: self.rows.iter().map(|s| MapRow {
+                id: s.id,
+                directory: s.directory.to_string(),
+                instance_type: s.instance_type,
+                flags: s.flags,
+                p_v_p: s.p_v_p,
+                map_name_lang: s.map_name_lang.to_string(),
+                area_table_id: s.area_table_id,
+                map_description0_lang: s.map_description0_lang.to_string(),
+                map_description1_lang: s.map_description1_lang.to_string(),
+                loading_screen_id: s.loading_screen_id,
+                minimap_icon_scale: s.minimap_icon_scale,
+                corpse_map_id: s.corpse_map_id,
+                corpse: s.corpse,
+                time_of_day_override: s.time_of_day_override,
+                expansion_id: s.expansion_id,
+                raid_offset: s.raid_offset,
+                max_players: s.max_players,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

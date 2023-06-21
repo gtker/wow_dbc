@@ -228,6 +228,20 @@ impl<const S: usize> ConstCharHairTextures<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharHairTextures {
+        CharHairTextures {
+            rows: self.rows.iter().map(|s| CharHairTexturesRow {
+                id: s.id,
+                race: s.race,
+                gender: s.gender,
+                variation: s.variation,
+                geoset: s.geoset,
+                show_scalp: s.show_scalp,
+                unknown_padding: s.unknown_padding,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

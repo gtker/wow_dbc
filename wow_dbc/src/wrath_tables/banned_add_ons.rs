@@ -209,6 +209,18 @@ impl<const S: usize> ConstBannedAddOns<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> BannedAddOns {
+        BannedAddOns {
+            rows: self.rows.iter().map(|s| BannedAddOnsRow {
+                id: s.id,
+                name_m_d5: s.name_m_d5,
+                version_m_d5: s.version_m_d5,
+                last_modified: s.last_modified,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -209,6 +209,17 @@ impl<const S: usize> ConstLiquidType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LiquidType {
+        LiquidType {
+            rows: self.rows.iter().map(|s| LiquidTypeRow {
+                id: s.id,
+                name: s.name.to_string(),
+                flags: s.flags,
+                spell_id: s.spell_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

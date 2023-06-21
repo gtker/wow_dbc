@@ -210,6 +210,16 @@ impl<const S: usize> ConstWowError_Strings<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WowError_Strings {
+        WowError_Strings {
+            rows: self.rows.iter().map(|s| WowError_StringsRow {
+                id: s.id,
+                name: s.name.to_string(),
+                text: s.text.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -146,6 +146,15 @@ impl<const S: usize> ConstSpellCategory<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellCategory {
+        SpellCategory {
+            rows: self.rows.iter().map(|s| SpellCategoryRow {
+                id: s.id,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -182,6 +182,15 @@ impl<const S: usize> ConstLightSkybox<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LightSkybox {
+        LightSkybox {
+            rows: self.rows.iter().map(|s| LightSkyboxRow {
+                id: s.id,
+                skybox_model_path: s.skybox_model_path.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

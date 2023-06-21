@@ -158,6 +158,15 @@ impl<const S: usize> ConstSpellEffectCameraShakes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellEffectCameraShakes {
+        SpellEffectCameraShakes {
+            rows: self.rows.iter().map(|s| SpellEffectCameraShakesRow {
+                id: s.id,
+                camera_shake: s.camera_shake,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

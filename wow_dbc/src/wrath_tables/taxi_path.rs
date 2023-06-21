@@ -173,6 +173,17 @@ impl<const S: usize> ConstTaxiPath<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TaxiPath {
+        TaxiPath {
+            rows: self.rows.iter().map(|s| TaxiPathRow {
+                id: s.id,
+                from_taxi_node: s.from_taxi_node,
+                to_taxi_node: s.to_taxi_node,
+                cost: s.cost,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

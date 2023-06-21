@@ -208,6 +208,17 @@ impl<const S: usize> ConstRandPropPoints<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> RandPropPoints {
+        RandPropPoints {
+            rows: self.rows.iter().map(|s| RandPropPointsRow {
+                id: s.id,
+                epic: s.epic,
+                superior: s.superior,
+                good: s.good,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

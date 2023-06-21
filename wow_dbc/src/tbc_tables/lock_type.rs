@@ -282,6 +282,18 @@ impl<const S: usize> ConstLockType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LockType {
+        LockType {
+            rows: self.rows.iter().map(|s| LockTypeRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                resource_name_lang: s.resource_name_lang.to_string(),
+                verb_lang: s.verb_lang.to_string(),
+                cursor_name: s.cursor_name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

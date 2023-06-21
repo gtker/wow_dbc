@@ -398,6 +398,26 @@ impl<const S: usize> ConstWorldStateUI<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldStateUI {
+        WorldStateUI {
+            rows: self.rows.iter().map(|s| WorldStateUIRow {
+                id: s.id,
+                map: s.map,
+                area_table: s.area_table,
+                icon: s.icon.to_string(),
+                state_variable: s.state_variable.to_string(),
+                tooltip: s.tooltip.to_string(),
+                state: s.state,
+                world_state: s.world_state,
+                ty: s.ty,
+                dynamic_icon: s.dynamic_icon.to_string(),
+                dynamic_tooltip: s.dynamic_tooltip.to_string(),
+                extended_ui: s.extended_ui.to_string(),
+                unknown: s.unknown,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

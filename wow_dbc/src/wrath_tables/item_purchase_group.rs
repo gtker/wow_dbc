@@ -217,6 +217,16 @@ impl<const S: usize> ConstItemPurchaseGroup<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemPurchaseGroup {
+        ItemPurchaseGroup {
+            rows: self.rows.iter().map(|s| ItemPurchaseGroupRow {
+                id: s.id,
+                item_id: s.item_id,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -158,6 +158,15 @@ impl<const S: usize> ConstHelmetGeosetVisData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> HelmetGeosetVisData {
+        HelmetGeosetVisData {
+            rows: self.rows.iter().map(|s| HelmetGeosetVisDataRow {
+                id: s.id,
+                hide_geoset: s.hide_geoset,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

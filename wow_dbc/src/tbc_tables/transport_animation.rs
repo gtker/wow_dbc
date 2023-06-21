@@ -197,6 +197,18 @@ impl<const S: usize> ConstTransportAnimation<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TransportAnimation {
+        TransportAnimation {
+            rows: self.rows.iter().map(|s| TransportAnimationRow {
+                id: s.id,
+                transport_id: s.transport_id,
+                time_index: s.time_index,
+                pos: s.pos,
+                sequence_id: s.sequence_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

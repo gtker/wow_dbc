@@ -133,6 +133,15 @@ impl<const S: usize> ConstCharBaseInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharBaseInfo {
+        CharBaseInfo {
+            rows: self.rows.iter().map(|s| CharBaseInfoRow {
+                race_id: s.race_id,
+                class_id: s.class_id,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

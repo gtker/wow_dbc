@@ -466,6 +466,36 @@ impl<const S: usize> ConstVideoHardware<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> VideoHardware {
+        VideoHardware {
+            rows: self.rows.iter().map(|s| VideoHardwareRow {
+                id: s.id,
+                vendor_id: s.vendor_id,
+                device_id: s.device_id,
+                farclip_idx: s.farclip_idx,
+                terrain_l_o_d_dist_idx: s.terrain_l_o_d_dist_idx,
+                terrain_shadow_l_o_d: s.terrain_shadow_l_o_d,
+                detail_doodad_density_idx: s.detail_doodad_density_idx,
+                detail_doodad_alpha: s.detail_doodad_alpha,
+                animating_doodad_idx: s.animating_doodad_idx,
+                trilinear: s.trilinear,
+                num_lights: s.num_lights,
+                specularity: s.specularity,
+                water_l_o_d_idx: s.water_l_o_d_idx,
+                particle_density_idx: s.particle_density_idx,
+                unit_draw_dist_idx: s.unit_draw_dist_idx,
+                small_cull_dist_idx: s.small_cull_dist_idx,
+                resolution_idx: s.resolution_idx,
+                base_mip_level: s.base_mip_level,
+                ogl_overrides: s.ogl_overrides.to_string(),
+                d3d_overrides: s.d3d_overrides.to_string(),
+                fix_lag: s.fix_lag,
+                multisample: s.multisample,
+                atlasdisable: s.atlasdisable,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

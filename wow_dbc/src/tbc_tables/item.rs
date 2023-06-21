@@ -172,6 +172,17 @@ impl<const S: usize> ConstItem<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Item {
+        Item {
+            rows: self.rows.iter().map(|s| ItemRow {
+                id: s.id,
+                display_info_id: s.display_info_id,
+                inventory_type: s.inventory_type,
+                sheathe_type: s.sheathe_type,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

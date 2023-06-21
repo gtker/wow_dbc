@@ -174,6 +174,17 @@ impl<const S: usize> ConstCurrencyTypes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CurrencyTypes {
+        CurrencyTypes {
+            rows: self.rows.iter().map(|s| CurrencyTypesRow {
+                id: s.id,
+                item_id: s.item_id,
+                category_id: s.category_id,
+                bit_index: s.bit_index,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -221,6 +221,17 @@ impl<const S: usize> ConstPackage<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Package {
+        Package {
+            rows: self.rows.iter().map(|s| PackageRow {
+                id: s.id,
+                icon: s.icon.to_string(),
+                cost: s.cost,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

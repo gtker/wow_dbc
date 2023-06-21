@@ -192,6 +192,15 @@ impl<const S: usize> ConstGMTicketCategory<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GMTicketCategory {
+        GMTicketCategory {
+            rows: self.rows.iter().map(|s| GMTicketCategoryRow {
+                id: s.id,
+                category_lang: s.category_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

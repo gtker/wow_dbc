@@ -146,6 +146,15 @@ impl<const S: usize> ConstTeamContributionPoints<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TeamContributionPoints {
+        TeamContributionPoints {
+            rows: self.rows.iter().map(|s| TeamContributionPointsRow {
+                id: s.id,
+                data: s.data,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

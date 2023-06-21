@@ -158,6 +158,15 @@ impl<const S: usize> ConstQuestXP<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> QuestXP {
+        QuestXP {
+            rows: self.rows.iter().map(|s| QuestXPRow {
+                id: s.id,
+                difficulty: s.difficulty,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

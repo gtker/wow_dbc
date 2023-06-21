@@ -182,6 +182,15 @@ impl<const S: usize> ConstItemVisualEffects<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemVisualEffects {
+        ItemVisualEffects {
+            rows: self.rows.iter().map(|s| ItemVisualEffectsRow {
+                id: s.id,
+                model: s.model.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

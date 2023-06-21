@@ -300,6 +300,22 @@ impl<const S: usize> ConstChrClasses<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ChrClasses {
+        ChrClasses {
+            rows: self.rows.iter().map(|s| ChrClassesRow {
+                id: s.id,
+                player_class: s.player_class,
+                damage_bonus_stat: s.damage_bonus_stat,
+                power_type: s.power_type,
+                pet_name_token: s.pet_name_token.to_string(),
+                name: s.name.to_string(),
+                filename: s.filename.to_string(),
+                class_mask: s.class_mask,
+                hybrid_class: s.hybrid_class,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtNPCManaCostScaler<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtNPCManaCostScaler {
+        gtNPCManaCostScaler {
+            rows: self.rows.iter().map(|s| gtNPCManaCostScalerRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

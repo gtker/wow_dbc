@@ -184,6 +184,15 @@ impl<const S: usize> ConstItemBagFamily<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemBagFamily {
+        ItemBagFamily {
+            rows: self.rows.iter().map(|s| ItemBagFamilyRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

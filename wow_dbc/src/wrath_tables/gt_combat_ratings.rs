@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtCombatRatings<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtCombatRatings {
+        gtCombatRatings {
+            rows: self.rows.iter().map(|s| gtCombatRatingsRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

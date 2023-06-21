@@ -207,6 +207,16 @@ impl<const S: usize> ConstGameObjectDisplayInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GameObjectDisplayInfo {
+        GameObjectDisplayInfo {
+            rows: self.rows.iter().map(|s| GameObjectDisplayInfoRow {
+                id: s.id,
+                model_name: s.model_name.to_string(),
+                sound_entry: s.sound_entry,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -184,6 +184,15 @@ impl<const S: usize> ConstQuestInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> QuestInfo {
+        QuestInfo {
+            rows: self.rows.iter().map(|s| QuestInfoRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

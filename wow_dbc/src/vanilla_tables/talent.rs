@@ -275,6 +275,22 @@ impl<const S: usize> ConstTalent<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Talent {
+        Talent {
+            rows: self.rows.iter().map(|s| TalentRow {
+                id: s.id,
+                tab: s.tab,
+                tier: s.tier,
+                column_index: s.column_index,
+                spell_rank: s.spell_rank,
+                prereq_talents: s.prereq_talents,
+                prereq_ranks: s.prereq_ranks,
+                flags: s.flags,
+                required_spell: s.required_spell,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

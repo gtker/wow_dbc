@@ -160,6 +160,16 @@ impl<const S: usize> ConstMaterial<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Material {
+        Material {
+            rows: self.rows.iter().map(|s| MaterialRow {
+                id: s.id,
+                flags: s.flags,
+                foley_sound: s.foley_sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

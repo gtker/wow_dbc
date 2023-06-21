@@ -249,6 +249,20 @@ impl<const S: usize> ConstExhaustion<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Exhaustion {
+        Exhaustion {
+            rows: self.rows.iter().map(|s| ExhaustionRow {
+                id: s.id,
+                experience: s.experience,
+                factor: s.factor,
+                outdoor_hours: s.outdoor_hours,
+                inn_hours: s.inn_hours,
+                state_name: s.state_name.to_string(),
+                threshold: s.threshold,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

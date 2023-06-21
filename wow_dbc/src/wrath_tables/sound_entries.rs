@@ -373,6 +373,25 @@ impl<const S: usize> ConstSoundEntries<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundEntries {
+        SoundEntries {
+            rows: self.rows.iter().map(|s| SoundEntriesRow {
+                id: s.id,
+                sound_type: s.sound_type,
+                name: s.name.to_string(),
+                file: s.file.map(|a| a.to_string()),
+                freq: s.freq,
+                directory_base: s.directory_base.to_string(),
+                volume_float: s.volume_float,
+                flags: s.flags,
+                min_distance: s.min_distance,
+                distance_cutoff: s.distance_cutoff,
+                e_a_x_def: s.e_a_x_def,
+                sound_entries_advanced_id: s.sound_entries_advanced_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

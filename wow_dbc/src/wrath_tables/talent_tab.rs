@@ -282,6 +282,21 @@ impl<const S: usize> ConstTalentTab<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TalentTab {
+        TalentTab {
+            rows: self.rows.iter().map(|s| TalentTabRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                spell_icon_id: s.spell_icon_id,
+                race_mask: s.race_mask,
+                class_mask: s.class_mask,
+                category_enum_id: s.category_enum_id,
+                order_index: s.order_index,
+                background_file: s.background_file.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

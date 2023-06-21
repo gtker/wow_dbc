@@ -208,6 +208,17 @@ impl<const S: usize> ConstParticleColor<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ParticleColor {
+        ParticleColor {
+            rows: self.rows.iter().map(|s| ParticleColorRow {
+                id: s.id,
+                start: s.start,
+                m_id: s.m_id,
+                end: s.end,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

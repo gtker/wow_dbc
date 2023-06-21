@@ -222,6 +222,18 @@ impl<const S: usize> ConstZoneIntroMusicTable<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ZoneIntroMusicTable {
+        ZoneIntroMusicTable {
+            rows: self.rows.iter().map(|s| ZoneIntroMusicTableRow {
+                id: s.id,
+                name: s.name.to_string(),
+                intro_sound: s.intro_sound,
+                priority_over_ambience: s.priority_over_ambience,
+                min_delay: s.min_delay,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

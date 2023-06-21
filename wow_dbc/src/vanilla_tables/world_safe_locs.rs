@@ -237,6 +237,19 @@ impl<const S: usize> ConstWorldSafeLocs<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldSafeLocs {
+        WorldSafeLocs {
+            rows: self.rows.iter().map(|s| WorldSafeLocsRow {
+                id: s.id,
+                map: s.map,
+                location_x: s.location_x,
+                location_y: s.location_y,
+                location_z: s.location_z,
+                area_name: s.area_name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

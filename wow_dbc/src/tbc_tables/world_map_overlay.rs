@@ -351,6 +351,27 @@ impl<const S: usize> ConstWorldMapOverlay<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldMapOverlay {
+        WorldMapOverlay {
+            rows: self.rows.iter().map(|s| WorldMapOverlayRow {
+                id: s.id,
+                map_area_id: s.map_area_id,
+                area_id: s.area_id,
+                map_point_x: s.map_point_x,
+                map_point_y: s.map_point_y,
+                texture_name: s.texture_name.to_string(),
+                texture_width: s.texture_width,
+                texture_height: s.texture_height,
+                offset_x: s.offset_x,
+                offset_y: s.offset_y,
+                hit_rect_top: s.hit_rect_top,
+                hit_rect_left: s.hit_rect_left,
+                hit_rect_bottom: s.hit_rect_bottom,
+                hit_rect_right: s.hit_rect_right,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

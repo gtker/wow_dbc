@@ -146,6 +146,15 @@ impl<const S: usize> ConstgtOCTClassCombatRatingScalar<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtOCTClassCombatRatingScalar {
+        gtOCTClassCombatRatingScalar {
+            rows: self.rows.iter().map(|s| gtOCTClassCombatRatingScalarRow {
+                id: s.id,
+                data: s.data,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -269,6 +269,20 @@ impl<const S: usize> ConstMapDifficulty<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> MapDifficulty {
+        MapDifficulty {
+            rows: self.rows.iter().map(|s| MapDifficultyRow {
+                id: s.id,
+                map_id: s.map_id,
+                difficulty: s.difficulty,
+                message_lang: s.message_lang.to_string(),
+                raid_duration: s.raid_duration,
+                max_players: s.max_players,
+                difficultystring: s.difficultystring.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

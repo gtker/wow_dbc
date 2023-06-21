@@ -186,6 +186,18 @@ impl<const S: usize> ConstFootstepTerrainLookup<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> FootstepTerrainLookup {
+        FootstepTerrainLookup {
+            rows: self.rows.iter().map(|s| FootstepTerrainLookupRow {
+                id: s.id,
+                creature_footstep_id: s.creature_footstep_id,
+                terrain_sound_id: s.terrain_sound_id,
+                sound_id: s.sound_id,
+                sound_id_splash: s.sound_id_splash,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

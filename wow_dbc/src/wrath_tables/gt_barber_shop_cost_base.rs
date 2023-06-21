@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtBarberShopCostBase<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtBarberShopCostBase {
+        gtBarberShopCostBase {
+            rows: self.rows.iter().map(|s| gtBarberShopCostBaseRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

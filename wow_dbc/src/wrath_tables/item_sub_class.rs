@@ -327,6 +327,25 @@ impl<const S: usize> ConstItemSubClass<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemSubClass {
+        ItemSubClass {
+            rows: self.rows.iter().map(|s| ItemSubClassRow {
+                class_id: s.class_id,
+                sub_class_id: s.sub_class_id,
+                prerequisite_proficiency: s.prerequisite_proficiency,
+                postrequisite_proficiency: s.postrequisite_proficiency,
+                flags: s.flags,
+                display_flags: s.display_flags,
+                weapon_parry_seq: s.weapon_parry_seq,
+                weapon_ready_seq: s.weapon_ready_seq,
+                weapon_attack_seq: s.weapon_attack_seq,
+                weapon_swing_size: s.weapon_swing_size,
+                display_name_lang: s.display_name_lang.to_string(),
+                verbose_name_lang: s.verbose_name_lang.to_string(),
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

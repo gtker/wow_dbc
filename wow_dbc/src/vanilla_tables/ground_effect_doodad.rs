@@ -195,6 +195,16 @@ impl<const S: usize> ConstGroundEffectDoodad<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GroundEffectDoodad {
+        GroundEffectDoodad {
+            rows: self.rows.iter().map(|s| GroundEffectDoodadRow {
+                id: s.id,
+                internal_id: s.internal_id,
+                doodad_path: s.doodad_path.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -197,6 +197,18 @@ impl<const S: usize> ConstObjectEffectModifier<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ObjectEffectModifier {
+        ObjectEffectModifier {
+            rows: self.rows.iter().map(|s| ObjectEffectModifierRow {
+                id: s.id,
+                input_type: s.input_type,
+                map_type: s.map_type,
+                output_type: s.output_type,
+                param: s.param,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

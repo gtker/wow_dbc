@@ -218,6 +218,17 @@ impl<const S: usize> ConstTotemCategory<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TotemCategory {
+        TotemCategory {
+            rows: self.rows.iter().map(|s| TotemCategoryRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                totem_category_type: s.totem_category_type,
+                totem_category_mask: s.totem_category_mask,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

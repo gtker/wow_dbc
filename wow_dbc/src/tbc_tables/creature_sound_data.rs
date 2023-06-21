@@ -536,6 +536,43 @@ impl<const S: usize> ConstCreatureSoundData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureSoundData {
+        CreatureSoundData {
+            rows: self.rows.iter().map(|s| CreatureSoundDataRow {
+                id: s.id,
+                sound_exertion_id: s.sound_exertion_id,
+                sound_exertion_critical_id: s.sound_exertion_critical_id,
+                sound_injury_id: s.sound_injury_id,
+                sound_injury_critical_id: s.sound_injury_critical_id,
+                sound_injury_crushing_blow_id: s.sound_injury_crushing_blow_id,
+                sound_death_id: s.sound_death_id,
+                sound_stun_id: s.sound_stun_id,
+                sound_stand_id: s.sound_stand_id,
+                sound_footstep_id: s.sound_footstep_id,
+                sound_aggro_id: s.sound_aggro_id,
+                sound_wing_flap_id: s.sound_wing_flap_id,
+                sound_wing_glide_id: s.sound_wing_glide_id,
+                sound_alert_id: s.sound_alert_id,
+                sound_fidget: s.sound_fidget,
+                custom_attack: s.custom_attack,
+                n_p_c_sound_id: s.n_p_c_sound_id,
+                loop_sound_id: s.loop_sound_id,
+                creature_impact_type: s.creature_impact_type,
+                sound_jump_start_id: s.sound_jump_start_id,
+                sound_jump_end_id: s.sound_jump_end_id,
+                sound_pet_attack_id: s.sound_pet_attack_id,
+                sound_pet_order_id: s.sound_pet_order_id,
+                sound_pet_dismiss_id: s.sound_pet_dismiss_id,
+                fidget_delay_seconds_min: s.fidget_delay_seconds_min,
+                fidget_delay_seconds_max: s.fidget_delay_seconds_max,
+                birth_sound_id: s.birth_sound_id,
+                spell_cast_directed_sound_id: s.spell_cast_directed_sound_id,
+                submerge_sound_id: s.submerge_sound_id,
+                submerged_sound_id: s.submerged_sound_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

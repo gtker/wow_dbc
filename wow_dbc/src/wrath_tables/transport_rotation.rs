@@ -184,6 +184,17 @@ impl<const S: usize> ConstTransportRotation<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TransportRotation {
+        TransportRotation {
+            rows: self.rows.iter().map(|s| TransportRotationRow {
+                id: s.id,
+                game_objects_id: s.game_objects_id,
+                time_index: s.time_index,
+                rot: s.rot,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -158,6 +158,15 @@ impl<const S: usize> ConstItemVisuals<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemVisuals {
+        ItemVisuals {
+            rows: self.rows.iter().map(|s| ItemVisualsRow {
+                id: s.id,
+                item_visual_effects: s.item_visual_effects,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

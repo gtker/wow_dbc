@@ -263,6 +263,24 @@ impl<const S: usize> ConstTransportPhysics<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TransportPhysics {
+        TransportPhysics {
+            rows: self.rows.iter().map(|s| TransportPhysicsRow {
+                id: s.id,
+                wave_amp: s.wave_amp,
+                wave_time_scale: s.wave_time_scale,
+                roll_amp: s.roll_amp,
+                roll_time_scale: s.roll_time_scale,
+                pitch_amp: s.pitch_amp,
+                pitch_time_scale: s.pitch_time_scale,
+                max_bank: s.max_bank,
+                max_bank_turn_speed: s.max_bank_turn_speed,
+                speed_damp_thresh: s.speed_damp_thresh,
+                speed_damp: s.speed_damp,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

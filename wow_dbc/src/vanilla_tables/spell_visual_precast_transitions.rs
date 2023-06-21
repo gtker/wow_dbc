@@ -206,6 +206,16 @@ impl<const S: usize> ConstSpellVisualPrecastTransitions<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisualPrecastTransitions {
+        SpellVisualPrecastTransitions {
+            rows: self.rows.iter().map(|s| SpellVisualPrecastTransitionsRow {
+                id: s.id,
+                load_animation: s.load_animation.to_string(),
+                hold_animation: s.hold_animation.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -191,6 +191,18 @@ impl<const S: usize> ConstSoundCharacterMacroLines<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundCharacterMacroLines {
+        SoundCharacterMacroLines {
+            rows: self.rows.iter().map(|s| SoundCharacterMacroLinesRow {
+                id: s.id,
+                unknown: s.unknown,
+                gender: s.gender,
+                race: s.race,
+                sound: s.sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

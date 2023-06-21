@@ -226,6 +226,21 @@ impl<const S: usize> ConstDungeonMap<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DungeonMap {
+        DungeonMap {
+            rows: self.rows.iter().map(|s| DungeonMapRow {
+                id: s.id,
+                map_id: s.map_id,
+                floor_index: s.floor_index,
+                min_x: s.min_x,
+                max_x: s.max_x,
+                min_y: s.min_y,
+                max_y: s.max_y,
+                parent_world_map_id: s.parent_world_map_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

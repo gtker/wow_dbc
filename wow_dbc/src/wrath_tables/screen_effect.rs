@@ -262,6 +262,20 @@ impl<const S: usize> ConstScreenEffect<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ScreenEffect {
+        ScreenEffect {
+            rows: self.rows.iter().map(|s| ScreenEffectRow {
+                id: s.id,
+                name: s.name.to_string(),
+                effect: s.effect,
+                param: s.param,
+                light_params_id: s.light_params_id,
+                sound_ambience_id: s.sound_ambience_id,
+                zone_music_id: s.zone_music_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

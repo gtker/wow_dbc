@@ -260,6 +260,21 @@ impl<const S: usize> ConstSpellChainEffects<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellChainEffects {
+        SpellChainEffects {
+            rows: self.rows.iter().map(|s| SpellChainEffectsRow {
+                id: s.id,
+                average_seg_len: s.average_seg_len,
+                width: s.width,
+                noise_scale: s.noise_scale,
+                tex_coord_scale: s.tex_coord_scale,
+                seg_duration: s.seg_duration,
+                seg_delay: s.seg_delay,
+                texture: s.texture.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

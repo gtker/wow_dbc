@@ -188,6 +188,18 @@ impl<const S: usize> ConstDungeonMapChunk<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DungeonMapChunk {
+        DungeonMapChunk {
+            rows: self.rows.iter().map(|s| DungeonMapChunkRow {
+                id: s.id,
+                map_id: s.map_id,
+                w_m_o_group_id: s.w_m_o_group_id,
+                dungeon_map_id: s.dungeon_map_id,
+                min_z: s.min_z,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

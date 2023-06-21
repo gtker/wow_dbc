@@ -256,6 +256,18 @@ impl<const S: usize> ConstTaxiNodes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TaxiNodes {
+        TaxiNodes {
+            rows: self.rows.iter().map(|s| TaxiNodesRow {
+                id: s.id,
+                continent_id: s.continent_id,
+                pos: s.pos,
+                name_lang: s.name_lang.to_string(),
+                mount_creature_id: s.mount_creature_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -158,6 +158,15 @@ impl<const S: usize> ConstUnitBloodLevels<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> UnitBloodLevels {
+        UnitBloodLevels {
+            rows: self.rows.iter().map(|s| UnitBloodLevelsRow {
+                id: s.id,
+                violence_level: s.violence_level,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

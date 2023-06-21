@@ -225,6 +225,21 @@ impl<const S: usize> ConstItem<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Item {
+        Item {
+            rows: self.rows.iter().map(|s| ItemRow {
+                id: s.id,
+                class_id: s.class_id,
+                subclass_id: s.subclass_id,
+                sound_override_subclass_id: s.sound_override_subclass_id,
+                material: s.material,
+                display_info_id: s.display_info_id,
+                inventory_type: s.inventory_type,
+                sheathe_type: s.sheathe_type,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

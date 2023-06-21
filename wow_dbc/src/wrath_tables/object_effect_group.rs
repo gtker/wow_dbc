@@ -182,6 +182,15 @@ impl<const S: usize> ConstObjectEffectGroup<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ObjectEffectGroup {
+        ObjectEffectGroup {
+            rows: self.rows.iter().map(|s| ObjectEffectGroupRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

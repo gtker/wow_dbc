@@ -497,6 +497,33 @@ impl<const S: usize> ConstChrRaces<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ChrRaces {
+        ChrRaces {
+            rows: self.rows.iter().map(|s| ChrRacesRow {
+                id: s.id,
+                flags: s.flags,
+                faction: s.faction,
+                exploration_sound: s.exploration_sound,
+                male_display: s.male_display,
+                female_display: s.female_display,
+                client_prefix: s.client_prefix.to_string(),
+                speed_modifier: s.speed_modifier,
+                base_lang: s.base_lang,
+                creature_type: s.creature_type,
+                login_effect: s.login_effect,
+                unknown1: s.unknown1,
+                res_sickness_spell: s.res_sickness_spell,
+                splash_sound_entry: s.splash_sound_entry,
+                unknown2: s.unknown2,
+                client_file_path: s.client_file_path.to_string(),
+                cinematic_sequence: s.cinematic_sequence,
+                name: s.name.to_string(),
+                facial_hair_customisation: s.facial_hair_customisation.map(|a| a.to_string()),
+                hair_customisation: s.hair_customisation.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

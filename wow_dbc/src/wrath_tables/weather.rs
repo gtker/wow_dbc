@@ -247,6 +247,19 @@ impl<const S: usize> ConstWeather<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Weather {
+        Weather {
+            rows: self.rows.iter().map(|s| WeatherRow {
+                id: s.id,
+                ambience_id: s.ambience_id,
+                effect_type: s.effect_type,
+                transition_sky_box: s.transition_sky_box,
+                effect_color: s.effect_color,
+                effect_texture: s.effect_texture.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -173,6 +173,17 @@ impl<const S: usize> ConstItemCondExtCosts<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemCondExtCosts {
+        ItemCondExtCosts {
+            rows: self.rows.iter().map(|s| ItemCondExtCostsRow {
+                id: s.id,
+                cond_extended_cost: s.cond_extended_cost,
+                item_extended_cost_entry: s.item_extended_cost_entry,
+                arena_season: s.arena_season,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

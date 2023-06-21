@@ -210,6 +210,18 @@ impl<const S: usize> ConstLoadingScreenTaxiSplines<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LoadingScreenTaxiSplines {
+        LoadingScreenTaxiSplines {
+            rows: self.rows.iter().map(|s| LoadingScreenTaxiSplinesRow {
+                id: s.id,
+                path_id: s.path_id,
+                locx: s.locx,
+                locy: s.locy,
+                leg_index: s.leg_index,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

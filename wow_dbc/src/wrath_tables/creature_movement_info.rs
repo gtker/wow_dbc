@@ -146,6 +146,15 @@ impl<const S: usize> ConstCreatureMovementInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureMovementInfo {
+        CreatureMovementInfo {
+            rows: self.rows.iter().map(|s| CreatureMovementInfoRow {
+                id: s.id,
+                smooth_facing_chase_rate: s.smooth_facing_chase_rate,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

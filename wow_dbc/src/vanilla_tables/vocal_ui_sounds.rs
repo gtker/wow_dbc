@@ -213,6 +213,20 @@ impl<const S: usize> ConstVocalUISounds<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> VocalUISounds {
+        VocalUISounds {
+            rows: self.rows.iter().map(|s| VocalUISoundsRow {
+                id: s.id,
+                vocal_ui_enum: s.vocal_ui_enum,
+                race: s.race,
+                normal_male_sound: s.normal_male_sound,
+                normal_female_sound: s.normal_female_sound,
+                pissed_male_sound: s.pissed_male_sound,
+                pissed_female_sound: s.pissed_female_sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

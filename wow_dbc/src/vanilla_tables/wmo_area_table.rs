@@ -319,6 +319,25 @@ impl<const S: usize> ConstWMOAreaTable<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WMOAreaTable {
+        WMOAreaTable {
+            rows: self.rows.iter().map(|s| WMOAreaTableRow {
+                id: s.id,
+                wmo_id: s.wmo_id,
+                name_set_id: s.name_set_id,
+                wmo_group_id: s.wmo_group_id,
+                sound_provider_preferences: s.sound_provider_preferences,
+                sound_provider_preferences_underwater: s.sound_provider_preferences_underwater,
+                sound_ambience: s.sound_ambience,
+                zone_music: s.zone_music,
+                zone_intro_music: s.zone_intro_music,
+                flags: s.flags,
+                area_table: s.area_table,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

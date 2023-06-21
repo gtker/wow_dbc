@@ -205,6 +205,16 @@ impl<const S: usize> ConstCreatureType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureType {
+        CreatureType {
+            rows: self.rows.iter().map(|s| CreatureTypeRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

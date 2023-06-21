@@ -160,6 +160,16 @@ impl<const S: usize> ConstEnvironmentalDamage<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> EnvironmentalDamage {
+        EnvironmentalDamage {
+            rows: self.rows.iter().map(|s| EnvironmentalDamageRow {
+                id: s.id,
+                enum_id: s.enum_id,
+                visualkit_id: s.visualkit_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

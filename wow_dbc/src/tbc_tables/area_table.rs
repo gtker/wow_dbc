@@ -391,6 +391,29 @@ impl<const S: usize> ConstAreaTable<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AreaTable {
+        AreaTable {
+            rows: self.rows.iter().map(|s| AreaTableRow {
+                id: s.id,
+                continent_id: s.continent_id,
+                parent_area_id: s.parent_area_id,
+                area_bit: s.area_bit,
+                flags: s.flags,
+                sound_provider_pref: s.sound_provider_pref,
+                sound_provider_pref_underwater: s.sound_provider_pref_underwater,
+                ambience_id: s.ambience_id,
+                zone_music: s.zone_music,
+                intro_sound: s.intro_sound,
+                exploration_level: s.exploration_level,
+                area_name_lang: s.area_name_lang.to_string(),
+                faction_group_mask: s.faction_group_mask,
+                liquid_type_id: s.liquid_type_id,
+                min_elevation: s.min_elevation,
+                ambient_multiplier: s.ambient_multiplier,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

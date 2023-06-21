@@ -192,6 +192,15 @@ impl<const S: usize> ConstServerMessages<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ServerMessages {
+        ServerMessages {
+            rows: self.rows.iter().map(|s| ServerMessagesRow {
+                id: s.id,
+                text_lang: s.text_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

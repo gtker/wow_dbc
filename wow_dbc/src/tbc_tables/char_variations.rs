@@ -157,6 +157,16 @@ impl<const S: usize> ConstCharVariations<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharVariations {
+        CharVariations {
+            rows: self.rows.iter().map(|s| CharVariationsRow {
+                race_id: s.race_id,
+                sex_id: s.sex_id,
+                texture_hold_layer: s.texture_hold_layer,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

@@ -290,6 +290,26 @@ impl<const S: usize> ConstWorldMapContinent<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldMapContinent {
+        WorldMapContinent {
+            rows: self.rows.iter().map(|s| WorldMapContinentRow {
+                id: s.id,
+                map: s.map,
+                left_boundary: s.left_boundary,
+                right_boundary: s.right_boundary,
+                top_boundary: s.top_boundary,
+                bottom_boundary: s.bottom_boundary,
+                continent_offset_x: s.continent_offset_x,
+                continent_offset_y: s.continent_offset_y,
+                scale: s.scale,
+                taxi_min_x: s.taxi_min_x,
+                taxi_min_y: s.taxi_min_y,
+                taxi_max_x: s.taxi_max_x,
+                taxi_max_y: s.taxi_max_y,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -185,6 +185,17 @@ impl<const S: usize> ConstGroundEffectTexture<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GroundEffectTexture {
+        GroundEffectTexture {
+            rows: self.rows.iter().map(|s| GroundEffectTextureRow {
+                id: s.id,
+                doodad: s.doodad,
+                density: s.density,
+                terrain_type: s.terrain_type,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

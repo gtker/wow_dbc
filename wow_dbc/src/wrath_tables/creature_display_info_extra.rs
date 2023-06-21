@@ -312,6 +312,24 @@ impl<const S: usize> ConstCreatureDisplayInfoExtra<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureDisplayInfoExtra {
+        CreatureDisplayInfoExtra {
+            rows: self.rows.iter().map(|s| CreatureDisplayInfoExtraRow {
+                id: s.id,
+                display_race_id: s.display_race_id,
+                display_sex_id: s.display_sex_id,
+                skin_id: s.skin_id,
+                face_id: s.face_id,
+                hair_style_id: s.hair_style_id,
+                hair_color_id: s.hair_color_id,
+                facial_hair_id: s.facial_hair_id,
+                n_p_c_item_display: s.n_p_c_item_display,
+                flags: s.flags,
+                bake_name: s.bake_name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

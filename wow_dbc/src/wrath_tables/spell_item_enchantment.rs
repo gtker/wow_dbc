@@ -399,6 +399,27 @@ impl<const S: usize> ConstSpellItemEnchantment<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellItemEnchantment {
+        SpellItemEnchantment {
+            rows: self.rows.iter().map(|s| SpellItemEnchantmentRow {
+                id: s.id,
+                charges: s.charges,
+                effect: s.effect,
+                effect_points_min: s.effect_points_min,
+                effect_points_max: s.effect_points_max,
+                effect_arg: s.effect_arg,
+                name_lang: s.name_lang.to_string(),
+                item_visual: s.item_visual,
+                flags: s.flags,
+                src_item_id: s.src_item_id,
+                condition_id: s.condition_id,
+                required_skill_id: s.required_skill_id,
+                required_skill_rank: s.required_skill_rank,
+                min_level: s.min_level,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

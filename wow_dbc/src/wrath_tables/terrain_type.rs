@@ -219,6 +219,19 @@ impl<const S: usize> ConstTerrainType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TerrainType {
+        TerrainType {
+            rows: self.rows.iter().map(|s| TerrainTypeRow {
+                terrain_id: s.terrain_id,
+                terrain_desc: s.terrain_desc.to_string(),
+                footstep_spray_run: s.footstep_spray_run,
+                footstep_spray_walk: s.footstep_spray_walk,
+                sound_id: s.sound_id,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

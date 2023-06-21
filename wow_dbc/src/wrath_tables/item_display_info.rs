@@ -475,6 +475,25 @@ impl<const S: usize> ConstItemDisplayInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemDisplayInfo {
+        ItemDisplayInfo {
+            rows: self.rows.iter().map(|s| ItemDisplayInfoRow {
+                id: s.id,
+                model_name: s.model_name.map(|a| a.to_string()),
+                model_texture: s.model_texture.map(|a| a.to_string()),
+                inventory_icon: s.inventory_icon.map(|a| a.to_string()),
+                geoset_group: s.geoset_group,
+                flags: s.flags,
+                spell_visual_id: s.spell_visual_id,
+                group_sound_index: s.group_sound_index,
+                helmet_geoset_vis_id: s.helmet_geoset_vis_id,
+                texture: s.texture.map(|a| a.to_string()),
+                item_visual: s.item_visual,
+                particle_color_id: s.particle_color_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

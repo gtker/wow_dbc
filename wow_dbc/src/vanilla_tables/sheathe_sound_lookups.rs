@@ -216,6 +216,20 @@ impl<const S: usize> ConstSheatheSoundLookups<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SheatheSoundLookups {
+        SheatheSoundLookups {
+            rows: self.rows.iter().map(|s| SheatheSoundLookupsRow {
+                id: s.id,
+                item_class: s.item_class,
+                item_subclass: s.item_subclass,
+                item_env_types: s.item_env_types,
+                not_shield: s.not_shield,
+                sheathe_sound: s.sheathe_sound,
+                draw_sound: s.draw_sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

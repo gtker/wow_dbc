@@ -172,6 +172,17 @@ impl<const S: usize> ConstSpellCastTimes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellCastTimes {
+        SpellCastTimes {
+            rows: self.rows.iter().map(|s| SpellCastTimesRow {
+                id: s.id,
+                base: s.base,
+                per_level: s.per_level,
+                minimum: s.minimum,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

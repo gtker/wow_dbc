@@ -252,6 +252,20 @@ impl<const S: usize> ConstEmotes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Emotes {
+        Emotes {
+            rows: self.rows.iter().map(|s| EmotesRow {
+                id: s.id,
+                emote_slash_command: s.emote_slash_command.to_string(),
+                animation_data: s.animation_data,
+                flags: s.flags,
+                spec_proc: s.spec_proc,
+                emote_spec_proc_param: s.emote_spec_proc_param,
+                event_sound_entry: s.event_sound_entry,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -226,6 +226,21 @@ impl<const S: usize> ConstSkillRaceClassInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SkillRaceClassInfo {
+        SkillRaceClassInfo {
+            rows: self.rows.iter().map(|s| SkillRaceClassInfoRow {
+                id: s.id,
+                skill_id: s.skill_id,
+                race_mask: s.race_mask,
+                class_mask: s.class_mask,
+                flags: s.flags,
+                min_level: s.min_level,
+                skill_tier_id: s.skill_tier_id,
+                skill_cost_index: s.skill_cost_index,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

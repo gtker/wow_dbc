@@ -242,6 +242,17 @@ impl<const S: usize> ConstPetPersonality<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PetPersonality {
+        PetPersonality {
+            rows: self.rows.iter().map(|s| PetPersonalityRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                happiness_threshold: s.happiness_threshold,
+                happiness_damage: s.happiness_damage,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

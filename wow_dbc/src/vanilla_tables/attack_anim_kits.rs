@@ -190,6 +190,18 @@ impl<const S: usize> ConstAttackAnimKits<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AttackAnimKits {
+        AttackAnimKits {
+            rows: self.rows.iter().map(|s| AttackAnimKitsRow {
+                id: s.id,
+                animation_data: s.animation_data,
+                attack_anim_type: s.attack_anim_type,
+                animation_frequency: s.animation_frequency,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

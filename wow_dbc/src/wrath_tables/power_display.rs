@@ -234,6 +234,19 @@ impl<const S: usize> ConstPowerDisplay<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PowerDisplay {
+        PowerDisplay {
+            rows: self.rows.iter().map(|s| PowerDisplayRow {
+                id: s.id,
+                actual_type: s.actual_type,
+                global_string_base_tag: s.global_string_base_tag.to_string(),
+                red: s.red,
+                green: s.green,
+                blue: s.blue,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

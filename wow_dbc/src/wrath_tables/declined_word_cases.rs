@@ -209,6 +209,17 @@ impl<const S: usize> ConstDeclinedWordCases<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DeclinedWordCases {
+        DeclinedWordCases {
+            rows: self.rows.iter().map(|s| DeclinedWordCasesRow {
+                id: s.id,
+                declined_word_id: s.declined_word_id,
+                case_index: s.case_index,
+                declined_word: s.declined_word.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

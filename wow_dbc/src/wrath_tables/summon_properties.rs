@@ -199,6 +199,19 @@ impl<const S: usize> ConstSummonProperties<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SummonProperties {
+        SummonProperties {
+            rows: self.rows.iter().map(|s| SummonPropertiesRow {
+                id: s.id,
+                control: s.control,
+                faction: s.faction,
+                title: s.title,
+                slot: s.slot,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

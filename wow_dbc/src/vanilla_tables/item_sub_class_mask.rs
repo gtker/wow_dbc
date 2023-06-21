@@ -182,6 +182,16 @@ impl<const S: usize> ConstItemSubClassMask<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemSubClassMask {
+        ItemSubClassMask {
+            rows: self.rows.iter().map(|s| ItemSubClassMaskRow {
+                subclass: s.subclass,
+                mask: s.mask,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

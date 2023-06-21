@@ -211,6 +211,17 @@ impl<const S: usize> ConstResistances<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Resistances {
+        Resistances {
+            rows: self.rows.iter().map(|s| ResistancesRow {
+                id: s.id,
+                physical_damage: s.physical_damage,
+                fizzle_sound_entry: s.fizzle_sound_entry,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -423,6 +423,26 @@ impl<const S: usize> ConstWorldStateUI<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldStateUI {
+        WorldStateUI {
+            rows: self.rows.iter().map(|s| WorldStateUIRow {
+                id: s.id,
+                map_id: s.map_id,
+                area_id: s.area_id,
+                icon: s.icon.to_string(),
+                string_lang: s.string_lang.to_string(),
+                tooltip_lang: s.tooltip_lang.to_string(),
+                faction_id: s.faction_id,
+                state_variable: s.state_variable,
+                ty: s.ty,
+                dynamic_icon: s.dynamic_icon.to_string(),
+                dynamic_tooltip_lang: s.dynamic_tooltip_lang.to_string(),
+                extended_u_i: s.extended_u_i.to_string(),
+                extended_u_i_state_variable: s.extended_u_i_state_variable,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

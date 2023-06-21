@@ -294,6 +294,21 @@ impl<const S: usize> ConstCharSections<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharSections {
+        CharSections {
+            rows: self.rows.iter().map(|s| CharSectionsRow {
+                id: s.id,
+                race: s.race,
+                gender: s.gender,
+                ty: s.ty,
+                variation_index: s.variation_index,
+                colour_index: s.colour_index,
+                texture_name: s.texture_name.map(|a| a.to_string()),
+                npc_only: s.npc_only,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

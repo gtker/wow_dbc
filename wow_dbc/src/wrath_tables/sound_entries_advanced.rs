@@ -469,6 +469,37 @@ impl<const S: usize> ConstSoundEntriesAdvanced<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundEntriesAdvanced {
+        SoundEntriesAdvanced {
+            rows: self.rows.iter().map(|s| SoundEntriesAdvancedRow {
+                id: s.id,
+                sound_entry_id: s.sound_entry_id,
+                inner_radius2_d: s.inner_radius2_d,
+                time_a: s.time_a,
+                time_b: s.time_b,
+                time_c: s.time_c,
+                time_d: s.time_d,
+                random_offset_range: s.random_offset_range,
+                usage: s.usage,
+                time_interval_min: s.time_interval_min,
+                time_interval_max: s.time_interval_max,
+                volume_slider_category: s.volume_slider_category,
+                duck_to_s_f_x: s.duck_to_s_f_x,
+                duck_to_music: s.duck_to_music,
+                duck_to_ambience: s.duck_to_ambience,
+                inner_radius_of_influence: s.inner_radius_of_influence,
+                outer_radius_of_influence: s.outer_radius_of_influence,
+                time_to_duck: s.time_to_duck,
+                time_to_unduck: s.time_to_unduck,
+                inside_angle: s.inside_angle,
+                outside_angle: s.outside_angle,
+                outside_volume: s.outside_volume,
+                outer_radius2_d: s.outer_radius2_d,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

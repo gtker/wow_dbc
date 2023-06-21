@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtOCTRegenMP<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtOCTRegenMP {
+        gtOCTRegenMP {
+            rows: self.rows.iter().map(|s| gtOCTRegenMPRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

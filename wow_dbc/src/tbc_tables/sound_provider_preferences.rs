@@ -468,6 +468,37 @@ impl<const S: usize> ConstSoundProviderPreferences<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundProviderPreferences {
+        SoundProviderPreferences {
+            rows: self.rows.iter().map(|s| SoundProviderPreferencesRow {
+                id: s.id,
+                description: s.description.to_string(),
+                flags: s.flags,
+                e_a_x_environment_selection: s.e_a_x_environment_selection,
+                e_a_x_decay_time: s.e_a_x_decay_time,
+                e_a_x2_environment_size: s.e_a_x2_environment_size,
+                e_a_x2_environment_diffusion: s.e_a_x2_environment_diffusion,
+                e_a_x2_room: s.e_a_x2_room,
+                e_a_x2_room_h_f: s.e_a_x2_room_h_f,
+                e_a_x2_decay_h_f_ratio: s.e_a_x2_decay_h_f_ratio,
+                e_a_x2_reflections: s.e_a_x2_reflections,
+                e_a_x2_reflections_delay: s.e_a_x2_reflections_delay,
+                e_a_x2_reverb: s.e_a_x2_reverb,
+                e_a_x2_reverb_delay: s.e_a_x2_reverb_delay,
+                e_a_x2_room_rolloff: s.e_a_x2_room_rolloff,
+                e_a_x2_air_absorption: s.e_a_x2_air_absorption,
+                e_a_x3_room_l_f: s.e_a_x3_room_l_f,
+                e_a_x3_decay_l_f_ratio: s.e_a_x3_decay_l_f_ratio,
+                e_a_x3_echo_time: s.e_a_x3_echo_time,
+                e_a_x3_echo_depth: s.e_a_x3_echo_depth,
+                e_a_x3_modulation_time: s.e_a_x3_modulation_time,
+                e_a_x3_modulation_depth: s.e_a_x3_modulation_depth,
+                e_a_x3_h_f_reference: s.e_a_x3_h_f_reference,
+                e_a_x3_l_f_reference: s.e_a_x3_l_f_reference,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

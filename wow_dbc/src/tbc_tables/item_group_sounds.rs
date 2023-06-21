@@ -158,6 +158,15 @@ impl<const S: usize> ConstItemGroupSounds<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemGroupSounds {
+        ItemGroupSounds {
+            rows: self.rows.iter().map(|s| ItemGroupSoundsRow {
+                id: s.id,
+                sound: s.sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

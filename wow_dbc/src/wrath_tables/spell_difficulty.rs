@@ -158,6 +158,15 @@ impl<const S: usize> ConstSpellDifficulty<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellDifficulty {
+        SpellDifficulty {
+            rows: self.rows.iter().map(|s| SpellDifficultyRow {
+                id: s.id,
+                difficulty_spell_id: s.difficulty_spell_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

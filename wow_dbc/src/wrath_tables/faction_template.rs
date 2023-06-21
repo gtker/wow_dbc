@@ -250,6 +250,21 @@ impl<const S: usize> ConstFactionTemplate<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> FactionTemplate {
+        FactionTemplate {
+            rows: self.rows.iter().map(|s| FactionTemplateRow {
+                id: s.id,
+                faction: s.faction,
+                flags: s.flags,
+                faction_group: s.faction_group,
+                friend_group: s.friend_group,
+                enemy_group: s.enemy_group,
+                enemies: s.enemies,
+                friend: s.friend,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

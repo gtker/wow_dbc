@@ -243,6 +243,18 @@ impl<const S: usize> ConstLock<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Lock {
+        Lock {
+            rows: self.rows.iter().map(|s| LockRow {
+                id: s.id,
+                ty: s.ty,
+                property: s.property,
+                required_skill: s.required_skill,
+                action: s.action,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

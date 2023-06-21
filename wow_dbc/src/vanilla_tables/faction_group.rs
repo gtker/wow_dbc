@@ -221,6 +221,17 @@ impl<const S: usize> ConstFactionGroup<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> FactionGroup {
+        FactionGroup {
+            rows: self.rows.iter().map(|s| FactionGroupRow {
+                id: s.id,
+                mask_id: s.mask_id,
+                internal_name: s.internal_name.to_string(),
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

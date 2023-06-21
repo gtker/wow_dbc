@@ -195,6 +195,16 @@ impl<const S: usize> ConstNamesProfanity<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> NamesProfanity {
+        NamesProfanity {
+            rows: self.rows.iter().map(|s| NamesProfanityRow {
+                id: s.id,
+                name: s.name.to_string(),
+                language: s.language,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -262,6 +262,21 @@ impl<const S: usize> ConstWorldMapArea<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldMapArea {
+        WorldMapArea {
+            rows: self.rows.iter().map(|s| WorldMapAreaRow {
+                id: s.id,
+                world_map_continent: s.world_map_continent,
+                area_table: s.area_table,
+                area_name: s.area_name.to_string(),
+                location_left: s.location_left,
+                location_right: s.location_right,
+                location_top: s.location_top,
+                location_bottom: s.location_bottom,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

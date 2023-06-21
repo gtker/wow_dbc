@@ -295,6 +295,22 @@ impl<const S: usize> ConstBattlemasterList<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> BattlemasterList {
+        BattlemasterList {
+            rows: self.rows.iter().map(|s| BattlemasterListRow {
+                id: s.id,
+                map_id: s.map_id,
+                instance_type: s.instance_type,
+                groups_allowed: s.groups_allowed,
+                name_lang: s.name_lang.to_string(),
+                max_group_size: s.max_group_size,
+                holiday_world_state: s.holiday_world_state,
+                min_level: s.min_level,
+                max_level: s.max_level,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

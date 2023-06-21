@@ -282,6 +282,21 @@ impl<const S: usize> ConstDanceMoves<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DanceMoves {
+        DanceMoves {
+            rows: self.rows.iter().map(|s| DanceMovesRow {
+                id: s.id,
+                ty: s.ty,
+                param: s.param,
+                fallback: s.fallback,
+                racemask: s.racemask,
+                internal_name: s.internal_name.to_string(),
+                name_lang: s.name_lang.to_string(),
+                lock_id: s.lock_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

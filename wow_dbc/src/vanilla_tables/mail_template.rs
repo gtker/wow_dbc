@@ -184,6 +184,15 @@ impl<const S: usize> ConstMailTemplate<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> MailTemplate {
+        MailTemplate {
+            rows: self.rows.iter().map(|s| MailTemplateRow {
+                id: s.id,
+                body: s.body.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

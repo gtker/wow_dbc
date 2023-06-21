@@ -159,6 +159,16 @@ impl<const S: usize> ConstGlyphSlot<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GlyphSlot {
+        GlyphSlot {
+            rows: self.rows.iter().map(|s| GlyphSlotRow {
+                id: s.id,
+                ty: s.ty,
+                tooltip: s.tooltip,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

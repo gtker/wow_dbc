@@ -318,6 +318,27 @@ impl<const S: usize> ConstSkillLineAbility<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SkillLineAbility {
+        SkillLineAbility {
+            rows: self.rows.iter().map(|s| SkillLineAbilityRow {
+                id: s.id,
+                skill_line: s.skill_line,
+                spell: s.spell,
+                race_mask: s.race_mask,
+                class_mask: s.class_mask,
+                exclude_race: s.exclude_race,
+                exclude_class: s.exclude_class,
+                superseded_by: s.superseded_by,
+                acquire_method: s.acquire_method,
+                trivial_skill_line_rank_high: s.trivial_skill_line_rank_high,
+                trivial_skill_line_rank_low: s.trivial_skill_line_rank_low,
+                character_points: s.character_points,
+                num_skills_up: s.num_skills_up,
+                unknown_padding: s.unknown_padding,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

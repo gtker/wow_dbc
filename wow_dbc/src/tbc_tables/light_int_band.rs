@@ -196,6 +196,17 @@ impl<const S: usize> ConstLightIntBand<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LightIntBand {
+        LightIntBand {
+            rows: self.rows.iter().map(|s| LightIntBandRow {
+                id: s.id,
+                num: s.num,
+                time: s.time,
+                data: s.data,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

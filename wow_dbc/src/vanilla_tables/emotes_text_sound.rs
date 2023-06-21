@@ -192,6 +192,18 @@ impl<const S: usize> ConstEmotesTextSound<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> EmotesTextSound {
+        EmotesTextSound {
+            rows: self.rows.iter().map(|s| EmotesTextSoundRow {
+                id: s.id,
+                emotes_text: s.emotes_text,
+                race: s.race,
+                gender: s.gender,
+                sound: s.sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

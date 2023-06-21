@@ -146,6 +146,15 @@ impl<const S: usize> ConstBankBagSlotPrices<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> BankBagSlotPrices {
+        BankBagSlotPrices {
+            rows: self.rows.iter().map(|s| BankBagSlotPricesRow {
+                id: s.id,
+                cost: s.cost,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

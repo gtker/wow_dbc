@@ -468,6 +468,37 @@ impl<const S: usize> ConstSoundProviderPreferences<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundProviderPreferences {
+        SoundProviderPreferences {
+            rows: self.rows.iter().map(|s| SoundProviderPreferencesRow {
+                id: s.id,
+                description: s.description.to_string(),
+                flags: s.flags,
+                eax_environment_selection: s.eax_environment_selection,
+                eax_decay_time: s.eax_decay_time,
+                eax2_environment_size: s.eax2_environment_size,
+                eax_environment_diffusion: s.eax_environment_diffusion,
+                eax2_room: s.eax2_room,
+                eax2_room_hf: s.eax2_room_hf,
+                eax2_decay_hf_ratio: s.eax2_decay_hf_ratio,
+                eax2_reflections: s.eax2_reflections,
+                eax2_reflections_delay: s.eax2_reflections_delay,
+                eax2_reverb: s.eax2_reverb,
+                eax2_reverb_delay: s.eax2_reverb_delay,
+                eax2_room_rolloff: s.eax2_room_rolloff,
+                eax2_air_absorption: s.eax2_air_absorption,
+                eax3_room_lf: s.eax3_room_lf,
+                eax3_delay_lf_ratio: s.eax3_delay_lf_ratio,
+                eax3_echo_time: s.eax3_echo_time,
+                eax3_echo_depth: s.eax3_echo_depth,
+                eax3_modulation_time: s.eax3_modulation_time,
+                eax3_modulation_depth: s.eax3_modulation_depth,
+                eax3_hf_reference: s.eax3_hf_reference,
+                eax3_lf_reference: s.eax3_lf_reference,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

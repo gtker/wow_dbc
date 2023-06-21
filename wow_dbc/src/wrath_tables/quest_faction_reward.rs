@@ -158,6 +158,15 @@ impl<const S: usize> ConstQuestFactionReward<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> QuestFactionReward {
+        QuestFactionReward {
+            rows: self.rows.iter().map(|s| QuestFactionRewardRow {
+                id: s.id,
+                difficulty: s.difficulty,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

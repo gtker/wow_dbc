@@ -172,6 +172,16 @@ impl<const S: usize> ConstCinematicSequences<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CinematicSequences {
+        CinematicSequences {
+            rows: self.rows.iter().map(|s| CinematicSequencesRow {
+                id: s.id,
+                sound_entry: s.sound_entry,
+                cinematic_camera_1: s.cinematic_camera_1,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

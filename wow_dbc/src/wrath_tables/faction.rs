@@ -401,6 +401,24 @@ impl<const S: usize> ConstFaction<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Faction {
+        Faction {
+            rows: self.rows.iter().map(|s| FactionRow {
+                id: s.id,
+                reputation_index: s.reputation_index,
+                reputation_race_mask: s.reputation_race_mask,
+                reputation_class_mask: s.reputation_class_mask,
+                reputation_base: s.reputation_base,
+                reputation_flags: s.reputation_flags,
+                parent_faction_id: s.parent_faction_id,
+                parent_faction_mod: s.parent_faction_mod,
+                parent_faction_cap: s.parent_faction_cap,
+                name_lang: s.name_lang.to_string(),
+                description_lang: s.description_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

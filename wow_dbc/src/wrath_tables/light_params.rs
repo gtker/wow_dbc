@@ -238,6 +238,22 @@ impl<const S: usize> ConstLightParams<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LightParams {
+        LightParams {
+            rows: self.rows.iter().map(|s| LightParamsRow {
+                id: s.id,
+                highlight_sky: s.highlight_sky,
+                light_skybox_id: s.light_skybox_id,
+                glow: s.glow,
+                water_shallow_alpha: s.water_shallow_alpha,
+                water_deep_alpha: s.water_deep_alpha,
+                ocean_shallow_alpha: s.ocean_shallow_alpha,
+                ocean_deep_alpha: s.ocean_deep_alpha,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

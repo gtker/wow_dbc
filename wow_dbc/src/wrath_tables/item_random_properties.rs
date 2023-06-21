@@ -241,6 +241,17 @@ impl<const S: usize> ConstItemRandomProperties<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemRandomProperties {
+        ItemRandomProperties {
+            rows: self.rows.iter().map(|s| ItemRandomPropertiesRow {
+                id: s.id,
+                name: s.name.to_string(),
+                enchantment: s.enchantment,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

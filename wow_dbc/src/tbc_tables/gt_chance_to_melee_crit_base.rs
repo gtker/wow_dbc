@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtChanceToMeleeCritBase<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtChanceToMeleeCritBase {
+        gtChanceToMeleeCritBase {
+            rows: self.rows.iter().map(|s| gtChanceToMeleeCritBaseRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

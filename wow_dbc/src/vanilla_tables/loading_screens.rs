@@ -206,6 +206,16 @@ impl<const S: usize> ConstLoadingScreens<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LoadingScreens {
+        LoadingScreens {
+            rows: self.rows.iter().map(|s| LoadingScreensRow {
+                id: s.id,
+                name: s.name.to_string(),
+                file_path: s.file_path.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

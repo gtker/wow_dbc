@@ -392,6 +392,27 @@ impl<const S: usize> ConstAchievement<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Achievement {
+        Achievement {
+            rows: self.rows.iter().map(|s| AchievementRow {
+                id: s.id,
+                faction: s.faction,
+                instance_id: s.instance_id,
+                supercedes: s.supercedes,
+                title_lang: s.title_lang.to_string(),
+                description_lang: s.description_lang.to_string(),
+                category: s.category,
+                points: s.points,
+                ui_order: s.ui_order,
+                flags: s.flags,
+                icon_id: s.icon_id,
+                reward_lang: s.reward_lang.to_string(),
+                minimum_criteria: s.minimum_criteria,
+                shares_criteria: s.shares_criteria,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

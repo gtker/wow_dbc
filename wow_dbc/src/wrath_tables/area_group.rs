@@ -171,6 +171,16 @@ impl<const S: usize> ConstAreaGroup<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AreaGroup {
+        AreaGroup {
+            rows: self.rows.iter().map(|s| AreaGroupRow {
+                id: s.id,
+                area_id: s.area_id,
+                next_area_id: s.next_area_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

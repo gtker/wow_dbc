@@ -133,6 +133,14 @@ impl<const S: usize> ConstTerrainTypeSounds<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TerrainTypeSounds {
+        TerrainTypeSounds {
+            rows: self.rows.iter().map(|s| TerrainTypeSoundsRow {
+                id: s.id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

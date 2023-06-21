@@ -367,6 +367,32 @@ impl<const S: usize> ConstDestructibleModelData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DestructibleModelData {
+        DestructibleModelData {
+            rows: self.rows.iter().map(|s| DestructibleModelDataRow {
+                id: s.id,
+                state0_impact_effect_doodad_set: s.state0_impact_effect_doodad_set,
+                state0_ambient_doodad_set: s.state0_ambient_doodad_set,
+                state1_w_m_o: s.state1_w_m_o,
+                state1_destruction_doodad_set: s.state1_destruction_doodad_set,
+                state1_impact_effect_doodad_set: s.state1_impact_effect_doodad_set,
+                state1_ambient_doodad_set: s.state1_ambient_doodad_set,
+                state2_w_m_o: s.state2_w_m_o,
+                state2_destruction_doodad_set: s.state2_destruction_doodad_set,
+                state2_impact_effect_doodad_set: s.state2_impact_effect_doodad_set,
+                state2_ambient_doodad_set: s.state2_ambient_doodad_set,
+                state3_w_m_o: s.state3_w_m_o,
+                state3_init_doodad_set: s.state3_init_doodad_set,
+                state3_ambient_doodad_set: s.state3_ambient_doodad_set,
+                eject_direction: s.eject_direction,
+                repair_ground_fx: s.repair_ground_fx,
+                do_not_highlight: s.do_not_highlight,
+                heal_effect: s.heal_effect,
+                heal_effect_speed: s.heal_effect_speed,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -196,6 +196,17 @@ impl<const S: usize> ConstScalingStatDistribution<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ScalingStatDistribution {
+        ScalingStatDistribution {
+            rows: self.rows.iter().map(|s| ScalingStatDistributionRow {
+                id: s.id,
+                stat_id: s.stat_id,
+                bonus: s.bonus,
+                maxlevel: s.maxlevel,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

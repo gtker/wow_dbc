@@ -191,6 +191,18 @@ impl<const S: usize> ConstDeathThudLookups<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DeathThudLookups {
+        DeathThudLookups {
+            rows: self.rows.iter().map(|s| DeathThudLookupsRow {
+                id: s.id,
+                size: s.size,
+                terrain_type: s.terrain_type,
+                sound_entry: s.sound_entry,
+                sound_entry_water: s.sound_entry_water,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

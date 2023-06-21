@@ -238,6 +238,21 @@ impl<const S: usize> ConstSpellVisualKitModelAttach<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisualKitModelAttach {
+        SpellVisualKitModelAttach {
+            rows: self.rows.iter().map(|s| SpellVisualKitModelAttachRow {
+                id: s.id,
+                parent_spell_visual_kit_id: s.parent_spell_visual_kit_id,
+                spell_visual_effect_name_id: s.spell_visual_effect_name_id,
+                attachment_id: s.attachment_id,
+                offset: s.offset,
+                yaw: s.yaw,
+                pitch: s.pitch,
+                roll: s.roll,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

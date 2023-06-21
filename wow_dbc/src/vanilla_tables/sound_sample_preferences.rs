@@ -158,6 +158,15 @@ impl<const S: usize> ConstSoundSamplePreferences<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundSamplePreferences {
+        SoundSamplePreferences {
+            rows: self.rows.iter().map(|s| SoundSamplePreferencesRow {
+                id: s.id,
+                unknown: s.unknown,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

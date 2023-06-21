@@ -237,6 +237,21 @@ impl<const S: usize> ConstAreaTrigger<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AreaTrigger {
+        AreaTrigger {
+            rows: self.rows.iter().map(|s| AreaTriggerRow {
+                id: s.id,
+                continent_id: s.continent_id,
+                pos: s.pos,
+                radius: s.radius,
+                box_length: s.box_length,
+                box_width: s.box_width,
+                box_height: s.box_height,
+                box_yaw: s.box_yaw,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

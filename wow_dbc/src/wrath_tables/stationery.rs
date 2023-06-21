@@ -209,6 +209,17 @@ impl<const S: usize> ConstStationery<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Stationery {
+        Stationery {
+            rows: self.rows.iter().map(|s| StationeryRow {
+                id: s.id,
+                item_id: s.item_id,
+                texture: s.texture.to_string(),
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

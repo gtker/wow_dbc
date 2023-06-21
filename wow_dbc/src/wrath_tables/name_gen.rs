@@ -209,6 +209,17 @@ impl<const S: usize> ConstNameGen<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> NameGen {
+        NameGen {
+            rows: self.rows.iter().map(|s| NameGenRow {
+                id: s.id,
+                name: s.name.to_string(),
+                race_id: s.race_id,
+                sex: s.sex,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

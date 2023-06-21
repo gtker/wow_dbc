@@ -266,6 +266,18 @@ impl<const S: usize> ConstItemRandomSuffix<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemRandomSuffix {
+        ItemRandomSuffix {
+            rows: self.rows.iter().map(|s| ItemRandomSuffixRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                internal_name: s.internal_name.to_string(),
+                enchantment: s.enchantment,
+                allocation_pct: s.allocation_pct,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

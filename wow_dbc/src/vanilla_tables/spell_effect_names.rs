@@ -184,6 +184,15 @@ impl<const S: usize> ConstSpellEffectNames<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellEffectNames {
+        SpellEffectNames {
+            rows: self.rows.iter().map(|s| SpellEffectNamesRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -301,6 +301,24 @@ impl<const S: usize> ConstPetPersonality<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PetPersonality {
+        PetPersonality {
+            rows: self.rows.iter().map(|s| PetPersonalityRow {
+                id: s.id,
+                name: s.name.to_string(),
+                threshold_unhappy: s.threshold_unhappy,
+                threshold_content: s.threshold_content,
+                threshold_happy: s.threshold_happy,
+                damage_unhappy: s.damage_unhappy,
+                damage_content: s.damage_content,
+                damage_happy: s.damage_happy,
+                modifier_unhappy: s.modifier_unhappy,
+                modifier_content: s.modifier_content,
+                modifier_happy: s.modifier_happy,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

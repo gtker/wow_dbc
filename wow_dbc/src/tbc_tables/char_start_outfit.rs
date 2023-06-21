@@ -262,6 +262,21 @@ impl<const S: usize> ConstCharStartOutfit<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharStartOutfit {
+        CharStartOutfit {
+            rows: self.rows.iter().map(|s| CharStartOutfitRow {
+                id: s.id,
+                race_id: s.race_id,
+                class_id: s.class_id,
+                sex_id: s.sex_id,
+                outfit_id: s.outfit_id,
+                item_id: s.item_id,
+                display_item_id: s.display_item_id,
+                inventory_type: s.inventory_type,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

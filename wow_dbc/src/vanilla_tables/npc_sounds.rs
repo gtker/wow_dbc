@@ -158,6 +158,15 @@ impl<const S: usize> ConstNPCSounds<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> NPCSounds {
+        NPCSounds {
+            rows: self.rows.iter().map(|s| NPCSoundsRow {
+                id: s.id,
+                sound_entries: s.sound_entries,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

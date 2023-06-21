@@ -248,6 +248,20 @@ impl<const S: usize> ConstCinematicCamera<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CinematicCamera {
+        CinematicCamera {
+            rows: self.rows.iter().map(|s| CinematicCameraRow {
+                id: s.id,
+                model: s.model.to_string(),
+                sound_entry: s.sound_entry,
+                location_x: s.location_x,
+                location_y: s.location_y,
+                location_z: s.location_z,
+                rotation: s.rotation,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

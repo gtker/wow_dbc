@@ -618,6 +618,42 @@ impl<const S: usize> ConstVehicle<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Vehicle {
+        Vehicle {
+            rows: self.rows.iter().map(|s| VehicleRow {
+                id: s.id,
+                flags: s.flags,
+                turn_speed: s.turn_speed,
+                pitch_speed: s.pitch_speed,
+                pitch_min: s.pitch_min,
+                pitch_max: s.pitch_max,
+                seat_id: s.seat_id,
+                mouse_look_offset_pitch: s.mouse_look_offset_pitch,
+                camera_fade_dist_scalar_min: s.camera_fade_dist_scalar_min,
+                camera_fade_dist_scalar_max: s.camera_fade_dist_scalar_max,
+                camera_pitch_offset: s.camera_pitch_offset,
+                facing_limit_right: s.facing_limit_right,
+                facing_limit_left: s.facing_limit_left,
+                mssl_trgt_turn_lingering: s.mssl_trgt_turn_lingering,
+                mssl_trgt_pitch_lingering: s.mssl_trgt_pitch_lingering,
+                mssl_trgt_mouse_lingering: s.mssl_trgt_mouse_lingering,
+                mssl_trgt_end_opacity: s.mssl_trgt_end_opacity,
+                mssl_trgt_arc_speed: s.mssl_trgt_arc_speed,
+                mssl_trgt_arc_repeat: s.mssl_trgt_arc_repeat,
+                mssl_trgt_arc_width: s.mssl_trgt_arc_width,
+                mssl_trgt_impact_radius: s.mssl_trgt_impact_radius,
+                mssl_trgt_arc_texture: s.mssl_trgt_arc_texture.to_string(),
+                mssl_trgt_impact_texture: s.mssl_trgt_impact_texture.to_string(),
+                mssl_trgt_impact_model: s.mssl_trgt_impact_model.map(|a| a.to_string()),
+                camera_yaw_offset: s.camera_yaw_offset,
+                ui_locomotion_type: s.ui_locomotion_type,
+                mssl_trgt_impact_tex_radius: s.mssl_trgt_impact_tex_radius,
+                vehicle_u_i_indicator_id: s.vehicle_u_i_indicator_id,
+                power_display_id: s.power_display_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

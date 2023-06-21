@@ -132,6 +132,15 @@ impl<const S: usize> ConstMovieFileData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> MovieFileData {
+        MovieFileData {
+            rows: self.rows.iter().map(|s| MovieFileDataRow {
+                file_data_id: s.file_data_id,
+                resolution: s.resolution,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

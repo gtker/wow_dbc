@@ -192,6 +192,15 @@ impl<const S: usize> ConstItemPetFood<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemPetFood {
+        ItemPetFood {
+            rows: self.rows.iter().map(|s| ItemPetFoodRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

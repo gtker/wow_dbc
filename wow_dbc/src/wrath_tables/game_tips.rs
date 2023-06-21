@@ -192,6 +192,15 @@ impl<const S: usize> ConstGameTips<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GameTips {
+        GameTips {
+            rows: self.rows.iter().map(|s| GameTipsRow {
+                id: s.id,
+                text_lang: s.text_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

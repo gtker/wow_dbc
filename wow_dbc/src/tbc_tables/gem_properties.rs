@@ -186,6 +186,18 @@ impl<const S: usize> ConstGemProperties<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GemProperties {
+        GemProperties {
+            rows: self.rows.iter().map(|s| GemPropertiesRow {
+                id: s.id,
+                enchant_id: s.enchant_id,
+                maxcount_inv: s.maxcount_inv,
+                maxcount_item: s.maxcount_item,
+                ty: s.ty,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -23,11 +23,47 @@ pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
 
     s.bodyn(format!("impl<const S: usize> {name}<S>"), |s| {
         create_read(s, d, o, &row_name);
+        s.newline();
+
+        create_conversion(s, d);
 
         if !d.primary_keys().is_empty() {
             s.wln("// TODO: Indexable?");
         }
     });
+}
+
+fn create_conversion(s: &mut Writer, d: &DbcDescription) {
+    let name = d.name();
+    s.open_curly(format!("pub fn to_owned(&self) -> {name}"));
+    s.open_curly(name);
+
+    s.open_curly(format!("rows: self.rows.iter().map(|s| {name}Row"));
+
+    for field in d.fields() {
+        let name = field.name();
+        let extra = match field.ty() {
+            Type::StringRef | Type::StringRefLoc | Type::ExtendedStringRefLoc => ".to_string()",
+            Type::Array(array) => {
+                if matches!(
+                    array.ty(),
+                    Type::StringRef | Type::StringRefLoc | Type::ExtendedStringRefLoc
+                ) {
+                    ".map(|a| a.to_string())"
+                } else {
+                    ""
+                }
+            }
+            _ => "",
+        };
+
+        s.wln(format!("{name}: s.{name}{extra},"));
+    }
+
+    s.closing_curly_with(").collect(),");
+
+    s.closing_curly(); // name
+    s.closing_curly(); // pub fn to_owned
 }
 
 fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects, row_name: &str) {

@@ -88,6 +88,28 @@ impl ConstExtendedLocalizedString {
         }
     }
 
+    pub(crate) fn to_string(&self) -> ExtendedLocalizedString {
+        ExtendedLocalizedString {
+            en_gb: self.en_gb.to_string(),
+            ko_kr: self.ko_kr.to_string(),
+            fr_fr: self.fr_fr.to_string(),
+            de_de: self.de_de.to_string(),
+            en_cn: self.en_cn.to_string(),
+            en_tw: self.en_tw.to_string(),
+            es_es: self.es_es.to_string(),
+            es_mx: self.es_mx.to_string(),
+            ru_ru: self.ru_ru.to_string(),
+            ja_jp: self.ja_jp.to_string(),
+            pt_pt: self.pt_pt.to_string(),
+            it_it: self.it_it.to_string(),
+            unknown_12: self.unknown_12.to_string(),
+            unknown_13: self.unknown_13.to_string(),
+            unknown_14: self.unknown_14.to_string(),
+            unknown_15: self.unknown_15.to_string(),
+            flags: self.flags,
+        }
+    }
+
     pub(crate) const fn empty() -> Self {
         Self {
             en_gb: "",
@@ -322,6 +344,20 @@ impl ConstLocalizedString {
             es_es,
             es_mx,
             flags,
+        }
+    }
+
+    pub(crate) fn to_string(&self) -> LocalizedString {
+        LocalizedString {
+            en_gb: self.en_gb.to_string(),
+            ko_kr: self.ko_kr.to_string(),
+            fr_fr: self.fr_fr.to_string(),
+            de_de: self.de_de.to_string(),
+            en_cn: self.en_cn.to_string(),
+            en_tw: self.en_tw.to_string(),
+            es_es: self.es_es.to_string(),
+            es_mx: self.es_mx.to_string(),
+            flags: self.flags,
         }
     }
 

@@ -231,6 +231,18 @@ impl<const S: usize> ConstLFGDungeonGroup<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LFGDungeonGroup {
+        LFGDungeonGroup {
+            rows: self.rows.iter().map(|s| LFGDungeonGroupRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                order_index: s.order_index,
+                parent_group_id: s.parent_group_id,
+                type_id: s.type_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

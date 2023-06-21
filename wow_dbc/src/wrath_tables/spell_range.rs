@@ -288,6 +288,19 @@ impl<const S: usize> ConstSpellRange<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellRange {
+        SpellRange {
+            rows: self.rows.iter().map(|s| SpellRangeRow {
+                id: s.id,
+                range_min: s.range_min,
+                range_max: s.range_max,
+                flags: s.flags,
+                display_name_lang: s.display_name_lang.to_string(),
+                display_name_short_lang: s.display_name_short_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

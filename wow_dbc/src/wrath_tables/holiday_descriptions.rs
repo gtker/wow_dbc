@@ -192,6 +192,15 @@ impl<const S: usize> ConstHolidayDescriptions<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> HolidayDescriptions {
+        HolidayDescriptions {
+            rows: self.rows.iter().map(|s| HolidayDescriptionsRow {
+                id: s.id,
+                description_lang: s.description_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -182,6 +182,15 @@ impl<const S: usize> ConstStringLookups<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> StringLookups {
+        StringLookups {
+            rows: self.rows.iter().map(|s| StringLookupsRow {
+                id: s.id,
+                path: s.path.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

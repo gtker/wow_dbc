@@ -220,6 +220,17 @@ impl<const S: usize> ConstAchievement_Category<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Achievement_Category {
+        Achievement_Category {
+            rows: self.rows.iter().map(|s| Achievement_CategoryRow {
+                id: s.id,
+                parent: s.parent,
+                name_lang: s.name_lang.to_string(),
+                ui_order: s.ui_order,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

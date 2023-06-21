@@ -237,6 +237,21 @@ impl<const S: usize> ConstLight<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Light {
+        Light {
+            rows: self.rows.iter().map(|s| LightRow {
+                id: s.id,
+                map: s.map,
+                location_x: s.location_x,
+                location_y: s.location_y,
+                location_z: s.location_z,
+                falloff_start: s.falloff_start,
+                falloff_end: s.falloff_end,
+                light_params: s.light_params,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

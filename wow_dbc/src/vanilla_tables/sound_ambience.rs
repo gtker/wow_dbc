@@ -160,6 +160,16 @@ impl<const S: usize> ConstSoundAmbience<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundAmbience {
+        SoundAmbience {
+            rows: self.rows.iter().map(|s| SoundAmbienceRow {
+                id: s.id,
+                day_sound: s.day_sound,
+                night_sound: s.night_sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

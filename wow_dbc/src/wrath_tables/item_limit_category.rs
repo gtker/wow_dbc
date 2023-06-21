@@ -218,6 +218,17 @@ impl<const S: usize> ConstItemLimitCategory<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemLimitCategory {
+        ItemLimitCategory {
+            rows: self.rows.iter().map(|s| ItemLimitCategoryRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                quantity: s.quantity,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

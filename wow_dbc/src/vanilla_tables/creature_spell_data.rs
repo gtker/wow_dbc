@@ -183,6 +183,16 @@ impl<const S: usize> ConstCreatureSpellData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureSpellData {
+        CreatureSpellData {
+            rows: self.rows.iter().map(|s| CreatureSpellDataRow {
+                id: s.id,
+                spell: s.spell,
+                cooldown_time_1: s.cooldown_time_1,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

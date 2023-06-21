@@ -196,6 +196,16 @@ impl<const S: usize> ConstUISoundLookups<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> UISoundLookups {
+        UISoundLookups {
+            rows: self.rows.iter().map(|s| UISoundLookupsRow {
+                id: s.id,
+                sound_entry: s.sound_entry,
+                internal_name: s.internal_name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

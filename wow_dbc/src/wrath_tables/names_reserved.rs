@@ -195,6 +195,16 @@ impl<const S: usize> ConstNamesReserved<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> NamesReserved {
+        NamesReserved {
+            rows: self.rows.iter().map(|s| NamesReservedRow {
+                id: s.id,
+                name: s.name.to_string(),
+                language: s.language,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

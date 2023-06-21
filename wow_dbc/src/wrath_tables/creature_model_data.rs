@@ -524,6 +524,41 @@ impl<const S: usize> ConstCreatureModelData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureModelData {
+        CreatureModelData {
+            rows: self.rows.iter().map(|s| CreatureModelDataRow {
+                id: s.id,
+                flags: s.flags,
+                model_name: s.model_name.to_string(),
+                size_class: s.size_class,
+                model_scale: s.model_scale,
+                blood_id: s.blood_id,
+                footprint_texture_id: s.footprint_texture_id,
+                footprint_texture_length: s.footprint_texture_length,
+                footprint_texture_width: s.footprint_texture_width,
+                footprint_particle_scale: s.footprint_particle_scale,
+                foley_material_id: s.foley_material_id,
+                footstep_shake_size: s.footstep_shake_size,
+                death_thud_shake_size: s.death_thud_shake_size,
+                sound_id: s.sound_id,
+                collision_width: s.collision_width,
+                collision_height: s.collision_height,
+                mount_height: s.mount_height,
+                geo_box_min_x: s.geo_box_min_x,
+                geo_box_min_y: s.geo_box_min_y,
+                geo_box_min_z: s.geo_box_min_z,
+                geo_box_max_x: s.geo_box_max_x,
+                geo_box_max_y: s.geo_box_max_y,
+                geo_box_max_z: s.geo_box_max_z,
+                world_effect_scale: s.world_effect_scale,
+                attached_effect_scale: s.attached_effect_scale,
+                missile_collision_radius: s.missile_collision_radius,
+                missile_collision_push: s.missile_collision_push,
+                missile_collision_raise: s.missile_collision_raise,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -260,6 +260,19 @@ impl<const S: usize> ConstUnitBlood<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> UnitBlood {
+        UnitBlood {
+            rows: self.rows.iter().map(|s| UnitBloodRow {
+                id: s.id,
+                combat_blood_spurt_front_small: s.combat_blood_spurt_front_small,
+                combat_blood_spurt_front_large: s.combat_blood_spurt_front_large,
+                combat_blood_spurt_back_small: s.combat_blood_spurt_back_small,
+                combat_blood_spurt_back_large: s.combat_blood_spurt_back_large,
+                texture: s.texture.map(|a| a.to_string()),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

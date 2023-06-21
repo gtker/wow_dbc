@@ -294,6 +294,20 @@ impl<const S: usize> ConstItemSet<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemSet {
+        ItemSet {
+            rows: self.rows.iter().map(|s| ItemSetRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                item_id: s.item_id,
+                set_spell_id: s.set_spell_id,
+                set_threshold: s.set_threshold,
+                required_skill: s.required_skill,
+                required_skill_rank: s.required_skill_rank,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

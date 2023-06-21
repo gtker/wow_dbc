@@ -192,6 +192,15 @@ impl<const S: usize> ConstQuestSort<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> QuestSort {
+        QuestSort {
+            rows: self.rows.iter().map(|s| QuestSortRow {
+                id: s.id,
+                sort_name_lang: s.sort_name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

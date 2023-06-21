@@ -300,6 +300,23 @@ impl<const S: usize> ConstObjectEffect<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ObjectEffect {
+        ObjectEffect {
+            rows: self.rows.iter().map(|s| ObjectEffectRow {
+                id: s.id,
+                name: s.name.to_string(),
+                object_effect_group_id: s.object_effect_group_id,
+                trigger_type: s.trigger_type,
+                event_type: s.event_type,
+                effect_rec_type: s.effect_rec_type,
+                effect_rec_id: s.effect_rec_id,
+                attachment: s.attachment,
+                offset: s.offset,
+                object_effect_modifier_id: s.object_effect_modifier_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

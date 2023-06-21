@@ -225,6 +225,21 @@ impl<const S: usize> ConstCharHairTextures<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharHairTextures {
+        CharHairTextures {
+            rows: self.rows.iter().map(|s| CharHairTexturesRow {
+                id: s.id,
+                field_0_5_3_3368_001_race: s.field_0_5_3_3368_001_race,
+                field_0_5_3_3368_002_gender: s.field_0_5_3_3368_002_gender,
+                field_0_5_3_3368_003: s.field_0_5_3_3368_003,
+                field_0_5_3_3368_004_mayberacemask: s.field_0_5_3_3368_004_mayberacemask,
+                field_0_5_3_3368_005_the_x_in_hair_xy_blp: s.field_0_5_3_3368_005_the_x_in_hair_xy_blp,
+                field_0_5_3_3368_006: s.field_0_5_3_3368_006,
+                field_0_5_3_3368_007: s.field_0_5_3_3368_007,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

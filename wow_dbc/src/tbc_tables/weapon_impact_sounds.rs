@@ -209,6 +209,18 @@ impl<const S: usize> ConstWeaponImpactSounds<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WeaponImpactSounds {
+        WeaponImpactSounds {
+            rows: self.rows.iter().map(|s| WeaponImpactSoundsRow {
+                id: s.id,
+                weapon_sub_class_id: s.weapon_sub_class_id,
+                parry_sound_type: s.parry_sound_type,
+                impact_sound_id: s.impact_sound_id,
+                crit_impact_sound_id: s.crit_impact_sound_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

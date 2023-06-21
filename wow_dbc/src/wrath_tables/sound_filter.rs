@@ -182,6 +182,15 @@ impl<const S: usize> ConstSoundFilter<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundFilter {
+        SoundFilter {
+            rows: self.rows.iter().map(|s| SoundFilterRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

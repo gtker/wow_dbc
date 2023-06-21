@@ -282,6 +282,21 @@ impl<const S: usize> ConstLFGDungeons<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LFGDungeons {
+        LFGDungeons {
+            rows: self.rows.iter().map(|s| LFGDungeonsRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+                min_level: s.min_level,
+                max_level: s.max_level,
+                type_id: s.type_id,
+                faction: s.faction,
+                texture_filename: s.texture_filename.to_string(),
+                expansion_level: s.expansion_level,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -185,6 +185,18 @@ impl<const S: usize> ConstMaterial<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Material {
+        Material {
+            rows: self.rows.iter().map(|s| MaterialRow {
+                id: s.id,
+                flags: s.flags,
+                foley_sound_id: s.foley_sound_id,
+                sheathe_sound_id: s.sheathe_sound_id,
+                unsheathe_sound_id: s.unsheathe_sound_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

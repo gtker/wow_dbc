@@ -308,6 +308,23 @@ impl<const S: usize> ConstBattlemasterList<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> BattlemasterList {
+        BattlemasterList {
+            rows: self.rows.iter().map(|s| BattlemasterListRow {
+                id: s.id,
+                map_id: s.map_id,
+                instance_type: s.instance_type,
+                min_level: s.min_level,
+                max_level: s.max_level,
+                field_2_0_0_5610_005: s.field_2_0_0_5610_005,
+                field_2_0_0_5610_006: s.field_2_0_0_5610_006,
+                groups_allowed: s.groups_allowed,
+                name_lang: s.name_lang.to_string(),
+                field_2_4_0_8089_009: s.field_2_4_0_8089_009,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

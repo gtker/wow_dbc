@@ -205,6 +205,16 @@ impl<const S: usize> ConstCurrencyCategory<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CurrencyCategory {
+        CurrencyCategory {
+            rows: self.rows.iter().map(|s| CurrencyCategoryRow {
+                id: s.id,
+                flags: s.flags,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

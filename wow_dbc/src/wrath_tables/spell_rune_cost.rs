@@ -185,6 +185,18 @@ impl<const S: usize> ConstSpellRuneCost<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellRuneCost {
+        SpellRuneCost {
+            rows: self.rows.iter().map(|s| SpellRuneCostRow {
+                id: s.id,
+                blood: s.blood,
+                unholy: s.unholy,
+                frost: s.frost,
+                runic_power: s.runic_power,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

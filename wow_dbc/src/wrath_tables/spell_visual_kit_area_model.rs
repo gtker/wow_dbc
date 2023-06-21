@@ -195,6 +195,16 @@ impl<const S: usize> ConstSpellVisualKitAreaModel<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisualKitAreaModel {
+        SpellVisualKitAreaModel {
+            rows: self.rows.iter().map(|s| SpellVisualKitAreaModelRow {
+                id: s.id,
+                name: s.name.to_string(),
+                enum_id: s.enum_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

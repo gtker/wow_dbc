@@ -219,6 +219,17 @@ impl<const S: usize> ConstGMSurveyAnswers<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GMSurveyAnswers {
+        GMSurveyAnswers {
+            rows: self.rows.iter().map(|s| GMSurveyAnswersRow {
+                id: s.id,
+                sort_index: s.sort_index,
+                g_m_survey_question_id: s.g_m_survey_question_id,
+                answer_lang: s.answer_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

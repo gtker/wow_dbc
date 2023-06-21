@@ -364,6 +364,28 @@ impl<const S: usize> ConstAchievement_Criteria<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Achievement_Criteria {
+        Achievement_Criteria {
+            rows: self.rows.iter().map(|s| Achievement_CriteriaRow {
+                id: s.id,
+                achievement_id: s.achievement_id,
+                ty: s.ty,
+                asset_id: s.asset_id,
+                quantity: s.quantity,
+                start_event: s.start_event,
+                start_asset: s.start_asset,
+                fail_event: s.fail_event,
+                fail_asset: s.fail_asset,
+                description_lang: s.description_lang.to_string(),
+                flags: s.flags,
+                timer_start_event: s.timer_start_event,
+                timer_asset_id: s.timer_asset_id,
+                timer_time: s.timer_time,
+                ui_order: s.ui_order,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

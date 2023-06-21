@@ -182,6 +182,15 @@ impl<const S: usize> ConstFootprintTextures<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> FootprintTextures {
+        FootprintTextures {
+            rows: self.rows.iter().map(|s| FootprintTexturesRow {
+                id: s.id,
+                footstep_filename: s.footstep_filename.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

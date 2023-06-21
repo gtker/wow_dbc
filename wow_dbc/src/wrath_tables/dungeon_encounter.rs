@@ -259,6 +259,20 @@ impl<const S: usize> ConstDungeonEncounter<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DungeonEncounter {
+        DungeonEncounter {
+            rows: self.rows.iter().map(|s| DungeonEncounterRow {
+                id: s.id,
+                map_id: s.map_id,
+                difficulty: s.difficulty,
+                order_index: s.order_index,
+                bit: s.bit,
+                name_lang: s.name_lang.to_string(),
+                spell_icon_id: s.spell_icon_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

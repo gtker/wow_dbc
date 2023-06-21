@@ -182,6 +182,15 @@ impl<const S: usize> ConstAttackAnimTypes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AttackAnimTypes {
+        AttackAnimTypes {
+            rows: self.rows.iter().map(|s| AttackAnimTypesRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

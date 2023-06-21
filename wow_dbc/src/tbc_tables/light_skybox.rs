@@ -195,6 +195,16 @@ impl<const S: usize> ConstLightSkybox<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LightSkybox {
+        LightSkybox {
+            rows: self.rows.iter().map(|s| LightSkyboxRow {
+                id: s.id,
+                name: s.name.to_string(),
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

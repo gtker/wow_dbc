@@ -291,6 +291,21 @@ impl<const S: usize> ConstBarberShopStyle<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> BarberShopStyle {
+        BarberShopStyle {
+            rows: self.rows.iter().map(|s| BarberShopStyleRow {
+                id: s.id,
+                ty: s.ty,
+                display_name_lang: s.display_name_lang.to_string(),
+                description_lang: s.description_lang.to_string(),
+                cost_modifier: s.cost_modifier,
+                race: s.race,
+                sex: s.sex,
+                data: s.data,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

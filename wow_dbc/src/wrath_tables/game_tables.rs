@@ -180,6 +180,16 @@ impl<const S: usize> ConstGameTables<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GameTables {
+        GameTables {
+            rows: self.rows.iter().map(|s| GameTablesRow {
+                name: s.name.to_string(),
+                num_rows: s.num_rows,
+                num_columns: s.num_columns,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

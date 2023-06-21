@@ -118,6 +118,14 @@ impl<const S: usize> ConstgtChanceToSpellCrit<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> gtChanceToSpellCrit {
+        gtChanceToSpellCrit {
+            rows: self.rows.iter().map(|s| gtChanceToSpellCritRow {
+                data: s.data,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

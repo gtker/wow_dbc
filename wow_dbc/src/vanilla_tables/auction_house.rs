@@ -224,6 +224,18 @@ impl<const S: usize> ConstAuctionHouse<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AuctionHouse {
+        AuctionHouse {
+            rows: self.rows.iter().map(|s| AuctionHouseRow {
+                id: s.id,
+                faction: s.faction,
+                deposit_rate: s.deposit_rate,
+                consignment_rate: s.consignment_rate,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -195,6 +195,16 @@ impl<const S: usize> ConstPetitionType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PetitionType {
+        PetitionType {
+            rows: self.rows.iter().map(|s| PetitionTypeRow {
+                id: s.id,
+                name: s.name.to_string(),
+                ty: s.ty,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -480,6 +480,32 @@ impl<const S: usize> ConstLiquidType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LiquidType {
+        LiquidType {
+            rows: self.rows.iter().map(|s| LiquidTypeRow {
+                id: s.id,
+                name: s.name.to_string(),
+                flags: s.flags,
+                sound_bank: s.sound_bank,
+                sound_id: s.sound_id,
+                spell_id: s.spell_id,
+                max_darken_depth: s.max_darken_depth,
+                fog_darken_intensity: s.fog_darken_intensity,
+                amb_darken_intensity: s.amb_darken_intensity,
+                dir_darken_intensity: s.dir_darken_intensity,
+                light_id: s.light_id,
+                particle_scale: s.particle_scale,
+                particle_movement: s.particle_movement,
+                particle_tex_slots: s.particle_tex_slots,
+                material_id: s.material_id,
+                texture: s.texture.map(|a| a.to_string()),
+                color: s.color,
+                float: s.float,
+                int: s.int,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

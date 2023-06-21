@@ -382,6 +382,27 @@ impl<const S: usize> ConstCreatureDisplayInfo<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureDisplayInfo {
+        CreatureDisplayInfo {
+            rows: self.rows.iter().map(|s| CreatureDisplayInfoRow {
+                id: s.id,
+                model_id: s.model_id,
+                sound_id: s.sound_id,
+                extended_display_info_id: s.extended_display_info_id,
+                creature_model_scale: s.creature_model_scale,
+                creature_model_alpha: s.creature_model_alpha,
+                texture_variation: s.texture_variation.map(|a| a.to_string()),
+                portrait_texture_name: s.portrait_texture_name.to_string(),
+                size_class: s.size_class,
+                blood_id: s.blood_id,
+                n_p_c_sound_id: s.n_p_c_sound_id,
+                particle_color_id: s.particle_color_id,
+                creature_geoset_data: s.creature_geoset_data,
+                object_effect_package_id: s.object_effect_package_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

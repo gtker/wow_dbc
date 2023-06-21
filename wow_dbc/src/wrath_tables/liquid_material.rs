@@ -159,6 +159,16 @@ impl<const S: usize> ConstLiquidMaterial<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LiquidMaterial {
+        LiquidMaterial {
+            rows: self.rows.iter().map(|s| LiquidMaterialRow {
+                id: s.id,
+                l_v_f: s.l_v_f,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

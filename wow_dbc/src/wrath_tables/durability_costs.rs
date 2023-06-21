@@ -183,6 +183,16 @@ impl<const S: usize> ConstDurabilityCosts<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DurabilityCosts {
+        DurabilityCosts {
+            rows: self.rows.iter().map(|s| DurabilityCostsRow {
+                id: s.id,
+                weapon_sub_class_cost: s.weapon_sub_class_cost,
+                armor_sub_class_cost: s.armor_sub_class_cost,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

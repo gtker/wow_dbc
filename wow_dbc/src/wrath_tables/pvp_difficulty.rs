@@ -199,6 +199,19 @@ impl<const S: usize> ConstPvpDifficulty<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PvpDifficulty {
+        PvpDifficulty {
+            rows: self.rows.iter().map(|s| PvpDifficultyRow {
+                id: s.id,
+                map_id: s.map_id,
+                range_index: s.range_index,
+                min_level: s.min_level,
+                max_level: s.max_level,
+                difficulty: s.difficulty,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

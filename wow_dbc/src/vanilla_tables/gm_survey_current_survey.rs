@@ -135,6 +135,15 @@ impl<const S: usize> ConstGMSurveyCurrentSurvey<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GMSurveyCurrentSurvey {
+        GMSurveyCurrentSurvey {
+            rows: self.rows.iter().map(|s| GMSurveyCurrentSurveyRow {
+                language: s.language,
+                gm_survey: s.gm_survey,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]

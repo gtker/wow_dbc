@@ -192,6 +192,15 @@ impl<const S: usize> ConstPetLoyalty<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PetLoyalty {
+        PetLoyalty {
+            rows: self.rows.iter().map(|s| PetLoyaltyRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

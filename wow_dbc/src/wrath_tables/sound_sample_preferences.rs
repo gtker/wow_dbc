@@ -341,6 +341,30 @@ impl<const S: usize> ConstSoundSamplePreferences<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundSamplePreferences {
+        SoundSamplePreferences {
+            rows: self.rows.iter().map(|s| SoundSamplePreferencesRow {
+                id: s.id,
+                field_0_6_0_3592_001: s.field_0_6_0_3592_001,
+                field_0_6_0_3592_002: s.field_0_6_0_3592_002,
+                e_a_x2_sample_room: s.e_a_x2_sample_room,
+                field_0_6_0_3592_004: s.field_0_6_0_3592_004,
+                field_0_6_0_3592_005: s.field_0_6_0_3592_005,
+                field_0_6_0_3592_006: s.field_0_6_0_3592_006,
+                field_0_6_0_3592_007: s.field_0_6_0_3592_007,
+                e_a_x2_sample_occlusion_l_f_ratio: s.e_a_x2_sample_occlusion_l_f_ratio,
+                e_a_x2_sample_occlusion_room_ratio: s.e_a_x2_sample_occlusion_room_ratio,
+                field_0_6_0_3592_010: s.field_0_6_0_3592_010,
+                e_a_x1_effect_level: s.e_a_x1_effect_level,
+                field_0_6_0_3592_012: s.field_0_6_0_3592_012,
+                field_0_6_0_3592_013: s.field_0_6_0_3592_013,
+                e_a_x3_sample_exclusion: s.e_a_x3_sample_exclusion,
+                field_0_6_0_3592_015: s.field_0_6_0_3592_015,
+                field_0_6_0_3592_016: s.field_0_6_0_3592_016,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

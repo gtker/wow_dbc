@@ -174,6 +174,17 @@ impl<const S: usize> ConstGlyphProperties<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GlyphProperties {
+        GlyphProperties {
+            rows: self.rows.iter().map(|s| GlyphPropertiesRow {
+                id: s.id,
+                spell_id: s.spell_id,
+                glyph_slot_flags: s.glyph_slot_flags,
+                spell_icon_id: s.spell_icon_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

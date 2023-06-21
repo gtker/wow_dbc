@@ -511,6 +511,43 @@ impl<const S: usize> ConstCreatureSoundData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CreatureSoundData {
+        CreatureSoundData {
+            rows: self.rows.iter().map(|s| CreatureSoundDataRow {
+                id: s.id,
+                sound_exertion: s.sound_exertion,
+                sound_exertion_critical: s.sound_exertion_critical,
+                sound_injury: s.sound_injury,
+                sound_injury_critical: s.sound_injury_critical,
+                sound_injury_crushing_blow: s.sound_injury_crushing_blow,
+                sound_death: s.sound_death,
+                sound_stun: s.sound_stun,
+                sound_stand: s.sound_stand,
+                sound_footstep: s.sound_footstep,
+                sound_aggro: s.sound_aggro,
+                sound_wing_flap: s.sound_wing_flap,
+                sound_wing_glide: s.sound_wing_glide,
+                sound_alert: s.sound_alert,
+                sound_fidget: s.sound_fidget,
+                custom_attack: s.custom_attack,
+                npc_sound: s.npc_sound,
+                loop_sound: s.loop_sound,
+                creature_impact_type: s.creature_impact_type,
+                sound_jump_start: s.sound_jump_start,
+                sound_jump_end: s.sound_jump_end,
+                sound_pet_attack: s.sound_pet_attack,
+                sound_pet_order: s.sound_pet_order,
+                sound_pet_dismiss: s.sound_pet_dismiss,
+                fidget_delay_seconds_min: s.fidget_delay_seconds_min,
+                fidget_delay_seconds_max: s.fidget_delay_seconds_max,
+                birth_sound: s.birth_sound,
+                spell_cast_directed_sound: s.spell_cast_directed_sound,
+                submerge_sound: s.submerge_sound,
+                submerged_sound: s.submerged_sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

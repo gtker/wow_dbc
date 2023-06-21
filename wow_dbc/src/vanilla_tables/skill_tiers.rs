@@ -183,6 +183,16 @@ impl<const S: usize> ConstSkillTiers<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SkillTiers {
+        SkillTiers {
+            rows: self.rows.iter().map(|s| SkillTiersRow {
+                id: s.id,
+                cost: s.cost,
+                value: s.value,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

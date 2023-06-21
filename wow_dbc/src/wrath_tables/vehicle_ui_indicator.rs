@@ -182,6 +182,15 @@ impl<const S: usize> ConstVehicleUIIndicator<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> VehicleUIIndicator {
+        VehicleUIIndicator {
+            rows: self.rows.iter().map(|s| VehicleUIIndicatorRow {
+                id: s.id,
+                background_texture: s.background_texture.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

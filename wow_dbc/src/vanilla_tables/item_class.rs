@@ -213,6 +213,17 @@ impl<const S: usize> ConstItemClass<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemClass {
+        ItemClass {
+            rows: self.rows.iter().map(|s| ItemClassRow {
+                id: s.id,
+                subclass_map: s.subclass_map,
+                item_class: s.item_class,
+                class_name: s.class_name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -236,6 +236,19 @@ impl<const S: usize> ConstTerrainType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> TerrainType {
+        TerrainType {
+            rows: self.rows.iter().map(|s| TerrainTypeRow {
+                id: s.id,
+                description: s.description.to_string(),
+                footstep_spray_run: s.footstep_spray_run,
+                footstep_spray_walk: s.footstep_spray_walk,
+                sound: s.sound,
+                display_footsteps: s.display_footsteps,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

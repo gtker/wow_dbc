@@ -247,6 +247,20 @@ impl<const S: usize> ConstAnimationData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AnimationData {
+        AnimationData {
+            rows: self.rows.iter().map(|s| AnimationDataRow {
+                id: s.id,
+                name: s.name.to_string(),
+                weapon_flags: s.weapon_flags,
+                body_flags: s.body_flags,
+                unknown: s.unknown,
+                fallback: s.fallback,
+                behaviour: s.behaviour,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -190,6 +190,16 @@ impl<const S: usize> ConstCfg_Categories<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Cfg_Categories {
+        Cfg_Categories {
+            rows: self.rows.iter().map(|s| Cfg_CategoriesRow {
+                category: s.category,
+                region: s.region,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]

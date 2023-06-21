@@ -167,6 +167,15 @@ impl<const S: usize> ConstAttackAnimTypes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AttackAnimTypes {
+        AttackAnimTypes {
+            rows: self.rows.iter().map(|s| AttackAnimTypesRow {
+                anim_id: s.anim_id,
+                anim_name: s.anim_name.to_string(),
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

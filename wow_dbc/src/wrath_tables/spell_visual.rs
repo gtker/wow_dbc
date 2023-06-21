@@ -510,6 +510,41 @@ impl<const S: usize> ConstSpellVisual<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisual {
+        SpellVisual {
+            rows: self.rows.iter().map(|s| SpellVisualRow {
+                id: s.id,
+                precast_kit: s.precast_kit,
+                cast_kit: s.cast_kit,
+                impact_kit: s.impact_kit,
+                state_kit: s.state_kit,
+                state_done_kit: s.state_done_kit,
+                channel_kit: s.channel_kit,
+                has_missile: s.has_missile,
+                missile_model: s.missile_model,
+                missile_path_type: s.missile_path_type,
+                missile_destination_attachment: s.missile_destination_attachment,
+                missile_sound: s.missile_sound,
+                anim_event_sound_id: s.anim_event_sound_id,
+                flags: s.flags,
+                caster_impact_kit: s.caster_impact_kit,
+                target_impact_kit: s.target_impact_kit,
+                missile_attachment: s.missile_attachment,
+                missile_follow_ground_height: s.missile_follow_ground_height,
+                missile_follow_ground_drop_speed: s.missile_follow_ground_drop_speed,
+                missile_follow_ground_approach: s.missile_follow_ground_approach,
+                missile_follow_ground_flags: s.missile_follow_ground_flags,
+                missile_motion: s.missile_motion,
+                missile_targeting_kit: s.missile_targeting_kit,
+                instant_area_kit: s.instant_area_kit,
+                impact_area_kit: s.impact_area_kit,
+                persistent_area_kit: s.persistent_area_kit,
+                missile_cast_offset: s.missile_cast_offset,
+                missile_impact_offset: s.missile_impact_offset,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

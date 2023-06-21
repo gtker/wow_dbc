@@ -417,6 +417,28 @@ impl<const S: usize> ConstMap<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Map {
+        Map {
+            rows: self.rows.iter().map(|s| MapRow {
+                id: s.id,
+                internal_name: s.internal_name.to_string(),
+                instance_type: s.instance_type,
+                battleground: s.battleground,
+                map_name: s.map_name.to_string(),
+                min_level: s.min_level,
+                max_level: s.max_level,
+                max_players: s.max_players,
+                unknown: s.unknown,
+                area_table: s.area_table,
+                map_description_horde: s.map_description_horde.to_string(),
+                map_description_alliance: s.map_description_alliance.to_string(),
+                loading_screen: s.loading_screen,
+                raid_offset: s.raid_offset,
+                unknown_2: s.unknown_2,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

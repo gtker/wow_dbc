@@ -432,6 +432,37 @@ impl<const S: usize> ConstScalingStatValues<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ScalingStatValues {
+        ScalingStatValues {
+            rows: self.rows.iter().map(|s| ScalingStatValuesRow {
+                id: s.id,
+                charlevel: s.charlevel,
+                shoulder_budget: s.shoulder_budget,
+                trinket_budget: s.trinket_budget,
+                weapon_budget1_h: s.weapon_budget1_h,
+                ranged_budget: s.ranged_budget,
+                cloth_shoulder_armor: s.cloth_shoulder_armor,
+                leather_shoulder_armor: s.leather_shoulder_armor,
+                mail_shoulder_armor: s.mail_shoulder_armor,
+                plate_shoulder_armor: s.plate_shoulder_armor,
+                weapon_d_p_s1_h: s.weapon_d_p_s1_h,
+                weapon_d_p_s2_h: s.weapon_d_p_s2_h,
+                spellcaster_d_p_s1_h: s.spellcaster_d_p_s1_h,
+                spellcaster_d_p_s2_h: s.spellcaster_d_p_s2_h,
+                ranged_d_p_s: s.ranged_d_p_s,
+                wand_d_p_s: s.wand_d_p_s,
+                spell_power: s.spell_power,
+                primary_budget: s.primary_budget,
+                tertiary_budget: s.tertiary_budget,
+                cloth_cloak_armor: s.cloth_cloak_armor,
+                cloth_chest_armor: s.cloth_chest_armor,
+                leather_chest_armor: s.leather_chest_armor,
+                mail_chest_armor: s.mail_chest_armor,
+                plate_chest_armor: s.plate_chest_armor,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

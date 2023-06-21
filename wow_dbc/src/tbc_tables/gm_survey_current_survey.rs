@@ -146,6 +146,15 @@ impl<const S: usize> ConstGMSurveyCurrentSurvey<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> GMSurveyCurrentSurvey {
+        GMSurveyCurrentSurvey {
+            rows: self.rows.iter().map(|s| GMSurveyCurrentSurveyRow {
+                id: s.id,
+                gm_survey_id: s.gm_survey_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

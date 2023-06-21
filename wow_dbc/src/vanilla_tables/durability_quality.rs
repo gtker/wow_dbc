@@ -146,6 +146,15 @@ impl<const S: usize> ConstDurabilityQuality<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> DurabilityQuality {
+        DurabilityQuality {
+            rows: self.rows.iter().map(|s| DurabilityQualityRow {
+                id: s.id,
+                data: s.data,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

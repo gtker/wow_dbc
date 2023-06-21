@@ -224,6 +224,21 @@ impl<const S: usize> ConstCameraShakes<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CameraShakes {
+        CameraShakes {
+            rows: self.rows.iter().map(|s| CameraShakesRow {
+                id: s.id,
+                shake_type: s.shake_type,
+                direction: s.direction,
+                amplitude: s.amplitude,
+                frequency: s.frequency,
+                duration: s.duration,
+                phase: s.phase,
+                coefficient: s.coefficient,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

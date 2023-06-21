@@ -311,6 +311,20 @@ impl<const S: usize> ConstSpellItemEnchantmentCondition<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellItemEnchantmentCondition {
+        SpellItemEnchantmentCondition {
+            rows: self.rows.iter().map(|s| SpellItemEnchantmentConditionRow {
+                id: s.id,
+                lt_operand_type: s.lt_operand_type,
+                lt_operand: s.lt_operand,
+                operator: s.operator,
+                rt_operand_type: s.rt_operand_type,
+                rt_operand: s.rt_operand,
+                logic: s.logic,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

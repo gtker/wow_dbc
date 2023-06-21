@@ -210,6 +210,17 @@ impl<const S: usize> ConstSpellDispelType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellDispelType {
+        SpellDispelType {
+            rows: self.rows.iter().map(|s| SpellDispelTypeRow {
+                id: s.id,
+                name: s.name.to_string(),
+                mask: s.mask,
+                immunity_possible: s.immunity_possible,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

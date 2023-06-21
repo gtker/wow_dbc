@@ -174,6 +174,17 @@ impl<const S: usize> ConstObjectEffectPackageElem<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ObjectEffectPackageElem {
+        ObjectEffectPackageElem {
+            rows: self.rows.iter().map(|s| ObjectEffectPackageElemRow {
+                id: s.id,
+                object_effect_package_id: s.object_effect_package_id,
+                object_effect_group_id: s.object_effect_group_id,
+                state_type: s.state_type,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

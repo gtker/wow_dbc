@@ -240,6 +240,22 @@ impl<const S: usize> ConstWorldChunkSounds<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldChunkSounds {
+        WorldChunkSounds {
+            rows: self.rows.iter().map(|s| WorldChunkSoundsRow {
+                id: s.id,
+                chunk_x: s.chunk_x,
+                chunk_y: s.chunk_y,
+                subchunk_x: s.subchunk_x,
+                subchunk_y: s.subchunk_y,
+                zone_intro_music_id: s.zone_intro_music_id,
+                zone_music_id: s.zone_music_id,
+                sound_ambience_id: s.sound_ambience_id,
+                sound_provider_preferences_id: s.sound_provider_preferences_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

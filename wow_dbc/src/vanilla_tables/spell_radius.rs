@@ -172,6 +172,17 @@ impl<const S: usize> ConstSpellRadius<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellRadius {
+        SpellRadius {
+            rows: self.rows.iter().map(|s| SpellRadiusRow {
+                id: s.id,
+                radius: s.radius,
+                radius_per_level: s.radius_per_level,
+                radius_max: s.radius_max,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

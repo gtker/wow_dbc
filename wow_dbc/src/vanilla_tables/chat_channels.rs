@@ -236,6 +236,18 @@ impl<const S: usize> ConstChatChannels<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ChatChannels {
+        ChatChannels {
+            rows: self.rows.iter().map(|s| ChatChannelsRow {
+                id: s.id,
+                flags: s.flags,
+                faction_group: s.faction_group,
+                name: s.name.to_string(),
+                shortcut: s.shortcut.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

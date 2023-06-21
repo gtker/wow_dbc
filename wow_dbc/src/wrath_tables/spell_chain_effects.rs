@@ -791,6 +791,61 @@ impl<const S: usize> ConstSpellChainEffects<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellChainEffects {
+        SpellChainEffects {
+            rows: self.rows.iter().map(|s| SpellChainEffectsRow {
+                id: s.id,
+                avg_seg_len: s.avg_seg_len,
+                width: s.width,
+                noise_scale: s.noise_scale,
+                tex_coord_scale: s.tex_coord_scale,
+                seg_duration: s.seg_duration,
+                seg_delay: s.seg_delay,
+                texture: s.texture.to_string(),
+                flags: s.flags,
+                joint_count: s.joint_count,
+                joint_offset_radius: s.joint_offset_radius,
+                joints_per_minor_joint: s.joints_per_minor_joint,
+                minor_joints_per_major_joint: s.minor_joints_per_major_joint,
+                minor_joint_scale: s.minor_joint_scale,
+                major_joint_scale: s.major_joint_scale,
+                joint_move_speed: s.joint_move_speed,
+                joint_smoothness: s.joint_smoothness,
+                min_duration_between_joint_jumps: s.min_duration_between_joint_jumps,
+                max_duration_between_joint_jumps: s.max_duration_between_joint_jumps,
+                wave_height: s.wave_height,
+                wave_freq: s.wave_freq,
+                wave_speed: s.wave_speed,
+                min_wave_angle: s.min_wave_angle,
+                max_wave_angle: s.max_wave_angle,
+                min_wave_spin: s.min_wave_spin,
+                max_wave_spin: s.max_wave_spin,
+                arc_height: s.arc_height,
+                min_arc_angle: s.min_arc_angle,
+                max_arc_angle: s.max_arc_angle,
+                min_arc_spin: s.min_arc_spin,
+                max_arc_spin: s.max_arc_spin,
+                delay_between_effects: s.delay_between_effects,
+                min_flicker_on_duration: s.min_flicker_on_duration,
+                max_flicker_on_duration: s.max_flicker_on_duration,
+                min_flicker_off_duration: s.min_flicker_off_duration,
+                max_flicker_off_duration: s.max_flicker_off_duration,
+                pulse_speed: s.pulse_speed,
+                pulse_on_length: s.pulse_on_length,
+                pulse_fade_length: s.pulse_fade_length,
+                alpha: s.alpha,
+                red: s.red,
+                green: s.green,
+                blue: s.blue,
+                blend_mode: s.blend_mode,
+                combo: s.combo.to_string(),
+                render_layer: s.render_layer,
+                texture_length: s.texture_length,
+                wave_phase: s.wave_phase,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

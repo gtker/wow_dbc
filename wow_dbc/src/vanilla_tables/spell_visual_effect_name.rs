@@ -232,6 +232,18 @@ impl<const S: usize> ConstSpellVisualEffectName<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisualEffectName {
+        SpellVisualEffectName {
+            rows: self.rows.iter().map(|s| SpellVisualEffectNameRow {
+                id: s.id,
+                name: s.name.to_string(),
+                filename: s.filename.to_string(),
+                area_effect_size: s.area_effect_size,
+                scale: s.scale,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

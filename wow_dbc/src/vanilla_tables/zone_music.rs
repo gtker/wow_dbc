@@ -261,6 +261,21 @@ impl<const S: usize> ConstZoneMusic<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ZoneMusic {
+        ZoneMusic {
+            rows: self.rows.iter().map(|s| ZoneMusicRow {
+                id: s.id,
+                set_name: s.set_name.to_string(),
+                silence_interval_min_day: s.silence_interval_min_day,
+                silence_interval_min_night: s.silence_interval_min_night,
+                silence_interval_max_day: s.silence_interval_max_day,
+                silence_interval_max_night: s.silence_interval_max_night,
+                day_sound: s.day_sound,
+                night_sound: s.night_sound,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

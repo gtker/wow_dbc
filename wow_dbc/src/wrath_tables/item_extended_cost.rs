@@ -249,6 +249,21 @@ impl<const S: usize> ConstItemExtendedCost<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> ItemExtendedCost {
+        ItemExtendedCost {
+            rows: self.rows.iter().map(|s| ItemExtendedCostRow {
+                id: s.id,
+                honor_points: s.honor_points,
+                arena_points: s.arena_points,
+                arena_bracket: s.arena_bracket,
+                item_id: s.item_id,
+                item_count: s.item_count,
+                required_arena_rating: s.required_arena_rating,
+                item_purchase_group: s.item_purchase_group,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

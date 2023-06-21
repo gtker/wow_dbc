@@ -232,6 +232,18 @@ impl<const S: usize> ConstSpellMissileMotion<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellMissileMotion {
+        SpellMissileMotion {
+            rows: self.rows.iter().map(|s| SpellMissileMotionRow {
+                id: s.id,
+                name: s.name.to_string(),
+                script_body: s.script_body.to_string(),
+                flags: s.flags,
+                missile_count: s.missile_count,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -237,6 +237,19 @@ impl<const S: usize> ConstSpellShapeshiftForm<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellShapeshiftForm {
+        SpellShapeshiftForm {
+            rows: self.rows.iter().map(|s| SpellShapeshiftFormRow {
+                id: s.id,
+                bonus_action_bar: s.bonus_action_bar,
+                name: s.name.to_string(),
+                flags: s.flags,
+                creature_type: s.creature_type,
+                spell_icon: s.spell_icon,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

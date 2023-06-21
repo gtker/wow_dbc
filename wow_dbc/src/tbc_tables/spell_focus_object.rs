@@ -192,6 +192,15 @@ impl<const S: usize> ConstSpellFocusObject<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellFocusObject {
+        SpellFocusObject {
+            rows: self.rows.iter().map(|s| SpellFocusObjectRow {
+                id: s.id,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

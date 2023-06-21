@@ -233,6 +233,18 @@ impl<const S: usize> ConstCfg_Categories<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Cfg_Categories {
+        Cfg_Categories {
+            rows: self.rows.iter().map(|s| Cfg_CategoriesRow {
+                id: s.id,
+                locale_mask: s.locale_mask,
+                create_charset_mask: s.create_charset_mask,
+                flags: s.flags,
+                name_lang: s.name_lang.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

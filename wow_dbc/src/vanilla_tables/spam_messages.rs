@@ -182,6 +182,15 @@ impl<const S: usize> ConstSpamMessages<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpamMessages {
+        SpamMessages {
+            rows: self.rows.iter().map(|s| SpamMessagesRow {
+                id: s.id,
+                text: s.text.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

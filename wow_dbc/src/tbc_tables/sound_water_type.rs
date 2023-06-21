@@ -173,6 +173,17 @@ impl<const S: usize> ConstSoundWaterType<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundWaterType {
+        SoundWaterType {
+            rows: self.rows.iter().map(|s| SoundWaterTypeRow {
+                id: s.id,
+                sound_type: s.sound_type,
+                sound_subtype: s.sound_subtype,
+                sound_id: s.sound_id,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

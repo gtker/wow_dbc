@@ -171,6 +171,16 @@ impl<const S: usize> ConstSkillCostsData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SkillCostsData {
+        SkillCostsData {
+            rows: self.rows.iter().map(|s| SkillCostsDataRow {
+                id: s.id,
+                skill_costs: s.skill_costs,
+                cost: s.cost,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

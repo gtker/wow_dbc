@@ -184,6 +184,15 @@ impl<const S: usize> ConstLanguages<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Languages {
+        Languages {
+            rows: self.rows.iter().map(|s| LanguagesRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

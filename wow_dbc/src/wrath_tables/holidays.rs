@@ -350,6 +350,25 @@ impl<const S: usize> ConstHolidays<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Holidays {
+        Holidays {
+            rows: self.rows.iter().map(|s| HolidaysRow {
+                id: s.id,
+                duration: s.duration,
+                date: s.date,
+                region: s.region,
+                looping: s.looping,
+                calendar_flags: s.calendar_flags,
+                holiday_name_id: s.holiday_name_id,
+                holiday_description_id: s.holiday_description_id,
+                texture_file_name: s.texture_file_name.to_string(),
+                priority: s.priority,
+                calendar_filter_type: s.calendar_filter_type,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

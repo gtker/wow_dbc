@@ -190,6 +190,16 @@ impl<const S: usize> ConstCharacterCreateCameras<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharacterCreateCameras {
+        CharacterCreateCameras {
+            rows: self.rows.iter().map(|s| CharacterCreateCamerasRow {
+                id: s.id,
+                unknown: s.unknown,
+                unknown_2: s.unknown_2,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

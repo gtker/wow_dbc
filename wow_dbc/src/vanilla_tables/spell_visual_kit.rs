@@ -457,6 +457,34 @@ impl<const S: usize> ConstSpellVisualKit<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisualKit {
+        SpellVisualKit {
+            rows: self.rows.iter().map(|s| SpellVisualKitRow {
+                id: s.id,
+                start_anim: s.start_anim,
+                anim: s.anim,
+                head_effect: s.head_effect,
+                chest_effect: s.chest_effect,
+                base_effect: s.base_effect,
+                left_hand_effect: s.left_hand_effect,
+                right_hand_effect: s.right_hand_effect,
+                breath_effect: s.breath_effect,
+                left_weapon_effect: s.left_weapon_effect,
+                right_weapon_effect: s.right_weapon_effect,
+                special_effects: s.special_effects,
+                world_effect: s.world_effect,
+                sound: s.sound,
+                shake: s.shake,
+                char_proc: s.char_proc,
+                char_param_zero: s.char_param_zero,
+                char_param_one: s.char_param_one,
+                char_param_two: s.char_param_two,
+                unknown1_pad: s.unknown1_pad,
+                unknown2_pad: s.unknown2_pad,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

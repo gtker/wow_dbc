@@ -221,6 +221,17 @@ impl<const S: usize> ConstSpellAuraNames<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellAuraNames {
+        SpellAuraNames {
+            rows: self.rows.iter().map(|s| SpellAuraNamesRow {
+                id: s.id,
+                unknown: s.unknown,
+                internal_name: s.internal_name.to_string(),
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

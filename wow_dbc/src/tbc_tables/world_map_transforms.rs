@@ -235,6 +235,19 @@ impl<const S: usize> ConstWorldMapTransforms<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> WorldMapTransforms {
+        WorldMapTransforms {
+            rows: self.rows.iter().map(|s| WorldMapTransformsRow {
+                id: s.id,
+                map_id: s.map_id,
+                region_min: s.region_min,
+                region_max: s.region_max,
+                new_map_id: s.new_map_id,
+                region_offset: s.region_offset,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

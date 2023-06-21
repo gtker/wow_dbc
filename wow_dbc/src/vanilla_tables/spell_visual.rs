@@ -330,6 +330,29 @@ impl<const S: usize> ConstSpellVisual<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellVisual {
+        SpellVisual {
+            rows: self.rows.iter().map(|s| SpellVisualRow {
+                id: s.id,
+                precast_kit: s.precast_kit,
+                cast_kit: s.cast_kit,
+                impact_kit: s.impact_kit,
+                state_kit: s.state_kit,
+                state_done_kit: s.state_done_kit,
+                channel_kit: s.channel_kit,
+                has_missile: s.has_missile,
+                missile_model: s.missile_model,
+                missile_path_type: s.missile_path_type,
+                missile_destination_attachment: s.missile_destination_attachment,
+                missile_sound: s.missile_sound,
+                anim_event_sound: s.anim_event_sound,
+                flags: s.flags,
+                caster_impact_kit: s.caster_impact_kit,
+                target_impact_kit: s.target_impact_kit,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

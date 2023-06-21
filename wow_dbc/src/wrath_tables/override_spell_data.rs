@@ -171,6 +171,16 @@ impl<const S: usize> ConstOverrideSpellData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> OverrideSpellData {
+        OverrideSpellData {
+            rows: self.rows.iter().map(|s| OverrideSpellDataRow {
+                id: s.id,
+                spells: s.spells,
+                flags: s.flags,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

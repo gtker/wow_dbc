@@ -343,6 +343,26 @@ impl<const S: usize> ConstAreaPOI<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> AreaPOI {
+        AreaPOI {
+            rows: self.rows.iter().map(|s| AreaPOIRow {
+                id: s.id,
+                importance: s.importance,
+                icon: s.icon,
+                faction: s.faction,
+                location_x: s.location_x,
+                location_y: s.location_y,
+                location_z: s.location_z,
+                map: s.map,
+                flags: s.flags,
+                area_table: s.area_table,
+                name: s.name.to_string(),
+                description: s.description.to_string(),
+                world_state: s.world_state,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

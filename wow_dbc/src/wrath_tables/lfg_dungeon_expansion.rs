@@ -224,6 +224,21 @@ impl<const S: usize> ConstLFGDungeonExpansion<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> LFGDungeonExpansion {
+        LFGDungeonExpansion {
+            rows: self.rows.iter().map(|s| LFGDungeonExpansionRow {
+                id: s.id,
+                lfg_id: s.lfg_id,
+                expansion_level: s.expansion_level,
+                random_id: s.random_id,
+                hard_level_min: s.hard_level_min,
+                hard_level_max: s.hard_level_max,
+                target_level_min: s.target_level_min,
+                target_level_max: s.target_level_max,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

@@ -191,6 +191,16 @@ impl<const S: usize> ConstPaperDollItemFrame<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PaperDollItemFrame {
+        PaperDollItemFrame {
+            rows: self.rows.iter().map(|s| PaperDollItemFrameRow {
+                item_button_name: s.item_button_name.to_string(),
+                slot_icon: s.slot_icon.to_string(),
+                slot_number: s.slot_number,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

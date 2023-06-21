@@ -206,6 +206,16 @@ impl<const S: usize> ConstFileData<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> FileData {
+        FileData {
+            rows: self.rows.iter().map(|s| FileDataRow {
+                id: s.id,
+                filename: s.filename.to_string(),
+                filepath: s.filepath.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

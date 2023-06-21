@@ -182,6 +182,15 @@ impl<const S: usize> ConstSpellIcon<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellIcon {
+        SpellIcon {
+            rows: self.rows.iter().map(|s| SpellIconRow {
+                id: s.id,
+                texture_filename: s.texture_filename.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

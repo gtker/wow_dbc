@@ -170,6 +170,17 @@ impl<const S: usize> ConstCharacterFacialHairStyles<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> CharacterFacialHairStyles {
+        CharacterFacialHairStyles {
+            rows: self.rows.iter().map(|s| CharacterFacialHairStylesRow {
+                race_id: s.race_id,
+                sex_id: s.sex_id,
+                variation_id: s.variation_id,
+                geoset: s.geoset,
+            }).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

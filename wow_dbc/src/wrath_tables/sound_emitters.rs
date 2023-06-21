@@ -260,6 +260,19 @@ impl<const S: usize> ConstSoundEmitters<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SoundEmitters {
+        SoundEmitters {
+            rows: self.rows.iter().map(|s| SoundEmittersRow {
+                id: s.id,
+                position: s.position,
+                direction: s.direction,
+                sound_entry_advanced_id: s.sound_entry_advanced_id,
+                map_id: s.map_id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

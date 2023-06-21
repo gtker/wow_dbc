@@ -315,6 +315,28 @@ impl<const S: usize> ConstSpellMissile<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> SpellMissile {
+        SpellMissile {
+            rows: self.rows.iter().map(|s| SpellMissileRow {
+                id: s.id,
+                flags: s.flags,
+                default_pitch_min: s.default_pitch_min,
+                default_pitch_max: s.default_pitch_max,
+                default_speed_min: s.default_speed_min,
+                default_speed_max: s.default_speed_max,
+                randomize_facing_min: s.randomize_facing_min,
+                randomize_facing_max: s.randomize_facing_max,
+                randomize_pitch_min: s.randomize_pitch_min,
+                randomize_pitch_max: s.randomize_pitch_max,
+                randomize_speed_min: s.randomize_speed_min,
+                randomize_speed_max: s.randomize_speed_max,
+                gravity: s.gravity,
+                max_duration: s.max_duration,
+                collision_radius: s.collision_radius,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

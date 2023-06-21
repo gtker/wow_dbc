@@ -182,6 +182,15 @@ impl<const S: usize> ConstPageTextMaterial<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> PageTextMaterial {
+        PageTextMaterial {
+            rows: self.rows.iter().map(|s| PageTextMaterialRow {
+                id: s.id,
+                name: s.name.to_string(),
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 

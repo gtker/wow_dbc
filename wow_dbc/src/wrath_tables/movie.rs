@@ -195,6 +195,16 @@ impl<const S: usize> ConstMovie<S> {
 
         Self { rows }
     }
+
+    pub fn to_owned(&self) -> Movie {
+        Movie {
+            rows: self.rows.iter().map(|s| MovieRow {
+                id: s.id,
+                filename: s.filename.to_string(),
+                volume: s.volume,
+            }).collect(),
+        }
+    }
     // TODO: Indexable?
 }
 
