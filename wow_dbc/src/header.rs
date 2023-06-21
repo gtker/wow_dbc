@@ -12,16 +12,16 @@ pub struct DbcHeader {
 }
 
 #[cfg(test)]
-pub(crate) const fn parse_header_panic(header: &[u8]) -> DbcHeader {
-    let magic = u32::from_le_bytes([header[0], header[1], header[2], header[3]]);
+pub(crate) const fn parse_header_panic(b: &[u8]) -> DbcHeader {
+    let magic = u32::from_le_bytes([b[0], b[1], b[2], b[3]]);
     if magic != HEADER_MAGIC {
         panic!("Header magic does not match");
     }
 
-    let record_count = u32::from_le_bytes([header[4], header[5], header[6], header[7]]);
-    let field_count = u32::from_le_bytes([header[8], header[9], header[10], header[11]]);
-    let record_size = u32::from_le_bytes([header[12], header[13], header[14], header[15]]);
-    let string_block_size = u32::from_le_bytes([header[16], header[17], header[18], header[19]]);
+    let record_count = u32::from_le_bytes([b[4], b[5], b[6], b[7]]);
+    let field_count = u32::from_le_bytes([b[8], b[9], b[10], b[11]]);
+    let record_size = u32::from_le_bytes([b[12], b[13], b[14], b[15]]);
+    let string_block_size = u32::from_le_bytes([b[16], b[17], b[18], b[19]]);
 
     DbcHeader {
         record_count,
