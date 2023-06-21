@@ -228,6 +228,24 @@ fn create_enums(s: &mut Writer, d: &DbcDescription) {
             }
         });
 
+        s.bodyn(format!("impl {}", en.name()), |s| {
+            s.open_curly(format!(
+                "const fn from_value(value: {}) -> Option<Self>",
+                en.ty().rust_str()
+            ));
+
+            s.open_curly("Some(match value");
+
+            for en in en.enumerators() {
+                s.wln(format!("{} => Self::{},", en.value(), en.name()));
+            }
+            s.wln("_ => return None,");
+
+            s.closing_curly_with(")");
+
+            s.closing_curly();
+        });
+
         s.bodyn(
             format!("impl TryFrom<{}> for {}", en.ty().rust_str(), en.name()),
             |s| {
@@ -238,17 +256,10 @@ fn create_enums(s: &mut Writer, d: &DbcDescription) {
                         en.ty().rust_str()
                     ),
                     |s| {
-                        s.open_curly("Ok(match value");
-
-                        for en in en.enumerators() {
-                            s.wln(format!("{} => Self::{},", en.value(), en.name()));
-                        }
                         s.wln(format!(
-                            "val => return Err(crate::InvalidEnumError::new(\"{}\", val as i64)),",
+                            "Self::from_value(value).ok_or(crate::InvalidEnumError::new(\"{}\", value as i64))",
                             en.name()
                         ));
-
-                        s.closing_curly_with(")");
                     },
                 );
             },

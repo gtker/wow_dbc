@@ -215,15 +215,21 @@ pub enum EmoteSpecProc {
     LoopWithSound,
 }
 
-impl TryFrom<i32> for EmoteSpecProc {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl EmoteSpecProc {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::NoLoop,
             1 => Self::Loop,
             2 => Self::LoopWithSound,
-            val => return Err(crate::InvalidEnumError::new("EmoteSpecProc", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for EmoteSpecProc {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("EmoteSpecProc", value as i64))
     }
 
 }

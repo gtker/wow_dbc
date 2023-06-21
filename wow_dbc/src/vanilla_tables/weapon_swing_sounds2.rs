@@ -159,15 +159,21 @@ pub enum SwingType {
     Heavy,
 }
 
-impl TryFrom<i32> for SwingType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl SwingType {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::Light,
             1 => Self::Medium,
             2 => Self::Heavy,
-            val => return Err(crate::InvalidEnumError::new("SwingType", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for SwingType {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("SwingType", value as i64))
     }
 
 }

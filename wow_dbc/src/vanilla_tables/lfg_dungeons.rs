@@ -199,16 +199,22 @@ pub enum InstanceType {
     Battleground,
 }
 
-impl TryFrom<i32> for InstanceType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl InstanceType {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             1 => Self::GroupInstance,
             2 => Self::RaidInstance,
             4 => Self::WorldZone,
             5 => Self::Battleground,
-            val => return Err(crate::InvalidEnumError::new("InstanceType", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for InstanceType {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("InstanceType", value as i64))
     }
 
 }
@@ -240,15 +246,21 @@ pub enum Faction {
     Alliance,
 }
 
-impl TryFrom<i32> for Faction {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl Faction {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             -1 => Self::Neutral,
             0 => Self::Horde,
             1 => Self::Alliance,
-            val => return Err(crate::InvalidEnumError::new("Faction", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for Faction {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Faction", value as i64))
     }
 
 }

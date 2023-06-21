@@ -166,14 +166,20 @@ pub enum AttackHand {
     OffHand,
 }
 
+impl AttackHand {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
+            0 => Self::MainHand,
+            1 => Self::OffHand,
+            _ => return None,
+        })
+    }
+}
+
 impl TryFrom<i32> for AttackHand {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
-            0 => Self::MainHand,
-            1 => Self::OffHand,
-            val => return Err(crate::InvalidEnumError::new("AttackHand", val as i64)),
-        })
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("AttackHand", value as i64))
     }
 
 }

@@ -1186,10 +1186,9 @@ pub enum EffectAura {
     Unknown261,
 }
 
-impl TryFrom<i32> for EffectAura {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl EffectAura {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::None,
             1 => Self::BindSight,
             2 => Self::ModPossess,
@@ -1452,8 +1451,15 @@ impl TryFrom<i32> for EffectAura {
             259 => Self::Unknown259,
             260 => Self::Unknown260,
             261 => Self::Unknown261,
-            val => return Err(crate::InvalidEnumError::new("EffectAura", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for EffectAura {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("EffectAura", value as i64))
     }
 
 }

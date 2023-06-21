@@ -183,14 +183,20 @@ pub enum Class {
     Weapon,
 }
 
+impl Class {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
+            0 => Self::Item,
+            1 => Self::Weapon,
+            _ => return None,
+        })
+    }
+}
+
 impl TryFrom<i32> for Class {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
-            0 => Self::Item,
-            1 => Self::Weapon,
-            val => return Err(crate::InvalidEnumError::new("Class", val as i64)),
-        })
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Class", value as i64))
     }
 
 }

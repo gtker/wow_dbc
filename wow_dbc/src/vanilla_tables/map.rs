@@ -285,16 +285,22 @@ pub enum InstanceType {
     Battleground,
 }
 
-impl TryFrom<i32> for InstanceType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl InstanceType {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::Normal,
             1 => Self::Group,
             2 => Self::Raid,
             3 => Self::Battleground,
-            val => return Err(crate::InvalidEnumError::new("InstanceType", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for InstanceType {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("InstanceType", value as i64))
     }
 
 }

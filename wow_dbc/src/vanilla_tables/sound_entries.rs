@@ -306,10 +306,9 @@ pub enum SoundType {
     ZoneAmbience,
 }
 
-impl TryFrom<i32> for SoundType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl SoundType {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::Unused,
             1 => Self::Spells,
             2 => Self::Ui,
@@ -336,8 +335,15 @@ impl TryFrom<i32> for SoundType {
             30 => Self::NarrationMusic,
             31 => Self::Narration,
             50 => Self::ZoneAmbience,
-            val => return Err(crate::InvalidEnumError::new("SoundType", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for SoundType {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("SoundType", value as i64))
     }
 
 }

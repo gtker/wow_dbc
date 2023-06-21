@@ -243,17 +243,23 @@ pub enum PowerType {
     Happiness,
 }
 
-impl TryFrom<i32> for PowerType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl PowerType {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::Mana,
             1 => Self::Rage,
             2 => Self::Focus,
             3 => Self::Energy,
             4 => Self::Happiness,
-            val => return Err(crate::InvalidEnumError::new("PowerType", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for PowerType {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("PowerType", value as i64))
     }
 
 }

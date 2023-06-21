@@ -362,14 +362,20 @@ pub enum BaseLanguage {
     Alliance,
 }
 
+impl BaseLanguage {
+    const fn from_value(value: u32) -> Option<Self> {
+        Some(match value {
+            1 => Self::Horde,
+            7 => Self::Alliance,
+            _ => return None,
+        })
+    }
+}
+
 impl TryFrom<u32> for BaseLanguage {
     type Error = crate::InvalidEnumError;
     fn try_from(value: u32) -> Result<Self, Self::Error> {
-        Ok(match value {
-            1 => Self::Horde,
-            7 => Self::Alliance,
-            val => return Err(crate::InvalidEnumError::new("BaseLanguage", val as i64)),
-        })
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("BaseLanguage", value as i64))
     }
 
 }

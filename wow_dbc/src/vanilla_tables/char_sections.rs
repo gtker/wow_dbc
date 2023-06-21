@@ -241,17 +241,23 @@ pub enum SelectionType {
     Underwear,
 }
 
-impl TryFrom<i32> for SelectionType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl SelectionType {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::BaseSkin,
             1 => Self::Face,
             2 => Self::FacialHair,
             3 => Self::Hair,
             4 => Self::Underwear,
-            val => return Err(crate::InvalidEnumError::new("SelectionType", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for SelectionType {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("SelectionType", value as i64))
     }
 
 }

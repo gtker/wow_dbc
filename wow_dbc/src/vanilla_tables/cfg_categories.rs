@@ -131,16 +131,22 @@ pub enum Category {
     Five,
 }
 
-impl TryFrom<i32> for Category {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl Category {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             1 => Self::One,
             2 => Self::Two,
             3 => Self::Three,
             5 => Self::Five,
-            val => return Err(crate::InvalidEnumError::new("Category", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for Category {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Category", value as i64))
     }
 
 }
@@ -176,10 +182,9 @@ pub enum Region {
     QaServer,
 }
 
-impl TryFrom<i32> for Region {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl Region {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             1 => Self::UnitedStates,
             2 => Self::Korea,
             3 => Self::Europe,
@@ -187,8 +192,15 @@ impl TryFrom<i32> for Region {
             5 => Self::China,
             99 => Self::TestServer,
             101 => Self::QaServer,
-            val => return Err(crate::InvalidEnumError::new("Region", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for Region {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Region", value as i64))
     }
 
 }

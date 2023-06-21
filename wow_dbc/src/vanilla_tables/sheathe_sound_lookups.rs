@@ -181,15 +181,21 @@ pub enum ItemEnvTypes {
     WoodWeapon,
 }
 
-impl TryFrom<i32> for ItemEnvTypes {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl ItemEnvTypes {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::Shield,
             1 => Self::MetalWeapon,
             2 => Self::WoodWeapon,
-            val => return Err(crate::InvalidEnumError::new("ItemEnvTypes", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for ItemEnvTypes {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ItemEnvTypes", value as i64))
     }
 
 }

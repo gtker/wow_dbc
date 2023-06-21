@@ -184,15 +184,21 @@ pub enum Type {
     LocktypeReference,
 }
 
-impl TryFrom<i32> for Type {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl Type {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::None,
             1 => Self::ItemRequired,
             2 => Self::LocktypeReference,
-            val => return Err(crate::InvalidEnumError::new("Type", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for Type {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Type", value as i64))
     }
 
 }

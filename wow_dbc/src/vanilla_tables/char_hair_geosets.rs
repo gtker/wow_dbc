@@ -173,14 +173,20 @@ pub enum Scalp {
     Bald,
 }
 
+impl Scalp {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
+            0 => Self::Hair,
+            1 => Self::Bald,
+            _ => return None,
+        })
+    }
+}
+
 impl TryFrom<i32> for Scalp {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
-            0 => Self::Hair,
-            1 => Self::Bald,
-            val => return Err(crate::InvalidEnumError::new("Scalp", val as i64)),
-        })
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Scalp", value as i64))
     }
 
 }

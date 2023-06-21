@@ -102,10 +102,9 @@ pub enum Language {
     SpanishLatinAmerica,
 }
 
-impl TryFrom<i32> for Language {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl Language {
+    const fn from_value(value: i32) -> Option<Self> {
+        Some(match value {
             0 => Self::English,
             1 => Self::Korean,
             2 => Self::French,
@@ -114,8 +113,15 @@ impl TryFrom<i32> for Language {
             5 => Self::Taiwanese,
             6 => Self::SpanishSpain,
             7 => Self::SpanishLatinAmerica,
-            val => return Err(crate::InvalidEnumError::new("Language", val as i64)),
+            _ => return None,
         })
+    }
+}
+
+impl TryFrom<i32> for Language {
+    type Error = crate::InvalidEnumError;
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Language", value as i64))
     }
 
 }
