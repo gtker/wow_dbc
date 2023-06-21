@@ -19,3 +19,6 @@ wrath = []
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+wow_world_base = "0.1.0"

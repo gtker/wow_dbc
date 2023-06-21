@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::string::FromUtf8Error;
+use wow_world_base::EnumError;
 
 /// Main error enum. Returned from [`crate::DbcTable::read`].
 #[derive(Debug)]
@@ -8,7 +9,7 @@ pub enum DbcError {
     /// IO errors.
     Io(std::io::Error),
     /// Errors from invalid enum values.
-    InvalidEnum(InvalidEnumError),
+    InvalidEnum(EnumError),
     /// Errors from converting bytes to strings.
     String(FromUtf8Error),
     /// Errors related to headers.
@@ -123,6 +124,12 @@ impl Error for InvalidEnumError {}
 
 impl From<InvalidEnumError> for DbcError {
     fn from(i: InvalidEnumError) -> Self {
+        Self::InvalidEnum(EnumError::new(i.ty, i.value as u64)) // TODO: Change to i128
+    }
+}
+
+impl From<EnumError> for DbcError {
+    fn from(i: EnumError) -> Self {
         Self::InvalidEnum(i)
     }
 }
