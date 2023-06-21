@@ -37,7 +37,7 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     s.wln("use crate::DbcTable;");
     s.wln("use std::io::Write;");
 
-    if !d.primary_keys().is_empty() {
+    if d.primary_key().is_some() {
         s.wln("use crate::Indexable;");
     }
 
@@ -164,8 +164,7 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
 }
 
 fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
-    for (key, ty) in d.primary_keys() {
-        assert_eq!(d.primary_keys().len(), 1);
+    if let Some((key, ty)) = d.primary_key() {
         let native_ty = ty.rust_str();
 
         if not_pascal_case_name(d.name()) {

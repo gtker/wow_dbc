@@ -19,7 +19,7 @@ pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
         create_write(s, d, o);
     });
 
-    if !d.primary_keys().is_empty() {
+    if d.primary_key().is_some() {
         s.bodyn(format!("impl Indexable for {name}", name = d.name()), |s| {
             create_index(s, d);
         });
@@ -276,7 +276,7 @@ fn create_string_block_size(s: &mut Writer, d: &DbcDescription) {
 }
 
 fn create_index(s: &mut Writer, d: &DbcDescription) {
-    if d.primary_keys().is_empty() {
+    if d.primary_key().is_none() {
         return;
     }
 

@@ -35,13 +35,8 @@ impl DbcDescription {
     }
 
     pub fn primary_key(&self) -> Option<(&Field, &Type)> {
-        let keys = self.primary_keys();
-        assert_eq!(keys.len(), 1);
-        Some(keys[0])
-    }
-
-    pub fn primary_keys(&self) -> Vec<(&Field, &Type)> {
-        self.fields
+        let keys = self
+            .fields
             .iter()
             .filter_map(|a| {
                 if let Type::PrimaryKey { ty, .. } = a.ty() {
@@ -50,7 +45,13 @@ impl DbcDescription {
                     None
                 }
             })
-            .collect()
+            .collect::<Vec<_>>();
+
+        match keys.as_slice() {
+            [] => None,
+            [first] => Some(*first),
+            _ => panic!("multiple primary keys?"),
+        }
     }
 
     pub fn contains_gender_enum(&self) -> bool {
