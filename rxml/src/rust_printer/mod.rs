@@ -32,8 +32,7 @@ pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Wri
 }
 
 fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str) {
-    s.wln("use crate::header::{HEADER_SIZE, DbcHeader};");
-    s.wln("use crate::header;");
+    s.wln("use crate::header::{HEADER_SIZE, DbcHeader, parse_header};");
     s.wln("use crate::DbcTable;");
     s.wln("use std::io::Write;");
 

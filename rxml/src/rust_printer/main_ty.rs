@@ -304,7 +304,7 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects) {
 
     s.wln("let mut header = [0_u8; HEADER_SIZE];");
     s.wln("b.read_exact(&mut header)?;");
-    s.wln("let header = header::parse_header(&header)?;");
+    s.wln("let header = parse_header(&header)?;");
     s.newline();
 
     s.bodyn(format!("if header.record_size != {}", d.row_size()), |s| {

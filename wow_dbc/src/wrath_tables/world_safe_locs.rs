@@ -1,5 +1,4 @@
-use crate::header::{HEADER_SIZE, DbcHeader};
-use crate::header;
+use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
@@ -22,7 +21,7 @@ impl DbcTable for WorldSafeLocs {
     fn read(b: &mut impl std::io::Read) -> Result<Self, crate::DbcError> {
         let mut header = [0_u8; HEADER_SIZE];
         b.read_exact(&mut header)?;
-        let header = header::parse_header(&header)?;
+        let header = parse_header(&header)?;
 
         if header.record_size != 88 {
             return Err(crate::DbcError::InvalidHeader(
