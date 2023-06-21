@@ -230,11 +230,11 @@ impl DbcTable for Spell {
             // effect_radius: uint32[3]
             let effect_radius = crate::util::read_array_u32::<3>(chunk)?;
 
-            // effect_aura: EffectAura[3]
+            // effect_aura: AuraMod[3]
             let effect_aura = {
-                let mut arr = [EffectAura::default(); 3];
+                let mut arr = [AuraMod::default(); 3];
                 for i in arr.iter_mut() {
-                    *i = EffectAura::try_from(crate::util::read_i32_le(chunk)?)?;
+                    *i = AuraMod::try_from(crate::util::read_i32_le(chunk)?)?;
                 }
 
                 arr
@@ -640,7 +640,7 @@ impl DbcTable for Spell {
             }
 
 
-            // effect_aura: EffectAura[3]
+            // effect_aura: AuraMod[3]
             for i in row.effect_aura {
                 b.write_all(&(i.as_int() as i32).to_le_bytes())?;
             }
@@ -851,7 +851,7 @@ impl From<u32> for SpellKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum EffectAura {
+pub enum AuraMod {
     None,
     BindSight,
     ModPossess,
@@ -1046,7 +1046,7 @@ pub enum EffectAura {
     UseNormalMovementSpeed,
 }
 
-impl EffectAura {
+impl AuraMod {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             0 => Self::None,
@@ -1246,15 +1246,15 @@ impl EffectAura {
     }
 }
 
-impl TryFrom<i32> for EffectAura {
+impl TryFrom<i32> for AuraMod {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("EffectAura", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("AuraMod", value as i64))
     }
 
 }
 
-impl EffectAura {
+impl AuraMod {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::None => 0,
@@ -1455,7 +1455,7 @@ impl EffectAura {
 
 }
 
-impl Default for EffectAura {
+impl Default for AuraMod {
     fn default() -> Self {
         Self::None
     }
@@ -2179,7 +2179,7 @@ pub struct SpellRow {
     pub implicit_target_a: [i32; 3],
     pub implicit_target_b: [i32; 3],
     pub effect_radius: [u32; 3],
-    pub effect_aura: [EffectAura; 3],
+    pub effect_aura: [AuraMod; 3],
     pub effect_amplitude: [f32; 3],
     pub effect_multiple_values: [f32; 3],
     pub effect_chain_target: [i32; 3],

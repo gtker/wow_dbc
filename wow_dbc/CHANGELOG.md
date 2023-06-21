@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * ints in `Spell.dbc` to enums/flags.
 * ints in `Spell.dbc` for TBC/Wrath to `EffectAura`.
+* BREAKING: `EffectAura` renamed to `AuraMod`.
 
 ### Removed
 

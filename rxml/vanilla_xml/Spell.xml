@@ -523,7 +523,7 @@
 
     <enum>
         <type>int32</type>
-        <name>EffectAura</name>
+        <name>AuraMod</name>
         <options>
             <option name="none" value="0" />
             <option name="bind_sight" value="1" />
@@ -721,7 +721,7 @@
     </enum>
 
     <field>
-        <type>EffectAura[3]</type>
+        <type>AuraMod[3]</type>
         <name>effect_aura</name>
     </field>
 
