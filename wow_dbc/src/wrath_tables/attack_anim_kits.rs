@@ -172,7 +172,7 @@ impl From<u16> for AttackAnimKitsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AttackAnimKitsRow {
     pub id: AttackAnimKitsKey,
     pub item_subclass_id: i32,

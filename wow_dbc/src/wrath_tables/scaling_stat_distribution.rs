@@ -171,7 +171,7 @@ impl From<u16> for ScalingStatDistributionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ScalingStatDistributionRow {
     pub id: ScalingStatDistributionKey,
     pub stat_id: [i32; 10],

@@ -165,7 +165,7 @@ impl From<u16> for ItemKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemRow {
     pub id: ItemKey,
     pub display_info_id: i32,

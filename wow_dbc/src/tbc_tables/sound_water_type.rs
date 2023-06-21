@@ -166,7 +166,7 @@ impl From<u16> for SoundWaterTypeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundWaterTypeRow {
     pub id: SoundWaterTypeKey,
     pub sound_type: i32,

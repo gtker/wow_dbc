@@ -140,7 +140,7 @@ impl From<u32> for UnitBloodLevelsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UnitBloodLevelsRow {
     pub id: UnitBloodLevelsKey,
     pub violence_level: [i32; 3],

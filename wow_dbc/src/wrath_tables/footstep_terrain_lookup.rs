@@ -173,7 +173,7 @@ impl From<u16> for FootstepTerrainLookupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FootstepTerrainLookupRow {
     pub id: FootstepTerrainLookupKey,
     pub creature_footstep_id: i32,

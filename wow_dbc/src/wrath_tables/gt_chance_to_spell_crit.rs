@@ -82,7 +82,7 @@ impl DbcTable for gtChanceToSpellCrit {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtChanceToSpellCritRow {
     pub data: f32,
 }

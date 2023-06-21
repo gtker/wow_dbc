@@ -174,7 +174,7 @@ impl From<u16> for ParticleColorKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ParticleColorRow {
     pub id: ParticleColorKey,
     pub start: [i32; 3],

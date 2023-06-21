@@ -140,7 +140,7 @@ impl From<u32> for VideoHardwareKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VideoHardwareRow {
     pub id: VideoHardwareKey,
     pub unknown: [u32; 21],

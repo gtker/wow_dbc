@@ -270,7 +270,7 @@ impl From<u16> for DestructibleModelDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DestructibleModelDataRow {
     pub id: DestructibleModelDataKey,
     pub state0_impact_effect_doodad_set: i32,

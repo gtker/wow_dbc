@@ -232,7 +232,7 @@ impl From<u16> for SpellItemEnchantmentConditionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellItemEnchantmentConditionRow {
     pub id: SpellItemEnchantmentConditionKey,
     pub lt_operand_type: [i8; 5],

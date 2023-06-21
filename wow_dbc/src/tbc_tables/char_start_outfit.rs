@@ -204,7 +204,7 @@ impl From<u16> for CharStartOutfitKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharStartOutfitRow {
     pub id: CharStartOutfitKey,
     pub race_id: ChrRacesKey,

@@ -151,7 +151,7 @@ impl From<u16> for gtOCTClassCombatRatingScalarKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtOCTClassCombatRatingScalarRow {
     pub id: gtOCTClassCombatRatingScalarKey,
     pub data: f32,

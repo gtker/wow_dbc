@@ -140,7 +140,7 @@ impl From<u32> for GMSurveySurveysKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveySurveysRow {
     pub id: GMSurveySurveysKey,
     pub questions: [u32; 10],

@@ -175,7 +175,7 @@ impl From<u16> for DungeonMapChunkKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct DungeonMapChunkRow {
     pub id: DungeonMapChunkKey,
     pub map_id: MapKey,

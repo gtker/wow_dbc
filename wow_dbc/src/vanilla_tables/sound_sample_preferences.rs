@@ -140,7 +140,7 @@ impl From<u32> for SoundSamplePreferencesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundSamplePreferencesRow {
     pub id: SoundSamplePreferencesKey,
     pub unknown: [i32; 16],

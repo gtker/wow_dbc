@@ -162,7 +162,7 @@ impl From<u16> for CinematicSequencesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CinematicSequencesRow {
     pub id: CinematicSequencesKey,
     pub sound_id: SoundEntriesKey,

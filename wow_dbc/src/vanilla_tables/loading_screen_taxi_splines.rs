@@ -165,7 +165,7 @@ impl From<u32> for LoadingScreenTaxiSplinesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct LoadingScreenTaxiSplinesRow {
     pub id: LoadingScreenTaxiSplinesKey,
     pub taxi_path: TaxiPathKey,

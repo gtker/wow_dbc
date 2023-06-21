@@ -193,7 +193,7 @@ impl From<u16> for LFGDungeonExpansionKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonExpansionRow {
     pub id: LFGDungeonExpansionKey,
     pub lfg_id: i32,

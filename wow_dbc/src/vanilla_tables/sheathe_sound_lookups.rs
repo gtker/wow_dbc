@@ -213,7 +213,7 @@ impl Default for ItemEnvTypes {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SheatheSoundLookupsRow {
     pub id: SheatheSoundLookupsKey,
     pub item_class: ItemClassKey,

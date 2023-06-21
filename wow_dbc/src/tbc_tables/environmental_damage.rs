@@ -159,7 +159,7 @@ impl From<u16> for EnvironmentalDamageKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EnvironmentalDamageRow {
     pub id: EnvironmentalDamageKey,
     pub enum_id: i32,

@@ -183,7 +183,7 @@ impl From<u32> for LightKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct LightRow {
     pub id: LightKey,
     pub map: MapKey,

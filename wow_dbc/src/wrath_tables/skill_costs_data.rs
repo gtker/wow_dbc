@@ -161,7 +161,7 @@ impl From<u16> for SkillCostsDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillCostsDataRow {
     pub id: SkillCostsDataKey,
     pub skill_costs_id: i32,

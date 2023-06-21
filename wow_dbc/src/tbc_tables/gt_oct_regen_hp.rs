@@ -82,7 +82,7 @@ impl DbcTable for gtOCTRegenHP {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtOCTRegenHPRow {
     pub data: f32,
 }

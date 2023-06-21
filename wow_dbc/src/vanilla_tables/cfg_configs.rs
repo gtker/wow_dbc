@@ -154,7 +154,7 @@ impl From<u32> for Cfg_ConfigsKey {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_ConfigsRow {
     pub id: Cfg_ConfigsKey,
     pub realm_type: i32,

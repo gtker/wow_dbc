@@ -355,7 +355,7 @@ impl From<u16> for CreatureSoundDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct CreatureSoundDataRow {
     pub id: CreatureSoundDataKey,
     pub sound_exertion_id: SoundEntriesKey,

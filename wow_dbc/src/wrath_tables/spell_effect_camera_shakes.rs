@@ -154,7 +154,7 @@ impl From<u16> for SpellEffectCameraShakesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellEffectCameraShakesRow {
     pub id: SpellEffectCameraShakesKey,
     pub camera_shake: [i32; 3],

@@ -180,7 +180,7 @@ impl From<u16> for SummonPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SummonPropertiesRow {
     pub id: SummonPropertiesKey,
     pub control: i32,

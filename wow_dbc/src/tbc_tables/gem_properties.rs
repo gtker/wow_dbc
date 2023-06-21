@@ -173,7 +173,7 @@ impl From<u16> for GemPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GemPropertiesRow {
     pub id: GemPropertiesKey,
     pub enchant_id: SpellItemEnchantmentKey,

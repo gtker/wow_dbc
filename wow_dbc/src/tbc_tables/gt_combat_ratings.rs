@@ -82,7 +82,7 @@ impl DbcTable for gtCombatRatings {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtCombatRatingsRow {
     pub data: f32,
 }

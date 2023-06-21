@@ -166,7 +166,7 @@ impl From<u16> for ItemCondExtCostsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemCondExtCostsRow {
     pub id: ItemCondExtCostsKey,
     pub cond_extended_cost: i32,

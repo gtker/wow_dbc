@@ -180,7 +180,7 @@ impl From<u16> for CharHairGeosetsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairGeosetsRow {
     pub id: CharHairGeosetsKey,
     pub race_id: ChrRacesKey,

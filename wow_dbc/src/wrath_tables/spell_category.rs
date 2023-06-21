@@ -151,7 +151,7 @@ impl From<u16> for SpellCategoryKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellCategoryRow {
     pub id: SpellCategoryKey,
     pub flags: i32,

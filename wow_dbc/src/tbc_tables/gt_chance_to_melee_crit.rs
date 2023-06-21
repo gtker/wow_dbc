@@ -82,7 +82,7 @@ impl DbcTable for gtChanceToMeleeCrit {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtChanceToMeleeCritRow {
     pub data: f32,
 }

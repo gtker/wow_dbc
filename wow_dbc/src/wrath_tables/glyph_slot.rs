@@ -158,7 +158,7 @@ impl From<u16> for GlyphSlotKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GlyphSlotRow {
     pub id: GlyphSlotKey,
     pub ty: i32,

@@ -130,7 +130,7 @@ impl From<u32> for TerrainTypeSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TerrainTypeSoundsRow {
     pub id: TerrainTypeSoundsKey,
 }

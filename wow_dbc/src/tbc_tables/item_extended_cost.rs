@@ -185,7 +185,7 @@ impl From<u16> for ItemExtendedCostKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemExtendedCostRow {
     pub id: ItemExtendedCostKey,
     pub honor_points: i32,

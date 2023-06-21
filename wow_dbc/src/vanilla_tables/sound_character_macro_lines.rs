@@ -161,7 +161,7 @@ impl From<u32> for SoundCharacterMacroLinesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundCharacterMacroLinesRow {
     pub id: SoundCharacterMacroLinesKey,
     pub unknown: u32,

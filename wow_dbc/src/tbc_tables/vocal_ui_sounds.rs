@@ -179,7 +179,7 @@ impl From<u16> for VocalUISoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VocalUISoundsRow {
     pub id: VocalUISoundsKey,
     pub vocal_u_i_enum: i32,

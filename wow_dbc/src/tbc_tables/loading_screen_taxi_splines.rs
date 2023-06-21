@@ -179,7 +179,7 @@ impl From<u16> for LoadingScreenTaxiSplinesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct LoadingScreenTaxiSplinesRow {
     pub id: LoadingScreenTaxiSplinesKey,
     pub path_id: TaxiPathKey,

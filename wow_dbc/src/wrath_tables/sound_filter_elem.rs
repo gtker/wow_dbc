@@ -176,7 +176,7 @@ impl From<u16> for SoundFilterElemKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SoundFilterElemRow {
     pub id: SoundFilterElemKey,
     pub sound_filter_id: SoundFilterKey,

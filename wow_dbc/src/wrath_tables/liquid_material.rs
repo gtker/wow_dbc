@@ -158,7 +158,7 @@ impl From<u16> for LiquidMaterialKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LiquidMaterialRow {
     pub id: LiquidMaterialKey,
     pub l_v_f: i32,

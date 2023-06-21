@@ -191,7 +191,7 @@ impl Default for SwingType {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponSwingSounds2Row {
     pub id: WeaponSwingSounds2Key,
     pub swing_type: SwingType,

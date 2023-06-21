@@ -154,7 +154,7 @@ impl From<u16> for ItemVisualsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemVisualsRow {
     pub id: ItemVisualsKey,
     pub slot: [i32; 5],

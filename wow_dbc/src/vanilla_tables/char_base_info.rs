@@ -91,7 +91,7 @@ impl DbcTable for CharBaseInfo {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharBaseInfoRow {
     pub race: ChrRacesKey,
     pub class: ChrClassesKey,

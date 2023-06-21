@@ -145,7 +145,7 @@ impl From<u32> for MaterialKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MaterialRow {
     pub id: MaterialKey,
     pub flags: i32,

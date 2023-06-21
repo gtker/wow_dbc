@@ -82,7 +82,7 @@ impl DbcTable for gtBarberShopCostBase {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtBarberShopCostBaseRow {
     pub data: f32,
 }

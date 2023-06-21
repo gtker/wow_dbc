@@ -175,7 +175,7 @@ impl From<u16> for TransportAnimationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct TransportAnimationRow {
     pub id: TransportAnimationKey,
     pub transport_id: i32,

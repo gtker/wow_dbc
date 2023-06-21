@@ -178,7 +178,7 @@ impl From<u16> for GroundEffectTextureKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GroundEffectTextureRow {
     pub id: GroundEffectTextureKey,
     pub doodad_id: [i32; 4],

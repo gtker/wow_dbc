@@ -188,7 +188,7 @@ impl From<u32> for TaxiPathNodeKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct TaxiPathNodeRow {
     pub id: TaxiPathNodeKey,
     pub taxi_path: TaxiPathKey,

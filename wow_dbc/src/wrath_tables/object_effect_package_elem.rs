@@ -167,7 +167,7 @@ impl From<u16> for ObjectEffectPackageElemKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ObjectEffectPackageElemRow {
     pub id: ObjectEffectPackageElemKey,
     pub object_effect_package_id: ObjectEffectPackageKey,

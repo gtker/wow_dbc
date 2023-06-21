@@ -177,7 +177,7 @@ impl From<u32> for CharHairTexturesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairTexturesRow {
     pub id: CharHairTexturesKey,
     pub race: ChrRacesKey,

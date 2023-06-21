@@ -100,7 +100,7 @@ impl DbcTable for CharVariations {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharVariationsRow {
     pub race_id: ChrRacesKey,
     pub sex_id: i32,

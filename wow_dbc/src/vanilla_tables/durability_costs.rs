@@ -150,7 +150,7 @@ impl From<u32> for DurabilityCostsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DurabilityCostsRow {
     pub id: DurabilityCostsKey,
     pub weapon_subclass_cost: [i32; 21],

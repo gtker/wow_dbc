@@ -160,7 +160,7 @@ impl From<u16> for MovieVariationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieVariationRow {
     pub id: MovieVariationKey,
     pub movie_id: MovieKey,

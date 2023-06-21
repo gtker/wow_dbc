@@ -151,7 +151,7 @@ impl From<u32> for SpellRadiusKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SpellRadiusRow {
     pub id: SpellRadiusKey,
     pub radius: f32,

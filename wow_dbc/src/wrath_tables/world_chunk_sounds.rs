@@ -203,7 +203,7 @@ impl From<u16> for WorldChunkSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldChunkSoundsRow {
     pub id: WorldChunkSoundsKey,
     pub chunk_x: i32,

@@ -175,7 +175,7 @@ impl From<u16> for ObjectEffectModifierKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct ObjectEffectModifierRow {
     pub id: ObjectEffectModifierKey,
     pub input_type: i32,

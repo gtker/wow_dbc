@@ -166,7 +166,7 @@ impl From<u16> for WeaponSwingSounds2Key {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponSwingSounds2Row {
     pub id: WeaponSwingSounds2Key,
     pub swing_type: i32,

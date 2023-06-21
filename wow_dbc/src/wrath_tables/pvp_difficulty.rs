@@ -180,7 +180,7 @@ impl From<u16> for PvpDifficultyKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PvpDifficultyRow {
     pub id: PvpDifficultyKey,
     pub map_id: MapKey,

@@ -220,7 +220,7 @@ impl From<u16> for TalentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TalentRow {
     pub id: TalentKey,
     pub tab_id: i32,

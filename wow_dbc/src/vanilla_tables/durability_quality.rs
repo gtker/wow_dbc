@@ -137,7 +137,7 @@ impl From<u32> for DurabilityQualityKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct DurabilityQualityRow {
     pub id: DurabilityQualityKey,
     pub data: f32,

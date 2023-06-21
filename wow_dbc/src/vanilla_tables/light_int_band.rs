@@ -157,7 +157,7 @@ impl From<u32> for LightIntBandKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LightIntBandRow {
     pub id: LightIntBandKey,
     pub num: i32,

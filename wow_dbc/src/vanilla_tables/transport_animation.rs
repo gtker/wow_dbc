@@ -173,7 +173,7 @@ impl From<u32> for TransportAnimationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct TransportAnimationRow {
     pub id: TransportAnimationKey,
     pub transport: u32,

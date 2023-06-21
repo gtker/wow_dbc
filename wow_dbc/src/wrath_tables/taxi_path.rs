@@ -166,7 +166,7 @@ impl From<u16> for TaxiPathKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TaxiPathRow {
     pub id: TaxiPathKey,
     pub from_taxi_node: TaxiNodesKey,

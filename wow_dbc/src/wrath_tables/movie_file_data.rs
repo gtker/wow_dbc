@@ -90,7 +90,7 @@ impl DbcTable for MovieFileData {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieFileDataRow {
     pub file_data_id: FileDataKey,
     pub resolution: i32,

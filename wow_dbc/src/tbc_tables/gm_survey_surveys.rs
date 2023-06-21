@@ -154,7 +154,7 @@ impl From<u16> for GMSurveySurveysKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveySurveysRow {
     pub id: GMSurveySurveysKey,
     pub q: [i32; 10],

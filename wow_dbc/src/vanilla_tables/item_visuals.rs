@@ -140,7 +140,7 @@ impl From<u32> for ItemVisualsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemVisualsRow {
     pub id: ItemVisualsKey,
     pub item_visual_effects: [u32; 5],

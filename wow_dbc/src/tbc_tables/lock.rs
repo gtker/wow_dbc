@@ -184,7 +184,7 @@ impl From<u16> for LockKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LockRow {
     pub id: LockKey,
     pub ty: [i32; 8],

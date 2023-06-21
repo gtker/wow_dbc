@@ -151,7 +151,7 @@ impl From<u16> for TeamContributionPointsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct TeamContributionPointsRow {
     pub id: TeamContributionPointsKey,
     pub data: f32,

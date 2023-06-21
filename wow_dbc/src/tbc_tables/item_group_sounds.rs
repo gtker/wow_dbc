@@ -154,7 +154,7 @@ impl From<u16> for ItemGroupSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemGroupSoundsRow {
     pub id: ItemGroupSoundsKey,
     pub sound: [i32; 4],

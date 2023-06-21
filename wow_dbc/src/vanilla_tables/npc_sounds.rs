@@ -140,7 +140,7 @@ impl From<u32> for NPCSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NPCSoundsRow {
     pub id: NPCSoundsKey,
     pub sound_entries: [u32; 4],

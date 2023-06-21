@@ -157,7 +157,7 @@ impl From<u32> for CharacterCreateCamerasKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct CharacterCreateCamerasRow {
     pub id: CharacterCreateCamerasKey,
     pub unknown: [bool; 2],

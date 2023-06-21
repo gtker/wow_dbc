@@ -192,7 +192,7 @@ impl Default for FluidSpeed {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundWaterTypeRow {
     pub id: SoundWaterTypeKey,
     pub liquid_type: LiquidTypeKey,

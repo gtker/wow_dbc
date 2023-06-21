@@ -173,7 +173,7 @@ impl From<u16> for VehicleUIIndSeatKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct VehicleUIIndSeatRow {
     pub id: VehicleUIIndSeatKey,
     pub vehicle_u_i_indicator_id: VehicleUIIndicatorKey,

@@ -187,7 +187,7 @@ impl From<u16> for SheatheSoundLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SheatheSoundLookupsRow {
     pub id: SheatheSoundLookupsKey,
     pub class_id: i32,

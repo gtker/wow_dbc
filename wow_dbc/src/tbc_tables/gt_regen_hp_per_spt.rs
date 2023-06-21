@@ -82,7 +82,7 @@ impl DbcTable for gtRegenHPPerSpt {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtRegenHPPerSptRow {
     pub data: f32,
 }

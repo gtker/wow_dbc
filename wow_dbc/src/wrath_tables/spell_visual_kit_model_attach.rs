@@ -198,7 +198,7 @@ impl From<u16> for SpellVisualKitModelAttachKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SpellVisualKitModelAttachRow {
     pub id: SpellVisualKitModelAttachKey,
     pub parent_spell_visual_kit_id: SpellVisualKitKey,

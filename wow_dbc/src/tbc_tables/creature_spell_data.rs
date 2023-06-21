@@ -164,7 +164,7 @@ impl From<u16> for CreatureSpellDataKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CreatureSpellDataRow {
     pub id: CreatureSpellDataKey,
     pub spells: [i32; 4],

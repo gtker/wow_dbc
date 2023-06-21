@@ -175,7 +175,7 @@ impl From<u16> for EmotesTextSoundKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EmotesTextSoundRow {
     pub id: EmotesTextSoundKey,
     pub emotes_text_id: EmotesTextKey,

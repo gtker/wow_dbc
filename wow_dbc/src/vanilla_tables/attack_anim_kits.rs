@@ -196,7 +196,7 @@ impl Default for AttackHand {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AttackAnimKitsRow {
     pub id: AttackAnimKitsKey,
     pub animation_data: AnimationDataKey,

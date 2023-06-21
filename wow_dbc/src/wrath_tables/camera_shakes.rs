@@ -193,7 +193,7 @@ impl From<u16> for CameraShakesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct CameraShakesRow {
     pub id: CameraShakesKey,
     pub shake_type: i32,

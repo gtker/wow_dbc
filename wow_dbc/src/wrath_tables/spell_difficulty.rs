@@ -154,7 +154,7 @@ impl From<u16> for SpellDifficultyKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellDifficultyRow {
     pub id: SpellDifficultyKey,
     pub difficulty_spell_id: [i32; 4],

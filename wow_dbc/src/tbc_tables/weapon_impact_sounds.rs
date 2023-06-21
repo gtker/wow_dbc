@@ -178,7 +178,7 @@ impl From<u16> for WeaponImpactSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponImpactSoundsRow {
     pub id: WeaponImpactSoundsKey,
     pub weapon_sub_class_id: i32,

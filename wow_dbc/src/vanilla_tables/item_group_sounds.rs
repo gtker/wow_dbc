@@ -140,7 +140,7 @@ impl From<u32> for ItemGroupSoundsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemGroupSoundsRow {
     pub id: ItemGroupSoundsKey,
     pub sound_entry: [u32; 4],

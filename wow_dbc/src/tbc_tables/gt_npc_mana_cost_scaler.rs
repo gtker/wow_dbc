@@ -82,7 +82,7 @@ impl DbcTable for gtNPCManaCostScaler {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtNPCManaCostScalerRow {
     pub data: f32,
 }

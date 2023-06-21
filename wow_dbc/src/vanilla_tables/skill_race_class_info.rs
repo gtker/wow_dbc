@@ -184,7 +184,7 @@ impl From<u32> for SkillRaceClassInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillRaceClassInfoRow {
     pub id: SkillRaceClassInfoKey,
     pub skill_line: SkillLineKey,

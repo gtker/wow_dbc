@@ -71,14 +71,18 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     s.newline();
 }
 
-fn print_derives(s: &mut Writer, fields: &[Field]) {
-    s.w("#[derive(Debug, Clone, PartialEq");
+fn print_derives(s: &mut Writer, fields: &[Field], is_field: bool) {
+    s.w("#[derive(Debug, Clone");
+    if can_derive_copy(fields) && is_field {
+        s.w_no_indent(", Copy");
+    }
+
+    s.w(", PartialEq");
     if can_derive_eq(fields) {
         s.w_no_indent(", Eq");
     }
 
     s.w(", PartialOrd");
-
     if can_derive_ord(fields) {
         s.w(", Ord");
     }
@@ -90,6 +94,24 @@ fn print_derives(s: &mut Writer, fields: &[Field]) {
     s.wln_no_indent(")]");
 }
 
+fn can_derive_copy(fields: &[Field]) -> bool {
+    for field in fields {
+        match field.ty() {
+            Type::ExtendedStringRefLoc | Type::StringRefLoc | Type::StringRef => return false,
+            Type::Array(array) => {
+                if matches!(
+                    array.ty(),
+                    Type::ExtendedStringRefLoc | Type::StringRefLoc | Type::StringRef
+                ) {
+                    return false;
+                }
+            }
+            _ => {}
+        }
+    }
+
+    true
+}
 fn can_derive_hash(fields: &[Field]) -> bool {
     does_not_contain_float(fields)
 }
@@ -121,7 +143,7 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
         s.wln("#[allow(non_camel_case_types)]");
     }
 
-    print_derives(s, d.fields());
+    print_derives(s, d.fields(), true);
 
     s.new_struct(format!("{}Row", d.name()), |s| {
         for field in d.fields() {

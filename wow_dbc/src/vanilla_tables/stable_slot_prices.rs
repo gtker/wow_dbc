@@ -137,7 +137,7 @@ impl From<u32> for StableSlotPricesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StableSlotPricesRow {
     pub id: StableSlotPricesKey,
     pub cost: i32,

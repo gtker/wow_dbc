@@ -161,7 +161,7 @@ impl From<u16> for AreaGroupKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AreaGroupRow {
     pub id: AreaGroupKey,
     pub area_id: [i32; 6],

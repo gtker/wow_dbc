@@ -167,7 +167,7 @@ impl From<u16> for GlyphPropertiesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GlyphPropertiesRow {
     pub id: GlyphPropertiesKey,
     pub spell_id: SpellKey,

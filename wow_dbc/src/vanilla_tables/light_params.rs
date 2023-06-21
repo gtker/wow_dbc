@@ -187,7 +187,7 @@ impl From<u32> for LightParamsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct LightParamsRow {
     pub id: LightParamsKey,
     pub highlight_sky: bool,

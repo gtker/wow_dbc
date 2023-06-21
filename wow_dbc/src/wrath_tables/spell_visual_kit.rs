@@ -305,7 +305,7 @@ impl From<u16> for SpellVisualKitKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SpellVisualKitRow {
     pub id: SpellVisualKitKey,
     pub start_anim_id: AnimationDataKey,

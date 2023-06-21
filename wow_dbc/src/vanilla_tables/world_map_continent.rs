@@ -215,7 +215,7 @@ impl From<u32> for WorldMapContinentKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct WorldMapContinentRow {
     pub id: WorldMapContinentKey,
     pub map: MapKey,

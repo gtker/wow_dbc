@@ -533,7 +533,7 @@ impl From<u16> for VehicleSeatKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct VehicleSeatRow {
     pub id: VehicleSeatKey,
     pub field_3_3_5_12213_001: f32,

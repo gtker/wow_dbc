@@ -161,7 +161,7 @@ impl From<u32> for DeathThudLookupsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookupsRow {
     pub id: DeathThudLookupsKey,
     pub size: SizeClass,

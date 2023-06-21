@@ -154,7 +154,7 @@ impl From<u16> for QuestXPKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct QuestXPRow {
     pub id: QuestXPKey,
     pub difficulty: [i32; 10],

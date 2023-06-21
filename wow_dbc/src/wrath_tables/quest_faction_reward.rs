@@ -154,7 +154,7 @@ impl From<u16> for QuestFactionRewardKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct QuestFactionRewardRow {
     pub id: QuestFactionRewardKey,
     pub difficulty: [i32; 10],

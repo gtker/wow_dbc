@@ -165,7 +165,7 @@ impl From<u16> for SpellDurationKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellDurationRow {
     pub id: SpellDurationKey,
     pub duration: i32,

@@ -194,7 +194,7 @@ impl From<u32> for AreaTriggerKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct AreaTriggerRow {
     pub id: AreaTriggerKey,
     pub map: MapKey,

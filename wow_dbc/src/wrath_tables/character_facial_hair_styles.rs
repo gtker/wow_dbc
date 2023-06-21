@@ -107,7 +107,7 @@ impl DbcTable for CharacterFacialHairStyles {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharacterFacialHairStylesRow {
     pub race_id: ChrRacesKey,
     pub sex_id: i32,

@@ -174,7 +174,7 @@ impl From<u16> for RandPropPointsKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RandPropPointsRow {
     pub id: RandPropPointsKey,
     pub epic: [i32; 5],

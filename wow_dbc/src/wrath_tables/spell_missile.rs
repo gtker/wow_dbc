@@ -242,7 +242,7 @@ impl From<u16> for SpellMissileKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SpellMissileRow {
     pub id: SpellMissileKey,
     pub flags: i32,

@@ -137,7 +137,7 @@ impl From<u32> for BankBagSlotPricesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct BankBagSlotPricesRow {
     pub id: BankBagSlotPricesKey,
     pub cost: i32,

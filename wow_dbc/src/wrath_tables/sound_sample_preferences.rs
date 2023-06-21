@@ -256,7 +256,7 @@ impl From<u16> for SoundSamplePreferencesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SoundSamplePreferencesRow {
     pub id: SoundSamplePreferencesKey,
     pub field_0_6_0_3592_001: i32,

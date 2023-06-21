@@ -145,7 +145,7 @@ impl From<u32> for SoundAmbienceKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundAmbienceRow {
     pub id: SoundAmbienceKey,
     pub day_sound: SoundEntriesKey,

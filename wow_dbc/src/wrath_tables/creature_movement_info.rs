@@ -151,7 +151,7 @@ impl From<u16> for CreatureMovementInfoKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct CreatureMovementInfoRow {
     pub id: CreatureMovementInfoKey,
     pub smooth_facing_chase_rate: f32,

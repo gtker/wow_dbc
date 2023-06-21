@@ -195,7 +195,7 @@ impl From<u16> for DungeonMapKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct DungeonMapRow {
     pub id: DungeonMapKey,
     pub map_id: MapKey,

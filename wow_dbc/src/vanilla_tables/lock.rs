@@ -216,7 +216,7 @@ impl Default for Type {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LockRow {
     pub id: LockKey,
     pub ty: [Type; 8],

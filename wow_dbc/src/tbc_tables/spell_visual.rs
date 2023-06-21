@@ -314,7 +314,7 @@ impl From<u16> for SpellVisualKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellVisualRow {
     pub id: SpellVisualKey,
     pub precast_kit: i32,

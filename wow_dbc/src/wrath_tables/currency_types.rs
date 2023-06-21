@@ -167,7 +167,7 @@ impl From<u16> for CurrencyTypesKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CurrencyTypesRow {
     pub id: CurrencyTypesKey,
     pub item_id: ItemKey,

@@ -186,7 +186,7 @@ impl From<u16> for LightKey {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct LightRow {
     pub id: LightKey,
     pub continent_id: MapKey,
