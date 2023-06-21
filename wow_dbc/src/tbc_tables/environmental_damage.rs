@@ -112,67 +112,6 @@ impl Indexable for EnvironmentalDamage {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstEnvironmentalDamage<const S: usize> {
-    pub rows: [EnvironmentalDamageRow; S],
-}
-
-impl<const S: usize> ConstEnvironmentalDamage<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            EnvironmentalDamageRow {
-                id: EnvironmentalDamageKey::new(0),
-                enum_id: 0,
-                visualkit_id: SpellVisualKitKey::new(0),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (EnvironmentalDamage) int32
-            let id = EnvironmentalDamageKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // enum_id: int32
-            let enum_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // visualkit_id: foreign_key (SpellVisualKit) int32
-            let visualkit_id = SpellVisualKitKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            rows[i] = EnvironmentalDamageRow {
-                id,
-                enum_id,
-                visualkit_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> EnvironmentalDamage {
-        EnvironmentalDamage {
-            rows: self.rows.iter().map(|s| EnvironmentalDamageRow {
-                id: s.id,
-                enum_id: s.enum_id,
-                visualkit_id: s.visualkit_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EnvironmentalDamageKey {
     pub id: i32

@@ -104,60 +104,6 @@ impl Indexable for StableSlotPrices {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstStableSlotPrices<const S: usize> {
-    pub rows: [StableSlotPricesRow; S],
-}
-
-impl<const S: usize> ConstStableSlotPrices<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            StableSlotPricesRow {
-                id: StableSlotPricesKey::new(0),
-                cost: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (StableSlotPrices) int32
-            let id = StableSlotPricesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // cost: int32
-            let cost = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = StableSlotPricesRow {
-                id,
-                cost,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> StableSlotPrices {
-        StableSlotPrices {
-            rows: self.rows.iter().map(|s| StableSlotPricesRow {
-                id: s.id,
-                cost: s.cost,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct StableSlotPricesKey {
     pub id: i32

@@ -145,69 +145,6 @@ impl GroundEffectDoodad {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstGroundEffectDoodad<const S: usize> {
-    pub rows: [ConstGroundEffectDoodadRow; S],
-}
-
-impl<const S: usize> ConstGroundEffectDoodad<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstGroundEffectDoodadRow {
-                id: GroundEffectDoodadKey::new(0),
-                doodad_id_tag: 0,
-                doodadpath: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (GroundEffectDoodad) int32
-            let id = GroundEffectDoodadKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // doodad_id_tag: int32
-            let doodad_id_tag = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // doodadpath: string_ref
-            let doodadpath = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstGroundEffectDoodadRow {
-                id,
-                doodad_id_tag,
-                doodadpath,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> GroundEffectDoodad {
-        GroundEffectDoodad {
-            rows: self.rows.iter().map(|s| GroundEffectDoodadRow {
-                id: s.id,
-                doodad_id_tag: s.doodad_id_tag,
-                doodadpath: s.doodadpath.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GroundEffectDoodadKey {
     pub id: i32
@@ -260,12 +197,5 @@ pub struct GroundEffectDoodadRow {
     pub id: GroundEffectDoodadKey,
     pub doodad_id_tag: i32,
     pub doodadpath: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstGroundEffectDoodadRow {
-    pub id: GroundEffectDoodadKey,
-    pub doodad_id_tag: i32,
-    pub doodadpath: &'static str,
 }
 

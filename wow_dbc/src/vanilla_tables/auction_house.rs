@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 use crate::vanilla_tables::faction::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -152,93 +152,6 @@ impl AuctionHouse {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstAuctionHouse<const S: usize> {
-    pub rows: [ConstAuctionHouseRow; S],
-}
-
-impl<const S: usize> ConstAuctionHouse<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 52 {
-            panic!("invalid record size, expected 52")
-        }
-
-        if header.field_count != 13 {
-            panic!("invalid field count, expected 13")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstAuctionHouseRow {
-                id: AuctionHouseKey::new(0),
-                faction: FactionKey::new(0),
-                deposit_rate: 0,
-                consignment_rate: 0,
-                name: crate::ConstLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (AuctionHouse) uint32
-            let id = AuctionHouseKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // faction: foreign_key (Faction) uint32
-            let faction = FactionKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // deposit_rate: int32
-            let deposit_rate = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // consignment_rate: int32
-            let consignment_rate = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // name: string_ref_loc
-            let name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            rows[i] = ConstAuctionHouseRow {
-                id,
-                faction,
-                deposit_rate,
-                consignment_rate,
-                name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> AuctionHouse {
-        AuctionHouse {
-            rows: self.rows.iter().map(|s| AuctionHouseRow {
-                id: s.id,
-                faction: s.faction,
-                deposit_rate: s.deposit_rate,
-                consignment_rate: s.consignment_rate,
-                name: s.name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AuctionHouseKey {
     pub id: u32
@@ -279,14 +192,5 @@ pub struct AuctionHouseRow {
     pub deposit_rate: i32,
     pub consignment_rate: i32,
     pub name: LocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstAuctionHouseRow {
-    pub id: AuctionHouseKey,
-    pub faction: FactionKey,
-    pub deposit_rate: i32,
-    pub consignment_rate: i32,
-    pub name: ConstLocalizedString,
 }
 

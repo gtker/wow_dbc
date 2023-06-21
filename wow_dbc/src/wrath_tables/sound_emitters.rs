@@ -174,108 +174,6 @@ impl SoundEmitters {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstSoundEmitters<const S: usize> {
-    pub rows: [ConstSoundEmittersRow; S],
-}
-
-impl<const S: usize> ConstSoundEmitters<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 40 {
-            panic!("invalid record size, expected 40")
-        }
-
-        if header.field_count != 10 {
-            panic!("invalid field count, expected 10")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSoundEmittersRow {
-                id: SoundEmittersKey::new(0),
-                position: [0.0; 3],
-                direction: [0.0; 3],
-                sound_entry_advanced_id: SoundEntriesAdvancedKey::new(0),
-                map_id: MapKey::new(0),
-                name: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SoundEmitters) int32
-            let id = SoundEmittersKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // position: float[3]
-            let position = {
-                let mut a = [0.0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // direction: float[3]
-            let direction = {
-                let mut a = [0.0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // sound_entry_advanced_id: foreign_key (SoundEntriesAdvanced) int32
-            let sound_entry_advanced_id = SoundEntriesAdvancedKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // map_id: foreign_key (Map) int32
-            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstSoundEmittersRow {
-                id,
-                position,
-                direction,
-                sound_entry_advanced_id,
-                map_id,
-                name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SoundEmitters {
-        SoundEmitters {
-            rows: self.rows.iter().map(|s| SoundEmittersRow {
-                id: s.id,
-                position: s.position,
-                direction: s.direction,
-                sound_entry_advanced_id: s.sound_entry_advanced_id,
-                map_id: s.map_id,
-                name: s.name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundEmittersKey {
     pub id: i32
@@ -331,15 +229,5 @@ pub struct SoundEmittersRow {
     pub sound_entry_advanced_id: SoundEntriesAdvancedKey,
     pub map_id: MapKey,
     pub name: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstSoundEmittersRow {
-    pub id: SoundEmittersKey,
-    pub position: [f32; 3],
-    pub direction: [f32; 3],
-    pub sound_entry_advanced_id: SoundEntriesAdvancedKey,
-    pub map_id: MapKey,
-    pub name: &'static str,
 }
 

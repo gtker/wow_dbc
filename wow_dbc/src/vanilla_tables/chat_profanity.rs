@@ -138,62 +138,6 @@ impl ChatProfanity {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstChatProfanity<const S: usize> {
-    pub rows: [ConstChatProfanityRow; S],
-}
-
-impl<const S: usize> ConstChatProfanity<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstChatProfanityRow {
-                id: ChatProfanityKey::new(0),
-                text: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ChatProfanity) uint32
-            let id = ChatProfanityKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // text: string_ref
-            let text = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstChatProfanityRow {
-                id,
-                text,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ChatProfanity {
-        ChatProfanity {
-            rows: self.rows.iter().map(|s| ChatProfanityRow {
-                id: s.id,
-                text: s.text.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChatProfanityKey {
     pub id: u32
@@ -231,11 +175,5 @@ impl From<u32> for ChatProfanityKey {
 pub struct ChatProfanityRow {
     pub id: ChatProfanityKey,
     pub text: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstChatProfanityRow {
-    pub id: ChatProfanityKey,
-    pub text: &'static str,
 }
 

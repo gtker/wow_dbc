@@ -124,69 +124,8 @@ impl AttackAnimTypes {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstAttackAnimTypes<const S: usize> {
-    pub rows: [ConstAttackAnimTypesRow; S],
-}
-
-impl<const S: usize> ConstAttackAnimTypes<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstAttackAnimTypesRow {
-                anim_id: 0,
-                anim_name: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // anim_id: int32
-            let anim_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // anim_name: string_ref
-            let anim_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstAttackAnimTypesRow {
-                anim_id,
-                anim_name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> AttackAnimTypes {
-        AttackAnimTypes {
-            rows: self.rows.iter().map(|s| AttackAnimTypesRow {
-                anim_id: s.anim_id,
-                anim_name: s.anim_name.to_string(),
-            }).collect(),
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AttackAnimTypesRow {
     pub anim_id: i32,
     pub anim_name: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstAttackAnimTypesRow {
-    pub anim_id: i32,
-    pub anim_name: &'static str,
 }
 

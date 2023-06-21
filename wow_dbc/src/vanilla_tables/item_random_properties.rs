@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemRandomProperties {
@@ -158,95 +158,6 @@ impl ItemRandomProperties {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemRandomProperties<const S: usize> {
-    pub rows: [ConstItemRandomPropertiesRow; S],
-}
-
-impl<const S: usize> ConstItemRandomProperties<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 64 {
-            panic!("invalid record size, expected 64")
-        }
-
-        if header.field_count != 16 {
-            panic!("invalid field count, expected 16")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstItemRandomPropertiesRow {
-                id: ItemRandomPropertiesKey::new(0),
-                name: "",
-                spell_item_enchantment: [0; 5],
-                suffix: crate::ConstLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ItemRandomProperties) uint32
-            let id = ItemRandomPropertiesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // spell_item_enchantment: uint32[5]
-            let spell_item_enchantment = {
-                let mut a = [0; 5];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // suffix: string_ref_loc
-            let suffix = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            rows[i] = ConstItemRandomPropertiesRow {
-                id,
-                name,
-                spell_item_enchantment,
-                suffix,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ItemRandomProperties {
-        ItemRandomProperties {
-            rows: self.rows.iter().map(|s| ItemRandomPropertiesRow {
-                id: s.id,
-                name: s.name.to_string(),
-                spell_item_enchantment: s.spell_item_enchantment,
-                suffix: s.suffix.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemRandomPropertiesKey {
     pub id: u32
@@ -286,13 +197,5 @@ pub struct ItemRandomPropertiesRow {
     pub name: String,
     pub spell_item_enchantment: [u32; 5],
     pub suffix: LocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemRandomPropertiesRow {
-    pub id: ItemRandomPropertiesKey,
-    pub name: &'static str,
-    pub spell_item_enchantment: [u32; 5],
-    pub suffix: ConstLocalizedString,
 }
 

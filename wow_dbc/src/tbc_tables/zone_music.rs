@@ -168,110 +168,6 @@ impl ZoneMusic {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstZoneMusic<const S: usize> {
-    pub rows: [ConstZoneMusicRow; S],
-}
-
-impl<const S: usize> ConstZoneMusic<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 32 {
-            panic!("invalid record size, expected 32")
-        }
-
-        if header.field_count != 8 {
-            panic!("invalid field count, expected 8")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstZoneMusicRow {
-                id: ZoneMusicKey::new(0),
-                set_name: "",
-                silence_interval_min: [0; 2],
-                silence_interval_max: [0; 2],
-                sounds: [0; 2],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ZoneMusic) int32
-            let id = ZoneMusicKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // set_name: string_ref
-            let set_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // silence_interval_min: int32[2]
-            let silence_interval_min = {
-                let mut a = [0; 2];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // silence_interval_max: int32[2]
-            let silence_interval_max = {
-                let mut a = [0; 2];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // sounds: int32[2]
-            let sounds = {
-                let mut a = [0; 2];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstZoneMusicRow {
-                id,
-                set_name,
-                silence_interval_min,
-                silence_interval_max,
-                sounds,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ZoneMusic {
-        ZoneMusic {
-            rows: self.rows.iter().map(|s| ZoneMusicRow {
-                id: s.id,
-                set_name: s.set_name.to_string(),
-                silence_interval_min: s.silence_interval_min,
-                silence_interval_max: s.silence_interval_max,
-                sounds: s.sounds,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ZoneMusicKey {
     pub id: i32
@@ -323,15 +219,6 @@ impl From<u16> for ZoneMusicKey {
 pub struct ZoneMusicRow {
     pub id: ZoneMusicKey,
     pub set_name: String,
-    pub silence_interval_min: [i32; 2],
-    pub silence_interval_max: [i32; 2],
-    pub sounds: [i32; 2],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstZoneMusicRow {
-    pub id: ZoneMusicKey,
-    pub set_name: &'static str,
     pub silence_interval_min: [i32; 2],
     pub silence_interval_max: [i32; 2],
     pub sounds: [i32; 2],

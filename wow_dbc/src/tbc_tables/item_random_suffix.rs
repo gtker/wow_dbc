@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemRandomSuffix {
@@ -168,119 +168,6 @@ impl ItemRandomSuffix {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemRandomSuffix<const S: usize> {
-    pub rows: [ConstItemRandomSuffixRow; S],
-}
-
-impl<const S: usize> ConstItemRandomSuffix<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 100 {
-            panic!("invalid record size, expected 100")
-        }
-
-        if header.field_count != 25 {
-            panic!("invalid field count, expected 25")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstItemRandomSuffixRow {
-                id: ItemRandomSuffixKey::new(0),
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                internal_name: "",
-                enchantment: [0; 3],
-                allocation_pct: [0; 3],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ItemRandomSuffix) int32
-            let id = ItemRandomSuffixKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // internal_name: string_ref
-            let internal_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // enchantment: int32[3]
-            let enchantment = {
-                let mut a = [0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // allocation_pct: int32[3]
-            let allocation_pct = {
-                let mut a = [0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstItemRandomSuffixRow {
-                id,
-                name_lang,
-                internal_name,
-                enchantment,
-                allocation_pct,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ItemRandomSuffix {
-        ItemRandomSuffix {
-            rows: self.rows.iter().map(|s| ItemRandomSuffixRow {
-                id: s.id,
-                name_lang: s.name_lang.to_string(),
-                internal_name: s.internal_name.to_string(),
-                enchantment: s.enchantment,
-                allocation_pct: s.allocation_pct,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemRandomSuffixKey {
     pub id: i32
@@ -333,15 +220,6 @@ pub struct ItemRandomSuffixRow {
     pub id: ItemRandomSuffixKey,
     pub name_lang: ExtendedLocalizedString,
     pub internal_name: String,
-    pub enchantment: [i32; 3],
-    pub allocation_pct: [i32; 3],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemRandomSuffixRow {
-    pub id: ItemRandomSuffixKey,
-    pub name_lang: ConstExtendedLocalizedString,
-    pub internal_name: &'static str,
     pub enchantment: [i32; 3],
     pub allocation_pct: [i32; 3],
 }

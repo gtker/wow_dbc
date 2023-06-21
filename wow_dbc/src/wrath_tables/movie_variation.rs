@@ -113,67 +113,6 @@ impl Indexable for MovieVariation {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstMovieVariation<const S: usize> {
-    pub rows: [MovieVariationRow; S],
-}
-
-impl<const S: usize> ConstMovieVariation<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            MovieVariationRow {
-                id: MovieVariationKey::new(0),
-                movie_id: MovieKey::new(0),
-                file_data_id: FileDataKey::new(0),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (MovieVariation) int32
-            let id = MovieVariationKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // movie_id: foreign_key (Movie) int32
-            let movie_id = MovieKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // file_data_id: foreign_key (FileData) int32
-            let file_data_id = FileDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            rows[i] = MovieVariationRow {
-                id,
-                movie_id,
-                file_data_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> MovieVariation {
-        MovieVariation {
-            rows: self.rows.iter().map(|s| MovieVariationRow {
-                id: s.id,
-                movie_id: s.movie_id,
-                file_data_id: s.file_data_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MovieVariationKey {
     pub id: i32

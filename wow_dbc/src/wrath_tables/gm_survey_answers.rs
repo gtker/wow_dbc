@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::gm_survey_questions::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -145,94 +145,6 @@ impl GMSurveyAnswers {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstGMSurveyAnswers<const S: usize> {
-    pub rows: [ConstGMSurveyAnswersRow; S],
-}
-
-impl<const S: usize> ConstGMSurveyAnswers<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 80 {
-            panic!("invalid record size, expected 80")
-        }
-
-        if header.field_count != 20 {
-            panic!("invalid field count, expected 20")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstGMSurveyAnswersRow {
-                id: GMSurveyAnswersKey::new(0),
-                sort_index: 0,
-                g_m_survey_question_id: GMSurveyQuestionsKey::new(0),
-                answer_lang: crate::ConstExtendedLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (GMSurveyAnswers) int32
-            let id = GMSurveyAnswersKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // sort_index: int32
-            let sort_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // g_m_survey_question_id: foreign_key (GMSurveyQuestions) int32
-            let g_m_survey_question_id = GMSurveyQuestionsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // answer_lang: string_ref_loc (Extended)
-            let answer_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            rows[i] = ConstGMSurveyAnswersRow {
-                id,
-                sort_index,
-                g_m_survey_question_id,
-                answer_lang,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> GMSurveyAnswers {
-        GMSurveyAnswers {
-            rows: self.rows.iter().map(|s| GMSurveyAnswersRow {
-                id: s.id,
-                sort_index: s.sort_index,
-                g_m_survey_question_id: s.g_m_survey_question_id,
-                answer_lang: s.answer_lang.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GMSurveyAnswersKey {
     pub id: i32
@@ -286,13 +198,5 @@ pub struct GMSurveyAnswersRow {
     pub sort_index: i32,
     pub g_m_survey_question_id: GMSurveyQuestionsKey,
     pub answer_lang: ExtendedLocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstGMSurveyAnswersRow {
-    pub id: GMSurveyAnswersKey,
-    pub sort_index: i32,
-    pub g_m_survey_question_id: GMSurveyQuestionsKey,
-    pub answer_lang: ConstExtendedLocalizedString,
 }
 

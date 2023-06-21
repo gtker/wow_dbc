@@ -182,104 +182,6 @@ impl WorldMapArea {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstWorldMapArea<const S: usize> {
-    pub rows: [ConstWorldMapAreaRow; S],
-}
-
-impl<const S: usize> ConstWorldMapArea<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 32 {
-            panic!("invalid record size, expected 32")
-        }
-
-        if header.field_count != 8 {
-            panic!("invalid field count, expected 8")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstWorldMapAreaRow {
-                id: WorldMapAreaKey::new(0),
-                world_map_continent: WorldMapContinentKey::new(0),
-                area_table: AreaTableKey::new(0),
-                area_name: "",
-                location_left: 0.0,
-                location_right: 0.0,
-                location_top: 0.0,
-                location_bottom: 0.0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (WorldMapArea) uint32
-            let id = WorldMapAreaKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // world_map_continent: foreign_key (WorldMapContinent) uint32
-            let world_map_continent = WorldMapContinentKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // area_table: foreign_key (AreaTable) uint32
-            let area_table = AreaTableKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // area_name: string_ref
-            let area_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // location_left: float
-            let location_left = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_right: float
-            let location_right = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_top: float
-            let location_top = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_bottom: float
-            let location_bottom = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstWorldMapAreaRow {
-                id,
-                world_map_continent,
-                area_table,
-                area_name,
-                location_left,
-                location_right,
-                location_top,
-                location_bottom,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> WorldMapArea {
-        WorldMapArea {
-            rows: self.rows.iter().map(|s| WorldMapAreaRow {
-                id: s.id,
-                world_map_continent: s.world_map_continent,
-                area_table: s.area_table,
-                area_name: s.area_name.to_string(),
-                location_left: s.location_left,
-                location_right: s.location_right,
-                location_top: s.location_top,
-                location_bottom: s.location_bottom,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapAreaKey {
     pub id: u32
@@ -319,18 +221,6 @@ pub struct WorldMapAreaRow {
     pub world_map_continent: WorldMapContinentKey,
     pub area_table: AreaTableKey,
     pub area_name: String,
-    pub location_left: f32,
-    pub location_right: f32,
-    pub location_top: f32,
-    pub location_bottom: f32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstWorldMapAreaRow {
-    pub id: WorldMapAreaKey,
-    pub world_map_continent: WorldMapContinentKey,
-    pub area_table: AreaTableKey,
-    pub area_name: &'static str,
     pub location_left: f32,
     pub location_right: f32,
     pub location_top: f32,

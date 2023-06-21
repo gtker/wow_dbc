@@ -170,99 +170,6 @@ impl Weather {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstWeather<const S: usize> {
-    pub rows: [ConstWeatherRow; S],
-}
-
-impl<const S: usize> ConstWeather<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 32 {
-            panic!("invalid record size, expected 32")
-        }
-
-        if header.field_count != 8 {
-            panic!("invalid field count, expected 8")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstWeatherRow {
-                id: WeatherKey::new(0),
-                ambience_id: SoundEntriesKey::new(0),
-                effect_type: 0,
-                transition_sky_box: 0.0,
-                effect_color: [0.0; 3],
-                effect_texture: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (Weather) int32
-            let id = WeatherKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // ambience_id: foreign_key (SoundEntries) int32
-            let ambience_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // effect_type: int32
-            let effect_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // transition_sky_box: float
-            let transition_sky_box = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // effect_color: float[3]
-            let effect_color = {
-                let mut a = [0.0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // effect_texture: string_ref
-            let effect_texture = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstWeatherRow {
-                id,
-                ambience_id,
-                effect_type,
-                transition_sky_box,
-                effect_color,
-                effect_texture,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> Weather {
-        Weather {
-            rows: self.rows.iter().map(|s| WeatherRow {
-                id: s.id,
-                ambience_id: s.ambience_id,
-                effect_type: s.effect_type,
-                transition_sky_box: s.transition_sky_box,
-                effect_color: s.effect_color,
-                effect_texture: s.effect_texture.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WeatherKey {
     pub id: i32
@@ -318,15 +225,5 @@ pub struct WeatherRow {
     pub transition_sky_box: f32,
     pub effect_color: [f32; 3],
     pub effect_texture: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstWeatherRow {
-    pub id: WeatherKey,
-    pub ambience_id: SoundEntriesKey,
-    pub effect_type: i32,
-    pub transition_sky_box: f32,
-    pub effect_color: [f32; 3],
-    pub effect_texture: &'static str,
 }
 

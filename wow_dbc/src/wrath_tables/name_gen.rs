@@ -153,76 +153,6 @@ impl NameGen {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstNameGen<const S: usize> {
-    pub rows: [ConstNameGenRow; S],
-}
-
-impl<const S: usize> ConstNameGen<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 16 {
-            panic!("invalid record size, expected 16")
-        }
-
-        if header.field_count != 4 {
-            panic!("invalid field count, expected 4")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstNameGenRow {
-                id: NameGenKey::new(0),
-                name: "",
-                race_id: ChrRacesKey::new(0),
-                sex: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (NameGen) int32
-            let id = NameGenKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // race_id: foreign_key (ChrRaces) int32
-            let race_id = ChrRacesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // sex: int32
-            let sex = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstNameGenRow {
-                id,
-                name,
-                race_id,
-                sex,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> NameGen {
-        NameGen {
-            rows: self.rows.iter().map(|s| NameGenRow {
-                id: s.id,
-                name: s.name.to_string(),
-                race_id: s.race_id,
-                sex: s.sex,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct NameGenKey {
     pub id: i32
@@ -274,14 +204,6 @@ impl From<u16> for NameGenKey {
 pub struct NameGenRow {
     pub id: NameGenKey,
     pub name: String,
-    pub race_id: ChrRacesKey,
-    pub sex: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstNameGenRow {
-    pub id: NameGenKey,
-    pub name: &'static str,
     pub race_id: ChrRacesKey,
     pub sex: i32,
 }

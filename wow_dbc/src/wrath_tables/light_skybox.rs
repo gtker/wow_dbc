@@ -145,69 +145,6 @@ impl LightSkybox {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLightSkybox<const S: usize> {
-    pub rows: [ConstLightSkyboxRow; S],
-}
-
-impl<const S: usize> ConstLightSkybox<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstLightSkyboxRow {
-                id: LightSkyboxKey::new(0),
-                name: "",
-                flags: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (LightSkybox) int32
-            let id = LightSkyboxKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // flags: int32
-            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstLightSkyboxRow {
-                id,
-                name,
-                flags,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> LightSkybox {
-        LightSkybox {
-            rows: self.rows.iter().map(|s| LightSkyboxRow {
-                id: s.id,
-                name: s.name.to_string(),
-                flags: s.flags,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LightSkyboxKey {
     pub id: i32
@@ -259,13 +196,6 @@ impl From<u16> for LightSkyboxKey {
 pub struct LightSkyboxRow {
     pub id: LightSkyboxKey,
     pub name: String,
-    pub flags: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLightSkyboxRow {
-    pub id: LightSkyboxKey,
-    pub name: &'static str,
     pub flags: i32,
 }
 

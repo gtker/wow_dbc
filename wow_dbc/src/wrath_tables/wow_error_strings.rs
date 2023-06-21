@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -150,88 +150,6 @@ impl WowError_Strings {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstWowError_Strings<const S: usize> {
-    pub rows: [ConstWowError_StringsRow; S],
-}
-
-impl<const S: usize> ConstWowError_Strings<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 76 {
-            panic!("invalid record size, expected 76")
-        }
-
-        if header.field_count != 19 {
-            panic!("invalid field count, expected 19")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstWowError_StringsRow {
-                id: WowError_StringsKey::new(0),
-                name: "",
-                description_lang: crate::ConstExtendedLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (WowError_Strings) int32
-            let id = WowError_StringsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // description_lang: string_ref_loc (Extended)
-            let description_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            rows[i] = ConstWowError_StringsRow {
-                id,
-                name,
-                description_lang,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> WowError_Strings {
-        WowError_Strings {
-            rows: self.rows.iter().map(|s| WowError_StringsRow {
-                id: s.id,
-                name: s.name.to_string(),
-                description_lang: s.description_lang.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
-#[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WowError_StringsKey {
     pub id: i32
@@ -285,12 +203,5 @@ pub struct WowError_StringsRow {
     pub id: WowError_StringsKey,
     pub name: String,
     pub description_lang: ExtendedLocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstWowError_StringsRow {
-    pub id: WowError_StringsKey,
-    pub name: &'static str,
-    pub description_lang: ConstExtendedLocalizedString,
 }
 

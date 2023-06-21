@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -177,115 +177,6 @@ impl MapDifficulty {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstMapDifficulty<const S: usize> {
-    pub rows: [ConstMapDifficultyRow; S],
-}
-
-impl<const S: usize> ConstMapDifficulty<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 92 {
-            panic!("invalid record size, expected 92")
-        }
-
-        if header.field_count != 23 {
-            panic!("invalid field count, expected 23")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstMapDifficultyRow {
-                id: MapDifficultyKey::new(0),
-                map_id: MapKey::new(0),
-                difficulty: 0,
-                message_lang: crate::ConstExtendedLocalizedString::empty(),
-                raid_duration: 0,
-                max_players: 0,
-                difficultystring: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (MapDifficulty) int32
-            let id = MapDifficultyKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // map_id: foreign_key (Map) int32
-            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // difficulty: int32
-            let difficulty = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // message_lang: string_ref_loc (Extended)
-            let message_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // raid_duration: int32
-            let raid_duration = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // max_players: int32
-            let max_players = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // difficultystring: string_ref
-            let difficultystring = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstMapDifficultyRow {
-                id,
-                map_id,
-                difficulty,
-                message_lang,
-                raid_duration,
-                max_players,
-                difficultystring,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> MapDifficulty {
-        MapDifficulty {
-            rows: self.rows.iter().map(|s| MapDifficultyRow {
-                id: s.id,
-                map_id: s.map_id,
-                difficulty: s.difficulty,
-                message_lang: s.message_lang.to_string(),
-                raid_duration: s.raid_duration,
-                max_players: s.max_players,
-                difficultystring: s.difficultystring.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MapDifficultyKey {
     pub id: i32
@@ -342,16 +233,5 @@ pub struct MapDifficultyRow {
     pub raid_duration: i32,
     pub max_players: i32,
     pub difficultystring: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstMapDifficultyRow {
-    pub id: MapDifficultyKey,
-    pub map_id: MapKey,
-    pub difficulty: i32,
-    pub message_lang: ConstExtendedLocalizedString,
-    pub raid_duration: i32,
-    pub max_players: i32,
-    pub difficultystring: &'static str,
 }
 

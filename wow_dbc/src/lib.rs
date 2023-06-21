@@ -52,8 +52,7 @@
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
-// TODO: https://github.com/rust-lang/rust/issues/72447
-// #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 // This requires fields knowing about the sizes of enums
 #![allow(clippy::useless_conversion)]
 #![allow(non_camel_case_types)]

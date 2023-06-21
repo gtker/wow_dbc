@@ -138,62 +138,6 @@ impl ItemVisualEffects {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemVisualEffects<const S: usize> {
-    pub rows: [ConstItemVisualEffectsRow; S],
-}
-
-impl<const S: usize> ConstItemVisualEffects<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstItemVisualEffectsRow {
-                id: ItemVisualEffectsKey::new(0),
-                model: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ItemVisualEffects) int32
-            let id = ItemVisualEffectsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // model: string_ref
-            let model = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstItemVisualEffectsRow {
-                id,
-                model,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ItemVisualEffects {
-        ItemVisualEffects {
-            rows: self.rows.iter().map(|s| ItemVisualEffectsRow {
-                id: s.id,
-                model: s.model.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemVisualEffectsKey {
     pub id: i32
@@ -245,11 +189,5 @@ impl From<u16> for ItemVisualEffectsKey {
 pub struct ItemVisualEffectsRow {
     pub id: ItemVisualEffectsKey,
     pub model: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemVisualEffectsRow {
-    pub id: ItemVisualEffectsKey,
-    pub model: &'static str,
 }
 

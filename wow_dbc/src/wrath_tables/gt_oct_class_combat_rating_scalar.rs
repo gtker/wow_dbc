@@ -104,60 +104,6 @@ impl Indexable for gtOCTClassCombatRatingScalar {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstgtOCTClassCombatRatingScalar<const S: usize> {
-    pub rows: [gtOCTClassCombatRatingScalarRow; S],
-}
-
-impl<const S: usize> ConstgtOCTClassCombatRatingScalar<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            gtOCTClassCombatRatingScalarRow {
-                id: gtOCTClassCombatRatingScalarKey::new(0),
-                data: 0.0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (gtOCTClassCombatRatingScalar) int32
-            let id = gtOCTClassCombatRatingScalarKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // data: float
-            let data = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = gtOCTClassCombatRatingScalarRow {
-                id,
-                data,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> gtOCTClassCombatRatingScalar {
-        gtOCTClassCombatRatingScalar {
-            rows: self.rows.iter().map(|s| gtOCTClassCombatRatingScalarRow {
-                id: s.id,
-                data: s.data,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct gtOCTClassCombatRatingScalarKey {
     pub id: i32

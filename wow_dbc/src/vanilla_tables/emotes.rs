@@ -175,100 +175,6 @@ impl Emotes {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstEmotes<const S: usize> {
-    pub rows: [ConstEmotesRow; S],
-}
-
-impl<const S: usize> ConstEmotes<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 28 {
-            panic!("invalid record size, expected 28")
-        }
-
-        if header.field_count != 7 {
-            panic!("invalid field count, expected 7")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstEmotesRow {
-                id: EmotesKey::new(0),
-                emote_slash_command: "",
-                animation_data: AnimationDataKey::new(0),
-                flags: EmoteFlags::new(0),
-                spec_proc: EmoteSpecProc::NoLoop,
-                emote_spec_proc_param: 0,
-                event_sound_entry: SoundEntriesKey::new(0),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (Emotes) uint32
-            let id = EmotesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // emote_slash_command: string_ref
-            let emote_slash_command = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // animation_data: foreign_key (AnimationData) uint32
-            let animation_data = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // flags: EmoteFlags
-            let flags = EmoteFlags::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // spec_proc: EmoteSpecProc
-            let spec_proc = match EmoteSpecProc::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
-                Some(e) => e,
-                None => panic!(),
-            };
-            b_offset += 4;
-
-            // emote_spec_proc_param: int32
-            let emote_spec_proc_param = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // event_sound_entry: foreign_key (SoundEntries) uint32
-            let event_sound_entry = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            rows[i] = ConstEmotesRow {
-                id,
-                emote_slash_command,
-                animation_data,
-                flags,
-                spec_proc,
-                emote_spec_proc_param,
-                event_sound_entry,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> Emotes {
-        Emotes {
-            rows: self.rows.iter().map(|s| EmotesRow {
-                id: s.id,
-                emote_slash_command: s.emote_slash_command.to_string(),
-                animation_data: s.animation_data,
-                flags: s.flags,
-                spec_proc: s.spec_proc,
-                emote_spec_proc_param: s.emote_spec_proc_param,
-                event_sound_entry: s.event_sound_entry,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EmotesKey {
     pub id: u32
@@ -387,17 +293,6 @@ impl EmoteFlags {
 pub struct EmotesRow {
     pub id: EmotesKey,
     pub emote_slash_command: String,
-    pub animation_data: AnimationDataKey,
-    pub flags: EmoteFlags,
-    pub spec_proc: EmoteSpecProc,
-    pub emote_spec_proc_param: i32,
-    pub event_sound_entry: SoundEntriesKey,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstEmotesRow {
-    pub id: EmotesKey,
-    pub emote_slash_command: &'static str,
     pub animation_data: AnimationDataKey,
     pub flags: EmoteFlags,
     pub spec_proc: EmoteSpecProc,

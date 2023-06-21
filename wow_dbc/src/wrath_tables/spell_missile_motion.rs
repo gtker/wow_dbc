@@ -170,83 +170,6 @@ impl SpellMissileMotion {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellMissileMotion<const S: usize> {
-    pub rows: [ConstSpellMissileMotionRow; S],
-}
-
-impl<const S: usize> ConstSpellMissileMotion<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 20 {
-            panic!("invalid record size, expected 20")
-        }
-
-        if header.field_count != 5 {
-            panic!("invalid field count, expected 5")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSpellMissileMotionRow {
-                id: SpellMissileMotionKey::new(0),
-                name: "",
-                script_body: "",
-                flags: 0,
-                missile_count: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellMissileMotion) int32
-            let id = SpellMissileMotionKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // script_body: string_ref
-            let script_body = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // flags: int32
-            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // missile_count: int32
-            let missile_count = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstSpellMissileMotionRow {
-                id,
-                name,
-                script_body,
-                flags,
-                missile_count,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellMissileMotion {
-        SpellMissileMotion {
-            rows: self.rows.iter().map(|s| SpellMissileMotionRow {
-                id: s.id,
-                name: s.name.to_string(),
-                script_body: s.script_body.to_string(),
-                flags: s.flags,
-                missile_count: s.missile_count,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellMissileMotionKey {
     pub id: i32
@@ -299,15 +222,6 @@ pub struct SpellMissileMotionRow {
     pub id: SpellMissileMotionKey,
     pub name: String,
     pub script_body: String,
-    pub flags: i32,
-    pub missile_count: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellMissileMotionRow {
-    pub id: SpellMissileMotionKey,
-    pub name: &'static str,
-    pub script_body: &'static str,
     pub flags: i32,
     pub missile_count: i32,
 }

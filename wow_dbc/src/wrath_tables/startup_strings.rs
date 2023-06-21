@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -150,88 +150,6 @@ impl Startup_Strings {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstStartup_Strings<const S: usize> {
-    pub rows: [ConstStartup_StringsRow; S],
-}
-
-impl<const S: usize> ConstStartup_Strings<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 76 {
-            panic!("invalid record size, expected 76")
-        }
-
-        if header.field_count != 19 {
-            panic!("invalid field count, expected 19")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstStartup_StringsRow {
-                id: Startup_StringsKey::new(0),
-                name: "",
-                message_lang: crate::ConstExtendedLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (Startup_Strings) int32
-            let id = Startup_StringsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // message_lang: string_ref_loc (Extended)
-            let message_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            rows[i] = ConstStartup_StringsRow {
-                id,
-                name,
-                message_lang,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> Startup_Strings {
-        Startup_Strings {
-            rows: self.rows.iter().map(|s| Startup_StringsRow {
-                id: s.id,
-                name: s.name.to_string(),
-                message_lang: s.message_lang.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
-#[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct Startup_StringsKey {
     pub id: i32
@@ -285,12 +203,5 @@ pub struct Startup_StringsRow {
     pub id: Startup_StringsKey,
     pub name: String,
     pub message_lang: ExtendedLocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstStartup_StringsRow {
-    pub id: Startup_StringsKey,
-    pub name: &'static str,
-    pub message_lang: ConstExtendedLocalizedString,
 }
 

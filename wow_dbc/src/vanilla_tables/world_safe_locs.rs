@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 use crate::vanilla_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -159,100 +159,6 @@ impl WorldSafeLocs {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstWorldSafeLocs<const S: usize> {
-    pub rows: [ConstWorldSafeLocsRow; S],
-}
-
-impl<const S: usize> ConstWorldSafeLocs<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 56 {
-            panic!("invalid record size, expected 56")
-        }
-
-        if header.field_count != 14 {
-            panic!("invalid field count, expected 14")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstWorldSafeLocsRow {
-                id: WorldSafeLocsKey::new(0),
-                map: MapKey::new(0),
-                location_x: 0.0,
-                location_y: 0.0,
-                location_z: 0.0,
-                area_name: crate::ConstLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (WorldSafeLocs) uint32
-            let id = WorldSafeLocsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // map: foreign_key (Map) uint32
-            let map = MapKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // location_x: float
-            let location_x = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_y: float
-            let location_y = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_z: float
-            let location_z = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // area_name: string_ref_loc
-            let area_name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            rows[i] = ConstWorldSafeLocsRow {
-                id,
-                map,
-                location_x,
-                location_y,
-                location_z,
-                area_name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> WorldSafeLocs {
-        WorldSafeLocs {
-            rows: self.rows.iter().map(|s| WorldSafeLocsRow {
-                id: s.id,
-                map: s.map,
-                location_x: s.location_x,
-                location_y: s.location_y,
-                location_z: s.location_z,
-                area_name: s.area_name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldSafeLocsKey {
     pub id: u32
@@ -294,15 +200,5 @@ pub struct WorldSafeLocsRow {
     pub location_y: f32,
     pub location_z: f32,
     pub area_name: LocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstWorldSafeLocsRow {
-    pub id: WorldSafeLocsKey,
-    pub map: MapKey,
-    pub location_x: f32,
-    pub location_y: f32,
-    pub location_z: f32,
-    pub area_name: ConstLocalizedString,
 }
 

@@ -107,69 +107,6 @@ impl Indexable for SpellDifficulty {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellDifficulty<const S: usize> {
-    pub rows: [SpellDifficultyRow; S],
-}
-
-impl<const S: usize> ConstSpellDifficulty<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 20 {
-            panic!("invalid record size, expected 20")
-        }
-
-        if header.field_count != 5 {
-            panic!("invalid field count, expected 5")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            SpellDifficultyRow {
-                id: SpellDifficultyKey::new(0),
-                difficulty_spell_id: [0; 4],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellDifficulty) int32
-            let id = SpellDifficultyKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // difficulty_spell_id: int32[4]
-            let difficulty_spell_id = {
-                let mut a = [0; 4];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = SpellDifficultyRow {
-                id,
-                difficulty_spell_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellDifficulty {
-        SpellDifficulty {
-            rows: self.rows.iter().map(|s| SpellDifficultyRow {
-                id: s.id,
-                difficulty_spell_id: s.difficulty_spell_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellDifficultyKey {
     pub id: i32

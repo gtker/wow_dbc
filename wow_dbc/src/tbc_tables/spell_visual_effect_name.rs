@@ -170,83 +170,6 @@ impl SpellVisualEffectName {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstSpellVisualEffectName<const S: usize> {
-    pub rows: [ConstSpellVisualEffectNameRow; S],
-}
-
-impl<const S: usize> ConstSpellVisualEffectName<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 20 {
-            panic!("invalid record size, expected 20")
-        }
-
-        if header.field_count != 5 {
-            panic!("invalid field count, expected 5")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSpellVisualEffectNameRow {
-                id: SpellVisualEffectNameKey::new(0),
-                name: "",
-                file_name: "",
-                area_effect_size: 0.0,
-                scale: 0.0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellVisualEffectName) int32
-            let id = SpellVisualEffectNameKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // file_name: string_ref
-            let file_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // area_effect_size: float
-            let area_effect_size = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // scale: float
-            let scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstSpellVisualEffectNameRow {
-                id,
-                name,
-                file_name,
-                area_effect_size,
-                scale,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellVisualEffectName {
-        SpellVisualEffectName {
-            rows: self.rows.iter().map(|s| SpellVisualEffectNameRow {
-                id: s.id,
-                name: s.name.to_string(),
-                file_name: s.file_name.to_string(),
-                area_effect_size: s.area_effect_size,
-                scale: s.scale,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualEffectNameKey {
     pub id: i32
@@ -299,15 +222,6 @@ pub struct SpellVisualEffectNameRow {
     pub id: SpellVisualEffectNameKey,
     pub name: String,
     pub file_name: String,
-    pub area_effect_size: f32,
-    pub scale: f32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstSpellVisualEffectNameRow {
-    pub id: SpellVisualEffectNameKey,
-    pub name: &'static str,
-    pub file_name: &'static str,
     pub area_effect_size: f32,
     pub scale: f32,
 }

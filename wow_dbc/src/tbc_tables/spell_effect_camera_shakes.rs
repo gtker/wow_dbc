@@ -107,69 +107,6 @@ impl Indexable for SpellEffectCameraShakes {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellEffectCameraShakes<const S: usize> {
-    pub rows: [SpellEffectCameraShakesRow; S],
-}
-
-impl<const S: usize> ConstSpellEffectCameraShakes<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 16 {
-            panic!("invalid record size, expected 16")
-        }
-
-        if header.field_count != 4 {
-            panic!("invalid field count, expected 4")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            SpellEffectCameraShakesRow {
-                id: SpellEffectCameraShakesKey::new(0),
-                camera_shake: [0; 3],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellEffectCameraShakes) int32
-            let id = SpellEffectCameraShakesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // camera_shake: int32[3]
-            let camera_shake = {
-                let mut a = [0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = SpellEffectCameraShakesRow {
-                id,
-                camera_shake,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellEffectCameraShakes {
-        SpellEffectCameraShakes {
-            rows: self.rows.iter().map(|s| SpellEffectCameraShakesRow {
-                id: s.id,
-                camera_shake: s.camera_shake,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellEffectCameraShakesKey {
     pub id: i32

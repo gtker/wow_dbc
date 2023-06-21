@@ -138,62 +138,6 @@ impl SpellDescriptionVariables {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellDescriptionVariables<const S: usize> {
-    pub rows: [ConstSpellDescriptionVariablesRow; S],
-}
-
-impl<const S: usize> ConstSpellDescriptionVariables<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSpellDescriptionVariablesRow {
-                id: SpellDescriptionVariablesKey::new(0),
-                variables: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellDescriptionVariables) int32
-            let id = SpellDescriptionVariablesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // variables: string_ref
-            let variables = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstSpellDescriptionVariablesRow {
-                id,
-                variables,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellDescriptionVariables {
-        SpellDescriptionVariables {
-            rows: self.rows.iter().map(|s| SpellDescriptionVariablesRow {
-                id: s.id,
-                variables: s.variables.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellDescriptionVariablesKey {
     pub id: i32
@@ -245,11 +189,5 @@ impl From<u16> for SpellDescriptionVariablesKey {
 pub struct SpellDescriptionVariablesRow {
     pub id: SpellDescriptionVariablesKey,
     pub variables: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellDescriptionVariablesRow {
-    pub id: SpellDescriptionVariablesKey,
-    pub variables: &'static str,
 }
 

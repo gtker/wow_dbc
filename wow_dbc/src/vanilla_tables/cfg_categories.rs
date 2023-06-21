@@ -2,7 +2,7 @@ use crate::header::{HEADER_SIZE, DbcHeader};
 use crate::header;
 use crate::DbcTable;
 use std::io::Write;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -123,85 +123,6 @@ impl Cfg_Categories {
 
 }
 
-#[allow(non_camel_case_types)]
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstCfg_Categories<const S: usize> {
-    pub rows: [ConstCfg_CategoriesRow; S],
-}
-
-impl<const S: usize> ConstCfg_Categories<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 44 {
-            panic!("invalid record size, expected 44")
-        }
-
-        if header.field_count != 11 {
-            panic!("invalid field count, expected 11")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstCfg_CategoriesRow {
-                category: Category::One,
-                region: Region::UnitedStates,
-                name: crate::ConstLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // category: Category
-            let category = match Category::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
-                Some(e) => e,
-                None => panic!(),
-            };
-            b_offset += 4;
-
-            // region: Region
-            let region = match Region::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
-                Some(e) => e,
-                None => panic!(),
-            };
-            b_offset += 4;
-
-            // name: string_ref_loc
-            let name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            rows[i] = ConstCfg_CategoriesRow {
-                category,
-                region,
-                name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> Cfg_Categories {
-        Cfg_Categories {
-            rows: self.rows.iter().map(|s| Cfg_CategoriesRow {
-                category: s.category,
-                region: s.region,
-                name: s.name.to_string(),
-            }).collect(),
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum Category {
     One,
@@ -313,12 +234,5 @@ pub struct Cfg_CategoriesRow {
     pub category: Category,
     pub region: Region,
     pub name: LocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstCfg_CategoriesRow {
-    pub category: Category,
-    pub region: Region,
-    pub name: ConstLocalizedString,
 }
 

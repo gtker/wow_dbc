@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::cinematic_sequences::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -227,186 +227,6 @@ impl ChrClasses {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstChrClasses<const S: usize> {
-    pub rows: [ConstChrClassesRow; S],
-}
-
-impl<const S: usize> ConstChrClasses<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 240 {
-            panic!("invalid record size, expected 240")
-        }
-
-        if header.field_count != 60 {
-            panic!("invalid field count, expected 60")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstChrClassesRow {
-                id: ChrClassesKey::new(0),
-                damage_bonus_stat: 0,
-                display_power: 0,
-                pet_name_token: "",
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                name_female_lang: crate::ConstExtendedLocalizedString::empty(),
-                name_male_lang: crate::ConstExtendedLocalizedString::empty(),
-                filename: "",
-                spell_class_set: 0,
-                flags: 0,
-                cinematic_sequence_id: CinematicSequencesKey::new(0),
-                required_expansion: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ChrClasses) int32
-            let id = ChrClassesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // damage_bonus_stat: int32
-            let damage_bonus_stat = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // display_power: foreign_key (PowerType) int32
-            let display_power = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // pet_name_token: string_ref
-            let pet_name_token = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // name_female_lang: string_ref_loc (Extended)
-            let name_female_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // name_male_lang: string_ref_loc (Extended)
-            let name_male_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // filename: string_ref
-            let filename = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // spell_class_set: int32
-            let spell_class_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // flags: int32
-            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // cinematic_sequence_id: foreign_key (CinematicSequences) int32
-            let cinematic_sequence_id = CinematicSequencesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // required_expansion: int32
-            let required_expansion = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstChrClassesRow {
-                id,
-                damage_bonus_stat,
-                display_power,
-                pet_name_token,
-                name_lang,
-                name_female_lang,
-                name_male_lang,
-                filename,
-                spell_class_set,
-                flags,
-                cinematic_sequence_id,
-                required_expansion,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ChrClasses {
-        ChrClasses {
-            rows: self.rows.iter().map(|s| ChrClassesRow {
-                id: s.id,
-                damage_bonus_stat: s.damage_bonus_stat,
-                display_power: s.display_power,
-                pet_name_token: s.pet_name_token.to_string(),
-                name_lang: s.name_lang.to_string(),
-                name_female_lang: s.name_female_lang.to_string(),
-                name_male_lang: s.name_male_lang.to_string(),
-                filename: s.filename.to_string(),
-                spell_class_set: s.spell_class_set,
-                flags: s.flags,
-                cinematic_sequence_id: s.cinematic_sequence_id,
-                required_expansion: s.required_expansion,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChrClassesKey {
     pub id: i32
@@ -464,22 +284,6 @@ pub struct ChrClassesRow {
     pub name_female_lang: ExtendedLocalizedString,
     pub name_male_lang: ExtendedLocalizedString,
     pub filename: String,
-    pub spell_class_set: i32,
-    pub flags: i32,
-    pub cinematic_sequence_id: CinematicSequencesKey,
-    pub required_expansion: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstChrClassesRow {
-    pub id: ChrClassesKey,
-    pub damage_bonus_stat: i32,
-    pub display_power: i32,
-    pub pet_name_token: &'static str,
-    pub name_lang: ConstExtendedLocalizedString,
-    pub name_female_lang: ConstExtendedLocalizedString,
-    pub name_male_lang: ConstExtendedLocalizedString,
-    pub filename: &'static str,
     pub spell_class_set: i32,
     pub flags: i32,
     pub cinematic_sequence_id: CinematicSequencesKey,

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LockType {
@@ -166,113 +166,6 @@ impl LockType {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLockType<const S: usize> {
-    pub rows: [ConstLockTypeRow; S],
-}
-
-impl<const S: usize> ConstLockType<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 116 {
-            panic!("invalid record size, expected 116")
-        }
-
-        if header.field_count != 29 {
-            panic!("invalid field count, expected 29")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstLockTypeRow {
-                id: LockTypeKey::new(0),
-                name: crate::ConstLocalizedString::empty(),
-                resource_name: crate::ConstLocalizedString::empty(),
-                verb: crate::ConstLocalizedString::empty(),
-                cursor_name: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (LockType) uint32
-            let id = LockTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref_loc
-            let name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            // resource_name: string_ref_loc
-            let resource_name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            // verb: string_ref_loc
-            let verb = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            // cursor_name: string_ref
-            let cursor_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstLockTypeRow {
-                id,
-                name,
-                resource_name,
-                verb,
-                cursor_name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> LockType {
-        LockType {
-            rows: self.rows.iter().map(|s| LockTypeRow {
-                id: s.id,
-                name: s.name.to_string(),
-                resource_name: s.resource_name.to_string(),
-                verb: s.verb.to_string(),
-                cursor_name: s.cursor_name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LockTypeKey {
     pub id: u32
@@ -313,14 +206,5 @@ pub struct LockTypeRow {
     pub resource_name: LocalizedString,
     pub verb: LocalizedString,
     pub cursor_name: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLockTypeRow {
-    pub id: LockTypeKey,
-    pub name: ConstLocalizedString,
-    pub resource_name: ConstLocalizedString,
-    pub verb: ConstLocalizedString,
-    pub cursor_name: &'static str,
 }
 

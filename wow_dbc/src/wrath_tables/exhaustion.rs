@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Exhaustion {
@@ -165,115 +165,6 @@ impl Exhaustion {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstExhaustion<const S: usize> {
-    pub rows: [ConstExhaustionRow; S],
-}
-
-impl<const S: usize> ConstExhaustion<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 92 {
-            panic!("invalid record size, expected 92")
-        }
-
-        if header.field_count != 23 {
-            panic!("invalid field count, expected 23")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstExhaustionRow {
-                id: ExhaustionKey::new(0),
-                xp: 0,
-                factor: 0.0,
-                outdoor_hours: 0.0,
-                inn_hours: 0.0,
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                threshold: 0.0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (Exhaustion) int32
-            let id = ExhaustionKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // xp: int32
-            let xp = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // factor: float
-            let factor = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // outdoor_hours: float
-            let outdoor_hours = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // inn_hours: float
-            let inn_hours = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // threshold: float
-            let threshold = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstExhaustionRow {
-                id,
-                xp,
-                factor,
-                outdoor_hours,
-                inn_hours,
-                name_lang,
-                threshold,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> Exhaustion {
-        Exhaustion {
-            rows: self.rows.iter().map(|s| ExhaustionRow {
-                id: s.id,
-                xp: s.xp,
-                factor: s.factor,
-                outdoor_hours: s.outdoor_hours,
-                inn_hours: s.inn_hours,
-                name_lang: s.name_lang.to_string(),
-                threshold: s.threshold,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ExhaustionKey {
     pub id: i32
@@ -329,17 +220,6 @@ pub struct ExhaustionRow {
     pub outdoor_hours: f32,
     pub inn_hours: f32,
     pub name_lang: ExtendedLocalizedString,
-    pub threshold: f32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstExhaustionRow {
-    pub id: ExhaustionKey,
-    pub xp: i32,
-    pub factor: f32,
-    pub outdoor_hours: f32,
-    pub inn_hours: f32,
-    pub name_lang: ConstExtendedLocalizedString,
     pub threshold: f32,
 }
 

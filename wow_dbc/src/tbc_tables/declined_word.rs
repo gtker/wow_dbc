@@ -138,62 +138,6 @@ impl DeclinedWord {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstDeclinedWord<const S: usize> {
-    pub rows: [ConstDeclinedWordRow; S],
-}
-
-impl<const S: usize> ConstDeclinedWord<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstDeclinedWordRow {
-                id: DeclinedWordKey::new(0),
-                word: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (DeclinedWord) int32
-            let id = DeclinedWordKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // word: string_ref
-            let word = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstDeclinedWordRow {
-                id,
-                word,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> DeclinedWord {
-        DeclinedWord {
-            rows: self.rows.iter().map(|s| DeclinedWordRow {
-                id: s.id,
-                word: s.word.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DeclinedWordKey {
     pub id: i32
@@ -245,11 +189,5 @@ impl From<u16> for DeclinedWordKey {
 pub struct DeclinedWordRow {
     pub id: DeclinedWordKey,
     pub word: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstDeclinedWordRow {
-    pub id: DeclinedWordKey,
-    pub word: &'static str,
 }
 

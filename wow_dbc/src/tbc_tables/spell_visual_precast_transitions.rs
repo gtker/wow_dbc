@@ -156,69 +156,6 @@ impl SpellVisualPrecastTransitions {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellVisualPrecastTransitions<const S: usize> {
-    pub rows: [ConstSpellVisualPrecastTransitionsRow; S],
-}
-
-impl<const S: usize> ConstSpellVisualPrecastTransitions<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSpellVisualPrecastTransitionsRow {
-                id: SpellVisualPrecastTransitionsKey::new(0),
-                precast_load_anim_name: "",
-                precast_hold_anim_name: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellVisualPrecastTransitions) int32
-            let id = SpellVisualPrecastTransitionsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // precast_load_anim_name: string_ref
-            let precast_load_anim_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // precast_hold_anim_name: string_ref
-            let precast_hold_anim_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstSpellVisualPrecastTransitionsRow {
-                id,
-                precast_load_anim_name,
-                precast_hold_anim_name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellVisualPrecastTransitions {
-        SpellVisualPrecastTransitions {
-            rows: self.rows.iter().map(|s| SpellVisualPrecastTransitionsRow {
-                id: s.id,
-                precast_load_anim_name: s.precast_load_anim_name.to_string(),
-                precast_hold_anim_name: s.precast_hold_anim_name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualPrecastTransitionsKey {
     pub id: i32
@@ -271,12 +208,5 @@ pub struct SpellVisualPrecastTransitionsRow {
     pub id: SpellVisualPrecastTransitionsKey,
     pub precast_load_anim_name: String,
     pub precast_hold_anim_name: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellVisualPrecastTransitionsRow {
-    pub id: SpellVisualPrecastTransitionsKey,
-    pub precast_load_anim_name: &'static str,
-    pub precast_hold_anim_name: &'static str,
 }
 

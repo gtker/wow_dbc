@@ -112,67 +112,6 @@ impl Indexable for SoundAmbience {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSoundAmbience<const S: usize> {
-    pub rows: [SoundAmbienceRow; S],
-}
-
-impl<const S: usize> ConstSoundAmbience<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            SoundAmbienceRow {
-                id: SoundAmbienceKey::new(0),
-                day_sound: SoundEntriesKey::new(0),
-                night_sound: SoundEntriesKey::new(0),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SoundAmbience) uint32
-            let id = SoundAmbienceKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // day_sound: foreign_key (SoundEntries) uint32
-            let day_sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // night_sound: foreign_key (SoundEntries) uint32
-            let night_sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            rows[i] = SoundAmbienceRow {
-                id,
-                day_sound,
-                night_sound,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SoundAmbience {
-        SoundAmbience {
-            rows: self.rows.iter().map(|s| SoundAmbienceRow {
-                id: s.id,
-                day_sound: s.day_sound,
-                night_sound: s.night_sound,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundAmbienceKey {
     pub id: u32

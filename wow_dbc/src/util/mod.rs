@@ -1,40 +1,9 @@
-mod fp_hacks;
-
 #[cfg(any(feature = "tbc", feature = "wrath"))]
 use crate::tys::ExtendedLocalizedString;
 
 use crate::tys::LocalizedString;
 use crate::DbcError;
 use std::io::Read;
-
-pub(crate) use fp_hacks::ct_u32_to_f32;
-
-// https://old.reddit.com/r/rust/comments/uq38uz/slicing_const_array_is_not_const/i8op6nb/
-pub const fn subslice(slice: &[u8], range: std::ops::Range<usize>) -> &[u8] {
-    let mut slice = slice;
-    let mut range = range;
-
-    while range.start != 0 {
-        slice = match slice {
-            [_first, rest @ ..] => rest,
-            _ => panic!("Index out of bounds"),
-        };
-
-        range.start -= 1;
-        range.end -= 1;
-    }
-
-    loop {
-        if slice.len() == range.end {
-            return slice;
-        }
-
-        slice = match slice {
-            [rest @ .., _last] => rest,
-            _ => panic!("Index out of bounds"),
-        }
-    }
-}
 
 pub fn read_u8_le(b: &mut &[u8]) -> Result<u8, std::io::Error> {
     let mut buf = [0_u8; 1];
@@ -69,43 +38,6 @@ pub fn read_f32_le(b: &mut &[u8]) -> Result<f32, std::io::Error> {
     b.read_exact(&mut buf)?;
 
     Ok(f32::from_le_bytes(buf))
-}
-
-pub const fn get_string_from_block<'a>(
-    b_offset: usize,
-    b: &[u8],
-    string_block: &'a [u8],
-) -> &'a str {
-    let a = u32::from_le_bytes([
-        b[b_offset + 0],
-        b[b_offset + 1],
-        b[b_offset + 2],
-        b[b_offset + 3],
-    ]);
-
-    let a = get_string_as_slice(a, string_block);
-    match std::str::from_utf8(a) {
-        Ok(e) => e,
-        Err(_) => panic!(),
-    }
-}
-
-pub const fn get_string_as_slice(start: u32, string_block: &[u8]) -> &[u8] {
-    let start = start as usize;
-
-    if start == 0 {
-        return &[];
-    }
-
-    let end = {
-        let mut i = 0;
-        while string_block[start + i] != 0 {
-            i += 1;
-        }
-        start + i
-    };
-
-    subslice(string_block, start..end)
 }
 
 pub fn get_string_as_vec(b: &mut &[u8], string_block: &[u8]) -> Result<Vec<u8>, std::io::Error> {

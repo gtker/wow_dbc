@@ -148,78 +148,6 @@ impl GameObjectDisplayInfo {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstGameObjectDisplayInfo<const S: usize> {
-    pub rows: [ConstGameObjectDisplayInfoRow; S],
-}
-
-impl<const S: usize> ConstGameObjectDisplayInfo<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 48 {
-            panic!("invalid record size, expected 48")
-        }
-
-        if header.field_count != 12 {
-            panic!("invalid field count, expected 12")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstGameObjectDisplayInfoRow {
-                id: GameObjectDisplayInfoKey::new(0),
-                model_name: "",
-                sound_entry: [0; 10],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (GameObjectDisplayInfo) uint32
-            let id = GameObjectDisplayInfoKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // model_name: string_ref
-            let model_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // sound_entry: uint32[10]
-            let sound_entry = {
-                let mut a = [0; 10];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstGameObjectDisplayInfoRow {
-                id,
-                model_name,
-                sound_entry,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> GameObjectDisplayInfo {
-        GameObjectDisplayInfo {
-            rows: self.rows.iter().map(|s| GameObjectDisplayInfoRow {
-                id: s.id,
-                model_name: s.model_name.to_string(),
-                sound_entry: s.sound_entry,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GameObjectDisplayInfoKey {
     pub id: u32
@@ -257,13 +185,6 @@ impl From<u32> for GameObjectDisplayInfoKey {
 pub struct GameObjectDisplayInfoRow {
     pub id: GameObjectDisplayInfoKey,
     pub model_name: String,
-    pub sound_entry: [u32; 10],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstGameObjectDisplayInfoRow {
-    pub id: GameObjectDisplayInfoKey,
-    pub model_name: &'static str,
     pub sound_entry: [u32; 10],
 }
 

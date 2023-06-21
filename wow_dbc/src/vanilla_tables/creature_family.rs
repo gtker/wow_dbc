@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureFamily {
@@ -197,128 +197,6 @@ impl CreatureFamily {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstCreatureFamily<const S: usize> {
-    pub rows: [ConstCreatureFamilyRow; S],
-}
-
-impl<const S: usize> ConstCreatureFamily<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 72 {
-            panic!("invalid record size, expected 72")
-        }
-
-        if header.field_count != 18 {
-            panic!("invalid field count, expected 18")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstCreatureFamilyRow {
-                id: CreatureFamilyKey::new(0),
-                min_scale: 0.0,
-                min_scale_level: 0,
-                max_scale: 0.0,
-                max_scale_level: 0,
-                pet_food_mask: 0,
-                pet_talent_type: 0,
-                category: 0,
-                name: crate::ConstLocalizedString::empty(),
-                icon_path: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (CreatureFamily) uint32
-            let id = CreatureFamilyKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // min_scale: float
-            let min_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // min_scale_level: int32
-            let min_scale_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // max_scale: float
-            let max_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // max_scale_level: int32
-            let max_scale_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // pet_food_mask: int32
-            let pet_food_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // pet_talent_type: int32
-            let pet_talent_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // category: int32
-            let category = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // name: string_ref_loc
-            let name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            // icon_path: string_ref
-            let icon_path = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstCreatureFamilyRow {
-                id,
-                min_scale,
-                min_scale_level,
-                max_scale,
-                max_scale_level,
-                pet_food_mask,
-                pet_talent_type,
-                category,
-                name,
-                icon_path,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> CreatureFamily {
-        CreatureFamily {
-            rows: self.rows.iter().map(|s| CreatureFamilyRow {
-                id: s.id,
-                min_scale: s.min_scale,
-                min_scale_level: s.min_scale_level,
-                max_scale: s.max_scale,
-                max_scale_level: s.max_scale_level,
-                pet_food_mask: s.pet_food_mask,
-                pet_talent_type: s.pet_talent_type,
-                category: s.category,
-                name: s.name.to_string(),
-                icon_path: s.icon_path.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureFamilyKey {
     pub id: u32
@@ -364,19 +242,5 @@ pub struct CreatureFamilyRow {
     pub category: i32,
     pub name: LocalizedString,
     pub icon_path: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstCreatureFamilyRow {
-    pub id: CreatureFamilyKey,
-    pub min_scale: f32,
-    pub min_scale_level: i32,
-    pub max_scale: f32,
-    pub max_scale_level: i32,
-    pub pet_food_mask: i32,
-    pub pet_talent_type: i32,
-    pub category: i32,
-    pub name: ConstLocalizedString,
-    pub icon_path: &'static str,
 }
 

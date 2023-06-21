@@ -160,83 +160,6 @@ impl ZoneIntroMusicTable {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstZoneIntroMusicTable<const S: usize> {
-    pub rows: [ConstZoneIntroMusicTableRow; S],
-}
-
-impl<const S: usize> ConstZoneIntroMusicTable<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 20 {
-            panic!("invalid record size, expected 20")
-        }
-
-        if header.field_count != 5 {
-            panic!("invalid field count, expected 5")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstZoneIntroMusicTableRow {
-                id: ZoneIntroMusicTableKey::new(0),
-                name: "",
-                intro_sound: SoundEntriesKey::new(0),
-                priority_over_ambience: false,
-                min_delay: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ZoneIntroMusicTable) uint32
-            let id = ZoneIntroMusicTableKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // intro_sound: foreign_key (SoundEntries) uint32
-            let intro_sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // priority_over_ambience: bool32
-            let priority_over_ambience = if (b[b_offset + 0] | b[b_offset + 1] | b[b_offset + 2] | b[b_offset + 3]) != 0 {true} else {false};
-            b_offset += 4;
-
-            // min_delay: int32
-            let min_delay = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstZoneIntroMusicTableRow {
-                id,
-                name,
-                intro_sound,
-                priority_over_ambience,
-                min_delay,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ZoneIntroMusicTable {
-        ZoneIntroMusicTable {
-            rows: self.rows.iter().map(|s| ZoneIntroMusicTableRow {
-                id: s.id,
-                name: s.name.to_string(),
-                intro_sound: s.intro_sound,
-                priority_over_ambience: s.priority_over_ambience,
-                min_delay: s.min_delay,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ZoneIntroMusicTableKey {
     pub id: u32
@@ -274,15 +197,6 @@ impl From<u32> for ZoneIntroMusicTableKey {
 pub struct ZoneIntroMusicTableRow {
     pub id: ZoneIntroMusicTableKey,
     pub name: String,
-    pub intro_sound: SoundEntriesKey,
-    pub priority_over_ambience: bool,
-    pub min_delay: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstZoneIntroMusicTableRow {
-    pub id: ZoneIntroMusicTableKey,
-    pub name: &'static str,
     pub intro_sound: SoundEntriesKey,
     pub priority_over_ambience: bool,
     pub min_delay: i32,

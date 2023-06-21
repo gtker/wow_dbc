@@ -174,97 +174,6 @@ impl CinematicCamera {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstCinematicCamera<const S: usize> {
-    pub rows: [ConstCinematicCameraRow; S],
-}
-
-impl<const S: usize> ConstCinematicCamera<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 28 {
-            panic!("invalid record size, expected 28")
-        }
-
-        if header.field_count != 7 {
-            panic!("invalid field count, expected 7")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstCinematicCameraRow {
-                id: CinematicCameraKey::new(0),
-                model: "",
-                sound_entry: SoundEntriesKey::new(0),
-                location_x: 0.0,
-                location_y: 0.0,
-                location_z: 0.0,
-                rotation: 0.0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (CinematicCamera) uint32
-            let id = CinematicCameraKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // model: string_ref
-            let model = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // sound_entry: foreign_key (SoundEntries) uint32
-            let sound_entry = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // location_x: float
-            let location_x = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_y: float
-            let location_y = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // location_z: float
-            let location_z = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // rotation: float
-            let rotation = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstCinematicCameraRow {
-                id,
-                model,
-                sound_entry,
-                location_x,
-                location_y,
-                location_z,
-                rotation,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> CinematicCamera {
-        CinematicCamera {
-            rows: self.rows.iter().map(|s| CinematicCameraRow {
-                id: s.id,
-                model: s.model.to_string(),
-                sound_entry: s.sound_entry,
-                location_x: s.location_x,
-                location_y: s.location_y,
-                location_z: s.location_z,
-                rotation: s.rotation,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CinematicCameraKey {
     pub id: u32
@@ -302,17 +211,6 @@ impl From<u32> for CinematicCameraKey {
 pub struct CinematicCameraRow {
     pub id: CinematicCameraKey,
     pub model: String,
-    pub sound_entry: SoundEntriesKey,
-    pub location_x: f32,
-    pub location_y: f32,
-    pub location_z: f32,
-    pub rotation: f32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstCinematicCameraRow {
-    pub id: CinematicCameraKey,
-    pub model: &'static str,
     pub sound_entry: SoundEntriesKey,
     pub location_x: f32,
     pub location_y: f32,

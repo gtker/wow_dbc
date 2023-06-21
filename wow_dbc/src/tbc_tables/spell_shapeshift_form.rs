@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 use crate::tbc_tables::creature_type::*;
 use crate::tbc_tables::spell_icon::*;
 
@@ -187,147 +187,6 @@ impl SpellShapeshiftForm {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellShapeshiftForm<const S: usize> {
-    pub rows: [ConstSpellShapeshiftFormRow; S],
-}
-
-impl<const S: usize> ConstSpellShapeshiftForm<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 140 {
-            panic!("invalid record size, expected 140")
-        }
-
-        if header.field_count != 35 {
-            panic!("invalid field count, expected 35")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSpellShapeshiftFormRow {
-                id: SpellShapeshiftFormKey::new(0),
-                bonus_action_bar: 0,
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                flags: 0,
-                creature_type: CreatureTypeKey::new(0),
-                attack_icon_id: SpellIconKey::new(0),
-                combat_round_time: 0,
-                creature_display_id: [0; 4],
-                preset_spell_id: [0; 8],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellShapeshiftForm) int32
-            let id = SpellShapeshiftFormKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // bonus_action_bar: int32
-            let bonus_action_bar = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // flags: int32
-            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // creature_type: foreign_key (CreatureType) int32
-            let creature_type = CreatureTypeKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // attack_icon_id: foreign_key (SpellIcon) int32
-            let attack_icon_id = SpellIconKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // combat_round_time: int32
-            let combat_round_time = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // creature_display_id: int32[4]
-            let creature_display_id = {
-                let mut a = [0; 4];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // preset_spell_id: int32[8]
-            let preset_spell_id = {
-                let mut a = [0; 8];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstSpellShapeshiftFormRow {
-                id,
-                bonus_action_bar,
-                name_lang,
-                flags,
-                creature_type,
-                attack_icon_id,
-                combat_round_time,
-                creature_display_id,
-                preset_spell_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellShapeshiftForm {
-        SpellShapeshiftForm {
-            rows: self.rows.iter().map(|s| SpellShapeshiftFormRow {
-                id: s.id,
-                bonus_action_bar: s.bonus_action_bar,
-                name_lang: s.name_lang.to_string(),
-                flags: s.flags,
-                creature_type: s.creature_type,
-                attack_icon_id: s.attack_icon_id,
-                combat_round_time: s.combat_round_time,
-                creature_display_id: s.creature_display_id,
-                preset_spell_id: s.preset_spell_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellShapeshiftFormKey {
     pub id: i32
@@ -380,19 +239,6 @@ pub struct SpellShapeshiftFormRow {
     pub id: SpellShapeshiftFormKey,
     pub bonus_action_bar: i32,
     pub name_lang: ExtendedLocalizedString,
-    pub flags: i32,
-    pub creature_type: CreatureTypeKey,
-    pub attack_icon_id: SpellIconKey,
-    pub combat_round_time: i32,
-    pub creature_display_id: [i32; 4],
-    pub preset_spell_id: [i32; 8],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellShapeshiftFormRow {
-    pub id: SpellShapeshiftFormKey,
-    pub bonus_action_bar: i32,
-    pub name_lang: ConstExtendedLocalizedString,
     pub flags: i32,
     pub creature_type: CreatureTypeKey,
     pub attack_icon_id: SpellIconKey,

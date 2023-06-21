@@ -156,69 +156,6 @@ impl SpellVisualPrecastTransitions {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellVisualPrecastTransitions<const S: usize> {
-    pub rows: [ConstSpellVisualPrecastTransitionsRow; S],
-}
-
-impl<const S: usize> ConstSpellVisualPrecastTransitions<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstSpellVisualPrecastTransitionsRow {
-                id: SpellVisualPrecastTransitionsKey::new(0),
-                load_animation: "",
-                hold_animation: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellVisualPrecastTransitions) uint32
-            let id = SpellVisualPrecastTransitionsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // load_animation: string_ref
-            let load_animation = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // hold_animation: string_ref
-            let hold_animation = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstSpellVisualPrecastTransitionsRow {
-                id,
-                load_animation,
-                hold_animation,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellVisualPrecastTransitions {
-        SpellVisualPrecastTransitions {
-            rows: self.rows.iter().map(|s| SpellVisualPrecastTransitionsRow {
-                id: s.id,
-                load_animation: s.load_animation.to_string(),
-                hold_animation: s.hold_animation.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualPrecastTransitionsKey {
     pub id: u32
@@ -257,12 +194,5 @@ pub struct SpellVisualPrecastTransitionsRow {
     pub id: SpellVisualPrecastTransitionsKey,
     pub load_animation: String,
     pub hold_animation: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellVisualPrecastTransitionsRow {
-    pub id: SpellVisualPrecastTransitionsKey,
-    pub load_animation: &'static str,
-    pub hold_animation: &'static str,
 }
 

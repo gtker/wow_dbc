@@ -107,69 +107,6 @@ impl Indexable for HelmetGeosetVisData {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstHelmetGeosetVisData<const S: usize> {
-    pub rows: [HelmetGeosetVisDataRow; S],
-}
-
-impl<const S: usize> ConstHelmetGeosetVisData<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 24 {
-            panic!("invalid record size, expected 24")
-        }
-
-        if header.field_count != 6 {
-            panic!("invalid field count, expected 6")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            HelmetGeosetVisDataRow {
-                id: HelmetGeosetVisDataKey::new(0),
-                hide_geoset: [0; 5],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (HelmetGeosetVisData) uint32
-            let id = HelmetGeosetVisDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // hide_geoset: int32[5]
-            let hide_geoset = {
-                let mut a = [0; 5];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = HelmetGeosetVisDataRow {
-                id,
-                hide_geoset,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> HelmetGeosetVisData {
-        HelmetGeosetVisData {
-            rows: self.rows.iter().map(|s| HelmetGeosetVisDataRow {
-                id: s.id,
-                hide_geoset: s.hide_geoset,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct HelmetGeosetVisDataKey {
     pub id: u32

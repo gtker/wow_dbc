@@ -168,90 +168,6 @@ impl TerrainType {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstTerrainType<const S: usize> {
-    pub rows: [ConstTerrainTypeRow; S],
-}
-
-impl<const S: usize> ConstTerrainType<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 24 {
-            panic!("invalid record size, expected 24")
-        }
-
-        if header.field_count != 6 {
-            panic!("invalid field count, expected 6")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstTerrainTypeRow {
-                id: TerrainTypeKey::new(0),
-                description: "",
-                footstep_spray_run: SpellVisualEffectNameKey::new(0),
-                footstep_spray_walk: SpellVisualEffectNameKey::new(0),
-                sound: SoundEntriesKey::new(0),
-                display_footsteps: false,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (TerrainType) uint32
-            let id = TerrainTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // description: string_ref
-            let description = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // footstep_spray_run: foreign_key (SpellVisualEffectName) uint32
-            let footstep_spray_run = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // footstep_spray_walk: foreign_key (SpellVisualEffectName) uint32
-            let footstep_spray_walk = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // sound: foreign_key (SoundEntries) uint32
-            let sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // display_footsteps: bool32
-            let display_footsteps = if (b[b_offset + 0] | b[b_offset + 1] | b[b_offset + 2] | b[b_offset + 3]) != 0 {true} else {false};
-            b_offset += 4;
-
-            rows[i] = ConstTerrainTypeRow {
-                id,
-                description,
-                footstep_spray_run,
-                footstep_spray_walk,
-                sound,
-                display_footsteps,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> TerrainType {
-        TerrainType {
-            rows: self.rows.iter().map(|s| TerrainTypeRow {
-                id: s.id,
-                description: s.description.to_string(),
-                footstep_spray_run: s.footstep_spray_run,
-                footstep_spray_walk: s.footstep_spray_walk,
-                sound: s.sound,
-                display_footsteps: s.display_footsteps,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TerrainTypeKey {
     pub id: u32
@@ -289,16 +205,6 @@ impl From<u32> for TerrainTypeKey {
 pub struct TerrainTypeRow {
     pub id: TerrainTypeKey,
     pub description: String,
-    pub footstep_spray_run: SpellVisualEffectNameKey,
-    pub footstep_spray_walk: SpellVisualEffectNameKey,
-    pub sound: SoundEntriesKey,
-    pub display_footsteps: bool,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstTerrainTypeRow {
-    pub id: TerrainTypeKey,
-    pub description: &'static str,
     pub footstep_spray_run: SpellVisualEffectNameKey,
     pub footstep_spray_walk: SpellVisualEffectNameKey,
     pub sound: SoundEntriesKey,

@@ -199,119 +199,6 @@ impl CharSections {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstCharSections<const S: usize> {
-    pub rows: [ConstCharSectionsRow; S],
-}
-
-impl<const S: usize> ConstCharSections<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 40 {
-            panic!("invalid record size, expected 40")
-        }
-
-        if header.field_count != 10 {
-            panic!("invalid field count, expected 10")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstCharSectionsRow {
-                id: CharSectionsKey::new(0),
-                race: ChrRacesKey::new(0),
-                gender: Gender::Male,
-                ty: SelectionType::BaseSkin,
-                variation_index: 0,
-                colour_index: 0,
-                texture_name: [""; 3],
-                npc_only: false,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (CharSections) uint32
-            let id = CharSectionsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // race: foreign_key (ChrRaces) uint32
-            let race = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // gender: Gender
-            let gender = match Gender::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]) as i8) {
-                Some(e) => e,
-                None => panic!(),
-            };
-            b_offset += 4;
-
-            // ty: SelectionType
-            let ty = match SelectionType::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
-                Some(e) => e,
-                None => panic!(),
-            };
-            b_offset += 4;
-
-            // variation_index: int32
-            let variation_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // colour_index: int32
-            let colour_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // texture_name: string_ref[3]
-            let texture_name = {
-                let mut a = [""; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // npc_only: bool32
-            let npc_only = if (b[b_offset + 0] | b[b_offset + 1] | b[b_offset + 2] | b[b_offset + 3]) != 0 {true} else {false};
-            b_offset += 4;
-
-            rows[i] = ConstCharSectionsRow {
-                id,
-                race,
-                gender,
-                ty,
-                variation_index,
-                colour_index,
-                texture_name,
-                npc_only,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> CharSections {
-        CharSections {
-            rows: self.rows.iter().map(|s| CharSectionsRow {
-                id: s.id,
-                race: s.race,
-                gender: s.gender,
-                ty: s.ty,
-                variation_index: s.variation_index,
-                colour_index: s.colour_index,
-                texture_name: s.texture_name.map(|a| a.to_string()),
-                npc_only: s.npc_only,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharSectionsKey {
     pub id: u32
@@ -405,18 +292,6 @@ pub struct CharSectionsRow {
     pub variation_index: i32,
     pub colour_index: i32,
     pub texture_name: [String; 3],
-    pub npc_only: bool,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstCharSectionsRow {
-    pub id: CharSectionsKey,
-    pub race: ChrRacesKey,
-    pub gender: Gender,
-    pub ty: SelectionType,
-    pub variation_index: i32,
-    pub colour_index: i32,
-    pub texture_name: [&'static str; 3],
     pub npc_only: bool,
 }
 

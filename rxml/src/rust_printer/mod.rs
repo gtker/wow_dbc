@@ -2,7 +2,6 @@ use crate::types::{Field, Type};
 use crate::{DbcDescription, DbcVersion, Objects, Writer};
 use heck::ToSnakeCase;
 
-mod const_ty;
 mod main_ty;
 mod sqlite_converter;
 
@@ -18,8 +17,6 @@ pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Wri
     includes(&mut s, d, o, &version.module_name());
 
     main_ty::create_main_ty(&mut s, d, o);
-
-    const_ty::create_main_ty(&mut s, d, o);
 
     create_primary_keys(&mut s, d);
 
@@ -45,11 +42,11 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     }
 
     if d.contains_localized_string() {
-        s.wln("use crate::{ConstLocalizedString, LocalizedString};");
+        s.wln("use crate::LocalizedString;");
     }
 
     if d.contains_extended_localized_string() {
-        s.wln("use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};");
+        s.wln("use crate::ExtendedLocalizedString;");
     }
 
     if d.contains_gender_enum() {
@@ -74,9 +71,9 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     s.newline();
 }
 
-fn print_derives(s: &mut Writer, fields: &[Field], derive_copy: bool, force_derive_copy: bool) {
+fn print_derives(s: &mut Writer, fields: &[Field], derive_copy: bool) {
     s.w("#[derive(Debug, Clone");
-    if (can_derive_copy(fields) && derive_copy) || force_derive_copy {
+    if can_derive_copy(fields) && derive_copy {
         s.w_no_indent(", Copy");
     }
 
@@ -146,7 +143,7 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
         s.wln("#[allow(non_camel_case_types)]");
     }
 
-    print_derives(s, d.fields(), true, false);
+    print_derives(s, d.fields(), true);
 
     s.new_struct(format!("{}Row", d.name()), |s| {
         for field in d.fields() {
@@ -164,34 +161,6 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
             }
         }
     });
-
-    if !can_derive_copy(d.fields()) {
-        print_derives(s, d.fields(), true, true);
-        s.new_struct(format!("Const{}Row", d.name()), |s| {
-            for field in d.fields() {
-                match field.ty() {
-                    Type::ForeignKey { table, ty } => {
-                        if o.table_exists(table) {
-                            s.wln(format!(
-                                "pub {}: {},",
-                                field.name(),
-                                field.ty().const_rust_str()
-                            ));
-                        } else {
-                            s.wln(format!("pub {}: {},", field.name(), ty.const_rust_str()));
-                        }
-                    }
-                    _ => {
-                        s.wln(format!(
-                            "pub {}: {},",
-                            field.name(),
-                            field.ty().const_rust_str()
-                        ));
-                    }
-                }
-            }
-        });
-    }
 }
 
 fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
@@ -396,25 +365,14 @@ fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     let ty = d.name();
 
     s.wln(format!(
-        "const CONTENTS: &[u8] = include_bytes!(\"../../../{test_dir_name}/{ty}.dbc\");",
+        "let contents = include_bytes!(\"../../../{test_dir_name}/{ty}.dbc\");",
     ));
-    s.wln("let mut actual = CONTENTS;");
-    s.wln(format!("let actual = {ty}::read(&mut actual).unwrap();",));
-    s.wln("let mut v = Vec::with_capacity(CONTENTS.len());");
+    s.wln(format!("let actual = {ty}::read(&mut contents).unwrap();",));
+    s.wln("let mut v = Vec::with_capacity(contents.len());");
     s.wln("actual.write(&mut v).unwrap();");
 
     s.wln(format!("let new = {ty}::read(&mut v.as_slice()).unwrap();",));
     s.wln("assert_eq!(actual, new);");
-    s.newline();
-
-    s.wln("const HEADER: DbcHeader = crate::header::parse_header_panic(CONTENTS);");
-    s.wln("const SIZE: usize = HEADER.record_count as usize;");
-    s.wln(format!(
-        "const C: Const{ty}<SIZE> = Const{ty}::const_read(CONTENTS, &HEADER);"
-    ));
-
-    s.wln("let c = C.to_owned();");
-    s.wln("assert_eq!(c, new);");
 
     s.closing_curly(); // fn
     s.closing_curly(); // mod test

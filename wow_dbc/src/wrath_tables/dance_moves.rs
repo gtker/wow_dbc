@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::lock::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -184,122 +184,6 @@ impl DanceMoves {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstDanceMoves<const S: usize> {
-    pub rows: [ConstDanceMovesRow; S],
-}
-
-impl<const S: usize> ConstDanceMoves<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 96 {
-            panic!("invalid record size, expected 96")
-        }
-
-        if header.field_count != 24 {
-            panic!("invalid field count, expected 24")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstDanceMovesRow {
-                id: DanceMovesKey::new(0),
-                ty: 0,
-                param: 0,
-                fallback: 0,
-                racemask: 0,
-                internal_name: "",
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                lock_id: LockKey::new(0),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (DanceMoves) int32
-            let id = DanceMovesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // ty: int32
-            let ty = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // param: int32
-            let param = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // fallback: int32
-            let fallback = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // racemask: int32
-            let racemask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // internal_name: string_ref
-            let internal_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // lock_id: foreign_key (Lock) int32
-            let lock_id = LockKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            rows[i] = ConstDanceMovesRow {
-                id,
-                ty,
-                param,
-                fallback,
-                racemask,
-                internal_name,
-                name_lang,
-                lock_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> DanceMoves {
-        DanceMoves {
-            rows: self.rows.iter().map(|s| DanceMovesRow {
-                id: s.id,
-                ty: s.ty,
-                param: s.param,
-                fallback: s.fallback,
-                racemask: s.racemask,
-                internal_name: s.internal_name.to_string(),
-                name_lang: s.name_lang.to_string(),
-                lock_id: s.lock_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DanceMovesKey {
     pub id: i32
@@ -356,18 +240,6 @@ pub struct DanceMovesRow {
     pub racemask: i32,
     pub internal_name: String,
     pub name_lang: ExtendedLocalizedString,
-    pub lock_id: LockKey,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstDanceMovesRow {
-    pub id: DanceMovesKey,
-    pub ty: i32,
-    pub param: i32,
-    pub fallback: i32,
-    pub racemask: i32,
-    pub internal_name: &'static str,
-    pub name_lang: ConstExtendedLocalizedString,
     pub lock_id: LockKey,
 }
 

@@ -83,52 +83,6 @@ impl DbcTable for gtCombatRatings {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstgtCombatRatings<const S: usize> {
-    pub rows: [gtCombatRatingsRow; S],
-}
-
-impl<const S: usize> ConstgtCombatRatings<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 4 {
-            panic!("invalid record size, expected 4")
-        }
-
-        if header.field_count != 1 {
-            panic!("invalid field count, expected 1")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            gtCombatRatingsRow {
-                data: 0.0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // data: float
-            let data = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = gtCombatRatingsRow {
-                data,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> gtCombatRatings {
-        gtCombatRatings {
-            rows: self.rows.iter().map(|s| gtCombatRatingsRow {
-                data: s.data,
-            }).collect(),
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtCombatRatingsRow {
     pub data: f32,
 }

@@ -163,76 +163,6 @@ impl LoadingScreens {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLoadingScreens<const S: usize> {
-    pub rows: [ConstLoadingScreensRow; S],
-}
-
-impl<const S: usize> ConstLoadingScreens<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 16 {
-            panic!("invalid record size, expected 16")
-        }
-
-        if header.field_count != 4 {
-            panic!("invalid field count, expected 4")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstLoadingScreensRow {
-                id: LoadingScreensKey::new(0),
-                name: "",
-                file_name: "",
-                has_wide_screen: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (LoadingScreens) int32
-            let id = LoadingScreensKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // file_name: string_ref
-            let file_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // has_wide_screen: int32
-            let has_wide_screen = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstLoadingScreensRow {
-                id,
-                name,
-                file_name,
-                has_wide_screen,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> LoadingScreens {
-        LoadingScreens {
-            rows: self.rows.iter().map(|s| LoadingScreensRow {
-                id: s.id,
-                name: s.name.to_string(),
-                file_name: s.file_name.to_string(),
-                has_wide_screen: s.has_wide_screen,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LoadingScreensKey {
     pub id: i32
@@ -285,14 +215,6 @@ pub struct LoadingScreensRow {
     pub id: LoadingScreensKey,
     pub name: String,
     pub file_name: String,
-    pub has_wide_screen: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLoadingScreensRow {
-    pub id: LoadingScreensKey,
-    pub name: &'static str,
-    pub file_name: &'static str,
     pub has_wide_screen: i32,
 }
 

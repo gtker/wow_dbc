@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 use crate::wrath_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -158,119 +158,6 @@ impl TaxiNodes {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstTaxiNodes<const S: usize> {
-    pub rows: [ConstTaxiNodesRow; S],
-}
-
-impl<const S: usize> ConstTaxiNodes<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 96 {
-            panic!("invalid record size, expected 96")
-        }
-
-        if header.field_count != 24 {
-            panic!("invalid field count, expected 24")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstTaxiNodesRow {
-                id: TaxiNodesKey::new(0),
-                continent_id: MapKey::new(0),
-                pos: [0.0; 3],
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                mount_creature_id: [0; 2],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (TaxiNodes) int32
-            let id = TaxiNodesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // continent_id: foreign_key (Map) int32
-            let continent_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // pos: float[3]
-            let pos = {
-                let mut a = [0.0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // mount_creature_id: int32[2]
-            let mount_creature_id = {
-                let mut a = [0; 2];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstTaxiNodesRow {
-                id,
-                continent_id,
-                pos,
-                name_lang,
-                mount_creature_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> TaxiNodes {
-        TaxiNodes {
-            rows: self.rows.iter().map(|s| TaxiNodesRow {
-                id: s.id,
-                continent_id: s.continent_id,
-                pos: s.pos,
-                name_lang: s.name_lang.to_string(),
-                mount_creature_id: s.mount_creature_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TaxiNodesKey {
     pub id: i32
@@ -324,15 +211,6 @@ pub struct TaxiNodesRow {
     pub continent_id: MapKey,
     pub pos: [f32; 3],
     pub name_lang: ExtendedLocalizedString,
-    pub mount_creature_id: [i32; 2],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstTaxiNodesRow {
-    pub id: TaxiNodesKey,
-    pub continent_id: MapKey,
-    pub pos: [f32; 3],
-    pub name_lang: ConstExtendedLocalizedString,
     pub mount_creature_id: [i32; 2],
 }
 

@@ -156,85 +156,6 @@ impl EmotesText {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstEmotesText<const S: usize> {
-    pub rows: [ConstEmotesTextRow; S],
-}
-
-impl<const S: usize> ConstEmotesText<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 76 {
-            panic!("invalid record size, expected 76")
-        }
-
-        if header.field_count != 19 {
-            panic!("invalid field count, expected 19")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstEmotesTextRow {
-                id: EmotesTextKey::new(0),
-                name: "",
-                emote_id: EmotesKey::new(0),
-                emote_text: [0; 16],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (EmotesText) int32
-            let id = EmotesTextKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // emote_id: foreign_key (Emotes) int32
-            let emote_id = EmotesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // emote_text: int32[16]
-            let emote_text = {
-                let mut a = [0; 16];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstEmotesTextRow {
-                id,
-                name,
-                emote_id,
-                emote_text,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> EmotesText {
-        EmotesText {
-            rows: self.rows.iter().map(|s| EmotesTextRow {
-                id: s.id,
-                name: s.name.to_string(),
-                emote_id: s.emote_id,
-                emote_text: s.emote_text,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EmotesTextKey {
     pub id: i32
@@ -286,14 +207,6 @@ impl From<u16> for EmotesTextKey {
 pub struct EmotesTextRow {
     pub id: EmotesTextKey,
     pub name: String,
-    pub emote_id: EmotesKey,
-    pub emote_text: [i32; 16],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstEmotesTextRow {
-    pub id: EmotesTextKey,
-    pub name: &'static str,
     pub emote_id: EmotesKey,
     pub emote_text: [i32; 16],
 }

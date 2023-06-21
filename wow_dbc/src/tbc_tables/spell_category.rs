@@ -104,60 +104,6 @@ impl Indexable for SpellCategory {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstSpellCategory<const S: usize> {
-    pub rows: [SpellCategoryRow; S],
-}
-
-impl<const S: usize> ConstSpellCategory<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 8 {
-            panic!("invalid record size, expected 8")
-        }
-
-        if header.field_count != 2 {
-            panic!("invalid field count, expected 2")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            SpellCategoryRow {
-                id: SpellCategoryKey::new(0),
-                flags: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (SpellCategory) int32
-            let id = SpellCategoryKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // flags: int32
-            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = SpellCategoryRow {
-                id,
-                flags,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> SpellCategory {
-        SpellCategory {
-            rows: self.rows.iter().map(|s| SpellCategoryRow {
-                id: s.id,
-                flags: s.flags,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellCategoryKey {
     pub id: i32

@@ -173,97 +173,6 @@ impl AnimationData {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstAnimationData<const S: usize> {
-    pub rows: [ConstAnimationDataRow; S],
-}
-
-impl<const S: usize> ConstAnimationData<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 28 {
-            panic!("invalid record size, expected 28")
-        }
-
-        if header.field_count != 7 {
-            panic!("invalid field count, expected 7")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstAnimationDataRow {
-                id: AnimationDataKey::new(0),
-                name: "",
-                weapon_flags: WeaponFlags::new(0),
-                body_flags: 0,
-                unknown: 0,
-                fallback: AnimationDataKey::new(0),
-                behaviour: AnimationDataKey::new(0),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (AnimationData) uint32
-            let id = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref
-            let name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            // weapon_flags: WeaponFlags
-            let weapon_flags = WeaponFlags::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // body_flags: int32
-            let body_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // unknown: int32
-            let unknown = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // fallback: foreign_key (AnimationData) uint32
-            let fallback = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // behaviour: foreign_key (AnimationData) uint32
-            let behaviour = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            rows[i] = ConstAnimationDataRow {
-                id,
-                name,
-                weapon_flags,
-                body_flags,
-                unknown,
-                fallback,
-                behaviour,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> AnimationData {
-        AnimationData {
-            rows: self.rows.iter().map(|s| AnimationDataRow {
-                id: s.id,
-                name: s.name.to_string(),
-                weapon_flags: s.weapon_flags,
-                body_flags: s.body_flags,
-                unknown: s.unknown,
-                fallback: s.fallback,
-                behaviour: s.behaviour,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AnimationDataKey {
     pub id: u32
@@ -333,17 +242,6 @@ impl WeaponFlags {
 pub struct AnimationDataRow {
     pub id: AnimationDataKey,
     pub name: String,
-    pub weapon_flags: WeaponFlags,
-    pub body_flags: i32,
-    pub unknown: i32,
-    pub fallback: AnimationDataKey,
-    pub behaviour: AnimationDataKey,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstAnimationDataRow {
-    pub id: AnimationDataKey,
-    pub name: &'static str,
     pub weapon_flags: WeaponFlags,
     pub body_flags: i32,
     pub unknown: i32,

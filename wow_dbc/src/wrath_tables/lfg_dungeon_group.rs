@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonGroup {
@@ -151,101 +151,6 @@ impl LFGDungeonGroup {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLFGDungeonGroup<const S: usize> {
-    pub rows: [ConstLFGDungeonGroupRow; S],
-}
-
-impl<const S: usize> ConstLFGDungeonGroup<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 84 {
-            panic!("invalid record size, expected 84")
-        }
-
-        if header.field_count != 21 {
-            panic!("invalid field count, expected 21")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstLFGDungeonGroupRow {
-                id: LFGDungeonGroupKey::new(0),
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                order_index: 0,
-                parent_group_id: 0,
-                type_id: 0,
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (LFGDungeonGroup) int32
-            let id = LFGDungeonGroupKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // order_index: int32
-            let order_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // parent_group_id: int32
-            let parent_group_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // type_id: int32
-            let type_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            rows[i] = ConstLFGDungeonGroupRow {
-                id,
-                name_lang,
-                order_index,
-                parent_group_id,
-                type_id,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> LFGDungeonGroup {
-        LFGDungeonGroup {
-            rows: self.rows.iter().map(|s| LFGDungeonGroupRow {
-                id: s.id,
-                name_lang: s.name_lang.to_string(),
-                order_index: s.order_index,
-                parent_group_id: s.parent_group_id,
-                type_id: s.type_id,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LFGDungeonGroupKey {
     pub id: i32
@@ -297,15 +202,6 @@ impl From<u16> for LFGDungeonGroupKey {
 pub struct LFGDungeonGroupRow {
     pub id: LFGDungeonGroupKey,
     pub name_lang: ExtendedLocalizedString,
-    pub order_index: i32,
-    pub parent_group_id: i32,
-    pub type_id: i32,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstLFGDungeonGroupRow {
-    pub id: LFGDungeonGroupKey,
-    pub name_lang: ConstExtendedLocalizedString,
     pub order_index: i32,
     pub parent_group_id: i32,
     pub type_id: i32,

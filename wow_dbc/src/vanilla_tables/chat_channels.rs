@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 use crate::vanilla_tables::faction_group::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -154,103 +154,6 @@ impl ChatChannels {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstChatChannels<const S: usize> {
-    pub rows: [ConstChatChannelsRow; S],
-}
-
-impl<const S: usize> ConstChatChannels<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 84 {
-            panic!("invalid record size, expected 84")
-        }
-
-        if header.field_count != 21 {
-            panic!("invalid field count, expected 21")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstChatChannelsRow {
-                id: ChatChannelsKey::new(0),
-                flags: ChannelFlags::new(0),
-                faction_group: FactionGroupKey::new(0),
-                name: crate::ConstLocalizedString::empty(),
-                shortcut: crate::ConstLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ChatChannels) uint32
-            let id = ChatChannelsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // flags: ChannelFlags
-            let flags = ChannelFlags::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // faction_group: foreign_key (FactionGroup) uint32
-            let faction_group = FactionGroupKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name: string_ref_loc
-            let name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            // shortcut: string_ref_loc
-            let shortcut = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            rows[i] = ConstChatChannelsRow {
-                id,
-                flags,
-                faction_group,
-                name,
-                shortcut,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ChatChannels {
-        ChatChannels {
-            rows: self.rows.iter().map(|s| ChatChannelsRow {
-                id: s.id,
-                flags: s.flags,
-                faction_group: s.faction_group,
-                name: s.name.to_string(),
-                shortcut: s.shortcut.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChatChannelsKey {
     pub id: u32
@@ -343,14 +246,5 @@ pub struct ChatChannelsRow {
     pub faction_group: FactionGroupKey,
     pub name: LocalizedString,
     pub shortcut: LocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstChatChannelsRow {
-    pub id: ChatChannelsKey,
-    pub flags: ChannelFlags,
-    pub faction_group: FactionGroupKey,
-    pub name: ConstLocalizedString,
-    pub shortcut: ConstLocalizedString,
 }
 

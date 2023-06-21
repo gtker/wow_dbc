@@ -107,69 +107,6 @@ impl Indexable for VideoHardware {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstVideoHardware<const S: usize> {
-    pub rows: [VideoHardwareRow; S],
-}
-
-impl<const S: usize> ConstVideoHardware<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 88 {
-            panic!("invalid record size, expected 88")
-        }
-
-        if header.field_count != 22 {
-            panic!("invalid field count, expected 22")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            VideoHardwareRow {
-                id: VideoHardwareKey::new(0),
-                unknown: [0; 21],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (VideoHardware) uint32
-            let id = VideoHardwareKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // unknown: uint32[21]
-            let unknown = {
-                let mut a = [0; 21];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = VideoHardwareRow {
-                id,
-                unknown,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> VideoHardware {
-        VideoHardware {
-            rows: self.rows.iter().map(|s| VideoHardwareRow {
-                id: s.id,
-                unknown: s.unknown,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VideoHardwareKey {
     pub id: u32

@@ -107,69 +107,6 @@ impl Indexable for ItemGroupSounds {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemGroupSounds<const S: usize> {
-    pub rows: [ItemGroupSoundsRow; S],
-}
-
-impl<const S: usize> ConstItemGroupSounds<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 20 {
-            panic!("invalid record size, expected 20")
-        }
-
-        if header.field_count != 5 {
-            panic!("invalid field count, expected 5")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ItemGroupSoundsRow {
-                id: ItemGroupSoundsKey::new(0),
-                sound: [0; 4],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ItemGroupSounds) int32
-            let id = ItemGroupSoundsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // sound: int32[4]
-            let sound = {
-                let mut a = [0; 4];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ItemGroupSoundsRow {
-                id,
-                sound,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ItemGroupSounds {
-        ItemGroupSounds {
-            rows: self.rows.iter().map(|s| ItemGroupSoundsRow {
-                id: s.id,
-                sound: s.sound,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemGroupSoundsKey {
     pub id: i32

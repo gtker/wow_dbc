@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
+use crate::ExtendedLocalizedString;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct PetPersonality {
@@ -160,128 +160,6 @@ impl PetPersonality {
 
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct ConstPetPersonality<const S: usize> {
-    pub rows: [ConstPetPersonalityRow; S],
-}
-
-impl<const S: usize> ConstPetPersonality<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 108 {
-            panic!("invalid record size, expected 108")
-        }
-
-        if header.field_count != 27 {
-            panic!("invalid field count, expected 27")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstPetPersonalityRow {
-                id: PetPersonalityKey::new(0),
-                name_lang: crate::ConstExtendedLocalizedString::empty(),
-                happiness_threshold: [0; 3],
-                happiness_damage: [0.0; 3],
-                damage_modifier: [0.0; 3],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (PetPersonality) int32
-            let id = PetPersonalityKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // name_lang: string_ref_loc (Extended)
-            let name_lang = ConstExtendedLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                crate::util::get_string_from_block(b_offset + 32, b, string_block),
-                crate::util::get_string_from_block(b_offset + 36, b, string_block),
-                crate::util::get_string_from_block(b_offset + 40, b, string_block),
-                crate::util::get_string_from_block(b_offset + 44, b, string_block),
-                crate::util::get_string_from_block(b_offset + 48, b, string_block),
-                crate::util::get_string_from_block(b_offset + 52, b, string_block),
-                crate::util::get_string_from_block(b_offset + 56, b, string_block),
-                crate::util::get_string_from_block(b_offset + 60, b, string_block),
-                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
-            );
-            b_offset += 68;
-
-            // happiness_threshold: int32[3]
-            let happiness_threshold = {
-                let mut a = [0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // happiness_damage: float[3]
-            let happiness_damage = {
-                let mut a = [0.0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            // damage_modifier: float[3]
-            let damage_modifier = {
-                let mut a = [0.0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = ConstPetPersonalityRow {
-                id,
-                name_lang,
-                happiness_threshold,
-                happiness_damage,
-                damage_modifier,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> PetPersonality {
-        PetPersonality {
-            rows: self.rows.iter().map(|s| PetPersonalityRow {
-                id: s.id,
-                name_lang: s.name_lang.to_string(),
-                happiness_threshold: s.happiness_threshold,
-                happiness_damage: s.happiness_damage,
-                damage_modifier: s.damage_modifier,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct PetPersonalityKey {
     pub id: i32
@@ -333,15 +211,6 @@ impl From<u16> for PetPersonalityKey {
 pub struct PetPersonalityRow {
     pub id: PetPersonalityKey,
     pub name_lang: ExtendedLocalizedString,
-    pub happiness_threshold: [i32; 3],
-    pub happiness_damage: [f32; 3],
-    pub damage_modifier: [f32; 3],
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ConstPetPersonalityRow {
-    pub id: PetPersonalityKey,
-    pub name_lang: ConstExtendedLocalizedString,
     pub happiness_threshold: [i32; 3],
     pub happiness_damage: [f32; 3],
     pub damage_modifier: [f32; 3],

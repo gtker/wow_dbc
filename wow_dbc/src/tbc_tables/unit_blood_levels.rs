@@ -107,69 +107,6 @@ impl Indexable for UnitBloodLevels {
 
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstUnitBloodLevels<const S: usize> {
-    pub rows: [UnitBloodLevelsRow; S],
-}
-
-impl<const S: usize> ConstUnitBloodLevels<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 16 {
-            panic!("invalid record size, expected 16")
-        }
-
-        if header.field_count != 4 {
-            panic!("invalid field count, expected 4")
-        }
-
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            UnitBloodLevelsRow {
-                id: UnitBloodLevelsKey::new(0),
-                violencelevel: [0; 3],
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (UnitBloodLevels) int32
-            let id = UnitBloodLevelsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // violencelevel: int32[3]
-            let violencelevel = {
-                let mut a = [0; 3];
-                let mut i = 0;
-                while i < a.len() {
-                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-                    b_offset += 4;
-                    i += 1;
-                }
-
-                a
-            };
-
-            rows[i] = UnitBloodLevelsRow {
-                id,
-                violencelevel,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> UnitBloodLevels {
-        UnitBloodLevels {
-            rows: self.rows.iter().map(|s| UnitBloodLevelsRow {
-                id: s.id,
-                violencelevel: s.violencelevel,
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct UnitBloodLevelsKey {
     pub id: i32

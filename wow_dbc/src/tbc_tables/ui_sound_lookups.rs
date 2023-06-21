@@ -146,69 +146,6 @@ impl UISoundLookups {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstUISoundLookups<const S: usize> {
-    pub rows: [ConstUISoundLookupsRow; S],
-}
-
-impl<const S: usize> ConstUISoundLookups<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 12 {
-            panic!("invalid record size, expected 12")
-        }
-
-        if header.field_count != 3 {
-            panic!("invalid field count, expected 3")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstUISoundLookupsRow {
-                id: UISoundLookupsKey::new(0),
-                sound_id: SoundEntriesKey::new(0),
-                sound_name: "",
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (UISoundLookups) int32
-            let id = UISoundLookupsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // sound_id: foreign_key (SoundEntries) int32
-            let sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // sound_name: string_ref
-            let sound_name = crate::util::get_string_from_block(b_offset, b, string_block);
-            b_offset += 4;
-
-            rows[i] = ConstUISoundLookupsRow {
-                id,
-                sound_id,
-                sound_name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> UISoundLookups {
-        UISoundLookups {
-            rows: self.rows.iter().map(|s| UISoundLookupsRow {
-                id: s.id,
-                sound_id: s.sound_id,
-                sound_name: s.sound_name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct UISoundLookupsKey {
     pub id: i32
@@ -261,12 +198,5 @@ pub struct UISoundLookupsRow {
     pub id: UISoundLookupsKey,
     pub sound_id: SoundEntriesKey,
     pub sound_name: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstUISoundLookupsRow {
-    pub id: UISoundLookupsKey,
-    pub sound_id: SoundEntriesKey,
-    pub sound_name: &'static str,
 }
 

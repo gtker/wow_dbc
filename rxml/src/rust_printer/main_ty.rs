@@ -6,7 +6,7 @@ pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     if not_pascal_case_name(d.name()) {
         s.wln("#[allow(non_camel_case_types)]");
     }
-    print_derives(s, d.fields(), false, false);
+    print_derives(s, d.fields(), false);
     s.new_struct(d.name(), |s| {
         s.wln(format!("pub rows: Vec<{}Row>,", d.name()));
     });

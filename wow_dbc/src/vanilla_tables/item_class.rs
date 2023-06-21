@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::{ConstLocalizedString, LocalizedString};
+use crate::LocalizedString;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemClass {
@@ -144,89 +144,6 @@ impl ItemClass {
 
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemClass<const S: usize> {
-    pub rows: [ConstItemClassRow; S],
-}
-
-impl<const S: usize> ConstItemClass<S> {
-    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
-        if header.record_size != 48 {
-            panic!("invalid record size, expected 48")
-        }
-
-        if header.field_count != 12 {
-            panic!("invalid field count, expected 12")
-        }
-
-        let string_block = HEADER_SIZE + (header.record_count * header.record_size) as usize;
-        let string_block = crate::util::subslice(b, string_block..b.len());
-        let mut b_offset = HEADER_SIZE;
-        let mut rows = [
-            ConstItemClassRow {
-                id: ItemClassKey::new(0),
-                subclass_map: 0,
-                item_class: Class::Item,
-                class_name: crate::ConstLocalizedString::empty(),
-            }
-        ; S];
-
-        let mut i = 0;
-        while i < S {
-            // id: primary_key (ItemClass) uint32
-            let id = ItemClassKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
-            b_offset += 4;
-
-            // subclass_map: uint32
-            let subclass_map = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
-            b_offset += 4;
-
-            // item_class: Class
-            let item_class = match Class::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
-                Some(e) => e,
-                None => panic!(),
-            };
-            b_offset += 4;
-
-            // class_name: string_ref_loc
-            let class_name = ConstLocalizedString::new(
-                crate::util::get_string_from_block(b_offset, b, string_block),
-                crate::util::get_string_from_block(b_offset + 4, b, string_block),
-                crate::util::get_string_from_block(b_offset + 8, b, string_block),
-                crate::util::get_string_from_block(b_offset + 12, b, string_block),
-                crate::util::get_string_from_block(b_offset + 16, b, string_block),
-                crate::util::get_string_from_block(b_offset + 20, b, string_block),
-                crate::util::get_string_from_block(b_offset + 24, b, string_block),
-                crate::util::get_string_from_block(b_offset + 28, b, string_block),
-                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
-            );
-            b_offset += 36;
-
-            rows[i] = ConstItemClassRow {
-                id,
-                subclass_map,
-                item_class,
-                class_name,
-            };
-            i += 1;
-        }
-
-        Self { rows }
-    }
-
-    pub fn to_owned(&self) -> ItemClass {
-        ItemClass {
-            rows: self.rows.iter().map(|s| ItemClassRow {
-                id: s.id,
-                subclass_map: s.subclass_map,
-                item_class: s.item_class,
-                class_name: s.class_name.to_string(),
-            }).collect(),
-        }
-    }
-    // TODO: Indexable?
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemClassKey {
     pub id: u32
@@ -308,13 +225,5 @@ pub struct ItemClassRow {
     pub subclass_map: u32,
     pub item_class: Class,
     pub class_name: LocalizedString,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ConstItemClassRow {
-    pub id: ItemClassKey,
-    pub subclass_map: u32,
-    pub item_class: Class,
-    pub class_name: ConstLocalizedString,
 }
 
