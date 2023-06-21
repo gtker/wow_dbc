@@ -46,6 +46,7 @@ pub struct ConstExtendedLocalizedString {
     pub flags: u32,
 }
 
+#[cfg(any(feature = "tbc", feature = "wrath"))]
 impl ConstExtendedLocalizedString {
     #[allow(clippy::too_many_arguments)]
     pub(crate) const fn new(
