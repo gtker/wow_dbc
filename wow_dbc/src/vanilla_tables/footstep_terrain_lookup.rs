@@ -1,10 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::ground_effect_doodad::GroundEffectDoodadKey;
+use crate::vanilla_tables::sound_entries::SoundEntriesKey;
+use crate::vanilla_tables::terrain_type::TerrainTypeKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::vanilla_tables::ground_effect_doodad::*;
-use crate::vanilla_tables::sound_entries::*;
-use crate::vanilla_tables::terrain_type::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FootstepTerrainLookup {

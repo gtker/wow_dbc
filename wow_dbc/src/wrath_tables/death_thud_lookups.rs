@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::sound_entries::SoundEntriesKey;
+use crate::wrath_tables::terrain_type_sounds::TerrainTypeSoundsKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::sound_entries::*;
-use crate::wrath_tables::terrain_type_sounds::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookups {

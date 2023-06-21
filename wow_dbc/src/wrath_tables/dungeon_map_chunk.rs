@@ -1,10 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::dungeon_map::DungeonMapKey;
+use crate::wrath_tables::map::MapKey;
+use crate::wrath_tables::wmo_area_table::WMOAreaTableKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::dungeon_map::*;
-use crate::wrath_tables::map::*;
-use crate::wrath_tables::wmo_area_table::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct DungeonMapChunk {

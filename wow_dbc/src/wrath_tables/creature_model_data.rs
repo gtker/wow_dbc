@@ -1,11 +1,14 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::creature_sound_data::CreatureSoundDataKey;
+use crate::wrath_tables::footprint_textures::FootprintTexturesKey;
+use crate::wrath_tables::material::MaterialKey;
+use crate::wrath_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::creature_sound_data::*;
-use crate::wrath_tables::footprint_textures::*;
-use crate::wrath_tables::material::*;
-use crate::wrath_tables::unit_blood::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureModelData {

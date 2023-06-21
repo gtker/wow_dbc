@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::footstep_terrain_lookup::FootstepTerrainLookupKey;
+use crate::wrath_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::footstep_terrain_lookup::*;
-use crate::wrath_tables::sound_entries::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureSoundData {

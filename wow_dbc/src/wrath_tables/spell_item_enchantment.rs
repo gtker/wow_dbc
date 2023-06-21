@@ -1,11 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::item_visuals::ItemVisualsKey;
+use crate::wrath_tables::skill_line::SkillLineKey;
+use crate::wrath_tables::spell_item_enchantment_condition::SpellItemEnchantmentConditionKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::wrath_tables::item_visuals::*;
-use crate::wrath_tables::skill_line::*;
-use crate::wrath_tables::spell_item_enchantment_condition::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellItemEnchantment {

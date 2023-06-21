@@ -1,9 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::gm_survey_questions::GMSurveyQuestionsKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::wrath_tables::gm_survey_questions::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyAnswers {

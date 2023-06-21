@@ -1,11 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable, LocalizedString,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::skill_costs_data::SkillCostsDataKey;
+use crate::vanilla_tables::skill_line_category::SkillLineCategoryKey;
+use crate::vanilla_tables::spell_icon::SpellIconKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::LocalizedString;
-use crate::vanilla_tables::skill_costs_data::*;
-use crate::vanilla_tables::skill_line_category::*;
-use crate::vanilla_tables::spell_icon::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillLine {

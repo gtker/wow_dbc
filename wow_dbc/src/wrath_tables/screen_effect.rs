@@ -1,10 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::light_params::LightParamsKey;
+use crate::wrath_tables::sound_ambience::SoundAmbienceKey;
+use crate::wrath_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::light_params::*;
-use crate::wrath_tables::sound_ambience::*;
-use crate::wrath_tables::zone_music::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ScreenEffect {

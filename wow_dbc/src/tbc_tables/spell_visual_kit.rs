@@ -1,10 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::animation_data::AnimationDataKey;
+use crate::tbc_tables::sound_entries::SoundEntriesKey;
+use crate::tbc_tables::spell_effect_camera_shakes::SpellEffectCameraShakesKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::tbc_tables::animation_data::*;
-use crate::tbc_tables::sound_entries::*;
-use crate::tbc_tables::spell_effect_camera_shakes::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualKit {

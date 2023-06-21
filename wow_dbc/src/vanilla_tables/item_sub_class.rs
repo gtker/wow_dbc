@@ -1,8 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, LocalizedString,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::item_class::ItemClassKey;
 use std::io::Write;
-use crate::LocalizedString;
-use crate::vanilla_tables::item_class::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemSubClass {

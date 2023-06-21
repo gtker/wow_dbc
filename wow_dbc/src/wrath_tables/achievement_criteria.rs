@@ -1,9 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::achievement::AchievementKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::wrath_tables::achievement::*;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

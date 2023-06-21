@@ -1,10 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable, SizeClass,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::footprint_textures::FootprintTexturesKey;
+use crate::vanilla_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::SizeClass;
-use crate::vanilla_tables::footprint_textures::*;
-use crate::vanilla_tables::unit_blood::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureModelData {

@@ -1,16 +1,18 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::faction::FactionKey;
+use crate::tbc_tables::spell_cast_times::SpellCastTimesKey;
+use crate::tbc_tables::spell_category::SpellCategoryKey;
+use crate::tbc_tables::spell_dispel_type::SpellDispelTypeKey;
+use crate::tbc_tables::spell_duration::SpellDurationKey;
+use crate::tbc_tables::spell_focus_object::SpellFocusObjectKey;
+use crate::tbc_tables::spell_icon::SpellIconKey;
+use crate::tbc_tables::spell_mechanic::SpellMechanicKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::tbc_tables::faction::*;
-use crate::tbc_tables::spell_cast_times::*;
-use crate::tbc_tables::spell_category::*;
-use crate::tbc_tables::spell_dispel_type::*;
-use crate::tbc_tables::spell_duration::*;
-use crate::tbc_tables::spell_focus_object::*;
-use crate::tbc_tables::spell_icon::*;
-use crate::tbc_tables::spell_mechanic::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Spell {

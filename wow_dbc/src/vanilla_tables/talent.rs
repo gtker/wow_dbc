@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::spell::SpellKey;
+use crate::vanilla_tables::talent_tab::TalentTabKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::vanilla_tables::spell::*;
-use crate::vanilla_tables::talent_tab::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Talent {

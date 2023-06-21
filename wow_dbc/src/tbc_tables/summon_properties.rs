@@ -1,8 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::faction_template::FactionTemplateKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::tbc_tables::faction_template::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SummonProperties {

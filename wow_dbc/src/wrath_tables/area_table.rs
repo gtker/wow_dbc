@@ -1,14 +1,16 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::light::LightKey;
+use crate::wrath_tables::map::MapKey;
+use crate::wrath_tables::sound_ambience::SoundAmbienceKey;
+use crate::wrath_tables::sound_provider_preferences::SoundProviderPreferencesKey;
+use crate::wrath_tables::zone_intro_music_table::ZoneIntroMusicTableKey;
+use crate::wrath_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::wrath_tables::light::*;
-use crate::wrath_tables::map::*;
-use crate::wrath_tables::sound_ambience::*;
-use crate::wrath_tables::sound_provider_preferences::*;
-use crate::wrath_tables::zone_intro_music_table::*;
-use crate::wrath_tables::zone_music::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaTable {

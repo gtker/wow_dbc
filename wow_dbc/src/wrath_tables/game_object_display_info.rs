@@ -1,8 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::object_effect_package::ObjectEffectPackageKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::object_effect_package::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct GameObjectDisplayInfo {

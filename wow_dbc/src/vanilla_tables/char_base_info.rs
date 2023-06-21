@@ -1,8 +1,10 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
 use crate::DbcTable;
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::chr_classes::ChrClassesKey;
+use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
-use crate::vanilla_tables::chr_classes::*;
-use crate::vanilla_tables::chr_races::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharBaseInfo {

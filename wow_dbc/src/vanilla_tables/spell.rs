@@ -1,21 +1,23 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable, LocalizedString,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::chr_classes::ChrClassesKey;
+use crate::vanilla_tables::creature_type::CreatureTypeKey;
+use crate::vanilla_tables::item_class::ItemClassKey;
+use crate::vanilla_tables::resistances::ResistancesKey;
+use crate::vanilla_tables::spell_cast_times::SpellCastTimesKey;
+use crate::vanilla_tables::spell_category::SpellCategoryKey;
+use crate::vanilla_tables::spell_dispel_type::SpellDispelTypeKey;
+use crate::vanilla_tables::spell_duration::SpellDurationKey;
+use crate::vanilla_tables::spell_focus_object::SpellFocusObjectKey;
+use crate::vanilla_tables::spell_icon::SpellIconKey;
+use crate::vanilla_tables::spell_mechanic::SpellMechanicKey;
+use crate::vanilla_tables::spell_range::SpellRangeKey;
+use crate::vanilla_tables::spell_shapeshift_form::SpellShapeshiftFormKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::LocalizedString;
-use crate::vanilla_tables::chr_classes::*;
-use crate::vanilla_tables::creature_type::*;
-use crate::vanilla_tables::item_class::*;
-use crate::vanilla_tables::resistances::*;
-use crate::vanilla_tables::spell_cast_times::*;
-use crate::vanilla_tables::spell_category::*;
-use crate::vanilla_tables::spell_dispel_type::*;
-use crate::vanilla_tables::spell_duration::*;
-use crate::vanilla_tables::spell_focus_object::*;
-use crate::vanilla_tables::spell_icon::*;
-use crate::vanilla_tables::spell_mechanic::*;
-use crate::vanilla_tables::spell_range::*;
-use crate::vanilla_tables::spell_shapeshift_form::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Spell {

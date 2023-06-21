@@ -1,12 +1,14 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
 use crate::DbcTable;
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::area_table::AreaTableKey;
+use crate::wrath_tables::sound_ambience::SoundAmbienceKey;
+use crate::wrath_tables::sound_provider_preferences::SoundProviderPreferencesKey;
+use crate::wrath_tables::wmo_area_table::WMOAreaTableKey;
+use crate::wrath_tables::zone_intro_music_table::ZoneIntroMusicTableKey;
+use crate::wrath_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
-use crate::wrath_tables::area_table::*;
-use crate::wrath_tables::sound_ambience::*;
-use crate::wrath_tables::sound_provider_preferences::*;
-use crate::wrath_tables::wmo_area_table::*;
-use crate::wrath_tables::zone_intro_music_table::*;
-use crate::wrath_tables::zone_music::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldStateZoneSounds {

@@ -1,12 +1,15 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::chr_classes::ChrClassesKey;
+use crate::vanilla_tables::chr_races::ChrRacesKey;
+use crate::vanilla_tables::skill_costs_data::SkillCostsDataKey;
+use crate::vanilla_tables::skill_line::SkillLineKey;
+use crate::vanilla_tables::skill_tiers::SkillTiersKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::vanilla_tables::chr_classes::*;
-use crate::vanilla_tables::chr_races::*;
-use crate::vanilla_tables::skill_costs_data::*;
-use crate::vanilla_tables::skill_line::*;
-use crate::vanilla_tables::skill_tiers::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillRaceClassInfo {

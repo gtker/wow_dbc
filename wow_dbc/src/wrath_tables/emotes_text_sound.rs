@@ -1,10 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::chr_races::ChrRacesKey;
+use crate::wrath_tables::emotes_text::EmotesTextKey;
+use crate::wrath_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::chr_races::*;
-use crate::wrath_tables::emotes_text::*;
-use crate::wrath_tables::sound_entries::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EmotesTextSound {

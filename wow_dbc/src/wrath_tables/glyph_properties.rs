@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::spell::SpellKey;
+use crate::wrath_tables::spell_icon::SpellIconKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::spell::*;
-use crate::wrath_tables::spell_icon::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GlyphProperties {

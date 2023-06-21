@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::spell_visual_effect_name::SpellVisualEffectNameKey;
+use crate::wrath_tables::spell_visual_kit::SpellVisualKitKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::spell_visual_effect_name::*;
-use crate::wrath_tables::spell_visual_kit::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SpellVisualKitModelAttach {

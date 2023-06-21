@@ -1,14 +1,17 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::creature_display_info_extra::CreatureDisplayInfoExtraKey;
+use crate::wrath_tables::creature_model_data::CreatureModelDataKey;
+use crate::wrath_tables::creature_sound_data::CreatureSoundDataKey;
+use crate::wrath_tables::npc_sounds::NPCSoundsKey;
+use crate::wrath_tables::object_effect_package::ObjectEffectPackageKey;
+use crate::wrath_tables::particle_color::ParticleColorKey;
+use crate::wrath_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::creature_display_info_extra::*;
-use crate::wrath_tables::creature_model_data::*;
-use crate::wrath_tables::creature_sound_data::*;
-use crate::wrath_tables::npc_sounds::*;
-use crate::wrath_tables::object_effect_package::*;
-use crate::wrath_tables::particle_color::*;
-use crate::wrath_tables::unit_blood::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfo {

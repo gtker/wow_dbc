@@ -1,8 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::light_skybox::LightSkyboxKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::tbc_tables::light_skybox::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct LightParams {

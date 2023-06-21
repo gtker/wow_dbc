@@ -1,11 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::area_table::AreaTableKey;
+use crate::tbc_tables::faction::FactionKey;
+use crate::tbc_tables::map::MapKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::tbc_tables::area_table::*;
-use crate::tbc_tables::faction::*;
-use crate::tbc_tables::map::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WorldStateUI {

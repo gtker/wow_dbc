@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::file_data::FileDataKey;
+use crate::wrath_tables::movie::MovieKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::file_data::*;
-use crate::wrath_tables::movie::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieVariation {

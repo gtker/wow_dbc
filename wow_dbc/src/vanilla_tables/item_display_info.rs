@@ -1,10 +1,13 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::item_group_sounds::ItemGroupSoundsKey;
+use crate::vanilla_tables::item_visuals::ItemVisualsKey;
+use crate::vanilla_tables::spell_visual::SpellVisualKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::vanilla_tables::item_group_sounds::*;
-use crate::vanilla_tables::item_visuals::*;
-use crate::vanilla_tables::spell_visual::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemDisplayInfo {

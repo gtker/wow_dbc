@@ -1,6 +1,7 @@
 use crate::types::{Field, Type};
 use crate::{DbcDescription, DbcVersion, Objects, Writer};
 use heck::ToSnakeCase;
+use std::collections::{BTreeMap, BTreeSet};
 
 mod main_ty;
 mod sqlite_converter;
@@ -31,29 +32,53 @@ pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Wri
     s
 }
 
+fn insert(
+    map: &mut BTreeMap<String, BTreeSet<String>>,
+    module: impl ToString,
+    name: impl ToString,
+) {
+    let module = module.to_string();
+    let name = name.to_string();
+
+    if let Some(v) = map.get_mut(&module) {
+        v.insert(name);
+    } else {
+        let mut set = BTreeSet::new();
+        set.insert(name);
+
+        map.insert(module, set);
+    }
+}
+
 fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str) {
-    s.wln("use crate::header::{HEADER_SIZE, DbcHeader, parse_header};");
-    s.wln("use crate::DbcTable;");
-    s.wln("use std::io::Write;");
+    let mut map = BTreeMap::new();
+
+    insert(&mut map, "std::io", "Write");
+
+    insert(&mut map, "crate::header", "HEADER_SIZE");
+    insert(&mut map, "crate::header", "DbcHeader");
+    insert(&mut map, "crate::header", "parse_header");
+
+    insert(&mut map, "crate", "DbcTable");
 
     if d.primary_key().is_some() {
-        s.wln("use crate::Indexable;");
+        insert(&mut map, "crate", "Indexable");
     }
 
     if d.contains_localized_string() {
-        s.wln("use crate::LocalizedString;");
+        insert(&mut map, "crate", "LocalizedString");
     }
 
     if d.contains_extended_localized_string() {
-        s.wln("use crate::ExtendedLocalizedString;");
+        insert(&mut map, "crate", "ExtendedLocalizedString");
     }
 
     if d.contains_gender_enum() {
-        s.wln("use crate::Gender;");
+        insert(&mut map, "crate", "Gender");
     }
 
     if d.contains_size_class_enum() {
-        s.wln("use crate::SizeClass;");
+        insert(&mut map, "crate", "SizeClass");
     }
 
     for foreign_key in d.foreign_keys() {
@@ -61,10 +86,32 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
             continue;
         }
 
-        s.wln(format!(
-            "use crate::{include_path}::{name}::*;",
-            name = foreign_key.to_snake_case()
-        ));
+        let name = foreign_key.to_snake_case();
+        insert(
+            &mut map,
+            format!("crate::{include_path}::{name}"),
+            format!("{}Key", foreign_key),
+        );
+    }
+
+    for (module, names) in map {
+        if names.len() > 1 {
+            s.wln(format!("use {module}::{{"));
+            s.inc_indent();
+
+            for (i, name) in names.iter().enumerate() {
+                if i != 0 {
+                    s.space();
+                }
+                s.w_break_at(format!("{name},"));
+            }
+            s.newline();
+
+            s.closing_curly_with(";"); // use module
+        } else {
+            let name = names.first().unwrap();
+            s.wln(format!("use {module}::{name};"))
+        }
     }
 
     s.newline();

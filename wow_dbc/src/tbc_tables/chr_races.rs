@@ -1,15 +1,17 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::cinematic_sequences::CinematicSequencesKey;
+use crate::tbc_tables::creature_display_info::CreatureDisplayInfoKey;
+use crate::tbc_tables::creature_type::CreatureTypeKey;
+use crate::tbc_tables::faction_template::FactionTemplateKey;
+use crate::tbc_tables::languages::LanguagesKey;
+use crate::tbc_tables::sound_entries::SoundEntriesKey;
+use crate::tbc_tables::spell::SpellKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::tbc_tables::cinematic_sequences::*;
-use crate::tbc_tables::creature_display_info::*;
-use crate::tbc_tables::creature_type::*;
-use crate::tbc_tables::faction_template::*;
-use crate::tbc_tables::languages::*;
-use crate::tbc_tables::sound_entries::*;
-use crate::tbc_tables::spell::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ChrRaces {

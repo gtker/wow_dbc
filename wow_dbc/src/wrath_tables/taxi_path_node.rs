@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::map::MapKey;
+use crate::wrath_tables::taxi_path::TaxiPathKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::wrath_tables::map::*;
-use crate::wrath_tables::taxi_path::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct TaxiPathNode {

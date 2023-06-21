@@ -1,13 +1,16 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::creature_display_info_extra::CreatureDisplayInfoExtraKey;
+use crate::tbc_tables::creature_model_data::CreatureModelDataKey;
+use crate::tbc_tables::creature_sound_data::CreatureSoundDataKey;
+use crate::tbc_tables::npc_sounds::NPCSoundsKey;
+use crate::tbc_tables::particle_color::ParticleColorKey;
+use crate::tbc_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::tbc_tables::creature_display_info_extra::*;
-use crate::tbc_tables::creature_model_data::*;
-use crate::tbc_tables::creature_sound_data::*;
-use crate::tbc_tables::npc_sounds::*;
-use crate::tbc_tables::particle_color::*;
-use crate::tbc_tables::unit_blood::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfo {

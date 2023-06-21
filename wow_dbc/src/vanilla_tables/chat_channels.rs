@@ -1,9 +1,11 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable, LocalizedString,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::vanilla_tables::faction_group::FactionGroupKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::LocalizedString;
-use crate::vanilla_tables::faction_group::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChatChannels {

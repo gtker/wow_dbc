@@ -1,7 +1,9 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
 use crate::DbcTable;
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::file_data::FileDataKey;
 use std::io::Write;
-use crate::wrath_tables::file_data::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieFileData {

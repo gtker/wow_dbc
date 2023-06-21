@@ -1,9 +1,12 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::tbc_tables::faction::FactionKey;
+use crate::tbc_tables::faction_group::FactionGroupKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::tbc_tables::faction::*;
-use crate::tbc_tables::faction_group::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionTemplate {

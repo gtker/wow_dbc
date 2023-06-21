@@ -1,21 +1,23 @@
-use crate::header::{HEADER_SIZE, DbcHeader, parse_header};
-use crate::DbcTable;
+use crate::{
+    DbcTable, ExtendedLocalizedString, Indexable,
+};
+use crate::header::{
+    DbcHeader, HEADER_SIZE, parse_header,
+};
+use crate::wrath_tables::area_group::AreaGroupKey;
+use crate::wrath_tables::faction::FactionKey;
+use crate::wrath_tables::power_display::PowerDisplayKey;
+use crate::wrath_tables::spell_cast_times::SpellCastTimesKey;
+use crate::wrath_tables::spell_category::SpellCategoryKey;
+use crate::wrath_tables::spell_description_variables::SpellDescriptionVariablesKey;
+use crate::wrath_tables::spell_dispel_type::SpellDispelTypeKey;
+use crate::wrath_tables::spell_duration::SpellDurationKey;
+use crate::wrath_tables::spell_focus_object::SpellFocusObjectKey;
+use crate::wrath_tables::spell_icon::SpellIconKey;
+use crate::wrath_tables::spell_mechanic::SpellMechanicKey;
+use crate::wrath_tables::spell_missile::SpellMissileKey;
+use crate::wrath_tables::spell_rune_cost::SpellRuneCostKey;
 use std::io::Write;
-use crate::Indexable;
-use crate::ExtendedLocalizedString;
-use crate::wrath_tables::area_group::*;
-use crate::wrath_tables::faction::*;
-use crate::wrath_tables::power_display::*;
-use crate::wrath_tables::spell_cast_times::*;
-use crate::wrath_tables::spell_category::*;
-use crate::wrath_tables::spell_description_variables::*;
-use crate::wrath_tables::spell_dispel_type::*;
-use crate::wrath_tables::spell_duration::*;
-use crate::wrath_tables::spell_focus_object::*;
-use crate::wrath_tables::spell_icon::*;
-use crate::wrath_tables::spell_mechanic::*;
-use crate::wrath_tables::spell_missile::*;
-use crate::wrath_tables::spell_rune_cost::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Spell {

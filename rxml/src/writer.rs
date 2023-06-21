@@ -9,6 +9,7 @@ pub struct Writer {
 
 impl Writer {
     const INDENT: &'static str = "    ";
+    const COLUMN_LENGTH: usize = 100;
 
     pub fn inner(&self) -> &str {
         &self.inner
@@ -53,6 +54,26 @@ impl Writer {
     pub fn wln(&mut self, s: impl AsRef<str>) {
         self.w(s.as_ref());
         self.newline();
+    }
+
+    fn get_column(&self) -> usize {
+        self.inner.len() - (self.inner.rfind(|a| a == '\n').unwrap() + 1)
+    }
+
+    pub(crate) fn space(&mut self) {
+        self.inner.write_str(" ").unwrap();
+    }
+
+    pub(crate) fn w_break_at(&mut self, s: impl AsRef<str>) {
+        let column = self.get_column();
+        if column >= Self::COLUMN_LENGTH {
+            self.newline();
+            self.w(s.as_ref());
+        } else if column == 0 {
+            self.w(s.as_ref());
+        } else {
+            self.w_no_indent(s.as_ref());
+        }
     }
 
     pub fn w_no_indent(&mut self, s: impl AsRef<str>) {
