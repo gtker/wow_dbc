@@ -147,18 +147,19 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
 
     s.new_struct(format!("{}Row", d.name()), |s| {
         for field in d.fields() {
-            match field.ty() {
-                Type::ForeignKey { table, ty } => {
-                    if o.table_exists(table) {
-                        s.wln(format!("pub {}: {},", field.name(), field.ty().rust_str()));
-                    } else {
-                        s.wln(format!("pub {}: {},", field.name(), ty.rust_str()));
-                    }
+            let name = field.name();
+
+            let ty = if let Type::ForeignKey { table, ty } = field.ty() {
+                if o.table_exists(table) {
+                    field.ty().rust_str()
+                } else {
+                    ty.rust_str()
                 }
-                _ => {
-                    s.wln(format!("pub {}: {},", field.name(), field.ty().rust_str()));
-                }
-            }
+            } else {
+                field.ty().rust_str()
+            };
+
+            s.wln(format!("pub {name}: {ty},"));
         }
     });
 }
