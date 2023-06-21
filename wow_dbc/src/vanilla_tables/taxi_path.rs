@@ -119,6 +119,63 @@ impl Indexable for TaxiPath {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstTaxiPath<const S: usize> {
+    pub rows: [TaxiPathRow; S],
+}
+
+impl<const S: usize> ConstTaxiPath<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TaxiPathRow {
+                id: TaxiPathKey::new(0),
+                source_taxi_node: TaxiNodesKey::new(0),
+                destination_taxi_node: TaxiNodesKey::new(0),
+                cost: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (TaxiPath) uint32
+            let id = TaxiPathKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // source_taxi_node: foreign_key (TaxiNodes) uint32
+            let source_taxi_node = TaxiNodesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // destination_taxi_node: foreign_key (TaxiNodes) uint32
+            let destination_taxi_node = TaxiNodesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // cost: int32
+            let cost = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = TaxiPathRow {
+                id,
+                source_taxi_node,
+                destination_taxi_node,
+                cost,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TaxiPathKey {
     pub id: u32

@@ -128,6 +128,72 @@ impl Indexable for SoundCharacterMacroLines {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSoundCharacterMacroLines<const S: usize> {
+    pub rows: [SoundCharacterMacroLinesRow; S],
+}
+
+impl<const S: usize> ConstSoundCharacterMacroLines<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 20 {
+            panic!("invalid record size, expected 20")
+        }
+
+        if header.field_count != 5 {
+            panic!("invalid field count, expected 5")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SoundCharacterMacroLinesRow {
+                id: SoundCharacterMacroLinesKey::new(0),
+                unknown: 0,
+                gender: Gender::Male,
+                race: ChrRacesKey::new(0),
+                sound: SoundEntriesKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundCharacterMacroLines) uint32
+            let id = SoundCharacterMacroLinesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // unknown: uint32
+            let unknown = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // gender: Gender
+            let gender = match Gender::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]) as i8) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // race: foreign_key (ChrRaces) uint32
+            let race = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound: foreign_key (SoundEntries) uint32
+            let sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = SoundCharacterMacroLinesRow {
+                id,
+                unknown,
+                gender,
+                race,
+                sound,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundCharacterMacroLinesKey {
     pub id: u32

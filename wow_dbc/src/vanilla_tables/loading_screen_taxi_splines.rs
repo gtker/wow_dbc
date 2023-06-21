@@ -132,6 +132,87 @@ impl Indexable for LoadingScreenTaxiSplines {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstLoadingScreenTaxiSplines<const S: usize> {
+    pub rows: [LoadingScreenTaxiSplinesRow; S],
+}
+
+impl<const S: usize> ConstLoadingScreenTaxiSplines<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 76 {
+            panic!("invalid record size, expected 76")
+        }
+
+        if header.field_count != 19 {
+            panic!("invalid field count, expected 19")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            LoadingScreenTaxiSplinesRow {
+                id: LoadingScreenTaxiSplinesKey::new(0),
+                taxi_path: TaxiPathKey::new(0),
+                location_x: [0.0; 8],
+                location_y: [0.0; 8],
+                leg_index: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (LoadingScreenTaxiSplines) uint32
+            let id = LoadingScreenTaxiSplinesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // taxi_path: foreign_key (TaxiPath) uint32
+            let taxi_path = TaxiPathKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // location_x: float[8]
+            let location_x = {
+                let mut a = [0.0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // location_y: float[8]
+            let location_y = {
+                let mut a = [0.0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // leg_index: int32
+            let leg_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = LoadingScreenTaxiSplinesRow {
+                id,
+                taxi_path,
+                location_x,
+                location_y,
+                leg_index,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LoadingScreenTaxiSplinesKey {
     pub id: u32

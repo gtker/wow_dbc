@@ -173,6 +173,135 @@ impl Indexable for Talent {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstTalent<const S: usize> {
+    pub rows: [TalentRow; S],
+}
+
+impl<const S: usize> ConstTalent<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 92 {
+            panic!("invalid record size, expected 92")
+        }
+
+        if header.field_count != 23 {
+            panic!("invalid field count, expected 23")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TalentRow {
+                id: TalentKey::new(0),
+                tab_id: 0,
+                tier_id: 0,
+                column_index: 0,
+                spell_rank: [0; 9],
+                prereq_talent: [0; 3],
+                prereq_rank: [0; 3],
+                flags: 0,
+                required_spell_id: SpellKey::new(0),
+                category_mask: [0; 2],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Talent) int32
+            let id = TalentKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // tab_id: int32
+            let tab_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // tier_id: int32
+            let tier_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // column_index: int32
+            let column_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // spell_rank: int32[9]
+            let spell_rank = {
+                let mut a = [0; 9];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // prereq_talent: int32[3]
+            let prereq_talent = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // prereq_rank: int32[3]
+            let prereq_rank = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // required_spell_id: foreign_key (Spell) int32
+            let required_spell_id = SpellKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // category_mask: int32[2]
+            let category_mask = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = TalentRow {
+                id,
+                tab_id,
+                tier_id,
+                column_index,
+                spell_rank,
+                prereq_talent,
+                prereq_rank,
+                flags,
+                required_spell_id,
+                category_mask,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TalentKey {
     pub id: i32

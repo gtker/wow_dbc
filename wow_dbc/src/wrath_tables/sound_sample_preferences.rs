@@ -209,6 +209,141 @@ impl Indexable for SoundSamplePreferences {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSoundSamplePreferences<const S: usize> {
+    pub rows: [SoundSamplePreferencesRow; S],
+}
+
+impl<const S: usize> ConstSoundSamplePreferences<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 68 {
+            panic!("invalid record size, expected 68")
+        }
+
+        if header.field_count != 17 {
+            panic!("invalid field count, expected 17")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SoundSamplePreferencesRow {
+                id: SoundSamplePreferencesKey::new(0),
+                field_0_6_0_3592_001: 0,
+                field_0_6_0_3592_002: 0,
+                e_a_x2_sample_room: 0,
+                field_0_6_0_3592_004: 0,
+                field_0_6_0_3592_005: 0,
+                field_0_6_0_3592_006: 0.0,
+                field_0_6_0_3592_007: 0,
+                e_a_x2_sample_occlusion_l_f_ratio: 0.0,
+                e_a_x2_sample_occlusion_room_ratio: 0.0,
+                field_0_6_0_3592_010: 0,
+                e_a_x1_effect_level: 0.0,
+                field_0_6_0_3592_012: 0,
+                field_0_6_0_3592_013: 0.0,
+                e_a_x3_sample_exclusion: 0.0,
+                field_0_6_0_3592_015: 0.0,
+                field_0_6_0_3592_016: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundSamplePreferences) int32
+            let id = SoundSamplePreferencesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // field_0_6_0_3592_001: int32
+            let field_0_6_0_3592_001 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_002: int32
+            let field_0_6_0_3592_002 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_sample_room: int32
+            let e_a_x2_sample_room = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_004: int32
+            let field_0_6_0_3592_004 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_005: int32
+            let field_0_6_0_3592_005 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_006: float
+            let field_0_6_0_3592_006 = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_007: int32
+            let field_0_6_0_3592_007 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_sample_occlusion_l_f_ratio: float
+            let e_a_x2_sample_occlusion_l_f_ratio = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_sample_occlusion_room_ratio: float
+            let e_a_x2_sample_occlusion_room_ratio = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_010: int32
+            let field_0_6_0_3592_010 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x1_effect_level: float
+            let e_a_x1_effect_level = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_012: int32
+            let field_0_6_0_3592_012 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_013: float
+            let field_0_6_0_3592_013 = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_sample_exclusion: float
+            let e_a_x3_sample_exclusion = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_015: float
+            let field_0_6_0_3592_015 = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_6_0_3592_016: int32
+            let field_0_6_0_3592_016 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SoundSamplePreferencesRow {
+                id,
+                field_0_6_0_3592_001,
+                field_0_6_0_3592_002,
+                e_a_x2_sample_room,
+                field_0_6_0_3592_004,
+                field_0_6_0_3592_005,
+                field_0_6_0_3592_006,
+                field_0_6_0_3592_007,
+                e_a_x2_sample_occlusion_l_f_ratio,
+                e_a_x2_sample_occlusion_room_ratio,
+                field_0_6_0_3592_010,
+                e_a_x1_effect_level,
+                field_0_6_0_3592_012,
+                field_0_6_0_3592_013,
+                e_a_x3_sample_exclusion,
+                field_0_6_0_3592_015,
+                field_0_6_0_3592_016,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundSamplePreferencesKey {
     pub id: i32

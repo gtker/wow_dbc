@@ -91,6 +91,50 @@ impl DbcTable for MovieFileData {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstMovieFileData<const S: usize> {
+    pub rows: [MovieFileDataRow; S],
+}
+
+impl<const S: usize> ConstMovieFileData<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 8 {
+            panic!("invalid record size, expected 8")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            MovieFileDataRow {
+                file_data_id: FileDataKey::new(0),
+                resolution: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // file_data_id: foreign_key (FileData) int32
+            let file_data_id = FileDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // resolution: int32
+            let resolution = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = MovieFileDataRow {
+                file_data_id,
+                resolution,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct MovieFileDataRow {
     pub file_data_id: FileDataKey,
     pub resolution: i32,

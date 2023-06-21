@@ -315,6 +315,243 @@ impl Indexable for CreatureSoundData {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCreatureSoundData<const S: usize> {
+    pub rows: [CreatureSoundDataRow; S],
+}
+
+impl<const S: usize> ConstCreatureSoundData<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 152 {
+            panic!("invalid record size, expected 152")
+        }
+
+        if header.field_count != 38 {
+            panic!("invalid field count, expected 38")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CreatureSoundDataRow {
+                id: CreatureSoundDataKey::new(0),
+                sound_exertion_id: SoundEntriesKey::new(0),
+                sound_exertion_critical_id: SoundEntriesKey::new(0),
+                sound_injury_id: SoundEntriesKey::new(0),
+                sound_injury_critical_id: SoundEntriesKey::new(0),
+                sound_injury_crushing_blow_id: 0,
+                sound_death_id: SoundEntriesKey::new(0),
+                sound_stun_id: SoundEntriesKey::new(0),
+                sound_stand_id: SoundEntriesKey::new(0),
+                sound_footstep_id: FootstepTerrainLookupKey::new(0),
+                sound_aggro_id: SoundEntriesKey::new(0),
+                sound_wing_flap_id: SoundEntriesKey::new(0),
+                sound_wing_glide_id: SoundEntriesKey::new(0),
+                sound_alert_id: SoundEntriesKey::new(0),
+                sound_fidget: [0; 5],
+                custom_attack: [0; 4],
+                n_p_c_sound_id: 0,
+                loop_sound_id: SoundEntriesKey::new(0),
+                creature_impact_type: 0,
+                sound_jump_start_id: SoundEntriesKey::new(0),
+                sound_jump_end_id: SoundEntriesKey::new(0),
+                sound_pet_attack_id: SoundEntriesKey::new(0),
+                sound_pet_order_id: SoundEntriesKey::new(0),
+                sound_pet_dismiss_id: SoundEntriesKey::new(0),
+                fidget_delay_seconds_min: 0.0,
+                fidget_delay_seconds_max: 0.0,
+                birth_sound_id: SoundEntriesKey::new(0),
+                spell_cast_directed_sound_id: SoundEntriesKey::new(0),
+                submerge_sound_id: SoundEntriesKey::new(0),
+                submerged_sound_id: SoundEntriesKey::new(0),
+                creature_sound_data_id_pet: CreatureSoundDataKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureSoundData) int32
+            let id = CreatureSoundDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_exertion_id: foreign_key (SoundEntries) int32
+            let sound_exertion_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_exertion_critical_id: foreign_key (SoundEntries) int32
+            let sound_exertion_critical_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_injury_id: foreign_key (SoundEntries) int32
+            let sound_injury_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_injury_critical_id: foreign_key (SoundEntries) int32
+            let sound_injury_critical_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_injury_crushing_blow_id: int32
+            let sound_injury_crushing_blow_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_death_id: foreign_key (SoundEntries) int32
+            let sound_death_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_stun_id: foreign_key (SoundEntries) int32
+            let sound_stun_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_stand_id: foreign_key (SoundEntries) int32
+            let sound_stand_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_footstep_id: foreign_key (FootstepTerrainLookup) int32
+            let sound_footstep_id = FootstepTerrainLookupKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_aggro_id: foreign_key (SoundEntries) int32
+            let sound_aggro_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_wing_flap_id: foreign_key (SoundEntries) int32
+            let sound_wing_flap_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_wing_glide_id: foreign_key (SoundEntries) int32
+            let sound_wing_glide_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_alert_id: foreign_key (SoundEntries) int32
+            let sound_alert_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_fidget: int32[5]
+            let sound_fidget = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // custom_attack: int32[4]
+            let custom_attack = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // n_p_c_sound_id: int32
+            let n_p_c_sound_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // loop_sound_id: foreign_key (SoundEntries) int32
+            let loop_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // creature_impact_type: int32
+            let creature_impact_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_jump_start_id: foreign_key (SoundEntries) int32
+            let sound_jump_start_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_jump_end_id: foreign_key (SoundEntries) int32
+            let sound_jump_end_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_pet_attack_id: foreign_key (SoundEntries) int32
+            let sound_pet_attack_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_pet_order_id: foreign_key (SoundEntries) int32
+            let sound_pet_order_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_pet_dismiss_id: foreign_key (SoundEntries) int32
+            let sound_pet_dismiss_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // fidget_delay_seconds_min: float
+            let fidget_delay_seconds_min = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // fidget_delay_seconds_max: float
+            let fidget_delay_seconds_max = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // birth_sound_id: foreign_key (SoundEntries) int32
+            let birth_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // spell_cast_directed_sound_id: foreign_key (SoundEntries) int32
+            let spell_cast_directed_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // submerge_sound_id: foreign_key (SoundEntries) int32
+            let submerge_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // submerged_sound_id: foreign_key (SoundEntries) int32
+            let submerged_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // creature_sound_data_id_pet: foreign_key (CreatureSoundData) int32
+            let creature_sound_data_id_pet = CreatureSoundDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = CreatureSoundDataRow {
+                id,
+                sound_exertion_id,
+                sound_exertion_critical_id,
+                sound_injury_id,
+                sound_injury_critical_id,
+                sound_injury_crushing_blow_id,
+                sound_death_id,
+                sound_stun_id,
+                sound_stand_id,
+                sound_footstep_id,
+                sound_aggro_id,
+                sound_wing_flap_id,
+                sound_wing_glide_id,
+                sound_alert_id,
+                sound_fidget,
+                custom_attack,
+                n_p_c_sound_id,
+                loop_sound_id,
+                creature_impact_type,
+                sound_jump_start_id,
+                sound_jump_end_id,
+                sound_pet_attack_id,
+                sound_pet_order_id,
+                sound_pet_dismiss_id,
+                fidget_delay_seconds_min,
+                fidget_delay_seconds_max,
+                birth_sound_id,
+                spell_cast_directed_sound_id,
+                submerge_sound_id,
+                submerged_sound_id,
+                creature_sound_data_id_pet,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureSoundDataKey {
     pub id: i32

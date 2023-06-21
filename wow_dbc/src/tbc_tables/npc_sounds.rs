@@ -107,6 +107,60 @@ impl Indexable for NPCSounds {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstNPCSounds<const S: usize> {
+    pub rows: [NPCSoundsRow; S],
+}
+
+impl<const S: usize> ConstNPCSounds<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 20 {
+            panic!("invalid record size, expected 20")
+        }
+
+        if header.field_count != 5 {
+            panic!("invalid field count, expected 5")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            NPCSoundsRow {
+                id: NPCSoundsKey::new(0),
+                sound_id: [0; 4],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (NPCSounds) int32
+            let id = NPCSoundsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_id: int32[4]
+            let sound_id = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = NPCSoundsRow {
+                id,
+                sound_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct NPCSoundsKey {
     pub id: i32

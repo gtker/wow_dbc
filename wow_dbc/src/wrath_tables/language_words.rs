@@ -146,6 +146,59 @@ impl LanguageWords {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLanguageWords<const S: usize> {
+    pub rows: [ConstLanguageWordsRow; S],
+}
+
+impl<const S: usize> ConstLanguageWords<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstLanguageWordsRow {
+                id: LanguageWordsKey::new(0),
+                language_id: LanguagesKey::new(0),
+                word: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (LanguageWords) int32
+            let id = LanguageWordsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // language_id: foreign_key (Languages) int32
+            let language_id = LanguagesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // word: string_ref
+            let word = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstLanguageWordsRow {
+                id,
+                language_id,
+                word,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LanguageWordsKey {
     pub id: i32
@@ -198,5 +251,12 @@ pub struct LanguageWordsRow {
     pub id: LanguageWordsKey,
     pub language_id: LanguagesKey,
     pub word: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLanguageWordsRow {
+    pub id: LanguageWordsKey,
+    pub language_id: LanguagesKey,
+    pub word: &'static str,
 }
 

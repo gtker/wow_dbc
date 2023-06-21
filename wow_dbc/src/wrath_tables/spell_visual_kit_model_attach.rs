@@ -151,6 +151,96 @@ impl Indexable for SpellVisualKitModelAttach {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellVisualKitModelAttach<const S: usize> {
+    pub rows: [SpellVisualKitModelAttachRow; S],
+}
+
+impl<const S: usize> ConstSpellVisualKitModelAttach<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 40 {
+            panic!("invalid record size, expected 40")
+        }
+
+        if header.field_count != 10 {
+            panic!("invalid field count, expected 10")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SpellVisualKitModelAttachRow {
+                id: SpellVisualKitModelAttachKey::new(0),
+                parent_spell_visual_kit_id: SpellVisualKitKey::new(0),
+                spell_visual_effect_name_id: SpellVisualEffectNameKey::new(0),
+                attachment_id: 0,
+                offset: [0.0; 3],
+                yaw: 0.0,
+                pitch: 0.0,
+                roll: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellVisualKitModelAttach) int32
+            let id = SpellVisualKitModelAttachKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // parent_spell_visual_kit_id: foreign_key (SpellVisualKit) int32
+            let parent_spell_visual_kit_id = SpellVisualKitKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // spell_visual_effect_name_id: foreign_key (SpellVisualEffectName) int32
+            let spell_visual_effect_name_id = SpellVisualEffectNameKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // attachment_id: int32
+            let attachment_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // offset: float[3]
+            let offset = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // yaw: float
+            let yaw = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pitch: float
+            let pitch = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // roll: float
+            let roll = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SpellVisualKitModelAttachRow {
+                id,
+                parent_spell_visual_kit_id,
+                spell_visual_effect_name_id,
+                attachment_id,
+                offset,
+                yaw,
+                pitch,
+                roll,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKitModelAttachKey {
     pub id: i32

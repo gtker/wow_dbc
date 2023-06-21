@@ -205,6 +205,116 @@ impl CreatureDisplayInfoExtra {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCreatureDisplayInfoExtra<const S: usize> {
+    pub rows: [ConstCreatureDisplayInfoExtraRow; S],
+}
+
+impl<const S: usize> ConstCreatureDisplayInfoExtra<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 84 {
+            panic!("invalid record size, expected 84")
+        }
+
+        if header.field_count != 21 {
+            panic!("invalid field count, expected 21")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstCreatureDisplayInfoExtraRow {
+                id: CreatureDisplayInfoExtraKey::new(0),
+                display_race_id: ChrRacesKey::new(0),
+                display_sex_id: 0,
+                skin_id: 0,
+                face_id: 0,
+                hair_style_id: 0,
+                hair_color_id: 0,
+                facial_hair_id: 0,
+                n_p_c_item_display: [0; 11],
+                flags: 0,
+                bake_name: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureDisplayInfoExtra) int32
+            let id = CreatureDisplayInfoExtraKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // display_race_id: foreign_key (ChrRaces) int32
+            let display_race_id = ChrRacesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // display_sex_id: int32
+            let display_sex_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // skin_id: int32
+            let skin_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // face_id: int32
+            let face_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hair_style_id: int32
+            let hair_style_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hair_color_id: int32
+            let hair_color_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // facial_hair_id: int32
+            let facial_hair_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // n_p_c_item_display: int32[11]
+            let n_p_c_item_display = {
+                let mut a = [0; 11];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // bake_name: string_ref
+            let bake_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstCreatureDisplayInfoExtraRow {
+                id,
+                display_race_id,
+                display_sex_id,
+                skin_id,
+                face_id,
+                hair_style_id,
+                hair_color_id,
+                facial_hair_id,
+                n_p_c_item_display,
+                flags,
+                bake_name,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureDisplayInfoExtraKey {
     pub id: i32
@@ -265,5 +375,20 @@ pub struct CreatureDisplayInfoExtraRow {
     pub n_p_c_item_display: [i32; 11],
     pub flags: i32,
     pub bake_name: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCreatureDisplayInfoExtraRow {
+    pub id: CreatureDisplayInfoExtraKey,
+    pub display_race_id: ChrRacesKey,
+    pub display_sex_id: i32,
+    pub skin_id: i32,
+    pub face_id: i32,
+    pub hair_style_id: i32,
+    pub hair_color_id: i32,
+    pub facial_hair_id: i32,
+    pub n_p_c_item_display: [i32; 11],
+    pub flags: i32,
+    pub bake_name: &'static str,
 }
 

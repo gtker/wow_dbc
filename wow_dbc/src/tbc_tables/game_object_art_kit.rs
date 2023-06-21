@@ -190,6 +190,77 @@ impl GameObjectArtKit {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstGameObjectArtKit<const S: usize> {
+    pub rows: [ConstGameObjectArtKitRow; S],
+}
+
+impl<const S: usize> ConstGameObjectArtKit<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstGameObjectArtKitRow {
+                id: GameObjectArtKitKey::new(0),
+                texture_variation: [""; 3],
+                attach_model: [""; 4],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (GameObjectArtKit) int32
+            let id = GameObjectArtKitKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // texture_variation: string_ref[3]
+            let texture_variation = {
+                let mut a = [""; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // attach_model: string_ref[4]
+            let attach_model = {
+                let mut a = [""; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = ConstGameObjectArtKitRow {
+                id,
+                texture_variation,
+                attach_model,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GameObjectArtKitKey {
     pub id: i32
@@ -242,5 +313,12 @@ pub struct GameObjectArtKitRow {
     pub id: GameObjectArtKitKey,
     pub texture_variation: [String; 3],
     pub attach_model: [String; 4],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstGameObjectArtKitRow {
+    pub id: GameObjectArtKitKey,
+    pub texture_variation: [&'static str; 3],
+    pub attach_model: [&'static str; 4],
 }
 

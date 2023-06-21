@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellAuraNames {
@@ -155,6 +155,75 @@ impl SpellAuraNames {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellAuraNames<const S: usize> {
+    pub rows: [ConstSpellAuraNamesRow; S],
+}
+
+impl<const S: usize> ConstSpellAuraNames<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 48 {
+            panic!("invalid record size, expected 48")
+        }
+
+        if header.field_count != 12 {
+            panic!("invalid field count, expected 12")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellAuraNamesRow {
+                id: SpellAuraNamesKey::new(0),
+                unknown: 0,
+                internal_name: "",
+                name: crate::ConstLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellAuraNames) uint32
+            let id = SpellAuraNamesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // unknown: uint32
+            let unknown = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // internal_name: string_ref
+            let internal_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            rows[i] = ConstSpellAuraNamesRow {
+                id,
+                unknown,
+                internal_name,
+                name,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellAuraNamesKey {
     pub id: u32
@@ -194,5 +263,13 @@ pub struct SpellAuraNamesRow {
     pub unknown: u32,
     pub internal_name: String,
     pub name: LocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellAuraNamesRow {
+    pub id: SpellAuraNamesKey,
+    pub unknown: u32,
+    pub internal_name: &'static str,
+    pub name: ConstLocalizedString,
 }
 

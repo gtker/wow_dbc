@@ -138,6 +138,53 @@ impl FootprintTextures {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstFootprintTextures<const S: usize> {
+    pub rows: [ConstFootprintTexturesRow; S],
+}
+
+impl<const S: usize> ConstFootprintTextures<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 8 {
+            panic!("invalid record size, expected 8")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstFootprintTexturesRow {
+                id: FootprintTexturesKey::new(0),
+                footstep_filename: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (FootprintTextures) int32
+            let id = FootprintTexturesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // footstep_filename: string_ref
+            let footstep_filename = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstFootprintTexturesRow {
+                id,
+                footstep_filename,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct FootprintTexturesKey {
     pub id: i32
@@ -189,5 +236,11 @@ impl From<u16> for FootprintTexturesKey {
 pub struct FootprintTexturesRow {
     pub id: FootprintTexturesKey,
     pub footstep_filename: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstFootprintTexturesRow {
+    pub id: FootprintTexturesKey,
+    pub footstep_filename: &'static str,
 }
 

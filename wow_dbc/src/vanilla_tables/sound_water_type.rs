@@ -120,6 +120,66 @@ impl Indexable for SoundWaterType {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSoundWaterType<const S: usize> {
+    pub rows: [SoundWaterTypeRow; S],
+}
+
+impl<const S: usize> ConstSoundWaterType<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SoundWaterTypeRow {
+                id: SoundWaterTypeKey::new(0),
+                liquid_type: LiquidTypeKey::new(0),
+                fluid_speed: FluidSpeed::Still,
+                sound: SoundEntriesKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundWaterType) uint32
+            let id = SoundWaterTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // liquid_type: foreign_key (LiquidType) uint32
+            let liquid_type = LiquidTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // fluid_speed: FluidSpeed
+            let fluid_speed = match FluidSpeed::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // sound: foreign_key (SoundEntries) uint32
+            let sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = SoundWaterTypeRow {
+                id,
+                liquid_type,
+                fluid_speed,
+                sound,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundWaterTypeKey {
     pub id: u32

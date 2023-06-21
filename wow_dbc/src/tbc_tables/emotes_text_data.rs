@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EmotesTextData {
@@ -130,6 +130,71 @@ impl EmotesTextData {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstEmotesTextData<const S: usize> {
+    pub rows: [ConstEmotesTextDataRow; S],
+}
+
+impl<const S: usize> ConstEmotesTextData<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 72 {
+            panic!("invalid record size, expected 72")
+        }
+
+        if header.field_count != 18 {
+            panic!("invalid field count, expected 18")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstEmotesTextDataRow {
+                id: EmotesTextDataKey::new(0),
+                text_lang: crate::ConstExtendedLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (EmotesTextData) int32
+            let id = EmotesTextDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // text_lang: string_ref_loc (Extended)
+            let text_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            rows[i] = ConstEmotesTextDataRow {
+                id,
+                text_lang,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EmotesTextDataKey {
     pub id: i32
@@ -181,5 +246,11 @@ impl From<u16> for EmotesTextDataKey {
 pub struct EmotesTextDataRow {
     pub id: EmotesTextDataKey,
     pub text_lang: ExtendedLocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstEmotesTextDataRow {
+    pub id: EmotesTextDataKey,
+    pub text_lang: ConstExtendedLocalizedString,
 }
 

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct BattlemasterList {
@@ -189,6 +189,128 @@ impl BattlemasterList {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstBattlemasterList<const S: usize> {
+    pub rows: [ConstBattlemasterListRow; S],
+}
+
+impl<const S: usize> ConstBattlemasterList<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 132 {
+            panic!("invalid record size, expected 132")
+        }
+
+        if header.field_count != 33 {
+            panic!("invalid field count, expected 33")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstBattlemasterListRow {
+                id: BattlemasterListKey::new(0),
+                map_id: [0; 8],
+                instance_type: 0,
+                min_level: 0,
+                max_level: 0,
+                field_2_0_0_5610_005: 0,
+                field_2_0_0_5610_006: 0,
+                groups_allowed: 0,
+                name_lang: crate::ConstExtendedLocalizedString::empty(),
+                field_2_4_0_8089_009: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (BattlemasterList) int32
+            let id = BattlemasterListKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_id: int32[8]
+            let map_id = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // instance_type: int32
+            let instance_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_level: int32
+            let min_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_level: int32
+            let max_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_2_0_0_5610_005: int32
+            let field_2_0_0_5610_005 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_2_0_0_5610_006: int32
+            let field_2_0_0_5610_006 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // groups_allowed: int32
+            let groups_allowed = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // field_2_4_0_8089_009: int32
+            let field_2_4_0_8089_009 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstBattlemasterListRow {
+                id,
+                map_id,
+                instance_type,
+                min_level,
+                max_level,
+                field_2_0_0_5610_005,
+                field_2_0_0_5610_006,
+                groups_allowed,
+                name_lang,
+                field_2_4_0_8089_009,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct BattlemasterListKey {
     pub id: i32
@@ -247,6 +369,20 @@ pub struct BattlemasterListRow {
     pub field_2_0_0_5610_006: i32,
     pub groups_allowed: i32,
     pub name_lang: ExtendedLocalizedString,
+    pub field_2_4_0_8089_009: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstBattlemasterListRow {
+    pub id: BattlemasterListKey,
+    pub map_id: [i32; 8],
+    pub instance_type: i32,
+    pub min_level: i32,
+    pub max_level: i32,
+    pub field_2_0_0_5610_005: i32,
+    pub field_2_0_0_5610_006: i32,
+    pub groups_allowed: i32,
+    pub name_lang: ConstExtendedLocalizedString,
     pub field_2_4_0_8089_009: i32,
 }
 

@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::chr_classes::*;
 use crate::vanilla_tables::creature_type::*;
 use crate::vanilla_tables::item_class::*;
@@ -814,6 +814,816 @@ impl Spell {
         sum as u32
     }
 
+}
+
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstSpell<const S: usize> {
+    pub rows: [ConstSpellRow; S],
+}
+
+impl<const S: usize> ConstSpell<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 692 {
+            panic!("invalid record size, expected 692")
+        }
+
+        if header.field_count != 173 {
+            panic!("invalid field count, expected 173")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellRow {
+                id: SpellKey::new(0),
+                school: ResistancesKey::new(0),
+                category: SpellCategoryKey::new(0),
+                cast_ui: 0,
+                dispel_type: SpellDispelTypeKey::new(0),
+                mechanic: SpellMechanicKey::new(0),
+                attributes: Attributes::new(0),
+                attributes_ex1: AttributesEx1::new(0),
+                attributes_ex2: AttributesEx2::new(0),
+                attributes_ex3: AttributesEx3::new(0),
+                attributes_ex4: AttributesEx4::new(0),
+                shapeshift_mask: SpellShapeshiftFormKey::new(0),
+                shapeshift_exclude: SpellShapeshiftFormKey::new(0),
+                targets: 0,
+                target_creature_type: CreatureTypeKey::new(0),
+                requires_spell_focus: SpellFocusObjectKey::new(0),
+                caster_aura_state: 0,
+                target_aura_state: 0,
+                casting_time_index: SpellCastTimesKey::new(0),
+                recovery_time: 0,
+                category_recovery_time: 0,
+                aura_interrupt_flags: 0,
+                channel_interrupt_flags: 0,
+                proc_type_mask: 0,
+                proc_chance: 0,
+                proc_charges: 0,
+                max_level: 0,
+                base_level: 0,
+                spell_level: 0,
+                duration: SpellDurationKey::new(0),
+                power_type: 0,
+                mana_cost: 0,
+                mana_cost_per_level: 0,
+                mana_cost_per_second: 0,
+                mana_cost_per_second_per_level: 0,
+                range: SpellRangeKey::new(0),
+                speed: 0.0,
+                modal_next_spell: SpellKey::new(0),
+                stack_amount: 0,
+                totem: [0; 2],
+                reagent: [0; 8],
+                reagent_count: [0; 8],
+                equipped_item_class: ItemClassKey::new(0),
+                equipped_item_subclass: 0,
+                equipped_item_inventory_type: 0,
+                effect: [0; 3],
+                effect_die_sides: [0; 3],
+                effect_base_dice: [0; 3],
+                effect_dice_per_level: [0.0; 3],
+                effect_real_points_per_level: [0.0; 3],
+                effect_base_points: [0; 3],
+                effect_mechanic: [0; 3],
+                implicit_target_a: [0; 3],
+                implicit_target_b: [0; 3],
+                effect_radius: [0; 3],
+                effect_aura: [EffectAura::None; 3],
+                effect_amplitude: [0.0; 3],
+                effect_multiple_values: [0.0; 3],
+                effect_chain_target: [0; 3],
+                effect_item_type: [0; 3],
+                effect_misc_value: [0; 3],
+                effect_trigger_spell: [0; 3],
+                effect_points_per_combo: [0.0; 3],
+                spell_visual: [0; 2],
+                spell_icon: SpellIconKey::new(0),
+                active_icon: 0,
+                spell_priority: 0,
+                unknown_flag: 0,
+                name: crate::ConstLocalizedString::empty(),
+                name_subtext: crate::ConstLocalizedString::empty(),
+                description: crate::ConstLocalizedString::empty(),
+                aura_description: crate::ConstLocalizedString::empty(),
+                mana_cost_percent: 0,
+                start_recovery_category: 0,
+                start_recovery_time: 0,
+                max_target_level: 0,
+                spell_class_set: ChrClassesKey::new(0),
+                spell_class_mask: [0; 2],
+                max_targets: 0,
+                defence_type: 0,
+                prevention_type: 0,
+                stance_bar_order: 0,
+                damage_multiplier: [0.0; 3],
+                min_faction: 0,
+                min_reputation: 0,
+                required_aura_vision: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Spell) uint32
+            let id = SpellKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // school: foreign_key (Resistances) uint32
+            let school = ResistancesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // category: foreign_key (SpellCategory) uint32
+            let category = SpellCategoryKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // cast_ui: int32
+            let cast_ui = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // dispel_type: foreign_key (SpellDispelType) uint32
+            let dispel_type = SpellDispelTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // mechanic: foreign_key (SpellMechanic) uint32
+            let mechanic = SpellMechanicKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // attributes: Attributes
+            let attributes = Attributes::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // attributes_ex1: AttributesEx1
+            let attributes_ex1 = AttributesEx1::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // attributes_ex2: AttributesEx2
+            let attributes_ex2 = AttributesEx2::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // attributes_ex3: AttributesEx3
+            let attributes_ex3 = AttributesEx3::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // attributes_ex4: AttributesEx4
+            let attributes_ex4 = AttributesEx4::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // shapeshift_mask: foreign_key (SpellShapeshiftForm) uint32
+            let shapeshift_mask = SpellShapeshiftFormKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // shapeshift_exclude: foreign_key (SpellShapeshiftForm) uint32
+            let shapeshift_exclude = SpellShapeshiftFormKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // targets: int32
+            let targets = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // target_creature_type: foreign_key (CreatureType) uint32
+            let target_creature_type = CreatureTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // requires_spell_focus: foreign_key (SpellFocusObject) uint32
+            let requires_spell_focus = SpellFocusObjectKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // caster_aura_state: int32
+            let caster_aura_state = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // target_aura_state: int32
+            let target_aura_state = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // casting_time_index: foreign_key (SpellCastTimes) uint32
+            let casting_time_index = SpellCastTimesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // recovery_time: int32
+            let recovery_time = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // category_recovery_time: int32
+            let category_recovery_time = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // aura_interrupt_flags: int32
+            let aura_interrupt_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // channel_interrupt_flags: int32
+            let channel_interrupt_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // proc_type_mask: int32
+            let proc_type_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // proc_chance: int32
+            let proc_chance = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // proc_charges: int32
+            let proc_charges = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_level: int32
+            let max_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // base_level: int32
+            let base_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // spell_level: int32
+            let spell_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // duration: foreign_key (SpellDuration) uint32
+            let duration = SpellDurationKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // power_type: int32
+            let power_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // mana_cost: int32
+            let mana_cost = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // mana_cost_per_level: int32
+            let mana_cost_per_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // mana_cost_per_second: int32
+            let mana_cost_per_second = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // mana_cost_per_second_per_level: int32
+            let mana_cost_per_second_per_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // range: foreign_key (SpellRange) uint32
+            let range = SpellRangeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // speed: float
+            let speed = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // modal_next_spell: foreign_key (Spell) uint32
+            let modal_next_spell = SpellKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // stack_amount: int32
+            let stack_amount = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // totem: int32[2]
+            let totem = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // reagent: int32[8]
+            let reagent = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // reagent_count: int32[8]
+            let reagent_count = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // equipped_item_class: foreign_key (ItemClass) uint32
+            let equipped_item_class = ItemClassKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // equipped_item_subclass: uint32
+            let equipped_item_subclass = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // equipped_item_inventory_type: int32
+            let equipped_item_inventory_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // effect: int32[3]
+            let effect = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_die_sides: int32[3]
+            let effect_die_sides = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_base_dice: int32[3]
+            let effect_base_dice = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_dice_per_level: float[3]
+            let effect_dice_per_level = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_real_points_per_level: float[3]
+            let effect_real_points_per_level = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_base_points: int32[3]
+            let effect_base_points = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_mechanic: uint32[3]
+            let effect_mechanic = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // implicit_target_a: int32[3]
+            let implicit_target_a = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // implicit_target_b: int32[3]
+            let implicit_target_b = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_radius: uint32[3]
+            let effect_radius = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_aura: EffectAura[3]
+            let effect_aura = {
+                let mut a = [EffectAura::None; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = match EffectAura::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                        Some(e) => e,
+                        None => panic!(),
+                    };
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_amplitude: float[3]
+            let effect_amplitude = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_multiple_values: float[3]
+            let effect_multiple_values = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_chain_target: int32[3]
+            let effect_chain_target = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_item_type: int32[3]
+            let effect_item_type = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_misc_value: uint32[3]
+            let effect_misc_value = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_trigger_spell: uint32[3]
+            let effect_trigger_spell = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_points_per_combo: float[3]
+            let effect_points_per_combo = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // spell_visual: int32[2]
+            let spell_visual = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // spell_icon: foreign_key (SpellIcon) uint32
+            let spell_icon = SpellIconKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // active_icon: int32
+            let active_icon = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // spell_priority: int32
+            let spell_priority = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // unknown_flag: int32
+            let unknown_flag = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // name_subtext: string_ref_loc
+            let name_subtext = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // description: string_ref_loc
+            let description = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // aura_description: string_ref_loc
+            let aura_description = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // mana_cost_percent: int32
+            let mana_cost_percent = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // start_recovery_category: int32
+            let start_recovery_category = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // start_recovery_time: int32
+            let start_recovery_time = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_target_level: int32
+            let max_target_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // spell_class_set: foreign_key (ChrClasses) uint32
+            let spell_class_set = ChrClassesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // spell_class_mask: int32[2]
+            let spell_class_mask = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // max_targets: int32
+            let max_targets = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // defence_type: int32
+            let defence_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // prevention_type: int32
+            let prevention_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // stance_bar_order: int32
+            let stance_bar_order = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // damage_multiplier: float[3]
+            let damage_multiplier = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // min_faction: int32
+            let min_faction = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_reputation: int32
+            let min_reputation = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // required_aura_vision: int32
+            let required_aura_vision = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstSpellRow {
+                id,
+                school,
+                category,
+                cast_ui,
+                dispel_type,
+                mechanic,
+                attributes,
+                attributes_ex1,
+                attributes_ex2,
+                attributes_ex3,
+                attributes_ex4,
+                shapeshift_mask,
+                shapeshift_exclude,
+                targets,
+                target_creature_type,
+                requires_spell_focus,
+                caster_aura_state,
+                target_aura_state,
+                casting_time_index,
+                recovery_time,
+                category_recovery_time,
+                aura_interrupt_flags,
+                channel_interrupt_flags,
+                proc_type_mask,
+                proc_chance,
+                proc_charges,
+                max_level,
+                base_level,
+                spell_level,
+                duration,
+                power_type,
+                mana_cost,
+                mana_cost_per_level,
+                mana_cost_per_second,
+                mana_cost_per_second_per_level,
+                range,
+                speed,
+                modal_next_spell,
+                stack_amount,
+                totem,
+                reagent,
+                reagent_count,
+                equipped_item_class,
+                equipped_item_subclass,
+                equipped_item_inventory_type,
+                effect,
+                effect_die_sides,
+                effect_base_dice,
+                effect_dice_per_level,
+                effect_real_points_per_level,
+                effect_base_points,
+                effect_mechanic,
+                implicit_target_a,
+                implicit_target_b,
+                effect_radius,
+                effect_aura,
+                effect_amplitude,
+                effect_multiple_values,
+                effect_chain_target,
+                effect_item_type,
+                effect_misc_value,
+                effect_trigger_spell,
+                effect_points_per_combo,
+                spell_visual,
+                spell_icon,
+                active_icon,
+                spell_priority,
+                unknown_flag,
+                name,
+                name_subtext,
+                description,
+                aura_description,
+                mana_cost_percent,
+                start_recovery_category,
+                start_recovery_time,
+                max_target_level,
+                spell_class_set,
+                spell_class_mask,
+                max_targets,
+                defence_type,
+                prevention_type,
+                stance_bar_order,
+                damage_multiplier,
+                min_faction,
+                min_reputation,
+                required_aura_vision,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
@@ -2195,6 +3005,96 @@ pub struct SpellRow {
     pub name_subtext: LocalizedString,
     pub description: LocalizedString,
     pub aura_description: LocalizedString,
+    pub mana_cost_percent: i32,
+    pub start_recovery_category: i32,
+    pub start_recovery_time: i32,
+    pub max_target_level: i32,
+    pub spell_class_set: ChrClassesKey,
+    pub spell_class_mask: [i32; 2],
+    pub max_targets: i32,
+    pub defence_type: i32,
+    pub prevention_type: i32,
+    pub stance_bar_order: i32,
+    pub damage_multiplier: [f32; 3],
+    pub min_faction: i32,
+    pub min_reputation: i32,
+    pub required_aura_vision: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellRow {
+    pub id: SpellKey,
+    pub school: ResistancesKey,
+    pub category: SpellCategoryKey,
+    pub cast_ui: i32,
+    pub dispel_type: SpellDispelTypeKey,
+    pub mechanic: SpellMechanicKey,
+    pub attributes: Attributes,
+    pub attributes_ex1: AttributesEx1,
+    pub attributes_ex2: AttributesEx2,
+    pub attributes_ex3: AttributesEx3,
+    pub attributes_ex4: AttributesEx4,
+    pub shapeshift_mask: SpellShapeshiftFormKey,
+    pub shapeshift_exclude: SpellShapeshiftFormKey,
+    pub targets: i32,
+    pub target_creature_type: CreatureTypeKey,
+    pub requires_spell_focus: SpellFocusObjectKey,
+    pub caster_aura_state: i32,
+    pub target_aura_state: i32,
+    pub casting_time_index: SpellCastTimesKey,
+    pub recovery_time: i32,
+    pub category_recovery_time: i32,
+    pub aura_interrupt_flags: i32,
+    pub channel_interrupt_flags: i32,
+    pub proc_type_mask: i32,
+    pub proc_chance: i32,
+    pub proc_charges: i32,
+    pub max_level: i32,
+    pub base_level: i32,
+    pub spell_level: i32,
+    pub duration: SpellDurationKey,
+    pub power_type: i32,
+    pub mana_cost: i32,
+    pub mana_cost_per_level: i32,
+    pub mana_cost_per_second: i32,
+    pub mana_cost_per_second_per_level: i32,
+    pub range: SpellRangeKey,
+    pub speed: f32,
+    pub modal_next_spell: SpellKey,
+    pub stack_amount: i32,
+    pub totem: [i32; 2],
+    pub reagent: [i32; 8],
+    pub reagent_count: [i32; 8],
+    pub equipped_item_class: ItemClassKey,
+    pub equipped_item_subclass: u32,
+    pub equipped_item_inventory_type: i32,
+    pub effect: [i32; 3],
+    pub effect_die_sides: [i32; 3],
+    pub effect_base_dice: [i32; 3],
+    pub effect_dice_per_level: [f32; 3],
+    pub effect_real_points_per_level: [f32; 3],
+    pub effect_base_points: [i32; 3],
+    pub effect_mechanic: [u32; 3],
+    pub implicit_target_a: [i32; 3],
+    pub implicit_target_b: [i32; 3],
+    pub effect_radius: [u32; 3],
+    pub effect_aura: [EffectAura; 3],
+    pub effect_amplitude: [f32; 3],
+    pub effect_multiple_values: [f32; 3],
+    pub effect_chain_target: [i32; 3],
+    pub effect_item_type: [i32; 3],
+    pub effect_misc_value: [u32; 3],
+    pub effect_trigger_spell: [u32; 3],
+    pub effect_points_per_combo: [f32; 3],
+    pub spell_visual: [i32; 2],
+    pub spell_icon: SpellIconKey,
+    pub active_icon: i32,
+    pub spell_priority: i32,
+    pub unknown_flag: i32,
+    pub name: ConstLocalizedString,
+    pub name_subtext: ConstLocalizedString,
+    pub description: ConstLocalizedString,
+    pub aura_description: ConstLocalizedString,
     pub mana_cost_percent: i32,
     pub start_recovery_category: i32,
     pub start_recovery_time: i32,

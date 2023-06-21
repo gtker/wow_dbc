@@ -145,6 +145,59 @@ impl ChatProfanity {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstChatProfanity<const S: usize> {
+    pub rows: [ConstChatProfanityRow; S],
+}
+
+impl<const S: usize> ConstChatProfanity<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstChatProfanityRow {
+                id: ChatProfanityKey::new(0),
+                text: "",
+                language: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ChatProfanity) int32
+            let id = ChatProfanityKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // text: string_ref
+            let text = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // language: int32
+            let language = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstChatProfanityRow {
+                id,
+                text,
+                language,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChatProfanityKey {
     pub id: i32
@@ -196,6 +249,13 @@ impl From<u16> for ChatProfanityKey {
 pub struct ChatProfanityRow {
     pub id: ChatProfanityKey,
     pub text: String,
+    pub language: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstChatProfanityRow {
+    pub id: ChatProfanityKey,
+    pub text: &'static str,
     pub language: i32,
 }
 

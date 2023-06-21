@@ -292,6 +292,185 @@ impl SoundProviderPreferences {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstSoundProviderPreferences<const S: usize> {
+    pub rows: [ConstSoundProviderPreferencesRow; S],
+}
+
+impl<const S: usize> ConstSoundProviderPreferences<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 96 {
+            panic!("invalid record size, expected 96")
+        }
+
+        if header.field_count != 24 {
+            panic!("invalid field count, expected 24")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSoundProviderPreferencesRow {
+                id: SoundProviderPreferencesKey::new(0),
+                description: "",
+                flags: 0,
+                e_a_x_environment_selection: 0,
+                e_a_x_decay_time: 0.0,
+                e_a_x2_environment_size: 0.0,
+                e_a_x2_environment_diffusion: 0.0,
+                e_a_x2_room: 0,
+                e_a_x2_room_h_f: 0,
+                e_a_x2_decay_h_f_ratio: 0.0,
+                e_a_x2_reflections: 0,
+                e_a_x2_reflections_delay: 0.0,
+                e_a_x2_reverb: 0,
+                e_a_x2_reverb_delay: 0.0,
+                e_a_x2_room_rolloff: 0.0,
+                e_a_x2_air_absorption: 0.0,
+                e_a_x3_room_l_f: 0,
+                e_a_x3_decay_l_f_ratio: 0.0,
+                e_a_x3_echo_time: 0.0,
+                e_a_x3_echo_depth: 0.0,
+                e_a_x3_modulation_time: 0.0,
+                e_a_x3_modulation_depth: 0.0,
+                e_a_x3_h_f_reference: 0.0,
+                e_a_x3_l_f_reference: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundProviderPreferences) int32
+            let id = SoundProviderPreferencesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // description: string_ref
+            let description = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x_environment_selection: int32
+            let e_a_x_environment_selection = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x_decay_time: float
+            let e_a_x_decay_time = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_environment_size: float
+            let e_a_x2_environment_size = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_environment_diffusion: float
+            let e_a_x2_environment_diffusion = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_room: int32
+            let e_a_x2_room = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_room_h_f: int32
+            let e_a_x2_room_h_f = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_decay_h_f_ratio: float
+            let e_a_x2_decay_h_f_ratio = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_reflections: int32
+            let e_a_x2_reflections = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_reflections_delay: float
+            let e_a_x2_reflections_delay = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_reverb: int32
+            let e_a_x2_reverb = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_reverb_delay: float
+            let e_a_x2_reverb_delay = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_room_rolloff: float
+            let e_a_x2_room_rolloff = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x2_air_absorption: float
+            let e_a_x2_air_absorption = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_room_l_f: int32
+            let e_a_x3_room_l_f = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_decay_l_f_ratio: float
+            let e_a_x3_decay_l_f_ratio = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_echo_time: float
+            let e_a_x3_echo_time = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_echo_depth: float
+            let e_a_x3_echo_depth = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_modulation_time: float
+            let e_a_x3_modulation_time = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_modulation_depth: float
+            let e_a_x3_modulation_depth = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_h_f_reference: float
+            let e_a_x3_h_f_reference = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // e_a_x3_l_f_reference: float
+            let e_a_x3_l_f_reference = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstSoundProviderPreferencesRow {
+                id,
+                description,
+                flags,
+                e_a_x_environment_selection,
+                e_a_x_decay_time,
+                e_a_x2_environment_size,
+                e_a_x2_environment_diffusion,
+                e_a_x2_room,
+                e_a_x2_room_h_f,
+                e_a_x2_decay_h_f_ratio,
+                e_a_x2_reflections,
+                e_a_x2_reflections_delay,
+                e_a_x2_reverb,
+                e_a_x2_reverb_delay,
+                e_a_x2_room_rolloff,
+                e_a_x2_air_absorption,
+                e_a_x3_room_l_f,
+                e_a_x3_decay_l_f_ratio,
+                e_a_x3_echo_time,
+                e_a_x3_echo_depth,
+                e_a_x3_modulation_time,
+                e_a_x3_modulation_depth,
+                e_a_x3_h_f_reference,
+                e_a_x3_l_f_reference,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundProviderPreferencesKey {
     pub id: i32
@@ -343,6 +522,34 @@ impl From<u16> for SoundProviderPreferencesKey {
 pub struct SoundProviderPreferencesRow {
     pub id: SoundProviderPreferencesKey,
     pub description: String,
+    pub flags: i32,
+    pub e_a_x_environment_selection: i32,
+    pub e_a_x_decay_time: f32,
+    pub e_a_x2_environment_size: f32,
+    pub e_a_x2_environment_diffusion: f32,
+    pub e_a_x2_room: i32,
+    pub e_a_x2_room_h_f: i32,
+    pub e_a_x2_decay_h_f_ratio: f32,
+    pub e_a_x2_reflections: i32,
+    pub e_a_x2_reflections_delay: f32,
+    pub e_a_x2_reverb: i32,
+    pub e_a_x2_reverb_delay: f32,
+    pub e_a_x2_room_rolloff: f32,
+    pub e_a_x2_air_absorption: f32,
+    pub e_a_x3_room_l_f: i32,
+    pub e_a_x3_decay_l_f_ratio: f32,
+    pub e_a_x3_echo_time: f32,
+    pub e_a_x3_echo_depth: f32,
+    pub e_a_x3_modulation_time: f32,
+    pub e_a_x3_modulation_depth: f32,
+    pub e_a_x3_h_f_reference: f32,
+    pub e_a_x3_l_f_reference: f32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSoundProviderPreferencesRow {
+    pub id: SoundProviderPreferencesKey,
+    pub description: &'static str,
     pub flags: i32,
     pub e_a_x_environment_selection: i32,
     pub e_a_x_decay_time: f32,

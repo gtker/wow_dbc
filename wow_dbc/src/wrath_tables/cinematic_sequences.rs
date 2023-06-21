@@ -115,6 +115,66 @@ impl Indexable for CinematicSequences {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCinematicSequences<const S: usize> {
+    pub rows: [CinematicSequencesRow; S],
+}
+
+impl<const S: usize> ConstCinematicSequences<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 40 {
+            panic!("invalid record size, expected 40")
+        }
+
+        if header.field_count != 10 {
+            panic!("invalid field count, expected 10")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CinematicSequencesRow {
+                id: CinematicSequencesKey::new(0),
+                sound_id: SoundEntriesKey::new(0),
+                camera: [0; 8],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CinematicSequences) int32
+            let id = CinematicSequencesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_id: foreign_key (SoundEntries) int32
+            let sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // camera: int32[8]
+            let camera = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = CinematicSequencesRow {
+                id,
+                sound_id,
+                camera,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CinematicSequencesKey {
     pub id: i32

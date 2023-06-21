@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 use crate::wrath_tables::chr_races::*;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -175,6 +175,125 @@ impl BarberShopStyle {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstBarberShopStyle<const S: usize> {
+    pub rows: [ConstBarberShopStyleRow; S],
+}
+
+impl<const S: usize> ConstBarberShopStyle<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 160 {
+            panic!("invalid record size, expected 160")
+        }
+
+        if header.field_count != 40 {
+            panic!("invalid field count, expected 40")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstBarberShopStyleRow {
+                id: BarberShopStyleKey::new(0),
+                ty: 0,
+                display_name_lang: crate::ConstExtendedLocalizedString::empty(),
+                description_lang: crate::ConstExtendedLocalizedString::empty(),
+                cost_modifier: 0.0,
+                race: ChrRacesKey::new(0),
+                sex: 0,
+                data: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (BarberShopStyle) int32
+            let id = BarberShopStyleKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // ty: int32
+            let ty = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // display_name_lang: string_ref_loc (Extended)
+            let display_name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // description_lang: string_ref_loc (Extended)
+            let description_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // cost_modifier: float
+            let cost_modifier = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // race: foreign_key (ChrRaces) int32
+            let race = ChrRacesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sex: int32
+            let sex = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // data: int32
+            let data = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstBarberShopStyleRow {
+                id,
+                ty,
+                display_name_lang,
+                description_lang,
+                cost_modifier,
+                race,
+                sex,
+                data,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct BarberShopStyleKey {
     pub id: i32
@@ -228,6 +347,18 @@ pub struct BarberShopStyleRow {
     pub ty: i32,
     pub display_name_lang: ExtendedLocalizedString,
     pub description_lang: ExtendedLocalizedString,
+    pub cost_modifier: f32,
+    pub race: ChrRacesKey,
+    pub sex: i32,
+    pub data: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstBarberShopStyleRow {
+    pub id: BarberShopStyleKey,
+    pub ty: i32,
+    pub display_name_lang: ConstExtendedLocalizedString,
+    pub description_lang: ConstExtendedLocalizedString,
     pub cost_modifier: f32,
     pub race: ChrRacesKey,
     pub sex: i32,

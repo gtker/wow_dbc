@@ -133,6 +133,75 @@ impl Indexable for PvpDifficulty {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstPvpDifficulty<const S: usize> {
+    pub rows: [PvpDifficultyRow; S],
+}
+
+impl<const S: usize> ConstPvpDifficulty<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 24 {
+            panic!("invalid record size, expected 24")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            PvpDifficultyRow {
+                id: PvpDifficultyKey::new(0),
+                map_id: MapKey::new(0),
+                range_index: 0,
+                min_level: 0,
+                max_level: 0,
+                difficulty: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (PvpDifficulty) int32
+            let id = PvpDifficultyKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_id: foreign_key (Map) int32
+            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // range_index: int32
+            let range_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_level: int32
+            let min_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_level: int32
+            let max_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // difficulty: int32
+            let difficulty = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = PvpDifficultyRow {
+                id,
+                map_id,
+                range_index,
+                min_level,
+                max_level,
+                difficulty,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct PvpDifficultyKey {
     pub id: i32

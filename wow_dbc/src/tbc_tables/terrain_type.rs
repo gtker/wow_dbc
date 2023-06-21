@@ -152,9 +152,89 @@ impl TerrainType {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstTerrainType<const S: usize> {
+    pub rows: [ConstTerrainTypeRow; S],
+}
+
+impl<const S: usize> ConstTerrainType<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 24 {
+            panic!("invalid record size, expected 24")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstTerrainTypeRow {
+                terrain_id: 0,
+                terrain_desc: "",
+                footstep_spray_run: 0,
+                footstep_spray_walk: 0,
+                sound_id: 0,
+                flags: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // terrain_id: int32
+            let terrain_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // terrain_desc: string_ref
+            let terrain_desc = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // footstep_spray_run: int32
+            let footstep_spray_run = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // footstep_spray_walk: int32
+            let footstep_spray_walk = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_id: int32
+            let sound_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstTerrainTypeRow {
+                terrain_id,
+                terrain_desc,
+                footstep_spray_run,
+                footstep_spray_walk,
+                sound_id,
+                flags,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TerrainTypeRow {
     pub terrain_id: i32,
     pub terrain_desc: String,
+    pub footstep_spray_run: i32,
+    pub footstep_spray_walk: i32,
+    pub sound_id: i32,
+    pub flags: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstTerrainTypeRow {
+    pub terrain_id: i32,
+    pub terrain_desc: &'static str,
     pub footstep_spray_run: i32,
     pub footstep_spray_walk: i32,
     pub sound_id: i32,

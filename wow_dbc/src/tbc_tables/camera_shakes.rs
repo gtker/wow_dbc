@@ -146,6 +146,87 @@ impl Indexable for CameraShakes {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCameraShakes<const S: usize> {
+    pub rows: [CameraShakesRow; S],
+}
+
+impl<const S: usize> ConstCameraShakes<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CameraShakesRow {
+                id: CameraShakesKey::new(0),
+                shake_type: 0,
+                direction: 0,
+                amplitude: 0.0,
+                frequency: 0.0,
+                duration: 0.0,
+                phase: 0.0,
+                coefficient: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CameraShakes) int32
+            let id = CameraShakesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // shake_type: int32
+            let shake_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // direction: int32
+            let direction = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // amplitude: float
+            let amplitude = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // frequency: float
+            let frequency = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // duration: float
+            let duration = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // phase: float
+            let phase = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // coefficient: float
+            let coefficient = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = CameraShakesRow {
+                id,
+                shake_type,
+                direction,
+                amplitude,
+                frequency,
+                duration,
+                phase,
+                coefficient,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CameraShakesKey {
     pub id: i32

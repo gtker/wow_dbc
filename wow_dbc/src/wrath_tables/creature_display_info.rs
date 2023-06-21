@@ -257,6 +257,134 @@ impl CreatureDisplayInfo {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstCreatureDisplayInfo<const S: usize> {
+    pub rows: [ConstCreatureDisplayInfoRow; S],
+}
+
+impl<const S: usize> ConstCreatureDisplayInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 64 {
+            panic!("invalid record size, expected 64")
+        }
+
+        if header.field_count != 16 {
+            panic!("invalid field count, expected 16")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstCreatureDisplayInfoRow {
+                id: CreatureDisplayInfoKey::new(0),
+                model_id: CreatureModelDataKey::new(0),
+                sound_id: CreatureSoundDataKey::new(0),
+                extended_display_info_id: CreatureDisplayInfoExtraKey::new(0),
+                creature_model_scale: 0.0,
+                creature_model_alpha: 0,
+                texture_variation: [""; 3],
+                portrait_texture_name: "",
+                size_class: 0,
+                blood_id: UnitBloodKey::new(0),
+                n_p_c_sound_id: NPCSoundsKey::new(0),
+                particle_color_id: ParticleColorKey::new(0),
+                creature_geoset_data: 0,
+                object_effect_package_id: ObjectEffectPackageKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureDisplayInfo) int32
+            let id = CreatureDisplayInfoKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // model_id: foreign_key (CreatureModelData) int32
+            let model_id = CreatureModelDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_id: foreign_key (CreatureSoundData) int32
+            let sound_id = CreatureSoundDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // extended_display_info_id: foreign_key (CreatureDisplayInfoExtra) int32
+            let extended_display_info_id = CreatureDisplayInfoExtraKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // creature_model_scale: float
+            let creature_model_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // creature_model_alpha: int32
+            let creature_model_alpha = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture_variation: string_ref[3]
+            let texture_variation = {
+                let mut a = [""; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // portrait_texture_name: string_ref
+            let portrait_texture_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // size_class: int32
+            let size_class = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // blood_id: foreign_key (UnitBlood) int32
+            let blood_id = UnitBloodKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // n_p_c_sound_id: foreign_key (NPCSounds) int32
+            let n_p_c_sound_id = NPCSoundsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // particle_color_id: foreign_key (ParticleColor) int32
+            let particle_color_id = ParticleColorKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // creature_geoset_data: int32
+            let creature_geoset_data = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // object_effect_package_id: foreign_key (ObjectEffectPackage) int32
+            let object_effect_package_id = ObjectEffectPackageKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstCreatureDisplayInfoRow {
+                id,
+                model_id,
+                sound_id,
+                extended_display_info_id,
+                creature_model_scale,
+                creature_model_alpha,
+                texture_variation,
+                portrait_texture_name,
+                size_class,
+                blood_id,
+                n_p_c_sound_id,
+                particle_color_id,
+                creature_geoset_data,
+                object_effect_package_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureDisplayInfoKey {
     pub id: i32
@@ -314,6 +442,24 @@ pub struct CreatureDisplayInfoRow {
     pub creature_model_alpha: i32,
     pub texture_variation: [String; 3],
     pub portrait_texture_name: String,
+    pub size_class: i32,
+    pub blood_id: UnitBloodKey,
+    pub n_p_c_sound_id: NPCSoundsKey,
+    pub particle_color_id: ParticleColorKey,
+    pub creature_geoset_data: i32,
+    pub object_effect_package_id: ObjectEffectPackageKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCreatureDisplayInfoRow {
+    pub id: CreatureDisplayInfoKey,
+    pub model_id: CreatureModelDataKey,
+    pub sound_id: CreatureSoundDataKey,
+    pub extended_display_info_id: CreatureDisplayInfoExtraKey,
+    pub creature_model_scale: f32,
+    pub creature_model_alpha: i32,
+    pub texture_variation: [&'static str; 3],
+    pub portrait_texture_name: &'static str,
     pub size_class: i32,
     pub blood_id: UnitBloodKey,
     pub n_p_c_sound_id: NPCSoundsKey,

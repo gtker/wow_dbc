@@ -148,6 +148,87 @@ impl Indexable for DungeonMap {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstDungeonMap<const S: usize> {
+    pub rows: [DungeonMapRow; S],
+}
+
+impl<const S: usize> ConstDungeonMap<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            DungeonMapRow {
+                id: DungeonMapKey::new(0),
+                map_id: MapKey::new(0),
+                floor_index: 0,
+                min_x: 0.0,
+                max_x: 0.0,
+                min_y: 0.0,
+                max_y: 0.0,
+                parent_world_map_id: AreaTableKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (DungeonMap) int32
+            let id = DungeonMapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_id: foreign_key (Map) int32
+            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // floor_index: int32
+            let floor_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_x: float
+            let min_x = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_x: float
+            let max_x = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_y: float
+            let min_y = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_y: float
+            let max_y = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // parent_world_map_id: foreign_key (AreaTable) int32
+            let parent_world_map_id = AreaTableKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = DungeonMapRow {
+                id,
+                map_id,
+                floor_index,
+                min_x,
+                max_x,
+                min_y,
+                max_y,
+                parent_world_map_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DungeonMapKey {
     pub id: i32

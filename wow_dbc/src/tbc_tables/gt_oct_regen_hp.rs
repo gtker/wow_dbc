@@ -83,6 +83,44 @@ impl DbcTable for gtOCTRegenHP {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstgtOCTRegenHP<const S: usize> {
+    pub rows: [gtOCTRegenHPRow; S],
+}
+
+impl<const S: usize> ConstgtOCTRegenHP<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 4 {
+            panic!("invalid record size, expected 4")
+        }
+
+        if header.field_count != 1 {
+            panic!("invalid field count, expected 1")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            gtOCTRegenHPRow {
+                data: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // data: float
+            let data = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = gtOCTRegenHPRow {
+                data,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct gtOCTRegenHPRow {
     pub data: f32,
 }

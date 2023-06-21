@@ -126,6 +126,69 @@ impl Indexable for VehicleUIIndSeat {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstVehicleUIIndSeat<const S: usize> {
+    pub rows: [VehicleUIIndSeatRow; S],
+}
+
+impl<const S: usize> ConstVehicleUIIndSeat<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 20 {
+            panic!("invalid record size, expected 20")
+        }
+
+        if header.field_count != 5 {
+            panic!("invalid field count, expected 5")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            VehicleUIIndSeatRow {
+                id: VehicleUIIndSeatKey::new(0),
+                vehicle_u_i_indicator_id: VehicleUIIndicatorKey::new(0),
+                virtual_seat_index: 0,
+                x_pos: 0.0,
+                y_pos: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (VehicleUIIndSeat) int32
+            let id = VehicleUIIndSeatKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // vehicle_u_i_indicator_id: foreign_key (VehicleUIIndicator) int32
+            let vehicle_u_i_indicator_id = VehicleUIIndicatorKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // virtual_seat_index: int32
+            let virtual_seat_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // x_pos: float
+            let x_pos = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // y_pos: float
+            let y_pos = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = VehicleUIIndSeatRow {
+                id,
+                vehicle_u_i_indicator_id,
+                virtual_seat_index,
+                x_pos,
+                y_pos,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VehicleUIIndSeatKey {
     pub id: i32

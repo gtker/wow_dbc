@@ -180,6 +180,89 @@ impl SpellChainEffects {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstSpellChainEffects<const S: usize> {
+    pub rows: [ConstSpellChainEffectsRow; S],
+}
+
+impl<const S: usize> ConstSpellChainEffects<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellChainEffectsRow {
+                id: SpellChainEffectsKey::new(0),
+                average_seg_len: 0.0,
+                width: 0.0,
+                noise_scale: 0.0,
+                tex_coord_scale: 0.0,
+                seg_duration: 0,
+                seg_delay: 0,
+                texture: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellChainEffects) uint32
+            let id = SpellChainEffectsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // average_seg_len: float
+            let average_seg_len = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // width: float
+            let width = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // noise_scale: float
+            let noise_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // tex_coord_scale: float
+            let tex_coord_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // seg_duration: int32
+            let seg_duration = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // seg_delay: int32
+            let seg_delay = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture: string_ref
+            let texture = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstSpellChainEffectsRow {
+                id,
+                average_seg_len,
+                width,
+                noise_scale,
+                tex_coord_scale,
+                seg_duration,
+                seg_delay,
+                texture,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellChainEffectsKey {
     pub id: u32
@@ -223,5 +306,17 @@ pub struct SpellChainEffectsRow {
     pub seg_duration: i32,
     pub seg_delay: i32,
     pub texture: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellChainEffectsRow {
+    pub id: SpellChainEffectsKey,
+    pub average_seg_len: f32,
+    pub width: f32,
+    pub noise_scale: f32,
+    pub tex_coord_scale: f32,
+    pub seg_duration: i32,
+    pub seg_delay: i32,
+    pub texture: &'static str,
 }
 

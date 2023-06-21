@@ -131,8 +131,67 @@ impl GameTables {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstGameTables<const S: usize> {
+    pub rows: [ConstGameTablesRow; S],
+}
+
+impl<const S: usize> ConstGameTables<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstGameTablesRow {
+                name: "",
+                num_rows: 0,
+                num_columns: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // num_rows: int32
+            let num_rows = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // num_columns: int32
+            let num_columns = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstGameTablesRow {
+                name,
+                num_rows,
+                num_columns,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GameTablesRow {
     pub name: String,
+    pub num_rows: i32,
+    pub num_columns: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstGameTablesRow {
+    pub name: &'static str,
     pub num_rows: i32,
     pub num_columns: i32,
 }

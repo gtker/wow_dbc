@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionGroup {
@@ -155,6 +155,83 @@ impl FactionGroup {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstFactionGroup<const S: usize> {
+    pub rows: [ConstFactionGroupRow; S],
+}
+
+impl<const S: usize> ConstFactionGroup<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 80 {
+            panic!("invalid record size, expected 80")
+        }
+
+        if header.field_count != 20 {
+            panic!("invalid field count, expected 20")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstFactionGroupRow {
+                id: FactionGroupKey::new(0),
+                mask_id: 0,
+                internal_name: "",
+                name_lang: crate::ConstExtendedLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (FactionGroup) int32
+            let id = FactionGroupKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // mask_id: int32
+            let mask_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // internal_name: string_ref
+            let internal_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            rows[i] = ConstFactionGroupRow {
+                id,
+                mask_id,
+                internal_name,
+                name_lang,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct FactionGroupKey {
     pub id: i32
@@ -208,5 +285,13 @@ pub struct FactionGroupRow {
     pub mask_id: i32,
     pub internal_name: String,
     pub name_lang: ExtendedLocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstFactionGroupRow {
+    pub id: FactionGroupKey,
+    pub mask_id: i32,
+    pub internal_name: &'static str,
+    pub name_lang: ConstExtendedLocalizedString,
 }
 

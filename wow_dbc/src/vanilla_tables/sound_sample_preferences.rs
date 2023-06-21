@@ -107,6 +107,60 @@ impl Indexable for SoundSamplePreferences {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSoundSamplePreferences<const S: usize> {
+    pub rows: [SoundSamplePreferencesRow; S],
+}
+
+impl<const S: usize> ConstSoundSamplePreferences<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 68 {
+            panic!("invalid record size, expected 68")
+        }
+
+        if header.field_count != 17 {
+            panic!("invalid field count, expected 17")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SoundSamplePreferencesRow {
+                id: SoundSamplePreferencesKey::new(0),
+                unknown: [0; 16],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundSamplePreferences) uint32
+            let id = SoundSamplePreferencesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // unknown: int32[16]
+            let unknown = {
+                let mut a = [0; 16];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SoundSamplePreferencesRow {
+                id,
+                unknown,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundSamplePreferencesKey {
     pub id: u32

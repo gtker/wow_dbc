@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Faction {
@@ -207,6 +207,151 @@ impl Faction {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstFaction<const S: usize> {
+    pub rows: [ConstFactionRow; S],
+}
+
+impl<const S: usize> ConstFaction<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 148 {
+            panic!("invalid record size, expected 148")
+        }
+
+        if header.field_count != 37 {
+            panic!("invalid field count, expected 37")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstFactionRow {
+                id: FactionKey::new(0),
+                reputation_index: 0,
+                reputation_race_mask: [ReputationRaceMask::new(0); 4],
+                reputation_class_mask: [0; 4],
+                reputation_base: [0; 4],
+                reputation_flags: [ReputationFlags::new(0); 4],
+                parent_faction: FactionKey::new(0),
+                name: crate::ConstLocalizedString::empty(),
+                description: crate::ConstLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Faction) uint32
+            let id = FactionKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // reputation_index: uint32
+            let reputation_index = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // reputation_race_mask: ReputationRaceMask[4]
+            let reputation_race_mask = {
+                let mut a = [ReputationRaceMask::new(0); 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = ReputationRaceMask::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // reputation_class_mask: uint32[4]
+            let reputation_class_mask = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // reputation_base: uint32[4]
+            let reputation_base = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // reputation_flags: ReputationFlags[4]
+            let reputation_flags = {
+                let mut a = [ReputationFlags::new(0); 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = ReputationFlags::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // parent_faction: foreign_key (Faction) uint32
+            let parent_faction = FactionKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // description: string_ref_loc
+            let description = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            rows[i] = ConstFactionRow {
+                id,
+                reputation_index,
+                reputation_race_mask,
+                reputation_class_mask,
+                reputation_base,
+                reputation_flags,
+                parent_faction,
+                name,
+                description,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct FactionKey {
     pub id: u32
@@ -339,5 +484,18 @@ pub struct FactionRow {
     pub parent_faction: FactionKey,
     pub name: LocalizedString,
     pub description: LocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstFactionRow {
+    pub id: FactionKey,
+    pub reputation_index: u32,
+    pub reputation_race_mask: [ReputationRaceMask; 4],
+    pub reputation_class_mask: [u32; 4],
+    pub reputation_base: [u32; 4],
+    pub reputation_flags: [ReputationFlags; 4],
+    pub parent_faction: FactionKey,
+    pub name: ConstLocalizedString,
+    pub description: ConstLocalizedString,
 }
 

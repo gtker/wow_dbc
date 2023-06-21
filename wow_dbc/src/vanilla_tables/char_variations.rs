@@ -116,6 +116,80 @@ impl DbcTable for CharVariations {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharVariations<const S: usize> {
+    pub rows: [CharVariationsRow; S],
+}
+
+impl<const S: usize> ConstCharVariations<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 24 {
+            panic!("invalid record size, expected 24")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharVariationsRow {
+                id: ChrRacesKey::new(0),
+                gender: Gender::Male,
+                unknown_1: 0,
+                mask: [0; 2],
+                unknown_2: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: foreign_key (ChrRaces) uint32
+            let id = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // gender: Gender
+            let gender = match Gender::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]) as i8) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // unknown_1: int32
+            let unknown_1 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // mask: int32[2]
+            let mask = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // unknown_2: int32
+            let unknown_2 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = CharVariationsRow {
+                id,
+                gender,
+                unknown_1,
+                mask,
+                unknown_2,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharVariationsRow {
     pub id: ChrRacesKey,
     pub gender: Gender,

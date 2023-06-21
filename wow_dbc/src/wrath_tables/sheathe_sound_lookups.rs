@@ -140,6 +140,81 @@ impl Indexable for SheatheSoundLookups {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSheatheSoundLookups<const S: usize> {
+    pub rows: [SheatheSoundLookupsRow; S],
+}
+
+impl<const S: usize> ConstSheatheSoundLookups<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 28 {
+            panic!("invalid record size, expected 28")
+        }
+
+        if header.field_count != 7 {
+            panic!("invalid field count, expected 7")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SheatheSoundLookupsRow {
+                id: SheatheSoundLookupsKey::new(0),
+                class_id: 0,
+                subclass_id: 0,
+                material: MaterialKey::new(0),
+                check_material: 0,
+                sheathe_sound: 0,
+                unsheathe_sound: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SheatheSoundLookups) int32
+            let id = SheatheSoundLookupsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // class_id: int32
+            let class_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // subclass_id: int32
+            let subclass_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // material: foreign_key (Material) int32
+            let material = MaterialKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // check_material: int32
+            let check_material = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sheathe_sound: int32
+            let sheathe_sound = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // unsheathe_sound: int32
+            let unsheathe_sound = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SheatheSoundLookupsRow {
+                id,
+                class_id,
+                subclass_id,
+                material,
+                check_material,
+                sheathe_sound,
+                unsheathe_sound,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SheatheSoundLookupsKey {
     pub id: i32

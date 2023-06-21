@@ -153,6 +153,65 @@ impl DeclinedWordCases {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstDeclinedWordCases<const S: usize> {
+    pub rows: [ConstDeclinedWordCasesRow; S],
+}
+
+impl<const S: usize> ConstDeclinedWordCases<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstDeclinedWordCasesRow {
+                id: DeclinedWordCasesKey::new(0),
+                declined_word_id: DeclinedWordKey::new(0),
+                case_index: 0,
+                declined_word: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (DeclinedWordCases) int32
+            let id = DeclinedWordCasesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // declined_word_id: foreign_key (DeclinedWord) int32
+            let declined_word_id = DeclinedWordKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // case_index: int32
+            let case_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // declined_word: string_ref
+            let declined_word = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstDeclinedWordCasesRow {
+                id,
+                declined_word_id,
+                case_index,
+                declined_word,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DeclinedWordCasesKey {
     pub id: i32
@@ -206,5 +265,13 @@ pub struct DeclinedWordCasesRow {
     pub declined_word_id: DeclinedWordKey,
     pub case_index: i32,
     pub declined_word: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstDeclinedWordCasesRow {
+    pub id: DeclinedWordCasesKey,
+    pub declined_word_id: DeclinedWordKey,
+    pub case_index: i32,
+    pub declined_word: &'static str,
 }
 

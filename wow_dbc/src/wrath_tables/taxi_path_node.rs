@@ -158,6 +158,102 @@ impl Indexable for TaxiPathNode {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstTaxiPathNode<const S: usize> {
+    pub rows: [TaxiPathNodeRow; S],
+}
+
+impl<const S: usize> ConstTaxiPathNode<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 44 {
+            panic!("invalid record size, expected 44")
+        }
+
+        if header.field_count != 11 {
+            panic!("invalid field count, expected 11")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TaxiPathNodeRow {
+                id: TaxiPathNodeKey::new(0),
+                path_id: TaxiPathKey::new(0),
+                node_index: 0,
+                continent_id: MapKey::new(0),
+                loc: [0.0; 3],
+                flags: 0,
+                delay: 0,
+                arrival_event_id: 0,
+                departure_event_id: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (TaxiPathNode) int32
+            let id = TaxiPathNodeKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // path_id: foreign_key (TaxiPath) int32
+            let path_id = TaxiPathKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // node_index: int32
+            let node_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // continent_id: foreign_key (Map) int32
+            let continent_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // loc: float[3]
+            let loc = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // delay: int32
+            let delay = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // arrival_event_id: int32
+            let arrival_event_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // departure_event_id: int32
+            let departure_event_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = TaxiPathNodeRow {
+                id,
+                path_id,
+                node_index,
+                continent_id,
+                loc,
+                flags,
+                delay,
+                arrival_event_id,
+                departure_event_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TaxiPathNodeKey {
     pub id: i32

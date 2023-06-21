@@ -120,6 +120,64 @@ impl Indexable for Cfg_Configs {
 }
 
 #[allow(non_camel_case_types)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCfg_Configs<const S: usize> {
+    pub rows: [Cfg_ConfigsRow; S],
+}
+
+impl<const S: usize> ConstCfg_Configs<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            Cfg_ConfigsRow {
+                id: Cfg_ConfigsKey::new(0),
+                realm_type: 0,
+                player_killing_allowed: 0,
+                roleplaying: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Cfg_Configs) int32
+            let id = Cfg_ConfigsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // realm_type: int32
+            let realm_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // player_killing_allowed: int32
+            let player_killing_allowed = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // roleplaying: int32
+            let roleplaying = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = Cfg_ConfigsRow {
+                id,
+                realm_type,
+                player_killing_allowed,
+                roleplaying,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
+#[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct Cfg_ConfigsKey {
     pub id: i32

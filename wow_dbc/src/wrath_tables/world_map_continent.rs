@@ -178,6 +178,132 @@ impl Indexable for WorldMapContinent {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstWorldMapContinent<const S: usize> {
+    pub rows: [WorldMapContinentRow; S],
+}
+
+impl<const S: usize> ConstWorldMapContinent<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 56 {
+            panic!("invalid record size, expected 56")
+        }
+
+        if header.field_count != 14 {
+            panic!("invalid field count, expected 14")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            WorldMapContinentRow {
+                id: WorldMapContinentKey::new(0),
+                map_id: MapKey::new(0),
+                left_boundary: 0,
+                right_boundary: 0,
+                top_boundary: 0,
+                bottom_boundary: 0,
+                continent_offset: [0.0; 2],
+                scale: 0.0,
+                taxi_min: [0.0; 2],
+                taxi_max: [0.0; 2],
+                world_map_id: WorldMapAreaKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WorldMapContinent) int32
+            let id = WorldMapContinentKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_id: foreign_key (Map) int32
+            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // left_boundary: int32
+            let left_boundary = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // right_boundary: int32
+            let right_boundary = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // top_boundary: int32
+            let top_boundary = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // bottom_boundary: int32
+            let bottom_boundary = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // continent_offset: float[2]
+            let continent_offset = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // scale: float
+            let scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // taxi_min: float[2]
+            let taxi_min = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // taxi_max: float[2]
+            let taxi_max = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // world_map_id: foreign_key (WorldMapArea) int32
+            let world_map_id = WorldMapAreaKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = WorldMapContinentRow {
+                id,
+                map_id,
+                left_boundary,
+                right_boundary,
+                top_boundary,
+                bottom_boundary,
+                continent_offset,
+                scale,
+                taxi_min,
+                taxi_max,
+                world_map_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapContinentKey {
     pub id: i32

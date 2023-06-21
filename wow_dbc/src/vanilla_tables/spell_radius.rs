@@ -118,6 +118,63 @@ impl Indexable for SpellRadius {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellRadius<const S: usize> {
+    pub rows: [SpellRadiusRow; S],
+}
+
+impl<const S: usize> ConstSpellRadius<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SpellRadiusRow {
+                id: SpellRadiusKey::new(0),
+                radius: 0.0,
+                radius_per_level: 0.0,
+                radius_max: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellRadius) uint32
+            let id = SpellRadiusKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // radius: float
+            let radius = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // radius_per_level: float
+            let radius_per_level = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // radius_max: float
+            let radius_max = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SpellRadiusRow {
+                id,
+                radius,
+                radius_per_level,
+                radius_max,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellRadiusKey {
     pub id: u32

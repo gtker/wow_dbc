@@ -163,6 +163,80 @@ impl Weather {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstWeather<const S: usize> {
+    pub rows: [ConstWeatherRow; S],
+}
+
+impl<const S: usize> ConstWeather<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 28 {
+            panic!("invalid record size, expected 28")
+        }
+
+        if header.field_count != 7 {
+            panic!("invalid field count, expected 7")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstWeatherRow {
+                id: WeatherKey::new(0),
+                ambience_id: SoundEntriesKey::new(0),
+                effect_type: 0,
+                effect_color: [0.0; 3],
+                effect_texture: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Weather) int32
+            let id = WeatherKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // ambience_id: foreign_key (SoundEntries) int32
+            let ambience_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // effect_type: int32
+            let effect_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // effect_color: float[3]
+            let effect_color = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_texture: string_ref
+            let effect_texture = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstWeatherRow {
+                id,
+                ambience_id,
+                effect_type,
+                effect_color,
+                effect_texture,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WeatherKey {
     pub id: i32
@@ -217,5 +291,14 @@ pub struct WeatherRow {
     pub effect_type: i32,
     pub effect_color: [f32; 3],
     pub effect_texture: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstWeatherRow {
+    pub id: WeatherKey,
+    pub ambience_id: SoundEntriesKey,
+    pub effect_type: i32,
+    pub effect_color: [f32; 3],
+    pub effect_texture: &'static str,
 }
 

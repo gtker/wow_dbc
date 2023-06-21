@@ -104,6 +104,51 @@ impl Indexable for CreatureMovementInfo {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCreatureMovementInfo<const S: usize> {
+    pub rows: [CreatureMovementInfoRow; S],
+}
+
+impl<const S: usize> ConstCreatureMovementInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 8 {
+            panic!("invalid record size, expected 8")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CreatureMovementInfoRow {
+                id: CreatureMovementInfoKey::new(0),
+                smooth_facing_chase_rate: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureMovementInfo) int32
+            let id = CreatureMovementInfoKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // smooth_facing_chase_rate: float
+            let smooth_facing_chase_rate = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = CreatureMovementInfoRow {
+                id,
+                smooth_facing_chase_rate,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureMovementInfoKey {
     pub id: i32

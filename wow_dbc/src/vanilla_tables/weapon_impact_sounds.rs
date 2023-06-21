@@ -131,6 +131,87 @@ impl Indexable for WeaponImpactSounds {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWeaponImpactSounds<const S: usize> {
+    pub rows: [WeaponImpactSoundsRow; S],
+}
+
+impl<const S: usize> ConstWeaponImpactSounds<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 92 {
+            panic!("invalid record size, expected 92")
+        }
+
+        if header.field_count != 23 {
+            panic!("invalid field count, expected 23")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            WeaponImpactSoundsRow {
+                id: WeaponImpactSoundsKey::new(0),
+                weapon_subclass: 0,
+                parry_sound_type: 0,
+                impact_sound: [0; 10],
+                crit_impact_sound: [0; 10],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WeaponImpactSounds) uint32
+            let id = WeaponImpactSoundsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // weapon_subclass: int32
+            let weapon_subclass = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // parry_sound_type: int32
+            let parry_sound_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // impact_sound: uint32[10]
+            let impact_sound = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // crit_impact_sound: uint32[10]
+            let crit_impact_sound = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = WeaponImpactSoundsRow {
+                id,
+                weapon_subclass,
+                parry_sound_type,
+                impact_sound,
+                crit_impact_sound,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WeaponImpactSoundsKey {
     pub id: u32

@@ -128,6 +128,78 @@ impl Indexable for ObjectEffectModifier {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstObjectEffectModifier<const S: usize> {
+    pub rows: [ObjectEffectModifierRow; S],
+}
+
+impl<const S: usize> ConstObjectEffectModifier<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            ObjectEffectModifierRow {
+                id: ObjectEffectModifierKey::new(0),
+                input_type: 0,
+                map_type: 0,
+                output_type: 0,
+                param: [0.0; 4],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ObjectEffectModifier) int32
+            let id = ObjectEffectModifierKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // input_type: int32
+            let input_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // map_type: int32
+            let map_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // output_type: int32
+            let output_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // param: float[4]
+            let param = {
+                let mut a = [0.0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = ObjectEffectModifierRow {
+                id,
+                input_type,
+                map_type,
+                output_type,
+                param,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ObjectEffectModifierKey {
     pub id: i32

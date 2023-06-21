@@ -104,6 +104,51 @@ impl Indexable for TeamContributionPoints {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstTeamContributionPoints<const S: usize> {
+    pub rows: [TeamContributionPointsRow; S],
+}
+
+impl<const S: usize> ConstTeamContributionPoints<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 8 {
+            panic!("invalid record size, expected 8")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TeamContributionPointsRow {
+                id: TeamContributionPointsKey::new(0),
+                data: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (TeamContributionPoints) int32
+            let id = TeamContributionPointsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // data: float
+            let data = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = TeamContributionPointsRow {
+                id,
+                data,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TeamContributionPointsKey {
     pub id: i32

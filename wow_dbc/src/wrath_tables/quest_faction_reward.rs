@@ -107,6 +107,60 @@ impl Indexable for QuestFactionReward {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstQuestFactionReward<const S: usize> {
+    pub rows: [QuestFactionRewardRow; S],
+}
+
+impl<const S: usize> ConstQuestFactionReward<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 44 {
+            panic!("invalid record size, expected 44")
+        }
+
+        if header.field_count != 11 {
+            panic!("invalid field count, expected 11")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            QuestFactionRewardRow {
+                id: QuestFactionRewardKey::new(0),
+                difficulty: [0; 10],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (QuestFactionReward) int32
+            let id = QuestFactionRewardKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // difficulty: int32[10]
+            let difficulty = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = QuestFactionRewardRow {
+                id,
+                difficulty,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct QuestFactionRewardKey {
     pub id: i32

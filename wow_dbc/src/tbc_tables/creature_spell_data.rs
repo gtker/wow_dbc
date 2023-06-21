@@ -117,6 +117,75 @@ impl Indexable for CreatureSpellData {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCreatureSpellData<const S: usize> {
+    pub rows: [CreatureSpellDataRow; S],
+}
+
+impl<const S: usize> ConstCreatureSpellData<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 36 {
+            panic!("invalid record size, expected 36")
+        }
+
+        if header.field_count != 9 {
+            panic!("invalid field count, expected 9")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CreatureSpellDataRow {
+                id: CreatureSpellDataKey::new(0),
+                spells: [0; 4],
+                availability: [0; 4],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureSpellData) int32
+            let id = CreatureSpellDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // spells: int32[4]
+            let spells = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // availability: int32[4]
+            let availability = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = CreatureSpellDataRow {
+                id,
+                spells,
+                availability,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureSpellDataKey {
     pub id: i32

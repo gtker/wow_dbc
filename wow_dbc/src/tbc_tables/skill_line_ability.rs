@@ -193,6 +193,132 @@ impl Indexable for SkillLineAbility {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSkillLineAbility<const S: usize> {
+    pub rows: [SkillLineAbilityRow; S],
+}
+
+impl<const S: usize> ConstSkillLineAbility<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 60 {
+            panic!("invalid record size, expected 60")
+        }
+
+        if header.field_count != 15 {
+            panic!("invalid field count, expected 15")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SkillLineAbilityRow {
+                id: SkillLineAbilityKey::new(0),
+                skill_line: SkillLineKey::new(0),
+                spell: SpellKey::new(0),
+                race_mask: 0,
+                class_mask: 0,
+                exclude_race: 0,
+                exclude_class: 0,
+                min_skill_line_rank: 0,
+                superceded_by_spell: SpellKey::new(0),
+                acquire_method: 0,
+                trivial_skill_line_rank_high: 0,
+                trivial_skill_line_rank_low: 0,
+                abandonable: 0,
+                character_points: [0; 2],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SkillLineAbility) int32
+            let id = SkillLineAbilityKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // skill_line: foreign_key (SkillLine) int32
+            let skill_line = SkillLineKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // spell: foreign_key (Spell) int32
+            let spell = SpellKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // race_mask: int32
+            let race_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // class_mask: int32
+            let class_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // exclude_race: int32
+            let exclude_race = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // exclude_class: int32
+            let exclude_class = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_skill_line_rank: int32
+            let min_skill_line_rank = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // superceded_by_spell: foreign_key (Spell) int32
+            let superceded_by_spell = SpellKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // acquire_method: int32
+            let acquire_method = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // trivial_skill_line_rank_high: int32
+            let trivial_skill_line_rank_high = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // trivial_skill_line_rank_low: int32
+            let trivial_skill_line_rank_low = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // abandonable: int32
+            let abandonable = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // character_points: int32[2]
+            let character_points = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SkillLineAbilityRow {
+                id,
+                skill_line,
+                spell,
+                race_mask,
+                class_mask,
+                exclude_race,
+                exclude_class,
+                min_skill_line_rank,
+                superceded_by_spell,
+                acquire_method,
+                trivial_skill_line_rank_high,
+                trivial_skill_line_rank_low,
+                abandonable,
+                character_points,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SkillLineAbilityKey {
     pub id: i32

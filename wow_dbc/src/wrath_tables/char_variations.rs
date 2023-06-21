@@ -101,6 +101,65 @@ impl DbcTable for CharVariations {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharVariations<const S: usize> {
+    pub rows: [CharVariationsRow; S],
+}
+
+impl<const S: usize> ConstCharVariations<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 24 {
+            panic!("invalid record size, expected 24")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharVariationsRow {
+                race_id: ChrRacesKey::new(0),
+                sex_id: 0,
+                texture_hold_layer: [0; 4],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // race_id: foreign_key (ChrRaces) int32
+            let race_id = ChrRacesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sex_id: int32
+            let sex_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture_hold_layer: int32[4]
+            let texture_hold_layer = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = CharVariationsRow {
+                race_id,
+                sex_id,
+                texture_hold_layer,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharVariationsRow {
     pub race_id: ChrRacesKey,
     pub sex_id: i32,

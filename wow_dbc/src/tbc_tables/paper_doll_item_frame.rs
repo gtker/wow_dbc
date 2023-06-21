@@ -142,9 +142,68 @@ impl PaperDollItemFrame {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstPaperDollItemFrame<const S: usize> {
+    pub rows: [ConstPaperDollItemFrameRow; S],
+}
+
+impl<const S: usize> ConstPaperDollItemFrame<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstPaperDollItemFrameRow {
+                item_button_name: "",
+                slot_icon: "",
+                slot_number: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // item_button_name: string_ref
+            let item_button_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // slot_icon: string_ref
+            let slot_icon = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // slot_number: int32
+            let slot_number = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstPaperDollItemFrameRow {
+                item_button_name,
+                slot_icon,
+                slot_number,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PaperDollItemFrameRow {
     pub item_button_name: String,
     pub slot_icon: String,
+    pub slot_number: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstPaperDollItemFrameRow {
+    pub item_button_name: &'static str,
+    pub slot_icon: &'static str,
     pub slot_number: i32,
 }
 

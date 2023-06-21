@@ -226,6 +226,134 @@ impl WorldMapOverlay {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWorldMapOverlay<const S: usize> {
+    pub rows: [ConstWorldMapOverlayRow; S],
+}
+
+impl<const S: usize> ConstWorldMapOverlay<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 68 {
+            panic!("invalid record size, expected 68")
+        }
+
+        if header.field_count != 17 {
+            panic!("invalid field count, expected 17")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstWorldMapOverlayRow {
+                id: WorldMapOverlayKey::new(0),
+                world_map_area: WorldMapAreaKey::new(0),
+                area_table: [0; 4],
+                location_x: 0,
+                location_y: 0,
+                texture_name: "",
+                texture_width: 0,
+                texture_height: 0,
+                offset_x: 0,
+                offset_y: 0,
+                hit_rect_top: 0,
+                hit_rect_left: 0,
+                hit_rect_bottom: 0,
+                hit_rect_right: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WorldMapOverlay) uint32
+            let id = WorldMapOverlayKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // world_map_area: foreign_key (WorldMapArea) uint32
+            let world_map_area = WorldMapAreaKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // area_table: uint32[4]
+            let area_table = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // location_x: uint32
+            let location_x = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // location_y: uint32
+            let location_y = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture_name: string_ref
+            let texture_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // texture_width: uint32
+            let texture_width = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture_height: uint32
+            let texture_height = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // offset_x: uint32
+            let offset_x = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // offset_y: uint32
+            let offset_y = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hit_rect_top: uint32
+            let hit_rect_top = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hit_rect_left: uint32
+            let hit_rect_left = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hit_rect_bottom: uint32
+            let hit_rect_bottom = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hit_rect_right: uint32
+            let hit_rect_right = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstWorldMapOverlayRow {
+                id,
+                world_map_area,
+                area_table,
+                location_x,
+                location_y,
+                texture_name,
+                texture_width,
+                texture_height,
+                offset_x,
+                offset_y,
+                hit_rect_top,
+                hit_rect_left,
+                hit_rect_bottom,
+                hit_rect_right,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapOverlayKey {
     pub id: u32
@@ -267,6 +395,24 @@ pub struct WorldMapOverlayRow {
     pub location_x: u32,
     pub location_y: u32,
     pub texture_name: String,
+    pub texture_width: u32,
+    pub texture_height: u32,
+    pub offset_x: u32,
+    pub offset_y: u32,
+    pub hit_rect_top: u32,
+    pub hit_rect_left: u32,
+    pub hit_rect_bottom: u32,
+    pub hit_rect_right: u32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWorldMapOverlayRow {
+    pub id: WorldMapOverlayKey,
+    pub world_map_area: WorldMapAreaKey,
+    pub area_table: [u32; 4],
+    pub location_x: u32,
+    pub location_y: u32,
+    pub texture_name: &'static str,
     pub texture_width: u32,
     pub texture_height: u32,
     pub offset_x: u32,

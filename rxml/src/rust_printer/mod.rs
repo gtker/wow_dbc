@@ -2,6 +2,7 @@ use crate::types::{Field, Type};
 use crate::{DbcDescription, DbcVersion, Objects, Writer, BUILD_TESTS};
 use heck::ToSnakeCase;
 
+mod const_ty;
 mod main_ty;
 mod sqlite_converter;
 
@@ -17,6 +18,8 @@ pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Wri
     includes(&mut s, d, o, &version.module_name());
 
     main_ty::create_main_ty(&mut s, d, o);
+
+    const_ty::create_main_ty(&mut s, d, o);
 
     create_primary_keys(&mut s, d);
 
@@ -42,11 +45,11 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     }
 
     if d.contains_localized_string() {
-        s.wln("use crate::LocalizedString;");
+        s.wln("use crate::{ConstLocalizedString, LocalizedString};");
     }
 
     if d.contains_extended_localized_string() {
-        s.wln("use crate::ExtendedLocalizedString;");
+        s.wln("use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};");
     }
 
     if d.contains_gender_enum() {
@@ -71,9 +74,9 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
     s.newline();
 }
 
-fn print_derives(s: &mut Writer, fields: &[Field], is_field: bool) {
+fn print_derives(s: &mut Writer, fields: &[Field], derive_copy: bool, force_derive_copy: bool) {
     s.w("#[derive(Debug, Clone");
-    if can_derive_copy(fields) && is_field {
+    if (can_derive_copy(fields) && derive_copy) || force_derive_copy {
         s.w_no_indent(", Copy");
     }
 
@@ -143,7 +146,7 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
         s.wln("#[allow(non_camel_case_types)]");
     }
 
-    print_derives(s, d.fields(), true);
+    print_derives(s, d.fields(), true, false);
 
     s.new_struct(format!("{}Row", d.name()), |s| {
         for field in d.fields() {
@@ -161,10 +164,39 @@ fn create_row(s: &mut Writer, d: &DbcDescription, o: &Objects) {
             }
         }
     });
+
+    if !can_derive_copy(d.fields()) {
+        print_derives(s, d.fields(), true, true);
+        s.new_struct(format!("Const{}Row", d.name()), |s| {
+            for field in d.fields() {
+                match field.ty() {
+                    Type::ForeignKey { table, ty } => {
+                        if o.table_exists(table) {
+                            s.wln(format!(
+                                "pub {}: {},",
+                                field.name(),
+                                field.ty().const_rust_str()
+                            ));
+                        } else {
+                            s.wln(format!("pub {}: {},", field.name(), ty.const_rust_str()));
+                        }
+                    }
+                    _ => {
+                        s.wln(format!(
+                            "pub {}: {},",
+                            field.name(),
+                            field.ty().const_rust_str()
+                        ));
+                    }
+                }
+            }
+        });
+    }
 }
 
 fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
     for (key, ty) in d.primary_keys() {
+        assert_eq!(d.primary_keys().len(), 1);
         let native_ty = ty.rust_str();
 
         if not_pascal_case_name(d.name()) {
@@ -360,24 +392,43 @@ fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     s.wln("#[test]");
     s.open_curly(format!("fn {name}()", name = d.name().to_snake_case()));
 
+    let ty = d.name();
+
     s.wln(format!(
-        "let contents = include_bytes!(\"../../../{test_dir_name}/{}.dbc\");",
-        d.name(),
+        "const CONTENTS: &[u8] = include_bytes!(\"../../../{test_dir_name}/{ty}.dbc\");",
     ));
-    s.wln(format!(
-        "let actual = {}::read(&mut contents.as_slice()).unwrap();",
-        d.name()
-    ));
-    s.wln("let mut v = Vec::with_capacity(contents.len());");
+    s.wln("let mut actual = CONTENTS;");
+    s.wln(format!("let actual = {ty}::read(&mut actual).unwrap();",));
+    s.wln("let mut v = Vec::with_capacity(CONTENTS.len());");
     s.wln("actual.write(&mut v).unwrap();");
 
-    s.wln(format!(
-        "let new = {ty}::read(&mut v.as_slice()).unwrap();",
-        ty = d.name()
-    ));
+    s.wln(format!("let new = {ty}::read(&mut v.as_slice()).unwrap();",));
     s.wln("assert_eq!(actual, new);");
+    s.newline();
+
+    s.wln("const HEADER: DbcHeader = crate::header::parse_header_panic(CONTENTS);");
+    s.wln("const SIZE: usize = HEADER.field_count as usize;");
+    s.wln(format!(
+        "const C: Const{ty}<SIZE> = Const{ty}::const_read(CONTENTS, &HEADER);"
+    ));
+
+    /* TODO: Const test
+
+    #[test]
+    fn use_it() {
+        const DATA: &[u8] = include_bytes!("../../../vanilla-dbc/AttackAnimKits.dbc");
+
+        const HEADER: DbcHeader = parse_header_panic(DATA);
+        const SIZE: usize = HEADER.field_count as usize;
+        const ANIM: ConstAttackAnimKits<SIZE> = ConstAttackAnimKits::const_read(DATA, &HEADER);
+        const ROWS: &[AttackAnimKitsRow] = &ANIM.rows;
+
+        for anim in ROWS {}
+    }
+
+
+         */
 
     s.closing_curly(); // fn
-
     s.closing_curly(); // mod test
 }

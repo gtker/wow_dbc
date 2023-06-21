@@ -119,6 +119,63 @@ impl Indexable for ItemCondExtCosts {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemCondExtCosts<const S: usize> {
+    pub rows: [ItemCondExtCostsRow; S],
+}
+
+impl<const S: usize> ConstItemCondExtCosts<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            ItemCondExtCostsRow {
+                id: ItemCondExtCostsKey::new(0),
+                cond_extended_cost: 0,
+                item_extended_cost_entry: ItemExtendedCostKey::new(0),
+                arena_season: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ItemCondExtCosts) int32
+            let id = ItemCondExtCostsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // cond_extended_cost: int32
+            let cond_extended_cost = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // item_extended_cost_entry: foreign_key (ItemExtendedCost) int32
+            let item_extended_cost_entry = ItemExtendedCostKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // arena_season: int32
+            let arena_season = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ItemCondExtCostsRow {
+                id,
+                cond_extended_cost,
+                item_extended_cost_entry,
+                arena_season,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemCondExtCostsKey {
     pub id: i32

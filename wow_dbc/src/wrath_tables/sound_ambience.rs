@@ -107,6 +107,60 @@ impl Indexable for SoundAmbience {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSoundAmbience<const S: usize> {
+    pub rows: [SoundAmbienceRow; S],
+}
+
+impl<const S: usize> ConstSoundAmbience<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SoundAmbienceRow {
+                id: SoundAmbienceKey::new(0),
+                ambience_id: [0; 2],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundAmbience) int32
+            let id = SoundAmbienceKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // ambience_id: int32[2]
+            let ambience_id = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SoundAmbienceRow {
+                id,
+                ambience_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundAmbienceKey {
     pub id: i32

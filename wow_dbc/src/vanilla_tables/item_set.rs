@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::skill_line::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -185,6 +185,135 @@ impl ItemSet {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemSet<const S: usize> {
+    pub rows: [ConstItemSetRow; S],
+}
+
+impl<const S: usize> ConstItemSet<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 180 {
+            panic!("invalid record size, expected 180")
+        }
+
+        if header.field_count != 45 {
+            panic!("invalid field count, expected 45")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstItemSetRow {
+                id: ItemSetKey::new(0),
+                name: crate::ConstLocalizedString::empty(),
+                items: [0; 10],
+                bank_item: [0; 7],
+                set_spell: [0; 8],
+                set_threshold: [0; 8],
+                required_skill: SkillLineKey::new(0),
+                required_skill_rank: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ItemSet) int32
+            let id = ItemSetKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // items: uint32[10]
+            let items = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // bank_item: uint32[7]
+            let bank_item = {
+                let mut a = [0; 7];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // set_spell: uint32[8]
+            let set_spell = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // set_threshold: uint32[8]
+            let set_threshold = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // required_skill: foreign_key (SkillLine) uint32
+            let required_skill = SkillLineKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // required_skill_rank: uint32
+            let required_skill_rank = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstItemSetRow {
+                id,
+                name,
+                items,
+                bank_item,
+                set_spell,
+                set_threshold,
+                required_skill,
+                required_skill_rank,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemSetKey {
     pub id: i32
@@ -236,6 +365,18 @@ impl From<u16> for ItemSetKey {
 pub struct ItemSetRow {
     pub id: ItemSetKey,
     pub name: LocalizedString,
+    pub items: [u32; 10],
+    pub bank_item: [u32; 7],
+    pub set_spell: [u32; 8],
+    pub set_threshold: [u32; 8],
+    pub required_skill: SkillLineKey,
+    pub required_skill_rank: u32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemSetRow {
+    pub id: ItemSetKey,
+    pub name: ConstLocalizedString,
     pub items: [u32; 10],
     pub bank_item: [u32; 7],
     pub set_spell: [u32; 8],

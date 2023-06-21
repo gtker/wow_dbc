@@ -144,6 +144,93 @@ impl Indexable for CharHairTextures {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharHairTextures<const S: usize> {
+    pub rows: [CharHairTexturesRow; S],
+}
+
+impl<const S: usize> ConstCharHairTextures<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharHairTexturesRow {
+                id: CharHairTexturesKey::new(0),
+                race: ChrRacesKey::new(0),
+                gender: Gender::Male,
+                variation: 0,
+                geoset: 0,
+                show_scalp: 0,
+                unknown_padding: [0; 2],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CharHairTextures) uint32
+            let id = CharHairTexturesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // race: foreign_key (ChrRaces) uint32
+            let race = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // gender: Gender
+            let gender = match Gender::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]) as i8) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // variation: uint32
+            let variation = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // geoset: int32
+            let geoset = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // show_scalp: uint32
+            let show_scalp = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // unknown_padding: uint32[2]
+            let unknown_padding = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = CharHairTexturesRow {
+                id,
+                race,
+                gender,
+                variation,
+                geoset,
+                show_scalp,
+                unknown_padding,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharHairTexturesKey {
     pub id: u32

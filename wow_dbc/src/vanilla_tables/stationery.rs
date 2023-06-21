@@ -152,6 +152,65 @@ impl Stationery {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstStationery<const S: usize> {
+    pub rows: [ConstStationeryRow; S],
+}
+
+impl<const S: usize> ConstStationery<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstStationeryRow {
+                id: StationeryKey::new(0),
+                item: 0,
+                texture: "",
+                flags: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Stationery) uint32
+            let id = StationeryKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // item: uint32
+            let item = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture: string_ref
+            let texture = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstStationeryRow {
+                id,
+                item,
+                texture,
+                flags,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct StationeryKey {
     pub id: u32
@@ -190,6 +249,14 @@ pub struct StationeryRow {
     pub id: StationeryKey,
     pub item: u32,
     pub texture: String,
+    pub flags: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstStationeryRow {
+    pub id: StationeryKey,
+    pub item: u32,
+    pub texture: &'static str,
     pub flags: i32,
 }
 

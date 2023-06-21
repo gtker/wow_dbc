@@ -185,6 +185,135 @@ impl Indexable for SpellItemEnchantmentCondition {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellItemEnchantmentCondition<const S: usize> {
+    pub rows: [SpellItemEnchantmentConditionRow; S],
+}
+
+impl<const S: usize> ConstSpellItemEnchantmentCondition<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 64 {
+            panic!("invalid record size, expected 64")
+        }
+
+        if header.field_count != 31 {
+            panic!("invalid field count, expected 31")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SpellItemEnchantmentConditionRow {
+                id: SpellItemEnchantmentConditionKey::new(0),
+                lt_operand_type: [0; 5],
+                lt_operand: [0; 5],
+                operator: [0; 5],
+                rt_operand_type: [0; 5],
+                rt_operand: [0; 5],
+                logic: [0; 5],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellItemEnchantmentCondition) int32
+            let id = SpellItemEnchantmentConditionKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // lt_operand_type: int8[5]
+            let lt_operand_type = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i8::from_le_bytes([b[b_offset + 0]]);
+                    b_offset += 1;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // lt_operand: int32[5]
+            let lt_operand = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // operator: int8[5]
+            let operator = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i8::from_le_bytes([b[b_offset + 0]]);
+                    b_offset += 1;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // rt_operand_type: int8[5]
+            let rt_operand_type = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i8::from_le_bytes([b[b_offset + 0]]);
+                    b_offset += 1;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // rt_operand: int32[5]
+            let rt_operand = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // logic: int8[5]
+            let logic = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i8::from_le_bytes([b[b_offset + 0]]);
+                    b_offset += 1;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SpellItemEnchantmentConditionRow {
+                id,
+                lt_operand_type,
+                lt_operand,
+                operator,
+                rt_operand_type,
+                rt_operand,
+                logic,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellItemEnchantmentConditionKey {
     pub id: i32

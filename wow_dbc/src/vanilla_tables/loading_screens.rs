@@ -156,6 +156,59 @@ impl LoadingScreens {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLoadingScreens<const S: usize> {
+    pub rows: [ConstLoadingScreensRow; S],
+}
+
+impl<const S: usize> ConstLoadingScreens<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstLoadingScreensRow {
+                id: LoadingScreensKey::new(0),
+                name: "",
+                file_path: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (LoadingScreens) uint32
+            let id = LoadingScreensKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // file_path: string_ref
+            let file_path = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstLoadingScreensRow {
+                id,
+                name,
+                file_path,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LoadingScreensKey {
     pub id: u32
@@ -194,5 +247,12 @@ pub struct LoadingScreensRow {
     pub id: LoadingScreensKey,
     pub name: String,
     pub file_path: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLoadingScreensRow {
+    pub id: LoadingScreensKey,
+    pub name: &'static str,
+    pub file_path: &'static str,
 }
 

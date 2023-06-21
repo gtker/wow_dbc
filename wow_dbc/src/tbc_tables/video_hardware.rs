@@ -296,6 +296,179 @@ impl VideoHardware {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstVideoHardware<const S: usize> {
+    pub rows: [ConstVideoHardwareRow; S],
+}
+
+impl<const S: usize> ConstVideoHardware<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 92 {
+            panic!("invalid record size, expected 92")
+        }
+
+        if header.field_count != 23 {
+            panic!("invalid field count, expected 23")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstVideoHardwareRow {
+                id: VideoHardwareKey::new(0),
+                vendor_id: 0,
+                device_id: 0,
+                farclip_idx: 0,
+                terrain_l_o_d_dist_idx: 0,
+                terrain_shadow_l_o_d: 0,
+                detail_doodad_density_idx: 0,
+                detail_doodad_alpha: 0,
+                animating_doodad_idx: 0,
+                trilinear: 0,
+                num_lights: 0,
+                specularity: 0,
+                water_l_o_d_idx: 0,
+                particle_density_idx: 0,
+                unit_draw_dist_idx: 0,
+                small_cull_dist_idx: 0,
+                resolution_idx: 0,
+                base_mip_level: 0,
+                ogl_overrides: "",
+                d3d_overrides: "",
+                fix_lag: 0,
+                multisample: 0,
+                atlasdisable: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (VideoHardware) int32
+            let id = VideoHardwareKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // vendor_id: int32
+            let vendor_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // device_id: int32
+            let device_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // farclip_idx: int32
+            let farclip_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // terrain_l_o_d_dist_idx: int32
+            let terrain_l_o_d_dist_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // terrain_shadow_l_o_d: int32
+            let terrain_shadow_l_o_d = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // detail_doodad_density_idx: int32
+            let detail_doodad_density_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // detail_doodad_alpha: int32
+            let detail_doodad_alpha = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // animating_doodad_idx: int32
+            let animating_doodad_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // trilinear: int32
+            let trilinear = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // num_lights: int32
+            let num_lights = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // specularity: int32
+            let specularity = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // water_l_o_d_idx: int32
+            let water_l_o_d_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // particle_density_idx: int32
+            let particle_density_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // unit_draw_dist_idx: int32
+            let unit_draw_dist_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // small_cull_dist_idx: int32
+            let small_cull_dist_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // resolution_idx: int32
+            let resolution_idx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // base_mip_level: int32
+            let base_mip_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // ogl_overrides: string_ref
+            let ogl_overrides = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // d3d_overrides: string_ref
+            let d3d_overrides = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // fix_lag: int32
+            let fix_lag = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // multisample: int32
+            let multisample = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // atlasdisable: int32
+            let atlasdisable = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstVideoHardwareRow {
+                id,
+                vendor_id,
+                device_id,
+                farclip_idx,
+                terrain_l_o_d_dist_idx,
+                terrain_shadow_l_o_d,
+                detail_doodad_density_idx,
+                detail_doodad_alpha,
+                animating_doodad_idx,
+                trilinear,
+                num_lights,
+                specularity,
+                water_l_o_d_idx,
+                particle_density_idx,
+                unit_draw_dist_idx,
+                small_cull_dist_idx,
+                resolution_idx,
+                base_mip_level,
+                ogl_overrides,
+                d3d_overrides,
+                fix_lag,
+                multisample,
+                atlasdisable,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct VideoHardwareKey {
     pub id: i32
@@ -365,6 +538,33 @@ pub struct VideoHardwareRow {
     pub base_mip_level: i32,
     pub ogl_overrides: String,
     pub d3d_overrides: String,
+    pub fix_lag: i32,
+    pub multisample: i32,
+    pub atlasdisable: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstVideoHardwareRow {
+    pub id: VideoHardwareKey,
+    pub vendor_id: i32,
+    pub device_id: i32,
+    pub farclip_idx: i32,
+    pub terrain_l_o_d_dist_idx: i32,
+    pub terrain_shadow_l_o_d: i32,
+    pub detail_doodad_density_idx: i32,
+    pub detail_doodad_alpha: i32,
+    pub animating_doodad_idx: i32,
+    pub trilinear: i32,
+    pub num_lights: i32,
+    pub specularity: i32,
+    pub water_l_o_d_idx: i32,
+    pub particle_density_idx: i32,
+    pub unit_draw_dist_idx: i32,
+    pub small_cull_dist_idx: i32,
+    pub resolution_idx: i32,
+    pub base_mip_level: i32,
+    pub ogl_overrides: &'static str,
+    pub d3d_overrides: &'static str,
     pub fix_lag: i32,
     pub multisample: i32,
     pub atlasdisable: i32,

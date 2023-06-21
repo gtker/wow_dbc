@@ -175,6 +175,92 @@ impl UnitBlood {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstUnitBlood<const S: usize> {
+    pub rows: [ConstUnitBloodRow; S],
+}
+
+impl<const S: usize> ConstUnitBlood<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 40 {
+            panic!("invalid record size, expected 40")
+        }
+
+        if header.field_count != 10 {
+            panic!("invalid field count, expected 10")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstUnitBloodRow {
+                id: UnitBloodKey::new(0),
+                combat_blood_spurt_front: [0; 2],
+                combat_blood_spurt_back: [0; 2],
+                ground_blood: [""; 5],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (UnitBlood) int32
+            let id = UnitBloodKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // combat_blood_spurt_front: int32[2]
+            let combat_blood_spurt_front = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // combat_blood_spurt_back: int32[2]
+            let combat_blood_spurt_back = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // ground_blood: string_ref[5]
+            let ground_blood = {
+                let mut a = [""; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = ConstUnitBloodRow {
+                id,
+                combat_blood_spurt_front,
+                combat_blood_spurt_back,
+                ground_blood,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct UnitBloodKey {
     pub id: i32
@@ -228,5 +314,13 @@ pub struct UnitBloodRow {
     pub combat_blood_spurt_front: [i32; 2],
     pub combat_blood_spurt_back: [i32; 2],
     pub ground_blood: [String; 5],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstUnitBloodRow {
+    pub id: UnitBloodKey,
+    pub combat_blood_spurt_front: [i32; 2],
+    pub combat_blood_spurt_back: [i32; 2],
+    pub ground_blood: [&'static str; 5],
 }
 

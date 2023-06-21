@@ -134,6 +134,81 @@ impl Indexable for CharHairGeosets {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharHairGeosets<const S: usize> {
+    pub rows: [CharHairGeosetsRow; S],
+}
+
+impl<const S: usize> ConstCharHairGeosets<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 24 {
+            panic!("invalid record size, expected 24")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharHairGeosetsRow {
+                id: CharHairGeosetsKey::new(0),
+                race: ChrRacesKey::new(0),
+                gender: Gender::Male,
+                variation: 0,
+                geoset: 0,
+                show_scalp: Scalp::Hair,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CharHairGeosets) uint32
+            let id = CharHairGeosetsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // race: foreign_key (ChrRaces) uint32
+            let race = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // gender: Gender
+            let gender = match Gender::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]) as i8) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // variation: uint32
+            let variation = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // geoset: int32
+            let geoset = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // show_scalp: Scalp
+            let show_scalp = match Scalp::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            rows[i] = CharHairGeosetsRow {
+                id,
+                race,
+                gender,
+                variation,
+                geoset,
+                show_scalp,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharHairGeosetsKey {
     pub id: u32

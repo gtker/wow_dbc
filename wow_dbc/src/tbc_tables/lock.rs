@@ -137,6 +137,105 @@ impl Indexable for Lock {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLock<const S: usize> {
+    pub rows: [LockRow; S],
+}
+
+impl<const S: usize> ConstLock<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 132 {
+            panic!("invalid record size, expected 132")
+        }
+
+        if header.field_count != 33 {
+            panic!("invalid field count, expected 33")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            LockRow {
+                id: LockKey::new(0),
+                ty: [0; 8],
+                index: [0; 8],
+                skill: [0; 8],
+                action: [0; 8],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Lock) int32
+            let id = LockKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // ty: int32[8]
+            let ty = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // index: int32[8]
+            let index = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // skill: int32[8]
+            let skill = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // action: int32[8]
+            let action = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = LockRow {
+                id,
+                ty,
+                index,
+                skill,
+                action,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LockKey {
     pub id: i32

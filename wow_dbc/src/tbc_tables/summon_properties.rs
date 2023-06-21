@@ -133,6 +133,75 @@ impl Indexable for SummonProperties {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSummonProperties<const S: usize> {
+    pub rows: [SummonPropertiesRow; S],
+}
+
+impl<const S: usize> ConstSummonProperties<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 24 {
+            panic!("invalid record size, expected 24")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SummonPropertiesRow {
+                id: SummonPropertiesKey::new(0),
+                control: 0,
+                faction: FactionTemplateKey::new(0),
+                title: 0,
+                slot: 0,
+                flags: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SummonProperties) int32
+            let id = SummonPropertiesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // control: int32
+            let control = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // faction: foreign_key (FactionTemplate) int32
+            let faction = FactionTemplateKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // title: int32
+            let title = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // slot: int32
+            let slot = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SummonPropertiesRow {
+                id,
+                control,
+                faction,
+                title,
+                slot,
+                flags,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SummonPropertiesKey {
     pub id: i32

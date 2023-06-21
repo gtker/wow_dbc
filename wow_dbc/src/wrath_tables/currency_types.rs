@@ -120,6 +120,63 @@ impl Indexable for CurrencyTypes {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCurrencyTypes<const S: usize> {
+    pub rows: [CurrencyTypesRow; S],
+}
+
+impl<const S: usize> ConstCurrencyTypes<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CurrencyTypesRow {
+                id: CurrencyTypesKey::new(0),
+                item_id: ItemKey::new(0),
+                category_id: CurrencyCategoryKey::new(0),
+                bit_index: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CurrencyTypes) int32
+            let id = CurrencyTypesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // item_id: foreign_key (Item) int32
+            let item_id = ItemKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // category_id: foreign_key (CurrencyCategory) int32
+            let category_id = CurrencyCategoryKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // bit_index: int32
+            let bit_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = CurrencyTypesRow {
+                id,
+                item_id,
+                category_id,
+                bit_index,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CurrencyTypesKey {
     pub id: i32

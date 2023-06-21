@@ -140,6 +140,81 @@ impl Indexable for TransportAnimation {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstTransportAnimation<const S: usize> {
+    pub rows: [TransportAnimationRow; S],
+}
+
+impl<const S: usize> ConstTransportAnimation<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 28 {
+            panic!("invalid record size, expected 28")
+        }
+
+        if header.field_count != 7 {
+            panic!("invalid field count, expected 7")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TransportAnimationRow {
+                id: TransportAnimationKey::new(0),
+                transport: 0,
+                time_index: 0,
+                location_x: 0.0,
+                location_y: 0.0,
+                location_z: 0.0,
+                sequence: AnimationDataKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (TransportAnimation) uint32
+            let id = TransportAnimationKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // transport: uint32
+            let transport = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_index: int32
+            let time_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // location_x: float
+            let location_x = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // location_y: float
+            let location_y = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // location_z: float
+            let location_z = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sequence: foreign_key (AnimationData) uint32
+            let sequence = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = TransportAnimationRow {
+                id,
+                transport,
+                time_index,
+                location_x,
+                location_y,
+                location_z,
+                sequence,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TransportAnimationKey {
     pub id: u32

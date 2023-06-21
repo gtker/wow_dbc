@@ -293,6 +293,185 @@ impl SoundEntriesAdvanced {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstSoundEntriesAdvanced<const S: usize> {
+    pub rows: [ConstSoundEntriesAdvancedRow; S],
+}
+
+impl<const S: usize> ConstSoundEntriesAdvanced<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 96 {
+            panic!("invalid record size, expected 96")
+        }
+
+        if header.field_count != 24 {
+            panic!("invalid field count, expected 24")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSoundEntriesAdvancedRow {
+                id: SoundEntriesAdvancedKey::new(0),
+                sound_entry_id: SoundEntriesKey::new(0),
+                inner_radius2_d: 0.0,
+                time_a: 0,
+                time_b: 0,
+                time_c: 0,
+                time_d: 0,
+                random_offset_range: 0,
+                usage: 0,
+                time_interval_min: 0,
+                time_interval_max: 0,
+                volume_slider_category: 0,
+                duck_to_s_f_x: 0.0,
+                duck_to_music: 0.0,
+                duck_to_ambience: 0.0,
+                inner_radius_of_influence: 0.0,
+                outer_radius_of_influence: 0.0,
+                time_to_duck: 0,
+                time_to_unduck: 0,
+                inside_angle: 0.0,
+                outside_angle: 0.0,
+                outside_volume: 0.0,
+                outer_radius2_d: 0.0,
+                name: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundEntriesAdvanced) int32
+            let id = SoundEntriesAdvancedKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_entry_id: foreign_key (SoundEntries) int32
+            let sound_entry_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // inner_radius2_d: float
+            let inner_radius2_d = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_a: int32
+            let time_a = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_b: int32
+            let time_b = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_c: int32
+            let time_c = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_d: int32
+            let time_d = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // random_offset_range: int32
+            let random_offset_range = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // usage: int32
+            let usage = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_interval_min: int32
+            let time_interval_min = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_interval_max: int32
+            let time_interval_max = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // volume_slider_category: int32
+            let volume_slider_category = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // duck_to_s_f_x: float
+            let duck_to_s_f_x = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // duck_to_music: float
+            let duck_to_music = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // duck_to_ambience: float
+            let duck_to_ambience = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // inner_radius_of_influence: float
+            let inner_radius_of_influence = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // outer_radius_of_influence: float
+            let outer_radius_of_influence = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_to_duck: int32
+            let time_to_duck = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_to_unduck: int32
+            let time_to_unduck = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // inside_angle: float
+            let inside_angle = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // outside_angle: float
+            let outside_angle = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // outside_volume: float
+            let outside_volume = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // outer_radius2_d: float
+            let outer_radius2_d = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstSoundEntriesAdvancedRow {
+                id,
+                sound_entry_id,
+                inner_radius2_d,
+                time_a,
+                time_b,
+                time_c,
+                time_d,
+                random_offset_range,
+                usage,
+                time_interval_min,
+                time_interval_max,
+                volume_slider_category,
+                duck_to_s_f_x,
+                duck_to_music,
+                duck_to_ambience,
+                inner_radius_of_influence,
+                outer_radius_of_influence,
+                time_to_duck,
+                time_to_unduck,
+                inside_angle,
+                outside_angle,
+                outside_volume,
+                outer_radius2_d,
+                name,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundEntriesAdvancedKey {
     pub id: i32
@@ -366,5 +545,33 @@ pub struct SoundEntriesAdvancedRow {
     pub outside_volume: f32,
     pub outer_radius2_d: f32,
     pub name: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSoundEntriesAdvancedRow {
+    pub id: SoundEntriesAdvancedKey,
+    pub sound_entry_id: SoundEntriesKey,
+    pub inner_radius2_d: f32,
+    pub time_a: i32,
+    pub time_b: i32,
+    pub time_c: i32,
+    pub time_d: i32,
+    pub random_offset_range: i32,
+    pub usage: i32,
+    pub time_interval_min: i32,
+    pub time_interval_max: i32,
+    pub volume_slider_category: i32,
+    pub duck_to_s_f_x: f32,
+    pub duck_to_music: f32,
+    pub duck_to_ambience: f32,
+    pub inner_radius_of_influence: f32,
+    pub outer_radius_of_influence: f32,
+    pub time_to_duck: i32,
+    pub time_to_unduck: i32,
+    pub inside_angle: f32,
+    pub outside_angle: f32,
+    pub outside_volume: f32,
+    pub outer_radius2_d: f32,
+    pub name: &'static str,
 }
 

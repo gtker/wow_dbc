@@ -131,6 +131,87 @@ impl Indexable for BannedAddOns {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstBannedAddOns<const S: usize> {
+    pub rows: [BannedAddOnsRow; S],
+}
+
+impl<const S: usize> ConstBannedAddOns<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 44 {
+            panic!("invalid record size, expected 44")
+        }
+
+        if header.field_count != 11 {
+            panic!("invalid field count, expected 11")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            BannedAddOnsRow {
+                id: BannedAddOnsKey::new(0),
+                name_m_d5: [0; 4],
+                version_m_d5: [0; 4],
+                last_modified: 0,
+                flags: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (BannedAddOns) int32
+            let id = BannedAddOnsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name_m_d5: int32[4]
+            let name_m_d5 = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // version_m_d5: int32[4]
+            let version_m_d5 = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // last_modified: int32
+            let last_modified = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = BannedAddOnsRow {
+                id,
+                name_m_d5,
+                version_m_d5,
+                last_modified,
+                flags,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct BannedAddOnsKey {
     pub id: i32

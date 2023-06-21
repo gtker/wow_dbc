@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::item_visuals::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -185,6 +185,135 @@ impl SpellItemEnchantment {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellItemEnchantment<const S: usize> {
+    pub rows: [ConstSpellItemEnchantmentRow; S],
+}
+
+impl<const S: usize> ConstSpellItemEnchantment<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 96 {
+            panic!("invalid record size, expected 96")
+        }
+
+        if header.field_count != 24 {
+            panic!("invalid field count, expected 24")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellItemEnchantmentRow {
+                id: SpellItemEnchantmentKey::new(0),
+                enchantment_type: [0; 3],
+                effect_points_min: [0; 3],
+                effect_points_max: [0; 3],
+                effect_arg: [0; 3],
+                name: crate::ConstLocalizedString::empty(),
+                item_visual: ItemVisualsKey::new(0),
+                flags: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellItemEnchantment) uint32
+            let id = SpellItemEnchantmentKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // enchantment_type: int32[3]
+            let enchantment_type = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_points_min: int32[3]
+            let effect_points_min = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_points_max: int32[3]
+            let effect_points_max = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // effect_arg: int32[3]
+            let effect_arg = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // item_visual: foreign_key (ItemVisuals) uint32
+            let item_visual = ItemVisualsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstSpellItemEnchantmentRow {
+                id,
+                enchantment_type,
+                effect_points_min,
+                effect_points_max,
+                effect_arg,
+                name,
+                item_visual,
+                flags,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellItemEnchantmentKey {
     pub id: u32
@@ -226,6 +355,18 @@ pub struct SpellItemEnchantmentRow {
     pub effect_points_max: [i32; 3],
     pub effect_arg: [i32; 3],
     pub name: LocalizedString,
+    pub item_visual: ItemVisualsKey,
+    pub flags: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellItemEnchantmentRow {
+    pub id: SpellItemEnchantmentKey,
+    pub enchantment_type: [i32; 3],
+    pub effect_points_min: [i32; 3],
+    pub effect_points_max: [i32; 3],
+    pub effect_arg: [i32; 3],
+    pub name: ConstLocalizedString,
     pub item_visual: ItemVisualsKey,
     pub flags: i32,
 }

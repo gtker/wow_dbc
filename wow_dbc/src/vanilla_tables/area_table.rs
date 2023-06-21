@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::faction_group::*;
 use crate::vanilla_tables::light::*;
 use crate::vanilla_tables::liquid_type::*;
@@ -243,6 +243,153 @@ impl AreaTable {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstAreaTable<const S: usize> {
+    pub rows: [ConstAreaTableRow; S],
+}
+
+impl<const S: usize> ConstAreaTable<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 100 {
+            panic!("invalid record size, expected 100")
+        }
+
+        if header.field_count != 25 {
+            panic!("invalid field count, expected 25")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstAreaTableRow {
+                id: AreaTableKey::new(0),
+                map: MapKey::new(0),
+                parent_area_table: AreaTableKey::new(0),
+                area_bit: 0,
+                flags: AreaFlags::new(0),
+                sound_preferences: SoundProviderPreferencesKey::new(0),
+                sound_preferences_underwater: SoundProviderPreferencesKey::new(0),
+                sound_ambience: SoundAmbienceKey::new(0),
+                zone_music: ZoneMusicKey::new(0),
+                zone_music_intro: ZoneIntroMusicTableKey::new(0),
+                exploration_level: 0,
+                area_name: crate::ConstLocalizedString::empty(),
+                faction_group: FactionGroupKey::new(0),
+                liquid_type: LiquidTypeKey::new(0),
+                min_elevation: 0,
+                ambient_multiplier: 0.0,
+                light: LightKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (AreaTable) uint32
+            let id = AreaTableKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map: foreign_key (Map) uint32
+            let map = MapKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // parent_area_table: foreign_key (AreaTable) uint32
+            let parent_area_table = AreaTableKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // area_bit: int32
+            let area_bit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: AreaFlags
+            let flags = AreaFlags::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_preferences: foreign_key (SoundProviderPreferences) uint32
+            let sound_preferences = SoundProviderPreferencesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_preferences_underwater: foreign_key (SoundProviderPreferences) uint32
+            let sound_preferences_underwater = SoundProviderPreferencesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_ambience: foreign_key (SoundAmbience) uint32
+            let sound_ambience = SoundAmbienceKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // zone_music: foreign_key (ZoneMusic) uint32
+            let zone_music = ZoneMusicKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // zone_music_intro: foreign_key (ZoneIntroMusicTable) uint32
+            let zone_music_intro = ZoneIntroMusicTableKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // exploration_level: int32
+            let exploration_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // area_name: string_ref_loc
+            let area_name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // faction_group: foreign_key (FactionGroup) uint32
+            let faction_group = FactionGroupKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // liquid_type: foreign_key (LiquidType) uint32
+            let liquid_type = LiquidTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // min_elevation: int32
+            let min_elevation = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // ambient_multiplier: float
+            let ambient_multiplier = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // light: foreign_key (Light) uint32
+            let light = LightKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstAreaTableRow {
+                id,
+                map,
+                parent_area_table,
+                area_bit,
+                flags,
+                sound_preferences,
+                sound_preferences_underwater,
+                sound_ambience,
+                zone_music,
+                zone_music_intro,
+                exploration_level,
+                area_name,
+                faction_group,
+                liquid_type,
+                min_elevation,
+                ambient_multiplier,
+                light,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AreaTableKey {
     pub id: u32
@@ -346,6 +493,27 @@ pub struct AreaTableRow {
     pub zone_music_intro: ZoneIntroMusicTableKey,
     pub exploration_level: i32,
     pub area_name: LocalizedString,
+    pub faction_group: FactionGroupKey,
+    pub liquid_type: LiquidTypeKey,
+    pub min_elevation: i32,
+    pub ambient_multiplier: f32,
+    pub light: LightKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstAreaTableRow {
+    pub id: AreaTableKey,
+    pub map: MapKey,
+    pub parent_area_table: AreaTableKey,
+    pub area_bit: i32,
+    pub flags: AreaFlags,
+    pub sound_preferences: SoundProviderPreferencesKey,
+    pub sound_preferences_underwater: SoundProviderPreferencesKey,
+    pub sound_ambience: SoundAmbienceKey,
+    pub zone_music: ZoneMusicKey,
+    pub zone_music_intro: ZoneIntroMusicTableKey,
+    pub exploration_level: i32,
+    pub area_name: ConstLocalizedString,
     pub faction_group: FactionGroupKey,
     pub liquid_type: LiquidTypeKey,
     pub min_elevation: i32,

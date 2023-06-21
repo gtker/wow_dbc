@@ -203,6 +203,107 @@ impl WorldMapArea {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstWorldMapArea<const S: usize> {
+    pub rows: [ConstWorldMapAreaRow; S],
+}
+
+impl<const S: usize> ConstWorldMapArea<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 44 {
+            panic!("invalid record size, expected 44")
+        }
+
+        if header.field_count != 11 {
+            panic!("invalid field count, expected 11")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstWorldMapAreaRow {
+                id: WorldMapAreaKey::new(0),
+                map_id: MapKey::new(0),
+                area_id: AreaTableKey::new(0),
+                area_name: "",
+                loc_left: 0.0,
+                loc_right: 0.0,
+                loc_top: 0.0,
+                loc_bottom: 0.0,
+                display_map_id: MapKey::new(0),
+                default_dungeon_floor: 0,
+                parent_world_map_id: WorldMapAreaKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WorldMapArea) int32
+            let id = WorldMapAreaKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_id: foreign_key (Map) int32
+            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // area_id: foreign_key (AreaTable) int32
+            let area_id = AreaTableKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // area_name: string_ref
+            let area_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // loc_left: float
+            let loc_left = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // loc_right: float
+            let loc_right = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // loc_top: float
+            let loc_top = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // loc_bottom: float
+            let loc_bottom = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // display_map_id: foreign_key (Map) int32
+            let display_map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // default_dungeon_floor: int32
+            let default_dungeon_floor = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // parent_world_map_id: foreign_key (WorldMapArea) int32
+            let parent_world_map_id = WorldMapAreaKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstWorldMapAreaRow {
+                id,
+                map_id,
+                area_id,
+                area_name,
+                loc_left,
+                loc_right,
+                loc_top,
+                loc_bottom,
+                display_map_id,
+                default_dungeon_floor,
+                parent_world_map_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapAreaKey {
     pub id: i32
@@ -256,6 +357,21 @@ pub struct WorldMapAreaRow {
     pub map_id: MapKey,
     pub area_id: AreaTableKey,
     pub area_name: String,
+    pub loc_left: f32,
+    pub loc_right: f32,
+    pub loc_top: f32,
+    pub loc_bottom: f32,
+    pub display_map_id: MapKey,
+    pub default_dungeon_floor: i32,
+    pub parent_world_map_id: WorldMapAreaKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstWorldMapAreaRow {
+    pub id: WorldMapAreaKey,
+    pub map_id: MapKey,
+    pub area_id: AreaTableKey,
+    pub area_name: &'static str,
     pub loc_left: f32,
     pub loc_right: f32,
     pub loc_top: f32,

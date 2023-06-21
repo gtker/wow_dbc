@@ -92,6 +92,50 @@ impl DbcTable for CharBaseInfo {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharBaseInfo<const S: usize> {
+    pub rows: [CharBaseInfoRow; S],
+}
+
+impl<const S: usize> ConstCharBaseInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 2 {
+            panic!("invalid record size, expected 2")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharBaseInfoRow {
+                race: ChrRacesKey::new(0),
+                class: ChrClassesKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // race: foreign_key (ChrRaces) uint8
+            let race = ChrRacesKey::new(u8::from_le_bytes([b[b_offset + 0]])as u32);
+            b_offset += 1;
+
+            // class: foreign_key (ChrClasses) uint8
+            let class = ChrClassesKey::new(u8::from_le_bytes([b[b_offset + 0]])as u32);
+            b_offset += 1;
+
+            rows[i] = CharBaseInfoRow {
+                race,
+                class,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharBaseInfoRow {
     pub race: ChrRacesKey,
     pub class: ChrClassesKey,

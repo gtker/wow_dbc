@@ -217,6 +217,113 @@ impl CreatureDisplayInfo {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstCreatureDisplayInfo<const S: usize> {
+    pub rows: [ConstCreatureDisplayInfoRow; S],
+}
+
+impl<const S: usize> ConstCreatureDisplayInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 48 {
+            panic!("invalid record size, expected 48")
+        }
+
+        if header.field_count != 12 {
+            panic!("invalid field count, expected 12")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstCreatureDisplayInfoRow {
+                id: CreatureDisplayInfoKey::new(0),
+                model: CreatureModelDataKey::new(0),
+                sound: CreatureSoundDataKey::new(0),
+                extended_display_info: CreatureDisplayInfoExtraKey::new(0),
+                creature_model_scale: 0.0,
+                creature_model_alpha: 0,
+                texture_variation: [""; 3],
+                size: SizeClass::None,
+                blood: UnitBloodKey::new(0),
+                npc_sound: NPCSoundsKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureDisplayInfo) uint32
+            let id = CreatureDisplayInfoKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // model: foreign_key (CreatureModelData) uint32
+            let model = CreatureModelDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound: foreign_key (CreatureSoundData) uint32
+            let sound = CreatureSoundDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // extended_display_info: foreign_key (CreatureDisplayInfoExtra) uint32
+            let extended_display_info = CreatureDisplayInfoExtraKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // creature_model_scale: float
+            let creature_model_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // creature_model_alpha: int32
+            let creature_model_alpha = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture_variation: string_ref[3]
+            let texture_variation = {
+                let mut a = [""; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // size: SizeClass
+            let size = match SizeClass::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // blood: foreign_key (UnitBlood) uint32
+            let blood = UnitBloodKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // npc_sound: foreign_key (NPCSounds) uint32
+            let npc_sound = NPCSoundsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstCreatureDisplayInfoRow {
+                id,
+                model,
+                sound,
+                extended_display_info,
+                creature_model_scale,
+                creature_model_alpha,
+                texture_variation,
+                size,
+                blood,
+                npc_sound,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureDisplayInfoKey {
     pub id: u32
@@ -259,6 +366,20 @@ pub struct CreatureDisplayInfoRow {
     pub creature_model_scale: f32,
     pub creature_model_alpha: i32,
     pub texture_variation: [String; 3],
+    pub size: SizeClass,
+    pub blood: UnitBloodKey,
+    pub npc_sound: NPCSoundsKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCreatureDisplayInfoRow {
+    pub id: CreatureDisplayInfoKey,
+    pub model: CreatureModelDataKey,
+    pub sound: CreatureSoundDataKey,
+    pub extended_display_info: CreatureDisplayInfoExtraKey,
+    pub creature_model_scale: f32,
+    pub creature_model_alpha: i32,
+    pub texture_variation: [&'static str; 3],
     pub size: SizeClass,
     pub blood: UnitBloodKey,
     pub npc_sound: NPCSoundsKey,

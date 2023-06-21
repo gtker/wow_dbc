@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::cinematic_sequences::*;
 use crate::vanilla_tables::creature_display_info::*;
 use crate::vanilla_tables::creature_type::*;
@@ -323,6 +323,183 @@ impl ChrRaces {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstChrRaces<const S: usize> {
+    pub rows: [ConstChrRacesRow; S],
+}
+
+impl<const S: usize> ConstChrRaces<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 116 {
+            panic!("invalid record size, expected 116")
+        }
+
+        if header.field_count != 29 {
+            panic!("invalid field count, expected 29")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstChrRacesRow {
+                id: ChrRacesKey::new(0),
+                flags: Flags::new(0),
+                faction: FactionTemplateKey::new(0),
+                exploration_sound: SoundEntriesKey::new(0),
+                male_display: CreatureDisplayInfoKey::new(0),
+                female_display: CreatureDisplayInfoKey::new(0),
+                client_prefix: "",
+                speed_modifier: 0.0,
+                base_lang: BaseLanguage::Horde,
+                creature_type: CreatureTypeKey::new(0),
+                login_effect: SpellKey::new(0),
+                unknown1: 0,
+                res_sickness_spell: SpellKey::new(0),
+                splash_sound_entry: SoundEntriesKey::new(0),
+                unknown2: 0,
+                client_file_path: "",
+                cinematic_sequence: CinematicSequencesKey::new(0),
+                name: crate::ConstLocalizedString::empty(),
+                facial_hair_customisation: [""; 2],
+                hair_customisation: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ChrRaces) uint32
+            let id = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // flags: Flags
+            let flags = Flags::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // faction: foreign_key (FactionTemplate) uint32
+            let faction = FactionTemplateKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // exploration_sound: foreign_key (SoundEntries) uint32
+            let exploration_sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // male_display: foreign_key (CreatureDisplayInfo) uint32
+            let male_display = CreatureDisplayInfoKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // female_display: foreign_key (CreatureDisplayInfo) uint32
+            let female_display = CreatureDisplayInfoKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // client_prefix: string_ref
+            let client_prefix = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // speed_modifier: float
+            let speed_modifier = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // base_lang: BaseLanguage
+            let base_lang = match BaseLanguage::from_value(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // creature_type: foreign_key (CreatureType) uint32
+            let creature_type = CreatureTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // login_effect: foreign_key (Spell) uint32
+            let login_effect = SpellKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // unknown1: int32
+            let unknown1 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // res_sickness_spell: foreign_key (Spell) uint32
+            let res_sickness_spell = SpellKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // splash_sound_entry: foreign_key (SoundEntries) uint32
+            let splash_sound_entry = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // unknown2: int32
+            let unknown2 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // client_file_path: string_ref
+            let client_file_path = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // cinematic_sequence: foreign_key (CinematicSequences) uint32
+            let cinematic_sequence = CinematicSequencesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // facial_hair_customisation: string_ref[2]
+            let facial_hair_customisation = {
+                let mut a = [""; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // hair_customisation: string_ref
+            let hair_customisation = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstChrRacesRow {
+                id,
+                flags,
+                faction,
+                exploration_sound,
+                male_display,
+                female_display,
+                client_prefix,
+                speed_modifier,
+                base_lang,
+                creature_type,
+                login_effect,
+                unknown1,
+                res_sickness_spell,
+                splash_sound_entry,
+                unknown2,
+                client_file_path,
+                cinematic_sequence,
+                name,
+                facial_hair_customisation,
+                hair_customisation,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChrRacesKey {
     pub id: u32
@@ -456,5 +633,29 @@ pub struct ChrRacesRow {
     pub name: LocalizedString,
     pub facial_hair_customisation: [String; 2],
     pub hair_customisation: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstChrRacesRow {
+    pub id: ChrRacesKey,
+    pub flags: Flags,
+    pub faction: FactionTemplateKey,
+    pub exploration_sound: SoundEntriesKey,
+    pub male_display: CreatureDisplayInfoKey,
+    pub female_display: CreatureDisplayInfoKey,
+    pub client_prefix: &'static str,
+    pub speed_modifier: f32,
+    pub base_lang: BaseLanguage,
+    pub creature_type: CreatureTypeKey,
+    pub login_effect: SpellKey,
+    pub unknown1: i32,
+    pub res_sickness_spell: SpellKey,
+    pub splash_sound_entry: SoundEntriesKey,
+    pub unknown2: i32,
+    pub client_file_path: &'static str,
+    pub cinematic_sequence: CinematicSequencesKey,
+    pub name: ConstLocalizedString,
+    pub facial_hair_customisation: [&'static str; 2],
+    pub hair_customisation: &'static str,
 }
 

@@ -2,7 +2,7 @@ use crate::header::{HEADER_SIZE, DbcHeader};
 use crate::header;
 use crate::DbcTable;
 use std::io::Write;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::item_class::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -189,6 +189,132 @@ impl ItemSubClass {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemSubClass<const S: usize> {
+    pub rows: [ConstItemSubClassRow; S],
+}
+
+impl<const S: usize> ConstItemSubClass<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 112 {
+            panic!("invalid record size, expected 112")
+        }
+
+        if header.field_count != 28 {
+            panic!("invalid field count, expected 28")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstItemSubClassRow {
+                item_class: ItemClassKey::new(0),
+                subclass: 0,
+                prerequisite_proficiency: 0,
+                postrequisite_proficiency: 0,
+                flags: 0,
+                display_flags: 0,
+                weapon_parry_sequence: 0,
+                weapon_ready_sequence: 0,
+                weapon_attack_sequence: 0,
+                weapon_swing_size: 0,
+                display_name: crate::ConstLocalizedString::empty(),
+                verbose_name: crate::ConstLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // item_class: foreign_key (ItemClass) uint32
+            let item_class = ItemClassKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // subclass: int32
+            let subclass = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // prerequisite_proficiency: int32
+            let prerequisite_proficiency = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // postrequisite_proficiency: int32
+            let postrequisite_proficiency = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // display_flags: int32
+            let display_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_parry_sequence: int32
+            let weapon_parry_sequence = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_ready_sequence: int32
+            let weapon_ready_sequence = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_attack_sequence: int32
+            let weapon_attack_sequence = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_swing_size: int32
+            let weapon_swing_size = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // display_name: string_ref_loc
+            let display_name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // verbose_name: string_ref_loc
+            let verbose_name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            rows[i] = ConstItemSubClassRow {
+                item_class,
+                subclass,
+                prerequisite_proficiency,
+                postrequisite_proficiency,
+                flags,
+                display_flags,
+                weapon_parry_sequence,
+                weapon_ready_sequence,
+                weapon_attack_sequence,
+                weapon_swing_size,
+                display_name,
+                verbose_name,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemSubClassRow {
     pub item_class: ItemClassKey,
     pub subclass: i32,
@@ -202,5 +328,21 @@ pub struct ItemSubClassRow {
     pub weapon_swing_size: i32,
     pub display_name: LocalizedString,
     pub verbose_name: LocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemSubClassRow {
+    pub item_class: ItemClassKey,
+    pub subclass: i32,
+    pub prerequisite_proficiency: i32,
+    pub postrequisite_proficiency: i32,
+    pub flags: i32,
+    pub display_flags: i32,
+    pub weapon_parry_sequence: i32,
+    pub weapon_ready_sequence: i32,
+    pub weapon_attack_sequence: i32,
+    pub weapon_swing_size: i32,
+    pub display_name: ConstLocalizedString,
+    pub verbose_name: ConstLocalizedString,
 }
 

@@ -243,6 +243,128 @@ impl SoundEntries {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstSoundEntries<const S: usize> {
+    pub rows: [ConstSoundEntriesRow; S],
+}
+
+impl<const S: usize> ConstSoundEntries<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 116 {
+            panic!("invalid record size, expected 116")
+        }
+
+        if header.field_count != 29 {
+            panic!("invalid field count, expected 29")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSoundEntriesRow {
+                id: SoundEntriesKey::new(0),
+                sound_type: SoundType::Unused,
+                name: "",
+                files: [""; 10],
+                frequency: [0; 10],
+                directory_base: "",
+                volume: 0.0,
+                flags: 0,
+                min_distance: 0.0,
+                distance_cutoff: 0.0,
+                sound_entries_advanced: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundEntries) uint32
+            let id = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_type: SoundType
+            let sound_type = match SoundType::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // files: string_ref[10]
+            let files = {
+                let mut a = [""; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // frequency: uint32[10]
+            let frequency = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // directory_base: string_ref
+            let directory_base = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // volume: float
+            let volume = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_distance: float
+            let min_distance = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // distance_cutoff: float
+            let distance_cutoff = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_entries_advanced: int32
+            let sound_entries_advanced = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstSoundEntriesRow {
+                id,
+                sound_type,
+                name,
+                files,
+                frequency,
+                directory_base,
+                volume,
+                flags,
+                min_distance,
+                distance_cutoff,
+                sound_entries_advanced,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundEntriesKey {
     pub id: u32
@@ -398,6 +520,21 @@ pub struct SoundEntriesRow {
     pub files: [String; 10],
     pub frequency: [u32; 10],
     pub directory_base: String,
+    pub volume: f32,
+    pub flags: i32,
+    pub min_distance: f32,
+    pub distance_cutoff: f32,
+    pub sound_entries_advanced: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSoundEntriesRow {
+    pub id: SoundEntriesKey,
+    pub sound_type: SoundType,
+    pub name: &'static str,
+    pub files: [&'static str; 10],
+    pub frequency: [u32; 10],
+    pub directory_base: &'static str,
     pub volume: f32,
     pub flags: i32,
     pub min_distance: f32,

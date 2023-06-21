@@ -2,7 +2,7 @@ use crate::header::{HEADER_SIZE, DbcHeader};
 use crate::header;
 use crate::DbcTable;
 use std::io::Write;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemSubClass {
@@ -188,6 +188,148 @@ impl ItemSubClass {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemSubClass<const S: usize> {
+    pub rows: [ConstItemSubClassRow; S],
+}
+
+impl<const S: usize> ConstItemSubClass<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 176 {
+            panic!("invalid record size, expected 176")
+        }
+
+        if header.field_count != 44 {
+            panic!("invalid field count, expected 44")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstItemSubClassRow {
+                class_id: 0,
+                sub_class_id: 0,
+                prerequisite_proficiency: 0,
+                postrequisite_proficiency: 0,
+                flags: 0,
+                display_flags: 0,
+                weapon_parry_seq: 0,
+                weapon_ready_seq: 0,
+                weapon_attack_seq: 0,
+                weapon_swing_size: 0,
+                display_name_lang: crate::ConstExtendedLocalizedString::empty(),
+                verbose_name_lang: crate::ConstExtendedLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // class_id: int32
+            let class_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sub_class_id: int32
+            let sub_class_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // prerequisite_proficiency: int32
+            let prerequisite_proficiency = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // postrequisite_proficiency: int32
+            let postrequisite_proficiency = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // display_flags: int32
+            let display_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_parry_seq: int32
+            let weapon_parry_seq = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_ready_seq: int32
+            let weapon_ready_seq = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_attack_seq: int32
+            let weapon_attack_seq = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // weapon_swing_size: int32
+            let weapon_swing_size = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // display_name_lang: string_ref_loc (Extended)
+            let display_name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // verbose_name_lang: string_ref_loc (Extended)
+            let verbose_name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            rows[i] = ConstItemSubClassRow {
+                class_id,
+                sub_class_id,
+                prerequisite_proficiency,
+                postrequisite_proficiency,
+                flags,
+                display_flags,
+                weapon_parry_seq,
+                weapon_ready_seq,
+                weapon_attack_seq,
+                weapon_swing_size,
+                display_name_lang,
+                verbose_name_lang,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemSubClassRow {
     pub class_id: i32,
     pub sub_class_id: i32,
@@ -201,5 +343,21 @@ pub struct ItemSubClassRow {
     pub weapon_swing_size: i32,
     pub display_name_lang: ExtendedLocalizedString,
     pub verbose_name_lang: ExtendedLocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemSubClassRow {
+    pub class_id: i32,
+    pub sub_class_id: i32,
+    pub prerequisite_proficiency: i32,
+    pub postrequisite_proficiency: i32,
+    pub flags: i32,
+    pub display_flags: i32,
+    pub weapon_parry_seq: i32,
+    pub weapon_ready_seq: i32,
+    pub weapon_attack_seq: i32,
+    pub weapon_swing_size: i32,
+    pub display_name_lang: ConstExtendedLocalizedString,
+    pub verbose_name_lang: ConstExtendedLocalizedString,
 }
 

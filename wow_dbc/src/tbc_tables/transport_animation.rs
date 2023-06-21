@@ -128,6 +128,78 @@ impl Indexable for TransportAnimation {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstTransportAnimation<const S: usize> {
+    pub rows: [TransportAnimationRow; S],
+}
+
+impl<const S: usize> ConstTransportAnimation<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 28 {
+            panic!("invalid record size, expected 28")
+        }
+
+        if header.field_count != 7 {
+            panic!("invalid field count, expected 7")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TransportAnimationRow {
+                id: TransportAnimationKey::new(0),
+                transport_id: 0,
+                time_index: 0,
+                pos: [0.0; 3],
+                sequence_id: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (TransportAnimation) int32
+            let id = TransportAnimationKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // transport_id: int32
+            let transport_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_index: int32
+            let time_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pos: float[3]
+            let pos = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // sequence_id: int32
+            let sequence_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = TransportAnimationRow {
+                id,
+                transport_id,
+                time_index,
+                pos,
+                sequence_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TransportAnimationKey {
     pub id: i32

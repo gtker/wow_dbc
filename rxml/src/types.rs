@@ -2,6 +2,7 @@ use crate::parser::{
     BOOL32_NAME, BOOL_NAME, FLOAT_NAME, I16_NAME, I32_NAME, I8_NAME, STRING_REF_LOC_NAME,
     STRING_REF_NAME, U16_NAME, U32_NAME, U8_NAME,
 };
+use crate::Objects;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct DbcDescription {
@@ -32,6 +33,12 @@ impl DbcDescription {
     }
     pub fn flags(&self) -> &[Definer] {
         &self.flags
+    }
+
+    pub fn primary_key(&self) -> Option<(&Field, &Type)> {
+        let keys = self.primary_keys();
+        assert_eq!(keys.len(), 1);
+        Some(keys[0])
     }
 
     pub fn primary_keys(&self) -> Vec<(&Field, &Type)> {
@@ -191,6 +198,10 @@ impl Field {
     pub fn ty(&self) -> &Type {
         &self.ty
     }
+
+    pub fn default_value(&self, o: &Objects) -> String {
+        self.ty().default_value(o)
+    }
 }
 
 pub(crate) const fn string_ref_loc_members() -> &'static [&'static str] {
@@ -266,6 +277,18 @@ impl Type {
         }
     }
 
+    pub fn const_rust_str(&self) -> String {
+        match self {
+            Type::StringRef => "&'static str".to_string(),
+            Type::StringRefLoc => "ConstLocalizedString".to_string(),
+            Type::ExtendedStringRefLoc => "ConstExtendedLocalizedString".to_string(),
+            Type::Array(array) => {
+                format!("[{}; {}]", array.ty.const_rust_str(), array.size)
+            }
+            _ => self.rust_str(),
+        }
+    }
+
     pub fn str(&self) -> String {
         match &self {
             Type::I8 => I8_NAME.to_string(),
@@ -311,6 +334,39 @@ impl Type {
 
     pub fn has_custom_array_impl(&self) -> bool {
         matches!(self, Type::I32 | Type::U32 | Type::Float)
+    }
+
+    pub fn default_value(&self, o: &Objects) -> String {
+        match self {
+            Type::I8 | Type::I16 | Type::I32 | Type::U8 | Type::U16 | Type::U32 => "0".to_string(),
+            Type::Bool | Type::Bool32 => "false".to_string(),
+            Type::StringRef => "\"\"".to_string(),
+            Type::StringRefLoc => "crate::ConstLocalizedString::empty()".to_string(),
+            Type::ExtendedStringRefLoc => {
+                "crate::ConstExtendedLocalizedString::empty()".to_string()
+            }
+            Type::Float => "0.0".to_string(),
+            Type::ForeignKey { table, .. } => {
+                if o.table_exists(table) {
+                    format!("{}::new(0)", self.rust_str())
+                } else {
+                    "0".to_string()
+                }
+            }
+            Type::Flag(_) | Type::PrimaryKey { .. } => {
+                format!("{}::new(0)", self.rust_str())
+            }
+            Type::Enum(e) => format!(
+                "{}::{}",
+                self.rust_str(),
+                e.enumerators().first().unwrap().name()
+            ),
+            Type::Array(array) => {
+                let value = array.ty.default_value(o);
+                let size = array.size;
+                format!("[{value}; {size}]")
+            }
+        }
     }
 }
 

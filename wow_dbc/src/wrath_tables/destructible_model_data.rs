@@ -223,6 +223,153 @@ impl Indexable for DestructibleModelData {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstDestructibleModelData<const S: usize> {
+    pub rows: [DestructibleModelDataRow; S],
+}
+
+impl<const S: usize> ConstDestructibleModelData<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 76 {
+            panic!("invalid record size, expected 76")
+        }
+
+        if header.field_count != 19 {
+            panic!("invalid field count, expected 19")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            DestructibleModelDataRow {
+                id: DestructibleModelDataKey::new(0),
+                state0_impact_effect_doodad_set: 0,
+                state0_ambient_doodad_set: 0,
+                state1_w_m_o: 0,
+                state1_destruction_doodad_set: 0,
+                state1_impact_effect_doodad_set: 0,
+                state1_ambient_doodad_set: 0,
+                state2_w_m_o: 0,
+                state2_destruction_doodad_set: 0,
+                state2_impact_effect_doodad_set: 0,
+                state2_ambient_doodad_set: 0,
+                state3_w_m_o: 0,
+                state3_init_doodad_set: 0,
+                state3_ambient_doodad_set: 0,
+                eject_direction: 0,
+                repair_ground_fx: 0,
+                do_not_highlight: 0,
+                heal_effect: 0,
+                heal_effect_speed: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (DestructibleModelData) int32
+            let id = DestructibleModelDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // state0_impact_effect_doodad_set: int32
+            let state0_impact_effect_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state0_ambient_doodad_set: int32
+            let state0_ambient_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state1_w_m_o: int32
+            let state1_w_m_o = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state1_destruction_doodad_set: int32
+            let state1_destruction_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state1_impact_effect_doodad_set: int32
+            let state1_impact_effect_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state1_ambient_doodad_set: int32
+            let state1_ambient_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state2_w_m_o: int32
+            let state2_w_m_o = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state2_destruction_doodad_set: int32
+            let state2_destruction_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state2_impact_effect_doodad_set: int32
+            let state2_impact_effect_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state2_ambient_doodad_set: int32
+            let state2_ambient_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state3_w_m_o: int32
+            let state3_w_m_o = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state3_init_doodad_set: int32
+            let state3_init_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state3_ambient_doodad_set: int32
+            let state3_ambient_doodad_set = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // eject_direction: int32
+            let eject_direction = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // repair_ground_fx: int32
+            let repair_ground_fx = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // do_not_highlight: int32
+            let do_not_highlight = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // heal_effect: int32
+            let heal_effect = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // heal_effect_speed: int32
+            let heal_effect_speed = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = DestructibleModelDataRow {
+                id,
+                state0_impact_effect_doodad_set,
+                state0_ambient_doodad_set,
+                state1_w_m_o,
+                state1_destruction_doodad_set,
+                state1_impact_effect_doodad_set,
+                state1_ambient_doodad_set,
+                state2_w_m_o,
+                state2_destruction_doodad_set,
+                state2_impact_effect_doodad_set,
+                state2_ambient_doodad_set,
+                state3_w_m_o,
+                state3_init_doodad_set,
+                state3_ambient_doodad_set,
+                eject_direction,
+                repair_ground_fx,
+                do_not_highlight,
+                heal_effect,
+                heal_effect_speed,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct DestructibleModelDataKey {
     pub id: i32

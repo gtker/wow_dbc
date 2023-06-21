@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeons {
@@ -158,6 +158,93 @@ impl LFGDungeons {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLFGDungeons<const S: usize> {
+    pub rows: [ConstLFGDungeonsRow; S],
+}
+
+impl<const S: usize> ConstLFGDungeons<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 56 {
+            panic!("invalid record size, expected 56")
+        }
+
+        if header.field_count != 14 {
+            panic!("invalid field count, expected 14")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstLFGDungeonsRow {
+                id: LFGDungeonsKey::new(0),
+                name: crate::ConstLocalizedString::empty(),
+                min_allowed_level: 0,
+                max_allowed_level: 0,
+                instance_type: InstanceType::GroupInstance,
+                faction: Faction::Neutral,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (LFGDungeons) uint32
+            let id = LFGDungeonsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // min_allowed_level: uint32
+            let min_allowed_level = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_allowed_level: uint32
+            let max_allowed_level = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // instance_type: InstanceType
+            let instance_type = match InstanceType::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // faction: Faction
+            let faction = match Faction::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            rows[i] = ConstLFGDungeonsRow {
+                id,
+                name,
+                min_allowed_level,
+                max_allowed_level,
+                instance_type,
+                faction,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LFGDungeonsKey {
     pub id: u32
@@ -288,6 +375,16 @@ impl Default for Faction {
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
     pub name: LocalizedString,
+    pub min_allowed_level: u32,
+    pub max_allowed_level: u32,
+    pub instance_type: InstanceType,
+    pub faction: Faction,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLFGDungeonsRow {
+    pub id: LFGDungeonsKey,
+    pub name: ConstLocalizedString,
     pub min_allowed_level: u32,
     pub max_allowed_level: u32,
     pub instance_type: InstanceType,

@@ -158,6 +158,117 @@ impl Indexable for CharStartOutfit {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharStartOutfit<const S: usize> {
+    pub rows: [CharStartOutfitRow; S],
+}
+
+impl<const S: usize> ConstCharStartOutfit<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 152 {
+            panic!("invalid record size, expected 152")
+        }
+
+        if header.field_count != 41 {
+            panic!("invalid field count, expected 41")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharStartOutfitRow {
+                id: CharStartOutfitKey::new(0),
+                race: ChrRacesKey::new(0),
+                class: ChrClassesKey::new(0),
+                gender: Gender::Male,
+                outfit_id: 0,
+                item_id: [0; 12],
+                display_id: [0; 12],
+                inv_slot_id: [0; 12],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CharStartOutfit) uint32
+            let id = CharStartOutfitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // race: foreign_key (ChrRaces) uint8
+            let race = ChrRacesKey::new(u8::from_le_bytes([b[b_offset + 0]])as u32);
+            b_offset += 1;
+
+            // class: foreign_key (ChrClasses) uint8
+            let class = ChrClassesKey::new(u8::from_le_bytes([b[b_offset + 0]])as u32);
+            b_offset += 1;
+
+            // gender: Gender
+            let gender = match Gender::from_value(i8::from_le_bytes([b[b_offset + 0]]) as i8) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 1;
+
+            // outfit_id: int8
+            let outfit_id = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // item_id: int32[12]
+            let item_id = {
+                let mut a = [0; 12];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // display_id: int32[12]
+            let display_id = {
+                let mut a = [0; 12];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // inv_slot_id: int32[12]
+            let inv_slot_id = {
+                let mut a = [0; 12];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = CharStartOutfitRow {
+                id,
+                race,
+                class,
+                gender,
+                outfit_id,
+                item_id,
+                display_id,
+                inv_slot_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CharStartOutfitKey {
     pub id: u32

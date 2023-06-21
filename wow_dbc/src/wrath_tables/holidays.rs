@@ -219,6 +219,140 @@ impl Holidays {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstHolidays<const S: usize> {
+    pub rows: [ConstHolidaysRow; S],
+}
+
+impl<const S: usize> ConstHolidays<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 220 {
+            panic!("invalid record size, expected 220")
+        }
+
+        if header.field_count != 55 {
+            panic!("invalid field count, expected 55")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstHolidaysRow {
+                id: HolidaysKey::new(0),
+                duration: [0; 10],
+                date: [0; 26],
+                region: 0,
+                looping: 0,
+                calendar_flags: [0; 10],
+                holiday_name_id: HolidayNamesKey::new(0),
+                holiday_description_id: HolidayDescriptionsKey::new(0),
+                texture_file_name: "",
+                priority: 0,
+                calendar_filter_type: 0,
+                flags: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Holidays) int32
+            let id = HolidaysKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // duration: int32[10]
+            let duration = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // date: int32[26]
+            let date = {
+                let mut a = [0; 26];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // region: int32
+            let region = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // looping: int32
+            let looping = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // calendar_flags: int32[10]
+            let calendar_flags = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // holiday_name_id: foreign_key (HolidayNames) int32
+            let holiday_name_id = HolidayNamesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // holiday_description_id: foreign_key (HolidayDescriptions) int32
+            let holiday_description_id = HolidayDescriptionsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // texture_file_name: string_ref
+            let texture_file_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // priority: int32
+            let priority = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // calendar_filter_type: int32
+            let calendar_filter_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstHolidaysRow {
+                id,
+                duration,
+                date,
+                region,
+                looping,
+                calendar_flags,
+                holiday_name_id,
+                holiday_description_id,
+                texture_file_name,
+                priority,
+                calendar_filter_type,
+                flags,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct HolidaysKey {
     pub id: i32
@@ -277,6 +411,22 @@ pub struct HolidaysRow {
     pub holiday_name_id: HolidayNamesKey,
     pub holiday_description_id: HolidayDescriptionsKey,
     pub texture_file_name: String,
+    pub priority: i32,
+    pub calendar_filter_type: i32,
+    pub flags: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstHolidaysRow {
+    pub id: HolidaysKey,
+    pub duration: [i32; 10],
+    pub date: [i32; 26],
+    pub region: i32,
+    pub looping: i32,
+    pub calendar_flags: [i32; 10],
+    pub holiday_name_id: HolidayNamesKey,
+    pub holiday_description_id: HolidayDescriptionsKey,
+    pub texture_file_name: &'static str,
     pub priority: i32,
     pub calendar_filter_type: i32,
     pub flags: i32,

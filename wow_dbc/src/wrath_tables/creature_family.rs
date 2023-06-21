@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureFamily {
@@ -207,6 +207,134 @@ impl CreatureFamily {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstCreatureFamily<const S: usize> {
+    pub rows: [ConstCreatureFamilyRow; S],
+}
+
+impl<const S: usize> ConstCreatureFamily<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 112 {
+            panic!("invalid record size, expected 112")
+        }
+
+        if header.field_count != 28 {
+            panic!("invalid field count, expected 28")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstCreatureFamilyRow {
+                id: CreatureFamilyKey::new(0),
+                min_scale: 0.0,
+                min_scale_level: 0,
+                max_scale: 0.0,
+                max_scale_level: 0,
+                skill_line: [0; 2],
+                pet_food_mask: 0,
+                pet_talent_type: 0,
+                category_enum_id: 0,
+                name_lang: crate::ConstExtendedLocalizedString::empty(),
+                icon_file: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureFamily) int32
+            let id = CreatureFamilyKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // min_scale: float
+            let min_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_scale_level: int32
+            let min_scale_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_scale: float
+            let max_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_scale_level: int32
+            let max_scale_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // skill_line: int32[2]
+            let skill_line = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // pet_food_mask: int32
+            let pet_food_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pet_talent_type: int32
+            let pet_talent_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // category_enum_id: int32
+            let category_enum_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // name_lang: string_ref_loc (Extended)
+            let name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // icon_file: string_ref
+            let icon_file = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstCreatureFamilyRow {
+                id,
+                min_scale,
+                min_scale_level,
+                max_scale,
+                max_scale_level,
+                skill_line,
+                pet_food_mask,
+                pet_talent_type,
+                category_enum_id,
+                name_lang,
+                icon_file,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureFamilyKey {
     pub id: i32
@@ -267,5 +395,20 @@ pub struct CreatureFamilyRow {
     pub category_enum_id: i32,
     pub name_lang: ExtendedLocalizedString,
     pub icon_file: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCreatureFamilyRow {
+    pub id: CreatureFamilyKey,
+    pub min_scale: f32,
+    pub min_scale_level: i32,
+    pub max_scale: f32,
+    pub max_scale_level: i32,
+    pub skill_line: [i32; 2],
+    pub pet_food_mask: i32,
+    pub pet_talent_type: i32,
+    pub category_enum_id: i32,
+    pub name_lang: ConstExtendedLocalizedString,
+    pub icon_file: &'static str,
 }
 

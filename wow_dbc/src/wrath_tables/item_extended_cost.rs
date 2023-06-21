@@ -153,6 +153,105 @@ impl Indexable for ItemExtendedCost {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemExtendedCost<const S: usize> {
+    pub rows: [ItemExtendedCostRow; S],
+}
+
+impl<const S: usize> ConstItemExtendedCost<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 64 {
+            panic!("invalid record size, expected 64")
+        }
+
+        if header.field_count != 16 {
+            panic!("invalid field count, expected 16")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            ItemExtendedCostRow {
+                id: ItemExtendedCostKey::new(0),
+                honor_points: 0,
+                arena_points: 0,
+                arena_bracket: 0,
+                item_id: [0; 5],
+                item_count: [0; 5],
+                required_arena_rating: 0,
+                item_purchase_group: ItemPurchaseGroupKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ItemExtendedCost) int32
+            let id = ItemExtendedCostKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // honor_points: int32
+            let honor_points = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // arena_points: int32
+            let arena_points = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // arena_bracket: int32
+            let arena_bracket = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // item_id: int32[5]
+            let item_id = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // item_count: int32[5]
+            let item_count = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // required_arena_rating: int32
+            let required_arena_rating = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // item_purchase_group: foreign_key (ItemPurchaseGroup) int32
+            let item_purchase_group = ItemPurchaseGroupKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ItemExtendedCostRow {
+                id,
+                honor_points,
+                arena_points,
+                arena_bracket,
+                item_id,
+                item_count,
+                required_arena_rating,
+                item_purchase_group,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemExtendedCostKey {
     pub id: i32

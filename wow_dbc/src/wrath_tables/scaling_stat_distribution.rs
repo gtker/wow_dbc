@@ -124,6 +124,81 @@ impl Indexable for ScalingStatDistribution {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstScalingStatDistribution<const S: usize> {
+    pub rows: [ScalingStatDistributionRow; S],
+}
+
+impl<const S: usize> ConstScalingStatDistribution<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 88 {
+            panic!("invalid record size, expected 88")
+        }
+
+        if header.field_count != 22 {
+            panic!("invalid field count, expected 22")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            ScalingStatDistributionRow {
+                id: ScalingStatDistributionKey::new(0),
+                stat_id: [0; 10],
+                bonus: [0; 10],
+                maxlevel: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ScalingStatDistribution) int32
+            let id = ScalingStatDistributionKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // stat_id: int32[10]
+            let stat_id = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // bonus: int32[10]
+            let bonus = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // maxlevel: int32
+            let maxlevel = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ScalingStatDistributionRow {
+                id,
+                stat_id,
+                bonus,
+                maxlevel,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ScalingStatDistributionKey {
     pub id: i32

@@ -256,6 +256,210 @@ impl Indexable for SpellVisualKit {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellVisualKit<const S: usize> {
+    pub rows: [SpellVisualKitRow; S],
+}
+
+impl<const S: usize> ConstSpellVisualKit<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 140 {
+            panic!("invalid record size, expected 140")
+        }
+
+        if header.field_count != 35 {
+            panic!("invalid field count, expected 35")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SpellVisualKitRow {
+                id: SpellVisualKitKey::new(0),
+                start_anim: AnimationDataKey::new(0),
+                anim: AnimationDataKey::new(0),
+                head_effect: SpellVisualEffectNameKey::new(0),
+                chest_effect: SpellVisualEffectNameKey::new(0),
+                base_effect: SpellVisualEffectNameKey::new(0),
+                left_hand_effect: SpellVisualEffectNameKey::new(0),
+                right_hand_effect: SpellVisualEffectNameKey::new(0),
+                breath_effect: SpellVisualEffectNameKey::new(0),
+                left_weapon_effect: SpellVisualEffectNameKey::new(0),
+                right_weapon_effect: SpellVisualEffectNameKey::new(0),
+                special_effects: [0; 3],
+                world_effect: SpellVisualEffectNameKey::new(0),
+                sound: SoundEntriesKey::new(0),
+                shake: CameraShakesKey::new(0),
+                char_proc: [0; 4],
+                char_param_zero: [0.0; 4],
+                char_param_one: [0.0; 4],
+                char_param_two: [0.0; 4],
+                unknown1_pad: 0,
+                unknown2_pad: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellVisualKit) uint32
+            let id = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // start_anim: foreign_key (AnimationData) uint32
+            let start_anim = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // anim: foreign_key (AnimationData) uint32
+            let anim = AnimationDataKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // head_effect: foreign_key (SpellVisualEffectName) uint32
+            let head_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // chest_effect: foreign_key (SpellVisualEffectName) uint32
+            let chest_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // base_effect: foreign_key (SpellVisualEffectName) uint32
+            let base_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // left_hand_effect: foreign_key (SpellVisualEffectName) uint32
+            let left_hand_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // right_hand_effect: foreign_key (SpellVisualEffectName) uint32
+            let right_hand_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // breath_effect: foreign_key (SpellVisualEffectName) uint32
+            let breath_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // left_weapon_effect: foreign_key (SpellVisualEffectName) uint32
+            let left_weapon_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // right_weapon_effect: foreign_key (SpellVisualEffectName) uint32
+            let right_weapon_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // special_effects: uint32[3]
+            let special_effects = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // world_effect: foreign_key (SpellVisualEffectName) uint32
+            let world_effect = SpellVisualEffectNameKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound: foreign_key (SoundEntries) uint32
+            let sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // shake: foreign_key (CameraShakes) uint32
+            let shake = CameraShakesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // char_proc: uint32[4]
+            let char_proc = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // char_param_zero: float[4]
+            let char_param_zero = {
+                let mut a = [0.0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // char_param_one: float[4]
+            let char_param_one = {
+                let mut a = [0.0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // char_param_two: float[4]
+            let char_param_two = {
+                let mut a = [0.0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // unknown1_pad: uint32
+            let unknown1_pad = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // unknown2_pad: uint32
+            let unknown2_pad = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SpellVisualKitRow {
+                id,
+                start_anim,
+                anim,
+                head_effect,
+                chest_effect,
+                base_effect,
+                left_hand_effect,
+                right_hand_effect,
+                breath_effect,
+                left_weapon_effect,
+                right_weapon_effect,
+                special_effects,
+                world_effect,
+                sound,
+                shake,
+                char_proc,
+                char_param_zero,
+                char_param_one,
+                char_param_two,
+                unknown1_pad,
+                unknown2_pad,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKitKey {
     pub id: u32

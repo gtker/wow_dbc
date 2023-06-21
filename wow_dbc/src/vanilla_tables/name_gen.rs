@@ -154,6 +154,68 @@ impl NameGen {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstNameGen<const S: usize> {
+    pub rows: [ConstNameGenRow; S],
+}
+
+impl<const S: usize> ConstNameGen<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstNameGenRow {
+                id: NameGenKey::new(0),
+                name: "",
+                race: ChrRacesKey::new(0),
+                gender: Gender::Male,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (NameGen) uint32
+            let id = NameGenKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // race: foreign_key (ChrRaces) uint32
+            let race = ChrRacesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // gender: Gender
+            let gender = match Gender::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]) as i8) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            rows[i] = ConstNameGenRow {
+                id,
+                name,
+                race,
+                gender,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct NameGenKey {
     pub id: u32
@@ -191,6 +253,14 @@ impl From<u32> for NameGenKey {
 pub struct NameGenRow {
     pub id: NameGenKey,
     pub name: String,
+    pub race: ChrRacesKey,
+    pub gender: Gender,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstNameGenRow {
+    pub id: NameGenKey,
+    pub name: &'static str,
     pub race: ChrRacesKey,
     pub gender: Gender,
 }

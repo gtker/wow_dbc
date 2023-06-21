@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::area_table::*;
 use crate::vanilla_tables::map::*;
 
@@ -249,6 +249,158 @@ impl WorldStateUI {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWorldStateUI<const S: usize> {
+    pub rows: [ConstWorldStateUIRow; S],
+}
+
+impl<const S: usize> ConstWorldStateUI<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 156 {
+            panic!("invalid record size, expected 156")
+        }
+
+        if header.field_count != 39 {
+            panic!("invalid field count, expected 39")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstWorldStateUIRow {
+                id: WorldStateUIKey::new(0),
+                map: MapKey::new(0),
+                area_table: AreaTableKey::new(0),
+                icon: "",
+                state_variable: crate::ConstLocalizedString::empty(),
+                tooltip: crate::ConstLocalizedString::empty(),
+                state: 0,
+                world_state: 0,
+                ty: 0,
+                dynamic_icon: "",
+                dynamic_tooltip: crate::ConstLocalizedString::empty(),
+                extended_ui: "",
+                unknown: [0; 3],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WorldStateUI) uint32
+            let id = WorldStateUIKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map: foreign_key (Map) uint32
+            let map = MapKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // area_table: foreign_key (AreaTable) uint32
+            let area_table = AreaTableKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // icon: string_ref
+            let icon = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // state_variable: string_ref_loc
+            let state_variable = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // tooltip: string_ref_loc
+            let tooltip = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // state: int32
+            let state = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // world_state: uint32
+            let world_state = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // ty: int32
+            let ty = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // dynamic_icon: string_ref
+            let dynamic_icon = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // dynamic_tooltip: string_ref_loc
+            let dynamic_tooltip = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // extended_ui: string_ref
+            let extended_ui = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // unknown: uint32[3]
+            let unknown = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = ConstWorldStateUIRow {
+                id,
+                map,
+                area_table,
+                icon,
+                state_variable,
+                tooltip,
+                state,
+                world_state,
+                ty,
+                dynamic_icon,
+                dynamic_tooltip,
+                extended_ui,
+                unknown,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldStateUIKey {
     pub id: u32
@@ -296,6 +448,23 @@ pub struct WorldStateUIRow {
     pub dynamic_icon: String,
     pub dynamic_tooltip: LocalizedString,
     pub extended_ui: String,
+    pub unknown: [u32; 3],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWorldStateUIRow {
+    pub id: WorldStateUIKey,
+    pub map: MapKey,
+    pub area_table: AreaTableKey,
+    pub icon: &'static str,
+    pub state_variable: ConstLocalizedString,
+    pub tooltip: ConstLocalizedString,
+    pub state: i32,
+    pub world_state: u32,
+    pub ty: i32,
+    pub dynamic_icon: &'static str,
+    pub dynamic_tooltip: ConstLocalizedString,
+    pub extended_ui: &'static str,
     pub unknown: [u32; 3],
 }
 

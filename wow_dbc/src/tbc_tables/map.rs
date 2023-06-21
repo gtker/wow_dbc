@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::ExtendedLocalizedString;
+use crate::{ConstExtendedLocalizedString, ExtendedLocalizedString};
 use crate::tbc_tables::area_table::*;
 use crate::tbc_tables::loading_screens::*;
 
@@ -338,6 +338,326 @@ impl Map {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstMap<const S: usize> {
+    pub rows: [ConstMapRow; S],
+}
+
+impl<const S: usize> ConstMap<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 500 {
+            panic!("invalid record size, expected 500")
+        }
+
+        if header.field_count != 125 {
+            panic!("invalid field count, expected 125")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstMapRow {
+                id: MapKey::new(0),
+                directory: "",
+                instance_type: 0,
+                p_v_p: 0,
+                map_name_lang: crate::ConstExtendedLocalizedString::empty(),
+                min_level: 0,
+                max_level: 0,
+                max_players: 0,
+                field_0_7_0_3694_006: 0,
+                field_0_7_0_3694_007: 0.0,
+                field_0_7_0_3694_008: 0.0,
+                area_table_id: AreaTableKey::new(0),
+                map_description0_lang: crate::ConstExtendedLocalizedString::empty(),
+                map_description1_lang: crate::ConstExtendedLocalizedString::empty(),
+                loading_screen_id: LoadingScreensKey::new(0),
+                field_1_5_0_4442_014: 0,
+                field_1_7_0_4671_015: 0,
+                minimap_icon_scale: 0.0,
+                field_2_0_0_5610_018_lang: crate::ConstExtendedLocalizedString::empty(),
+                field_2_0_0_5610_019_lang: crate::ConstExtendedLocalizedString::empty(),
+                field_2_0_0_5610_020_lang: crate::ConstExtendedLocalizedString::empty(),
+                corpse_map_id: MapKey::new(0),
+                corpse: [0.0; 2],
+                field_2_0_3_6299_023: 0,
+                field_2_0_3_6299_024: 0,
+                field_2_0_3_6299_025: 0,
+                time_of_day_override: 0,
+                expansion_id: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Map) int32
+            let id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // directory: string_ref
+            let directory = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // instance_type: int32
+            let instance_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // p_v_p: int32
+            let p_v_p = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // map_name_lang: string_ref_loc (Extended)
+            let map_name_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // min_level: int32
+            let min_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_level: int32
+            let max_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_players: int32
+            let max_players = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_7_0_3694_006: int32
+            let field_0_7_0_3694_006 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_7_0_3694_007: float
+            let field_0_7_0_3694_007 = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_0_7_0_3694_008: float
+            let field_0_7_0_3694_008 = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // area_table_id: foreign_key (AreaTable) int32
+            let area_table_id = AreaTableKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_description0_lang: string_ref_loc (Extended)
+            let map_description0_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // map_description1_lang: string_ref_loc (Extended)
+            let map_description1_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // loading_screen_id: foreign_key (LoadingScreens) int32
+            let loading_screen_id = LoadingScreensKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // field_1_5_0_4442_014: int32
+            let field_1_5_0_4442_014 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_1_7_0_4671_015: int32
+            let field_1_7_0_4671_015 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // minimap_icon_scale: float
+            let minimap_icon_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_2_0_0_5610_018_lang: string_ref_loc (Extended)
+            let field_2_0_0_5610_018_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // field_2_0_0_5610_019_lang: string_ref_loc (Extended)
+            let field_2_0_0_5610_019_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // field_2_0_0_5610_020_lang: string_ref_loc (Extended)
+            let field_2_0_0_5610_020_lang = ConstExtendedLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                crate::util::get_string_from_block(b_offset + 32, b, string_block),
+                crate::util::get_string_from_block(b_offset + 36, b, string_block),
+                crate::util::get_string_from_block(b_offset + 40, b, string_block),
+                crate::util::get_string_from_block(b_offset + 44, b, string_block),
+                crate::util::get_string_from_block(b_offset + 48, b, string_block),
+                crate::util::get_string_from_block(b_offset + 52, b, string_block),
+                crate::util::get_string_from_block(b_offset + 56, b, string_block),
+                crate::util::get_string_from_block(b_offset + 60, b, string_block),
+                u32::from_le_bytes([b[b_offset + 64], b[b_offset + 65], b[b_offset + 66], b[b_offset + 67]]),
+            );
+            b_offset += 68;
+
+            // corpse_map_id: foreign_key (Map) int32
+            let corpse_map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // corpse: float[2]
+            let corpse = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // field_2_0_3_6299_023: int32
+            let field_2_0_3_6299_023 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_2_0_3_6299_024: int32
+            let field_2_0_3_6299_024 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // field_2_0_3_6299_025: int32
+            let field_2_0_3_6299_025 = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // time_of_day_override: int32
+            let time_of_day_override = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // expansion_id: int32
+            let expansion_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstMapRow {
+                id,
+                directory,
+                instance_type,
+                p_v_p,
+                map_name_lang,
+                min_level,
+                max_level,
+                max_players,
+                field_0_7_0_3694_006,
+                field_0_7_0_3694_007,
+                field_0_7_0_3694_008,
+                area_table_id,
+                map_description0_lang,
+                map_description1_lang,
+                loading_screen_id,
+                field_1_5_0_4442_014,
+                field_1_7_0_4671_015,
+                minimap_icon_scale,
+                field_2_0_0_5610_018_lang,
+                field_2_0_0_5610_019_lang,
+                field_2_0_0_5610_020_lang,
+                corpse_map_id,
+                corpse,
+                field_2_0_3_6299_023,
+                field_2_0_3_6299_024,
+                field_2_0_3_6299_025,
+                time_of_day_override,
+                expansion_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct MapKey {
     pub id: i32
@@ -408,6 +728,38 @@ pub struct MapRow {
     pub field_2_0_0_5610_018_lang: ExtendedLocalizedString,
     pub field_2_0_0_5610_019_lang: ExtendedLocalizedString,
     pub field_2_0_0_5610_020_lang: ExtendedLocalizedString,
+    pub corpse_map_id: MapKey,
+    pub corpse: [f32; 2],
+    pub field_2_0_3_6299_023: i32,
+    pub field_2_0_3_6299_024: i32,
+    pub field_2_0_3_6299_025: i32,
+    pub time_of_day_override: i32,
+    pub expansion_id: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstMapRow {
+    pub id: MapKey,
+    pub directory: &'static str,
+    pub instance_type: i32,
+    pub p_v_p: i32,
+    pub map_name_lang: ConstExtendedLocalizedString,
+    pub min_level: i32,
+    pub max_level: i32,
+    pub max_players: i32,
+    pub field_0_7_0_3694_006: i32,
+    pub field_0_7_0_3694_007: f32,
+    pub field_0_7_0_3694_008: f32,
+    pub area_table_id: AreaTableKey,
+    pub map_description0_lang: ConstExtendedLocalizedString,
+    pub map_description1_lang: ConstExtendedLocalizedString,
+    pub loading_screen_id: LoadingScreensKey,
+    pub field_1_5_0_4442_014: i32,
+    pub field_1_7_0_4671_015: i32,
+    pub minimap_icon_scale: f32,
+    pub field_2_0_0_5610_018_lang: ConstExtendedLocalizedString,
+    pub field_2_0_0_5610_019_lang: ConstExtendedLocalizedString,
+    pub field_2_0_0_5610_020_lang: ConstExtendedLocalizedString,
     pub corpse_map_id: MapKey,
     pub corpse: [f32; 2],
     pub field_2_0_3_6299_023: i32,

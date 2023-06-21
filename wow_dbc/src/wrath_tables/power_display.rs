@@ -166,6 +166,77 @@ impl PowerDisplay {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstPowerDisplay<const S: usize> {
+    pub rows: [ConstPowerDisplayRow; S],
+}
+
+impl<const S: usize> ConstPowerDisplay<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 15 {
+            panic!("invalid record size, expected 15")
+        }
+
+        if header.field_count != 6 {
+            panic!("invalid field count, expected 6")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstPowerDisplayRow {
+                id: PowerDisplayKey::new(0),
+                actual_type: 0,
+                global_string_base_tag: "",
+                red: 0,
+                green: 0,
+                blue: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (PowerDisplay) int32
+            let id = PowerDisplayKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // actual_type: int32
+            let actual_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // global_string_base_tag: string_ref
+            let global_string_base_tag = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // red: int8
+            let red = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // green: int8
+            let green = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // blue: int8
+            let blue = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            rows[i] = ConstPowerDisplayRow {
+                id,
+                actual_type,
+                global_string_base_tag,
+                red,
+                green,
+                blue,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct PowerDisplayKey {
     pub id: i32
@@ -218,6 +289,16 @@ pub struct PowerDisplayRow {
     pub id: PowerDisplayKey,
     pub actual_type: i32,
     pub global_string_base_tag: String,
+    pub red: i8,
+    pub green: i8,
+    pub blue: i8,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstPowerDisplayRow {
+    pub id: PowerDisplayKey,
+    pub actual_type: i32,
+    pub global_string_base_tag: &'static str,
     pub red: i8,
     pub green: i8,
     pub blue: i8,

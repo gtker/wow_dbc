@@ -125,6 +125,69 @@ impl Indexable for AttackAnimKits {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstAttackAnimKits<const S: usize> {
+    pub rows: [AttackAnimKitsRow; S],
+}
+
+impl<const S: usize> ConstAttackAnimKits<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 20 {
+            panic!("invalid record size, expected 20")
+        }
+
+        if header.field_count != 5 {
+            panic!("invalid field count, expected 5")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            AttackAnimKitsRow {
+                id: AttackAnimKitsKey::new(0),
+                item_subclass_id: 0,
+                anim_type_id: 0,
+                anim_frequency: 0,
+                which_hand: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (AttackAnimKits) int32
+            let id = AttackAnimKitsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // item_subclass_id: int32
+            let item_subclass_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // anim_type_id: int32
+            let anim_type_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // anim_frequency: int32
+            let anim_frequency = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // which_hand: int32
+            let which_hand = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = AttackAnimKitsRow {
+                id,
+                item_subclass_id,
+                anim_type_id,
+                anim_frequency,
+                which_hand,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct AttackAnimKitsKey {
     pub id: i32

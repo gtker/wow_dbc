@@ -117,6 +117,75 @@ impl Indexable for SkillTiers {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSkillTiers<const S: usize> {
+    pub rows: [SkillTiersRow; S],
+}
+
+impl<const S: usize> ConstSkillTiers<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 132 {
+            panic!("invalid record size, expected 132")
+        }
+
+        if header.field_count != 33 {
+            panic!("invalid field count, expected 33")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SkillTiersRow {
+                id: SkillTiersKey::new(0),
+                cost: [0; 16],
+                value: [0; 16],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SkillTiers) uint32
+            let id = SkillTiersKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // cost: int32[16]
+            let cost = {
+                let mut a = [0; 16];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // value: int32[16]
+            let value = {
+                let mut a = [0; 16];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SkillTiersRow {
+                id,
+                cost,
+                value,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SkillTiersKey {
     pub id: u32

@@ -142,6 +142,102 @@ impl Indexable for WorldMapTransforms {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstWorldMapTransforms<const S: usize> {
+    pub rows: [WorldMapTransformsRow; S],
+}
+
+impl<const S: usize> ConstWorldMapTransforms<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 36 {
+            panic!("invalid record size, expected 36")
+        }
+
+        if header.field_count != 9 {
+            panic!("invalid field count, expected 9")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            WorldMapTransformsRow {
+                id: WorldMapTransformsKey::new(0),
+                map_id: MapKey::new(0),
+                region_min: [0.0; 2],
+                region_max: [0.0; 2],
+                new_map_id: MapKey::new(0),
+                region_offset: [0.0; 2],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WorldMapTransforms) int32
+            let id = WorldMapTransformsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // map_id: foreign_key (Map) int32
+            let map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // region_min: float[2]
+            let region_min = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // region_max: float[2]
+            let region_max = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // new_map_id: foreign_key (Map) int32
+            let new_map_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // region_offset: float[2]
+            let region_offset = {
+                let mut a = [0.0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = WorldMapTransformsRow {
+                id,
+                map_id,
+                region_min,
+                region_max,
+                new_map_id,
+                region_offset,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldMapTransformsKey {
     pub id: i32

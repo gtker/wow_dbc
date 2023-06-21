@@ -304,6 +304,155 @@ impl ItemDisplayInfo {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemDisplayInfo<const S: usize> {
+    pub rows: [ConstItemDisplayInfoRow; S],
+}
+
+impl<const S: usize> ConstItemDisplayInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 92 {
+            panic!("invalid record size, expected 92")
+        }
+
+        if header.field_count != 23 {
+            panic!("invalid field count, expected 23")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstItemDisplayInfoRow {
+                id: ItemDisplayInfoKey::new(0),
+                model_name: [""; 2],
+                model_texture: [""; 2],
+                inventory_icon: [""; 2],
+                geoset_group: [0; 3],
+                spell_visual: SpellVisualKey::new(0),
+                group_sound_index: ItemGroupSoundsKey::new(0),
+                helmet_geoset_vis: [0; 2],
+                textures: [""; 8],
+                item_visual: ItemVisualsKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ItemDisplayInfo) uint32
+            let id = ItemDisplayInfoKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // model_name: string_ref[2]
+            let model_name = {
+                let mut a = [""; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // model_texture: string_ref[2]
+            let model_texture = {
+                let mut a = [""; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // inventory_icon: string_ref[2]
+            let inventory_icon = {
+                let mut a = [""; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // geoset_group: int32[3]
+            let geoset_group = {
+                let mut a = [0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // spell_visual: foreign_key (SpellVisual) uint32
+            let spell_visual = SpellVisualKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // group_sound_index: foreign_key (ItemGroupSounds) uint32
+            let group_sound_index = ItemGroupSoundsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // helmet_geoset_vis: uint32[2]
+            let helmet_geoset_vis = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // textures: string_ref[8]
+            let textures = {
+                let mut a = [""; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // item_visual: foreign_key (ItemVisuals) uint32
+            let item_visual = ItemVisualsKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstItemDisplayInfoRow {
+                id,
+                model_name,
+                model_texture,
+                inventory_icon,
+                geoset_group,
+                spell_visual,
+                group_sound_index,
+                helmet_geoset_vis,
+                textures,
+                item_visual,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ItemDisplayInfoKey {
     pub id: u32
@@ -348,6 +497,20 @@ pub struct ItemDisplayInfoRow {
     pub group_sound_index: ItemGroupSoundsKey,
     pub helmet_geoset_vis: [u32; 2],
     pub textures: [String; 8],
+    pub item_visual: ItemVisualsKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstItemDisplayInfoRow {
+    pub id: ItemDisplayInfoKey,
+    pub model_name: [&'static str; 2],
+    pub model_texture: [&'static str; 2],
+    pub inventory_icon: [&'static str; 2],
+    pub geoset_group: [i32; 3],
+    pub spell_visual: SpellVisualKey,
+    pub group_sound_index: ItemGroupSoundsKey,
+    pub helmet_geoset_vis: [u32; 2],
+    pub textures: [&'static str; 8],
     pub item_visual: ItemVisualsKey,
 }
 

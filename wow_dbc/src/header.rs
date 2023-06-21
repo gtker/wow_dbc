@@ -11,6 +11,26 @@ pub struct DbcHeader {
     pub string_block_size: u32,
 }
 
+#[cfg(test)]
+pub(crate) const fn parse_header_panic(header: &[u8]) -> DbcHeader {
+    let magic = u32::from_le_bytes([header[0], header[1], header[2], header[3]]);
+    if magic != HEADER_MAGIC {
+        panic!("Header magic does not match");
+    }
+
+    let record_count = u32::from_le_bytes([header[4], header[5], header[6], header[7]]);
+    let field_count = u32::from_le_bytes([header[8], header[9], header[10], header[11]]);
+    let record_size = u32::from_le_bytes([header[12], header[13], header[14], header[15]]);
+    let string_block_size = u32::from_le_bytes([header[16], header[17], header[18], header[19]]);
+
+    DbcHeader {
+        record_count,
+        field_count,
+        record_size,
+        string_block_size,
+    }
+}
+
 pub const fn parse_header(header: &[u8; HEADER_SIZE]) -> Result<DbcHeader, InvalidHeaderError> {
     let magic = u32::from_le_bytes([header[0], header[1], header[2], header[3]]);
     if magic != HEADER_MAGIC {

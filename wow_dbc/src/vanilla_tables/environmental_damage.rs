@@ -112,6 +112,57 @@ impl Indexable for EnvironmentalDamage {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstEnvironmentalDamage<const S: usize> {
+    pub rows: [EnvironmentalDamageRow; S],
+}
+
+impl<const S: usize> ConstEnvironmentalDamage<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            EnvironmentalDamageRow {
+                id: EnvironmentalDamageKey::new(0),
+                en: 0,
+                spell_visual_kit: SpellVisualKitKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (EnvironmentalDamage) uint32
+            let id = EnvironmentalDamageKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // en: int32
+            let en = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // spell_visual_kit: foreign_key (SpellVisualKit) uint32
+            let spell_visual_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = EnvironmentalDamageRow {
+                id,
+                en,
+                spell_visual_kit,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EnvironmentalDamageKey {
     pub id: u32

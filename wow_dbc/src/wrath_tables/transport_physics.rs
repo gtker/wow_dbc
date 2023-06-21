@@ -167,6 +167,105 @@ impl Indexable for TransportPhysics {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstTransportPhysics<const S: usize> {
+    pub rows: [TransportPhysicsRow; S],
+}
+
+impl<const S: usize> ConstTransportPhysics<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 44 {
+            panic!("invalid record size, expected 44")
+        }
+
+        if header.field_count != 11 {
+            panic!("invalid field count, expected 11")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            TransportPhysicsRow {
+                id: TransportPhysicsKey::new(0),
+                wave_amp: 0.0,
+                wave_time_scale: 0.0,
+                roll_amp: 0.0,
+                roll_time_scale: 0.0,
+                pitch_amp: 0.0,
+                pitch_time_scale: 0.0,
+                max_bank: 0.0,
+                max_bank_turn_speed: 0.0,
+                speed_damp_thresh: 0.0,
+                speed_damp: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (TransportPhysics) int32
+            let id = TransportPhysicsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // wave_amp: float
+            let wave_amp = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // wave_time_scale: float
+            let wave_time_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // roll_amp: float
+            let roll_amp = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // roll_time_scale: float
+            let roll_time_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pitch_amp: float
+            let pitch_amp = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pitch_time_scale: float
+            let pitch_time_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_bank: float
+            let max_bank = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_bank_turn_speed: float
+            let max_bank_turn_speed = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // speed_damp_thresh: float
+            let speed_damp_thresh = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // speed_damp: float
+            let speed_damp = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = TransportPhysicsRow {
+                id,
+                wave_amp,
+                wave_time_scale,
+                roll_amp,
+                roll_time_scale,
+                pitch_amp,
+                pitch_time_scale,
+                max_bank,
+                max_bank_turn_speed,
+                speed_damp_thresh,
+                speed_damp,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct TransportPhysicsKey {
     pub id: i32

@@ -464,6 +464,323 @@ impl SpellChainEffects {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstSpellChainEffects<const S: usize> {
+    pub rows: [ConstSpellChainEffectsRow; S],
+}
+
+impl<const S: usize> ConstSpellChainEffects<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 173 {
+            panic!("invalid record size, expected 173")
+        }
+
+        if header.field_count != 47 {
+            panic!("invalid field count, expected 47")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellChainEffectsRow {
+                id: SpellChainEffectsKey::new(0),
+                avg_seg_len: 0.0,
+                width: 0.0,
+                noise_scale: 0.0,
+                tex_coord_scale: 0.0,
+                seg_duration: 0,
+                seg_delay: 0,
+                texture: "",
+                flags: 0,
+                joint_count: 0,
+                joint_offset_radius: 0.0,
+                joints_per_minor_joint: 0,
+                minor_joints_per_major_joint: 0,
+                minor_joint_scale: 0.0,
+                major_joint_scale: 0.0,
+                joint_move_speed: 0.0,
+                joint_smoothness: 0.0,
+                min_duration_between_joint_jumps: 0.0,
+                max_duration_between_joint_jumps: 0.0,
+                wave_height: 0.0,
+                wave_freq: 0.0,
+                wave_speed: 0.0,
+                min_wave_angle: 0.0,
+                max_wave_angle: 0.0,
+                min_wave_spin: 0.0,
+                max_wave_spin: 0.0,
+                arc_height: 0.0,
+                min_arc_angle: 0.0,
+                max_arc_angle: 0.0,
+                min_arc_spin: 0.0,
+                max_arc_spin: 0.0,
+                delay_between_effects: 0.0,
+                min_flicker_on_duration: 0.0,
+                max_flicker_on_duration: 0.0,
+                min_flicker_off_duration: 0.0,
+                max_flicker_off_duration: 0.0,
+                pulse_speed: 0.0,
+                pulse_on_length: 0.0,
+                pulse_fade_length: 0.0,
+                alpha: 0,
+                red: 0,
+                green: 0,
+                blue: 0,
+                blend_mode: 0,
+                combo: "",
+                render_layer: 0,
+                texture_length: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellChainEffects) int32
+            let id = SpellChainEffectsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // avg_seg_len: float
+            let avg_seg_len = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // width: float
+            let width = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // noise_scale: float
+            let noise_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // tex_coord_scale: float
+            let tex_coord_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // seg_duration: int32
+            let seg_duration = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // seg_delay: int32
+            let seg_delay = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture: string_ref
+            let texture = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // joint_count: int32
+            let joint_count = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // joint_offset_radius: float
+            let joint_offset_radius = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // joints_per_minor_joint: int32
+            let joints_per_minor_joint = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // minor_joints_per_major_joint: int32
+            let minor_joints_per_major_joint = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // minor_joint_scale: float
+            let minor_joint_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // major_joint_scale: float
+            let major_joint_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // joint_move_speed: float
+            let joint_move_speed = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // joint_smoothness: float
+            let joint_smoothness = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_duration_between_joint_jumps: float
+            let min_duration_between_joint_jumps = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_duration_between_joint_jumps: float
+            let max_duration_between_joint_jumps = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // wave_height: float
+            let wave_height = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // wave_freq: float
+            let wave_freq = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // wave_speed: float
+            let wave_speed = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_wave_angle: float
+            let min_wave_angle = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_wave_angle: float
+            let max_wave_angle = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_wave_spin: float
+            let min_wave_spin = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_wave_spin: float
+            let max_wave_spin = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // arc_height: float
+            let arc_height = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_arc_angle: float
+            let min_arc_angle = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_arc_angle: float
+            let max_arc_angle = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_arc_spin: float
+            let min_arc_spin = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_arc_spin: float
+            let max_arc_spin = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // delay_between_effects: float
+            let delay_between_effects = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_flicker_on_duration: float
+            let min_flicker_on_duration = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_flicker_on_duration: float
+            let max_flicker_on_duration = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_flicker_off_duration: float
+            let min_flicker_off_duration = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // max_flicker_off_duration: float
+            let max_flicker_off_duration = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pulse_speed: float
+            let pulse_speed = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pulse_on_length: float
+            let pulse_on_length = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // pulse_fade_length: float
+            let pulse_fade_length = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // alpha: int8
+            let alpha = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // red: int8
+            let red = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // green: int8
+            let green = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // blue: int8
+            let blue = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // blend_mode: int8
+            let blend_mode = i8::from_le_bytes([b[b_offset + 0]]);
+            b_offset += 1;
+
+            // combo: string_ref
+            let combo = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // render_layer: int32
+            let render_layer = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // texture_length: float
+            let texture_length = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstSpellChainEffectsRow {
+                id,
+                avg_seg_len,
+                width,
+                noise_scale,
+                tex_coord_scale,
+                seg_duration,
+                seg_delay,
+                texture,
+                flags,
+                joint_count,
+                joint_offset_radius,
+                joints_per_minor_joint,
+                minor_joints_per_major_joint,
+                minor_joint_scale,
+                major_joint_scale,
+                joint_move_speed,
+                joint_smoothness,
+                min_duration_between_joint_jumps,
+                max_duration_between_joint_jumps,
+                wave_height,
+                wave_freq,
+                wave_speed,
+                min_wave_angle,
+                max_wave_angle,
+                min_wave_spin,
+                max_wave_spin,
+                arc_height,
+                min_arc_angle,
+                max_arc_angle,
+                min_arc_spin,
+                max_arc_spin,
+                delay_between_effects,
+                min_flicker_on_duration,
+                max_flicker_on_duration,
+                min_flicker_off_duration,
+                max_flicker_off_duration,
+                pulse_speed,
+                pulse_on_length,
+                pulse_fade_length,
+                alpha,
+                red,
+                green,
+                blue,
+                blend_mode,
+                combo,
+                render_layer,
+                texture_length,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellChainEffectsKey {
     pub id: i32
@@ -558,6 +875,57 @@ pub struct SpellChainEffectsRow {
     pub blue: i8,
     pub blend_mode: i8,
     pub combo: String,
+    pub render_layer: i32,
+    pub texture_length: f32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellChainEffectsRow {
+    pub id: SpellChainEffectsKey,
+    pub avg_seg_len: f32,
+    pub width: f32,
+    pub noise_scale: f32,
+    pub tex_coord_scale: f32,
+    pub seg_duration: i32,
+    pub seg_delay: i32,
+    pub texture: &'static str,
+    pub flags: i32,
+    pub joint_count: i32,
+    pub joint_offset_radius: f32,
+    pub joints_per_minor_joint: i32,
+    pub minor_joints_per_major_joint: i32,
+    pub minor_joint_scale: f32,
+    pub major_joint_scale: f32,
+    pub joint_move_speed: f32,
+    pub joint_smoothness: f32,
+    pub min_duration_between_joint_jumps: f32,
+    pub max_duration_between_joint_jumps: f32,
+    pub wave_height: f32,
+    pub wave_freq: f32,
+    pub wave_speed: f32,
+    pub min_wave_angle: f32,
+    pub max_wave_angle: f32,
+    pub min_wave_spin: f32,
+    pub max_wave_spin: f32,
+    pub arc_height: f32,
+    pub min_arc_angle: f32,
+    pub max_arc_angle: f32,
+    pub min_arc_spin: f32,
+    pub max_arc_spin: f32,
+    pub delay_between_effects: f32,
+    pub min_flicker_on_duration: f32,
+    pub max_flicker_on_duration: f32,
+    pub min_flicker_off_duration: f32,
+    pub max_flicker_off_duration: f32,
+    pub pulse_speed: f32,
+    pub pulse_on_length: f32,
+    pub pulse_fade_length: f32,
+    pub alpha: i8,
+    pub red: i8,
+    pub green: i8,
+    pub blue: i8,
+    pub blend_mode: i8,
+    pub combo: &'static str,
     pub render_layer: i32,
     pub texture_length: f32,
 }

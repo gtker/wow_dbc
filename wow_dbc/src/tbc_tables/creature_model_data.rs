@@ -264,6 +264,164 @@ impl CreatureModelData {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstCreatureModelData<const S: usize> {
+    pub rows: [ConstCreatureModelDataRow; S],
+}
+
+impl<const S: usize> ConstCreatureModelData<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 96 {
+            panic!("invalid record size, expected 96")
+        }
+
+        if header.field_count != 24 {
+            panic!("invalid field count, expected 24")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstCreatureModelDataRow {
+                id: CreatureModelDataKey::new(0),
+                flags: 0,
+                model_name: "",
+                size_class: 0,
+                model_scale: 0.0,
+                blood_id: UnitBloodKey::new(0),
+                footprint_texture_id: FootprintTexturesKey::new(0),
+                footprint_texture_length: 0.0,
+                footprint_texture_width: 0.0,
+                footprint_particle_scale: 0.0,
+                foley_material_id: MaterialKey::new(0),
+                footstep_shake_size: 0,
+                death_thud_shake_size: 0,
+                sound_id: CreatureSoundDataKey::new(0),
+                collision_width: 0.0,
+                collision_height: 0.0,
+                mount_height: 0.0,
+                geo_box: [0.0; 6],
+                attached_effect_scale: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (CreatureModelData) int32
+            let id = CreatureModelDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // model_name: string_ref
+            let model_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // size_class: int32
+            let size_class = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // model_scale: float
+            let model_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // blood_id: foreign_key (UnitBlood) int32
+            let blood_id = UnitBloodKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // footprint_texture_id: foreign_key (FootprintTextures) int32
+            let footprint_texture_id = FootprintTexturesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // footprint_texture_length: float
+            let footprint_texture_length = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // footprint_texture_width: float
+            let footprint_texture_width = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // footprint_particle_scale: float
+            let footprint_particle_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // foley_material_id: foreign_key (Material) int32
+            let foley_material_id = MaterialKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // footstep_shake_size: int32
+            let footstep_shake_size = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // death_thud_shake_size: int32
+            let death_thud_shake_size = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_id: foreign_key (CreatureSoundData) int32
+            let sound_id = CreatureSoundDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // collision_width: float
+            let collision_width = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // collision_height: float
+            let collision_height = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // mount_height: float
+            let mount_height = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // geo_box: float[6]
+            let geo_box = {
+                let mut a = [0.0; 6];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // attached_effect_scale: float
+            let attached_effect_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstCreatureModelDataRow {
+                id,
+                flags,
+                model_name,
+                size_class,
+                model_scale,
+                blood_id,
+                footprint_texture_id,
+                footprint_texture_length,
+                footprint_texture_width,
+                footprint_particle_scale,
+                foley_material_id,
+                footstep_shake_size,
+                death_thud_shake_size,
+                sound_id,
+                collision_width,
+                collision_height,
+                mount_height,
+                geo_box,
+                attached_effect_scale,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct CreatureModelDataKey {
     pub id: i32
@@ -316,6 +474,29 @@ pub struct CreatureModelDataRow {
     pub id: CreatureModelDataKey,
     pub flags: i32,
     pub model_name: String,
+    pub size_class: i32,
+    pub model_scale: f32,
+    pub blood_id: UnitBloodKey,
+    pub footprint_texture_id: FootprintTexturesKey,
+    pub footprint_texture_length: f32,
+    pub footprint_texture_width: f32,
+    pub footprint_particle_scale: f32,
+    pub foley_material_id: MaterialKey,
+    pub footstep_shake_size: i32,
+    pub death_thud_shake_size: i32,
+    pub sound_id: CreatureSoundDataKey,
+    pub collision_width: f32,
+    pub collision_height: f32,
+    pub mount_height: f32,
+    pub geo_box: [f32; 6],
+    pub attached_effect_scale: f32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstCreatureModelDataRow {
+    pub id: CreatureModelDataKey,
+    pub flags: i32,
+    pub model_name: &'static str,
     pub size_class: i32,
     pub model_scale: f32,
     pub blood_id: UnitBloodKey,

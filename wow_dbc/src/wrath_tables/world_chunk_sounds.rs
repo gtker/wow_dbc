@@ -156,6 +156,93 @@ impl Indexable for WorldChunkSounds {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWorldChunkSounds<const S: usize> {
+    pub rows: [WorldChunkSoundsRow; S],
+}
+
+impl<const S: usize> ConstWorldChunkSounds<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 36 {
+            panic!("invalid record size, expected 36")
+        }
+
+        if header.field_count != 9 {
+            panic!("invalid field count, expected 9")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            WorldChunkSoundsRow {
+                id: WorldChunkSoundsKey::new(0),
+                chunk_x: 0,
+                chunk_y: 0,
+                subchunk_x: 0,
+                subchunk_y: 0,
+                zone_intro_music_id: 0,
+                zone_music_id: ZoneMusicKey::new(0),
+                sound_ambience_id: SoundAmbienceKey::new(0),
+                sound_provider_preferences_id: SoundProviderPreferencesKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WorldChunkSounds) int32
+            let id = WorldChunkSoundsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // chunk_x: int32
+            let chunk_x = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // chunk_y: int32
+            let chunk_y = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // subchunk_x: int32
+            let subchunk_x = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // subchunk_y: int32
+            let subchunk_y = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // zone_intro_music_id: int32
+            let zone_intro_music_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // zone_music_id: foreign_key (ZoneMusic) int32
+            let zone_music_id = ZoneMusicKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_ambience_id: foreign_key (SoundAmbience) int32
+            let sound_ambience_id = SoundAmbienceKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_provider_preferences_id: foreign_key (SoundProviderPreferences) int32
+            let sound_provider_preferences_id = SoundProviderPreferencesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = WorldChunkSoundsRow {
+                id,
+                chunk_x,
+                chunk_y,
+                subchunk_x,
+                subchunk_y,
+                zone_intro_music_id,
+                zone_music_id,
+                sound_ambience_id,
+                sound_provider_preferences_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WorldChunkSoundsKey {
     pub id: i32

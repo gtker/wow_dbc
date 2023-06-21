@@ -104,6 +104,51 @@ impl Indexable for BankBagSlotPrices {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstBankBagSlotPrices<const S: usize> {
+    pub rows: [BankBagSlotPricesRow; S],
+}
+
+impl<const S: usize> ConstBankBagSlotPrices<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 8 {
+            panic!("invalid record size, expected 8")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            BankBagSlotPricesRow {
+                id: BankBagSlotPricesKey::new(0),
+                cost: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (BankBagSlotPrices) int32
+            let id = BankBagSlotPricesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // cost: int32
+            let cost = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = BankBagSlotPricesRow {
+                id,
+                cost,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct BankBagSlotPricesKey {
     pub id: i32

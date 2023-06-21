@@ -129,6 +129,78 @@ impl Indexable for SoundFilterElem {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSoundFilterElem<const S: usize> {
+    pub rows: [SoundFilterElemRow; S],
+}
+
+impl<const S: usize> ConstSoundFilterElem<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 52 {
+            panic!("invalid record size, expected 52")
+        }
+
+        if header.field_count != 13 {
+            panic!("invalid field count, expected 13")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SoundFilterElemRow {
+                id: SoundFilterElemKey::new(0),
+                sound_filter_id: SoundFilterKey::new(0),
+                order_index: 0,
+                filter_type: 0,
+                params: [0.0; 9],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SoundFilterElem) int32
+            let id = SoundFilterElemKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_filter_id: foreign_key (SoundFilter) int32
+            let sound_filter_id = SoundFilterKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // order_index: int32
+            let order_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // filter_type: int32
+            let filter_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // params: float[9]
+            let params = {
+                let mut a = [0.0; 9];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SoundFilterElemRow {
+                id,
+                sound_filter_id,
+                order_index,
+                filter_type,
+                params,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SoundFilterElemKey {
     pub id: i32

@@ -148,6 +148,87 @@ impl Indexable for SkillRaceClassInfo {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSkillRaceClassInfo<const S: usize> {
+    pub rows: [SkillRaceClassInfoRow; S],
+}
+
+impl<const S: usize> ConstSkillRaceClassInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SkillRaceClassInfoRow {
+                id: SkillRaceClassInfoKey::new(0),
+                skill_id: SkillLineKey::new(0),
+                race_mask: 0,
+                class_mask: 0,
+                flags: 0,
+                min_level: 0,
+                skill_tier_id: SkillTiersKey::new(0),
+                skill_cost_index: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SkillRaceClassInfo) int32
+            let id = SkillRaceClassInfoKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // skill_id: foreign_key (SkillLine) int32
+            let skill_id = SkillLineKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // race_mask: int32
+            let race_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // class_mask: int32
+            let class_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // min_level: int32
+            let min_level = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // skill_tier_id: foreign_key (SkillTiers) int32
+            let skill_tier_id = SkillTiersKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // skill_cost_index: int32
+            let skill_cost_index = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = SkillRaceClassInfoRow {
+                id,
+                skill_id,
+                race_mask,
+                class_mask,
+                flags,
+                min_level,
+                skill_tier_id,
+                skill_cost_index,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SkillRaceClassInfoKey {
     pub id: i32

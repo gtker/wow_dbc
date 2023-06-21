@@ -6,7 +6,7 @@ pub(crate) mod writer;
 
 use crate::file_utils::overwrite_if_not_same_contents;
 use crate::rust_printer::sqlite_converter;
-use crate::types::DbcDescription;
+use crate::types::{DbcDescription, Field, Type};
 use crate::writer::Writer;
 use std::path::PathBuf;
 
@@ -133,5 +133,13 @@ impl Objects {
 
     pub fn table_exists(&self, table_name: &str) -> bool {
         self.descriptions.iter().any(|a| a.name() == table_name)
+    }
+
+    pub fn table_primary_key_ty(&self, table_name: &str) -> Option<(&Field, &Type)> {
+        if let Some(table) = self.descriptions.iter().find(|a| a.name() == table_name) {
+            table.primary_key()
+        } else {
+            None
+        }
     }
 }

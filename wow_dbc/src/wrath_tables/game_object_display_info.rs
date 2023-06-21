@@ -176,6 +176,104 @@ impl GameObjectDisplayInfo {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstGameObjectDisplayInfo<const S: usize> {
+    pub rows: [ConstGameObjectDisplayInfoRow; S],
+}
+
+impl<const S: usize> ConstGameObjectDisplayInfo<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 76 {
+            panic!("invalid record size, expected 76")
+        }
+
+        if header.field_count != 19 {
+            panic!("invalid field count, expected 19")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstGameObjectDisplayInfoRow {
+                id: GameObjectDisplayInfoKey::new(0),
+                model_name: "",
+                sound: [0; 10],
+                geo_box_min: [0.0; 3],
+                geo_box_max: [0.0; 3],
+                object_effect_package_id: ObjectEffectPackageKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (GameObjectDisplayInfo) int32
+            let id = GameObjectDisplayInfoKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // model_name: string_ref
+            let model_name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // sound: int32[10]
+            let sound = {
+                let mut a = [0; 10];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // geo_box_min: float[3]
+            let geo_box_min = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // geo_box_max: float[3]
+            let geo_box_max = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // object_effect_package_id: foreign_key (ObjectEffectPackage) int32
+            let object_effect_package_id = ObjectEffectPackageKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstGameObjectDisplayInfoRow {
+                id,
+                model_name,
+                sound,
+                geo_box_min,
+                geo_box_max,
+                object_effect_package_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GameObjectDisplayInfoKey {
     pub id: i32
@@ -227,6 +325,16 @@ impl From<u16> for GameObjectDisplayInfoKey {
 pub struct GameObjectDisplayInfoRow {
     pub id: GameObjectDisplayInfoKey,
     pub model_name: String,
+    pub sound: [i32; 10],
+    pub geo_box_min: [f32; 3],
+    pub geo_box_max: [f32; 3],
+    pub object_effect_package_id: ObjectEffectPackageKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstGameObjectDisplayInfoRow {
+    pub id: GameObjectDisplayInfoKey,
+    pub model_name: &'static str,
     pub sound: [i32; 10],
     pub geo_box_min: [f32; 3],
     pub geo_box_max: [f32; 3],

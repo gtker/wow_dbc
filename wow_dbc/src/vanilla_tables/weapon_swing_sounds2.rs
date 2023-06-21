@@ -119,6 +119,66 @@ impl Indexable for WeaponSwingSounds2 {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstWeaponSwingSounds2<const S: usize> {
+    pub rows: [WeaponSwingSounds2Row; S],
+}
+
+impl<const S: usize> ConstWeaponSwingSounds2<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            WeaponSwingSounds2Row {
+                id: WeaponSwingSounds2Key::new(0),
+                swing_type: SwingType::Light,
+                critical: false,
+                sound: SoundEntriesKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (WeaponSwingSounds2) uint32
+            let id = WeaponSwingSounds2Key::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // swing_type: SwingType
+            let swing_type = match SwingType::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // critical: bool32
+            let critical = if (b[b_offset + 0] | b[b_offset + 1] | b[b_offset + 2] | b[b_offset + 3]) != 0 {true} else {false};
+            b_offset += 4;
+
+            // sound: foreign_key (SoundEntries) uint32
+            let sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = WeaponSwingSounds2Row {
+                id,
+                swing_type,
+                critical,
+                sound,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct WeaponSwingSounds2Key {
     pub id: u32

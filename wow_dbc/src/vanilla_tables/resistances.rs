@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 use crate::vanilla_tables::sound_entries::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -145,6 +145,75 @@ impl Resistances {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstResistances<const S: usize> {
+    pub rows: [ConstResistancesRow; S],
+}
+
+impl<const S: usize> ConstResistances<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 48 {
+            panic!("invalid record size, expected 48")
+        }
+
+        if header.field_count != 12 {
+            panic!("invalid field count, expected 12")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstResistancesRow {
+                id: ResistancesKey::new(0),
+                physical_damage: false,
+                fizzle_sound_entry: SoundEntriesKey::new(0),
+                name: crate::ConstLocalizedString::empty(),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Resistances) uint32
+            let id = ResistancesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // physical_damage: bool32
+            let physical_damage = if (b[b_offset + 0] | b[b_offset + 1] | b[b_offset + 2] | b[b_offset + 3]) != 0 {true} else {false};
+            b_offset += 4;
+
+            // fizzle_sound_entry: foreign_key (SoundEntries) uint32
+            let fizzle_sound_entry = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            rows[i] = ConstResistancesRow {
+                id,
+                physical_damage,
+                fizzle_sound_entry,
+                name,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ResistancesKey {
     pub id: u32
@@ -184,5 +253,13 @@ pub struct ResistancesRow {
     pub physical_damage: bool,
     pub fizzle_sound_entry: SoundEntriesKey,
     pub name: LocalizedString,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstResistancesRow {
+    pub id: ResistancesKey,
+    pub physical_damage: bool,
+    pub fizzle_sound_entry: SoundEntriesKey,
+    pub name: ConstLocalizedString,
 }
 

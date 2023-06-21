@@ -204,6 +204,135 @@ impl Indexable for SpellVisual {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellVisual<const S: usize> {
+    pub rows: [SpellVisualRow; S],
+}
+
+impl<const S: usize> ConstSpellVisual<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 64 {
+            panic!("invalid record size, expected 64")
+        }
+
+        if header.field_count != 16 {
+            panic!("invalid field count, expected 16")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SpellVisualRow {
+                id: SpellVisualKey::new(0),
+                precast_kit: SpellVisualKitKey::new(0),
+                cast_kit: SpellVisualKitKey::new(0),
+                impact_kit: SpellVisualKitKey::new(0),
+                state_kit: SpellVisualKitKey::new(0),
+                state_done_kit: SpellVisualKitKey::new(0),
+                channel_kit: SpellVisualKitKey::new(0),
+                has_missile: 0,
+                missile_model: 0,
+                missile_path_type: 0,
+                missile_destination_attachment: 0,
+                missile_sound: SoundEntriesKey::new(0),
+                anim_event_sound: SpellVisualKitKey::new(0),
+                flags: 0,
+                caster_impact_kit: SpellVisualKitKey::new(0),
+                target_impact_kit: SpellVisualKitKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellVisual) uint32
+            let id = SpellVisualKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // precast_kit: foreign_key (SpellVisualKit) uint32
+            let precast_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // cast_kit: foreign_key (SpellVisualKit) uint32
+            let cast_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // impact_kit: foreign_key (SpellVisualKit) uint32
+            let impact_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // state_kit: foreign_key (SpellVisualKit) uint32
+            let state_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // state_done_kit: foreign_key (SpellVisualKit) uint32
+            let state_done_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // channel_kit: foreign_key (SpellVisualKit) uint32
+            let channel_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // has_missile: uint32
+            let has_missile = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_model: int32
+            let missile_model = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_path_type: int32
+            let missile_path_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_destination_attachment: int32
+            let missile_destination_attachment = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_sound: foreign_key (SoundEntries) uint32
+            let missile_sound = SoundEntriesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // anim_event_sound: foreign_key (SpellVisualKit) uint32
+            let anim_event_sound = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // caster_impact_kit: foreign_key (SpellVisualKit) uint32
+            let caster_impact_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // target_impact_kit: foreign_key (SpellVisualKit) uint32
+            let target_impact_kit = SpellVisualKitKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = SpellVisualRow {
+                id,
+                precast_kit,
+                cast_kit,
+                impact_kit,
+                state_kit,
+                state_done_kit,
+                channel_kit,
+                has_missile,
+                missile_model,
+                missile_path_type,
+                missile_destination_attachment,
+                missile_sound,
+                anim_event_sound,
+                flags,
+                caster_impact_kit,
+                target_impact_kit,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKey {
     pub id: u32

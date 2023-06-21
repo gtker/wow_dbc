@@ -153,6 +153,65 @@ impl LiquidType {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLiquidType<const S: usize> {
+    pub rows: [ConstLiquidTypeRow; S],
+}
+
+impl<const S: usize> ConstLiquidType<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 16 {
+            panic!("invalid record size, expected 16")
+        }
+
+        if header.field_count != 4 {
+            panic!("invalid field count, expected 4")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstLiquidTypeRow {
+                id: LiquidTypeKey::new(0),
+                name: "",
+                flags: 0,
+                spell_id: SpellKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (LiquidType) int32
+            let id = LiquidTypeKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // spell_id: foreign_key (Spell) int32
+            let spell_id = SpellKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstLiquidTypeRow {
+                id,
+                name,
+                flags,
+                spell_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LiquidTypeKey {
     pub id: i32
@@ -204,6 +263,14 @@ impl From<u16> for LiquidTypeKey {
 pub struct LiquidTypeRow {
     pub id: LiquidTypeKey,
     pub name: String,
+    pub flags: i32,
+    pub spell_id: SpellKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstLiquidTypeRow {
+    pub id: LiquidTypeKey,
+    pub name: &'static str,
     pub flags: i32,
     pub spell_id: SpellKey,
 }

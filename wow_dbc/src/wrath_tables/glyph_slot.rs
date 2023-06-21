@@ -111,6 +111,57 @@ impl Indexable for GlyphSlot {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstGlyphSlot<const S: usize> {
+    pub rows: [GlyphSlotRow; S],
+}
+
+impl<const S: usize> ConstGlyphSlot<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 12 {
+            panic!("invalid record size, expected 12")
+        }
+
+        if header.field_count != 3 {
+            panic!("invalid field count, expected 3")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            GlyphSlotRow {
+                id: GlyphSlotKey::new(0),
+                ty: 0,
+                tooltip: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (GlyphSlot) int32
+            let id = GlyphSlotKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // ty: int32
+            let ty = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // tooltip: int32
+            let tooltip = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = GlyphSlotRow {
+                id,
+                ty,
+                tooltip,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct GlyphSlotKey {
     pub id: i32

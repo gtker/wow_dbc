@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SpellDispelType {
@@ -144,6 +144,75 @@ impl SpellDispelType {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellDispelType<const S: usize> {
+    pub rows: [ConstSpellDispelTypeRow; S],
+}
+
+impl<const S: usize> ConstSpellDispelType<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 48 {
+            panic!("invalid record size, expected 48")
+        }
+
+        if header.field_count != 12 {
+            panic!("invalid field count, expected 12")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellDispelTypeRow {
+                id: SpellDispelTypeKey::new(0),
+                name: crate::ConstLocalizedString::empty(),
+                mask: 0,
+                immunity_possible: 0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellDispelType) uint32
+            let id = SpellDispelTypeKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // mask: int32
+            let mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // immunity_possible: uint32
+            let immunity_possible = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstSpellDispelTypeRow {
+                id,
+                name,
+                mask,
+                immunity_possible,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellDispelTypeKey {
     pub id: u32
@@ -181,6 +250,14 @@ impl From<u32> for SpellDispelTypeKey {
 pub struct SpellDispelTypeRow {
     pub id: SpellDispelTypeKey,
     pub name: LocalizedString,
+    pub mask: i32,
+    pub immunity_possible: u32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellDispelTypeRow {
+    pub id: SpellDispelTypeKey,
+    pub name: ConstLocalizedString,
     pub mask: i32,
     pub immunity_possible: u32,
 }

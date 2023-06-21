@@ -175,6 +175,83 @@ impl Emotes {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstEmotes<const S: usize> {
+    pub rows: [ConstEmotesRow; S],
+}
+
+impl<const S: usize> ConstEmotes<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 28 {
+            panic!("invalid record size, expected 28")
+        }
+
+        if header.field_count != 7 {
+            panic!("invalid field count, expected 7")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstEmotesRow {
+                id: EmotesKey::new(0),
+                emote_slash_command: "",
+                anim_id: AnimationDataKey::new(0),
+                emote_flags: 0,
+                emote_spec_proc: 0,
+                emote_spec_proc_param: 0,
+                event_sound_id: SoundEntriesKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Emotes) int32
+            let id = EmotesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // emote_slash_command: string_ref
+            let emote_slash_command = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // anim_id: foreign_key (AnimationData) int32
+            let anim_id = AnimationDataKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // emote_flags: int32
+            let emote_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // emote_spec_proc: int32
+            let emote_spec_proc = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // emote_spec_proc_param: int32
+            let emote_spec_proc_param = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // event_sound_id: foreign_key (SoundEntries) int32
+            let event_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstEmotesRow {
+                id,
+                emote_slash_command,
+                anim_id,
+                emote_flags,
+                emote_spec_proc,
+                emote_spec_proc_param,
+                event_sound_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct EmotesKey {
     pub id: i32
@@ -226,6 +303,17 @@ impl From<u16> for EmotesKey {
 pub struct EmotesRow {
     pub id: EmotesKey,
     pub emote_slash_command: String,
+    pub anim_id: AnimationDataKey,
+    pub emote_flags: i32,
+    pub emote_spec_proc: i32,
+    pub emote_spec_proc_param: i32,
+    pub event_sound_id: SoundEntriesKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstEmotesRow {
+    pub id: EmotesKey,
+    pub emote_slash_command: &'static str,
     pub anim_id: AnimationDataKey,
     pub emote_flags: i32,
     pub emote_spec_proc: i32,

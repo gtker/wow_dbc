@@ -294,6 +294,225 @@ impl Indexable for SpellVisual {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstSpellVisual<const S: usize> {
+    pub rows: [SpellVisualRow; S],
+}
+
+impl<const S: usize> ConstSpellVisual<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 128 {
+            panic!("invalid record size, expected 128")
+        }
+
+        if header.field_count != 32 {
+            panic!("invalid field count, expected 32")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            SpellVisualRow {
+                id: SpellVisualKey::new(0),
+                precast_kit: 0,
+                cast_kit: 0,
+                impact_kit: 0,
+                state_kit: 0,
+                state_done_kit: 0,
+                channel_kit: 0,
+                has_missile: 0,
+                missile_model: 0,
+                missile_path_type: 0,
+                missile_destination_attachment: 0,
+                missile_sound: 0,
+                anim_event_sound_id: SoundEntriesKey::new(0),
+                flags: 0,
+                caster_impact_kit: 0,
+                target_impact_kit: 0,
+                missile_attachment: 0,
+                missile_follow_ground_height: 0,
+                missile_follow_ground_drop_speed: 0,
+                missile_follow_ground_approach: 0,
+                missile_follow_ground_flags: 0,
+                missile_motion: 0,
+                missile_targeting_kit: SpellVisualKitKey::new(0),
+                instant_area_kit: 0,
+                impact_area_kit: 0,
+                persistent_area_kit: 0,
+                missile_cast_offset: [0.0; 3],
+                missile_impact_offset: [0.0; 3],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellVisual) int32
+            let id = SpellVisualKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // precast_kit: int32
+            let precast_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // cast_kit: int32
+            let cast_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // impact_kit: int32
+            let impact_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state_kit: int32
+            let state_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state_done_kit: int32
+            let state_done_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // channel_kit: int32
+            let channel_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // has_missile: int32
+            let has_missile = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_model: int32
+            let missile_model = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_path_type: int32
+            let missile_path_type = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_destination_attachment: int32
+            let missile_destination_attachment = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_sound: int32
+            let missile_sound = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // anim_event_sound_id: foreign_key (SoundEntries) int32
+            let anim_event_sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // caster_impact_kit: int32
+            let caster_impact_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // target_impact_kit: int32
+            let target_impact_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_attachment: int32
+            let missile_attachment = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_follow_ground_height: int32
+            let missile_follow_ground_height = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_follow_ground_drop_speed: int32
+            let missile_follow_ground_drop_speed = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_follow_ground_approach: int32
+            let missile_follow_ground_approach = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_follow_ground_flags: int32
+            let missile_follow_ground_flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_motion: int32
+            let missile_motion = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_targeting_kit: foreign_key (SpellVisualKit) int32
+            let missile_targeting_kit = SpellVisualKitKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // instant_area_kit: int32
+            let instant_area_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // impact_area_kit: int32
+            let impact_area_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // persistent_area_kit: int32
+            let persistent_area_kit = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // missile_cast_offset: float[3]
+            let missile_cast_offset = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // missile_impact_offset: float[3]
+            let missile_impact_offset = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = SpellVisualRow {
+                id,
+                precast_kit,
+                cast_kit,
+                impact_kit,
+                state_kit,
+                state_done_kit,
+                channel_kit,
+                has_missile,
+                missile_model,
+                missile_path_type,
+                missile_destination_attachment,
+                missile_sound,
+                anim_event_sound_id,
+                flags,
+                caster_impact_kit,
+                target_impact_kit,
+                missile_attachment,
+                missile_follow_ground_height,
+                missile_follow_ground_drop_speed,
+                missile_follow_ground_approach,
+                missile_follow_ground_flags,
+                missile_motion,
+                missile_targeting_kit,
+                instant_area_kit,
+                impact_area_kit,
+                persistent_area_kit,
+                missile_cast_offset,
+                missile_impact_offset,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellVisualKey {
     pub id: i32

@@ -298,6 +298,191 @@ impl LiquidType {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstLiquidType<const S: usize> {
+    pub rows: [ConstLiquidTypeRow; S],
+}
+
+impl<const S: usize> ConstLiquidType<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 180 {
+            panic!("invalid record size, expected 180")
+        }
+
+        if header.field_count != 45 {
+            panic!("invalid field count, expected 45")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstLiquidTypeRow {
+                id: LiquidTypeKey::new(0),
+                name: "",
+                flags: 0,
+                sound_bank: 0,
+                sound_id: SoundEntriesKey::new(0),
+                spell_id: SpellKey::new(0),
+                max_darken_depth: 0.0,
+                fog_darken_intensity: 0.0,
+                amb_darken_intensity: 0.0,
+                dir_darken_intensity: 0.0,
+                light_id: LightKey::new(0),
+                particle_scale: 0.0,
+                particle_movement: 0,
+                particle_tex_slots: 0,
+                material_id: LiquidMaterialKey::new(0),
+                texture: [""; 6],
+                color: [0; 2],
+                float: [0.0; 18],
+                int: [0; 4],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (LiquidType) int32
+            let id = LiquidTypeKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // flags: int32
+            let flags = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_bank: int32
+            let sound_bank = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // sound_id: foreign_key (SoundEntries) int32
+            let sound_id = SoundEntriesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // spell_id: foreign_key (Spell) int32
+            let spell_id = SpellKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // max_darken_depth: float
+            let max_darken_depth = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // fog_darken_intensity: float
+            let fog_darken_intensity = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // amb_darken_intensity: float
+            let amb_darken_intensity = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // dir_darken_intensity: float
+            let dir_darken_intensity = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // light_id: foreign_key (Light) int32
+            let light_id = LightKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // particle_scale: float
+            let particle_scale = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // particle_movement: int32
+            let particle_movement = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // particle_tex_slots: int32
+            let particle_tex_slots = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // material_id: foreign_key (LiquidMaterial) int32
+            let material_id = LiquidMaterialKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // texture: string_ref[6]
+            let texture = {
+                let mut a = [""; 6];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::get_string_from_block(b_offset, b, string_block);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // color: int32[2]
+            let color = {
+                let mut a = [0; 2];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // float: float[18]
+            let float = {
+                let mut a = [0.0; 18];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // int: int32[4]
+            let int = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = ConstLiquidTypeRow {
+                id,
+                name,
+                flags,
+                sound_bank,
+                sound_id,
+                spell_id,
+                max_darken_depth,
+                fog_darken_intensity,
+                amb_darken_intensity,
+                dir_darken_intensity,
+                light_id,
+                particle_scale,
+                particle_movement,
+                particle_tex_slots,
+                material_id,
+                texture,
+                color,
+                float,
+                int,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LiquidTypeKey {
     pub id: i32
@@ -363,6 +548,29 @@ pub struct LiquidTypeRow {
     pub particle_tex_slots: i32,
     pub material_id: LiquidMaterialKey,
     pub texture: [String; 6],
+    pub color: [i32; 2],
+    pub float: [f32; 18],
+    pub int: [i32; 4],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstLiquidTypeRow {
+    pub id: LiquidTypeKey,
+    pub name: &'static str,
+    pub flags: i32,
+    pub sound_bank: i32,
+    pub sound_id: SoundEntriesKey,
+    pub spell_id: SpellKey,
+    pub max_darken_depth: f32,
+    pub fog_darken_intensity: f32,
+    pub amb_darken_intensity: f32,
+    pub dir_darken_intensity: f32,
+    pub light_id: LightKey,
+    pub particle_scale: f32,
+    pub particle_movement: i32,
+    pub particle_tex_slots: i32,
+    pub material_id: LiquidMaterialKey,
+    pub texture: [&'static str; 6],
     pub color: [i32; 2],
     pub float: [f32; 18],
     pub int: [i32; 4],

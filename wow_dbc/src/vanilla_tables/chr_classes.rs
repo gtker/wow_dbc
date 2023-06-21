@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChrClasses {
@@ -201,6 +201,108 @@ impl ChrClasses {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstChrClasses<const S: usize> {
+    pub rows: [ConstChrClassesRow; S],
+}
+
+impl<const S: usize> ConstChrClasses<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 68 {
+            panic!("invalid record size, expected 68")
+        }
+
+        if header.field_count != 17 {
+            panic!("invalid field count, expected 17")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstChrClassesRow {
+                id: ChrClassesKey::new(0),
+                player_class: 0,
+                damage_bonus_stat: 0,
+                power_type: PowerType::Mana,
+                pet_name_token: "",
+                name: crate::ConstLocalizedString::empty(),
+                filename: "",
+                class_mask: 0,
+                hybrid_class: false,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ChrClasses) uint32
+            let id = ChrClassesKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // player_class: uint32
+            let player_class = u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // damage_bonus_stat: int32
+            let damage_bonus_stat = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // power_type: PowerType
+            let power_type = match PowerType::from_value(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]])) {
+                Some(e) => e,
+                None => panic!(),
+            };
+            b_offset += 4;
+
+            // pet_name_token: string_ref
+            let pet_name_token = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // name: string_ref_loc
+            let name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // filename: string_ref
+            let filename = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // class_mask: int32
+            let class_mask = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // hybrid_class: bool32
+            let hybrid_class = if (b[b_offset + 0] | b[b_offset + 1] | b[b_offset + 2] | b[b_offset + 3]) != 0 {true} else {false};
+            b_offset += 4;
+
+            rows[i] = ConstChrClassesRow {
+                id,
+                player_class,
+                damage_bonus_stat,
+                power_type,
+                pet_name_token,
+                name,
+                filename,
+                class_mask,
+                hybrid_class,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ChrClassesKey {
     pub id: u32
@@ -294,6 +396,19 @@ pub struct ChrClassesRow {
     pub pet_name_token: String,
     pub name: LocalizedString,
     pub filename: String,
+    pub class_mask: i32,
+    pub hybrid_class: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstChrClassesRow {
+    pub id: ChrClassesKey,
+    pub player_class: u32,
+    pub damage_bonus_stat: i32,
+    pub power_type: PowerType,
+    pub pet_name_token: &'static str,
+    pub name: ConstLocalizedString,
+    pub filename: &'static str,
     pub class_mask: i32,
     pub hybrid_class: bool,
 }

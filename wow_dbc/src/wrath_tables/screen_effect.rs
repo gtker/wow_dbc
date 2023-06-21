@@ -179,6 +179,92 @@ impl ScreenEffect {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstScreenEffect<const S: usize> {
+    pub rows: [ConstScreenEffectRow; S],
+}
+
+impl<const S: usize> ConstScreenEffect<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 40 {
+            panic!("invalid record size, expected 40")
+        }
+
+        if header.field_count != 10 {
+            panic!("invalid field count, expected 10")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstScreenEffectRow {
+                id: ScreenEffectKey::new(0),
+                name: "",
+                effect: 0,
+                param: [0; 4],
+                light_params_id: LightParamsKey::new(0),
+                sound_ambience_id: SoundAmbienceKey::new(0),
+                zone_music_id: ZoneMusicKey::new(0),
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (ScreenEffect) int32
+            let id = ScreenEffectKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // name: string_ref
+            let name = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            // effect: int32
+            let effect = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // param: int32[4]
+            let param = {
+                let mut a = [0; 4];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // light_params_id: foreign_key (LightParams) int32
+            let light_params_id = LightParamsKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sound_ambience_id: foreign_key (SoundAmbience) int32
+            let sound_ambience_id = SoundAmbienceKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // zone_music_id: foreign_key (ZoneMusic) int32
+            let zone_music_id = ZoneMusicKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            rows[i] = ConstScreenEffectRow {
+                id,
+                name,
+                effect,
+                param,
+                light_params_id,
+                sound_ambience_id,
+                zone_music_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ScreenEffectKey {
     pub id: i32
@@ -230,6 +316,17 @@ impl From<u16> for ScreenEffectKey {
 pub struct ScreenEffectRow {
     pub id: ScreenEffectKey,
     pub name: String,
+    pub effect: i32,
+    pub param: [i32; 4],
+    pub light_params_id: LightParamsKey,
+    pub sound_ambience_id: SoundAmbienceKey,
+    pub zone_music_id: ZoneMusicKey,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstScreenEffectRow {
+    pub id: ScreenEffectKey,
+    pub name: &'static str,
     pub effect: i32,
     pub param: [i32; 4],
     pub light_params_id: LightParamsKey,

@@ -138,6 +138,53 @@ impl SpellIcon {
 
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellIcon<const S: usize> {
+    pub rows: [ConstSpellIconRow; S],
+}
+
+impl<const S: usize> ConstSpellIcon<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 8 {
+            panic!("invalid record size, expected 8")
+        }
+
+        if header.field_count != 2 {
+            panic!("invalid field count, expected 2")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstSpellIconRow {
+                id: SpellIconKey::new(0),
+                texture_filename: "",
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (SpellIcon) int32
+            let id = SpellIconKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // texture_filename: string_ref
+            let texture_filename = crate::util::get_string_from_block(b_offset, b, string_block);
+            b_offset += 4;
+
+            rows[i] = ConstSpellIconRow {
+                id,
+                texture_filename,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct SpellIconKey {
     pub id: i32
@@ -189,5 +236,11 @@ impl From<u16> for SpellIconKey {
 pub struct SpellIconRow {
     pub id: SpellIconKey,
     pub texture_filename: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstSpellIconRow {
+    pub id: SpellIconKey,
+    pub texture_filename: &'static str,
 }
 

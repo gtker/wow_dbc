@@ -3,7 +3,7 @@ use crate::header;
 use crate::DbcTable;
 use std::io::Write;
 use crate::Indexable;
-use crate::LocalizedString;
+use crate::{ConstLocalizedString, LocalizedString};
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Exhaustion {
@@ -165,6 +165,93 @@ impl Exhaustion {
 
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct ConstExhaustion<const S: usize> {
+    pub rows: [ConstExhaustionRow; S],
+}
+
+impl<const S: usize> ConstExhaustion<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 60 {
+            panic!("invalid record size, expected 60")
+        }
+
+        if header.field_count != 15 {
+            panic!("invalid field count, expected 15")
+        }
+
+        let string_block = (header.record_count * header.record_size) as usize;
+        let string_block = crate::util::subslice(b, string_block..b.len());
+        let mut b_offset = 20;
+        let mut rows = [
+            ConstExhaustionRow {
+                id: ExhaustionKey::new(0),
+                experience: 0,
+                factor: 0.0,
+                outdoor_hours: 0.0,
+                inn_hours: 0.0,
+                state_name: crate::ConstLocalizedString::empty(),
+                threshold: 0.0,
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Exhaustion) uint32
+            let id = ExhaustionKey::new(u32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // experience: int32
+            let experience = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // factor: float
+            let factor = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // outdoor_hours: float
+            let outdoor_hours = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // inn_hours: float
+            let inn_hours = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // state_name: string_ref_loc
+            let state_name = ConstLocalizedString::new(
+                crate::util::get_string_from_block(b_offset, b, string_block),
+                crate::util::get_string_from_block(b_offset + 4, b, string_block),
+                crate::util::get_string_from_block(b_offset + 8, b, string_block),
+                crate::util::get_string_from_block(b_offset + 12, b, string_block),
+                crate::util::get_string_from_block(b_offset + 16, b, string_block),
+                crate::util::get_string_from_block(b_offset + 20, b, string_block),
+                crate::util::get_string_from_block(b_offset + 24, b, string_block),
+                crate::util::get_string_from_block(b_offset + 28, b, string_block),
+                u32::from_le_bytes([b[b_offset + 32], b[b_offset + 33], b[b_offset + 34], b[b_offset + 35]]),
+            );
+            b_offset += 36;
+
+            // threshold: float
+            let threshold = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            rows[i] = ConstExhaustionRow {
+                id,
+                experience,
+                factor,
+                outdoor_hours,
+                inn_hours,
+                state_name,
+                threshold,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct ExhaustionKey {
     pub id: u32
@@ -206,6 +293,17 @@ pub struct ExhaustionRow {
     pub outdoor_hours: f32,
     pub inn_hours: f32,
     pub state_name: LocalizedString,
+    pub threshold: f32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstExhaustionRow {
+    pub id: ExhaustionKey,
+    pub experience: i32,
+    pub factor: f32,
+    pub outdoor_hours: f32,
+    pub inn_hours: f32,
+    pub state_name: ConstLocalizedString,
     pub threshold: f32,
 }
 

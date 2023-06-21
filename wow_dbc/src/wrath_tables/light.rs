@@ -139,6 +139,93 @@ impl Indexable for Light {
 
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct ConstLight<const S: usize> {
+    pub rows: [LightRow; S],
+}
+
+impl<const S: usize> ConstLight<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 60 {
+            panic!("invalid record size, expected 60")
+        }
+
+        if header.field_count != 15 {
+            panic!("invalid field count, expected 15")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            LightRow {
+                id: LightKey::new(0),
+                continent_id: MapKey::new(0),
+                game_coords: [0.0; 3],
+                game_falloff_start: 0.0,
+                game_falloff_end: 0.0,
+                light_params_id: [0; 8],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // id: primary_key (Light) int32
+            let id = LightKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // continent_id: foreign_key (Map) int32
+            let continent_id = MapKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // game_coords: float[3]
+            let game_coords = {
+                let mut a = [0.0; 3];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            // game_falloff_start: float
+            let game_falloff_start = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // game_falloff_end: float
+            let game_falloff_end = crate::util::ct_u32_to_f32([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // light_params_id: int32[8]
+            let light_params_id = {
+                let mut a = [0; 8];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = LightRow {
+                id,
+                continent_id,
+                game_coords,
+                game_falloff_start,
+                game_falloff_end,
+                light_params_id,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+    // TODO: Indexable?
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
 pub struct LightKey {
     pub id: i32

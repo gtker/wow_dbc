@@ -108,6 +108,71 @@ impl DbcTable for CharacterFacialHairStyles {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ConstCharacterFacialHairStyles<const S: usize> {
+    pub rows: [CharacterFacialHairStylesRow; S],
+}
+
+impl<const S: usize> ConstCharacterFacialHairStyles<S> {
+    pub const fn const_read(b: &'static [u8], header: &DbcHeader) -> Self {
+        if header.record_size != 32 {
+            panic!("invalid record size, expected 32")
+        }
+
+        if header.field_count != 8 {
+            panic!("invalid field count, expected 8")
+        }
+
+        let mut b_offset = 20;
+        let mut rows = [
+            CharacterFacialHairStylesRow {
+                race_id: ChrRacesKey::new(0),
+                sex_id: 0,
+                variation_id: 0,
+                geoset: [0; 5],
+            }
+        ; S];
+
+        let mut i = 0;
+        while i < S {
+            // race_id: foreign_key (ChrRaces) int32
+            let race_id = ChrRacesKey::new(i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]));
+            b_offset += 4;
+
+            // sex_id: int32
+            let sex_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // variation_id: int32
+            let variation_id = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+            b_offset += 4;
+
+            // geoset: int32[5]
+            let geoset = {
+                let mut a = [0; 5];
+                let mut i = 0;
+                while i < a.len() {
+                    a[i] = i32::from_le_bytes([b[b_offset + 0], b[b_offset + 1], b[b_offset + 2], b[b_offset + 3]]);
+                    b_offset += 4;
+                    i += 1;
+                }
+
+                a
+            };
+
+            rows[i] = CharacterFacialHairStylesRow {
+                race_id,
+                sex_id,
+                variation_id,
+                geoset,
+            };
+            i += 1;
+        }
+
+        Self { rows }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharacterFacialHairStylesRow {
     pub race_id: ChrRacesKey,
     pub sex_id: i32,
