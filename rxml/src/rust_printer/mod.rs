@@ -1,5 +1,5 @@
 use crate::types::{Field, Type};
-use crate::{DbcDescription, DbcVersion, Objects, Writer, BUILD_TESTS};
+use crate::{DbcDescription, DbcVersion, Objects, Writer};
 use heck::ToSnakeCase;
 
 mod const_ty;
@@ -371,6 +371,7 @@ fn print_field_comment(s: &mut Writer, field: &Field) {
 }
 
 fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
+    const BUILD_TESTS: bool = false;
     if !BUILD_TESTS {
         return;
     }

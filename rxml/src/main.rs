@@ -37,8 +37,6 @@ fn converter_location(version: DbcVersion, ty: &str) -> PathBuf {
         .join(format!("{version}_{ty}.rs"))
 }
 
-const BUILD_TESTS: bool = false;
-
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum DbcVersion {
     Vanilla,
