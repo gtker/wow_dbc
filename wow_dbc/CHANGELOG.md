@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: `Type` renamed to `OceanType`.
 * BREAKING: `ReputationRaceMask` renamed to `AllowedRace`.
 * BREAKING: `Flags` renamed to `PvpFlags`.
+* BREAKING: `ChannelFlags` renamed to `DefaultChannelFlags`.
 
 ### Removed
 

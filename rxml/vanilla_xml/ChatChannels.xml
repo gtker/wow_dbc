@@ -12,7 +12,7 @@
 
     <flag>
         <type>int32</type>
-        <name>ChannelFlags</name>
+        <name>DefaultChannelFlags</name>
         <options>
             <option name="none" value="0x00" />
             <option name="initial" value="0x01" />
@@ -27,7 +27,7 @@
     </flag>
 
     <field>
-        <type>ChannelFlags</type>
+        <type>DefaultChannelFlags</type>
         <name>flags</name>
     </field>
 

@@ -56,8 +56,8 @@ impl DbcTable for ChatChannels {
             // id: primary_key (ChatChannels) uint32
             let id = ChatChannelsKey::new(crate::util::read_u32_le(chunk)?);
 
-            // flags: ChannelFlags
-            let flags = ChannelFlags::new(crate::util::read_i32_le(chunk)?);
+            // flags: DefaultChannelFlags
+            let flags = DefaultChannelFlags::new(crate::util::read_i32_le(chunk)?);
 
             // faction_group: foreign_key (FactionGroup) uint32
             let faction_group = FactionGroupKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -96,7 +96,7 @@ impl DbcTable for ChatChannels {
             // id: primary_key (ChatChannels) uint32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // flags: ChannelFlags
+            // flags: DefaultChannelFlags
             b.write_all(&(row.flags.as_int() as i32).to_le_bytes())?;
 
             // faction_group: foreign_key (FactionGroup) uint32
@@ -189,11 +189,11 @@ impl From<u32> for ChatChannelsKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct ChannelFlags {
+pub struct DefaultChannelFlags {
     value: i32,
 }
 
-impl ChannelFlags {
+impl DefaultChannelFlags {
     pub const fn new(value: i32) -> Self {
         Self { value }
     }
@@ -243,7 +243,7 @@ impl ChannelFlags {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChatChannelsRow {
     pub id: ChatChannelsKey,
-    pub flags: ChannelFlags,
+    pub flags: DefaultChannelFlags,
     pub faction_group: FactionGroupKey,
     pub name: LocalizedString,
     pub shortcut: LocalizedString,
