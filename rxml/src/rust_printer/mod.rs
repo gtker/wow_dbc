@@ -15,7 +15,7 @@ fn not_pascal_case_name(s: &str) -> bool {
 pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Writer {
     let mut s = Writer::new(d.name());
 
-    includes(&mut s, d, o, &version.module_name());
+    includes(&mut s, d, o, version);
 
     main_ty::create_main_ty(&mut s, d, o);
 
@@ -50,7 +50,7 @@ fn insert(
     }
 }
 
-fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str) {
+fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion) {
     let mut map = BTreeMap::new();
 
     insert(&mut map, "std::io", "Write");
@@ -81,6 +81,7 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, include_path: &str)
         insert(&mut map, "crate", "SizeClass");
     }
 
+    let include_path = version.module_name();
     for foreign_key in d.foreign_keys() {
         if foreign_key == d.name() || !o.table_exists(foreign_key) {
             continue;
