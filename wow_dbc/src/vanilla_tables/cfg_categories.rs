@@ -53,8 +53,8 @@ impl DbcTable for Cfg_Categories {
         for mut chunk in r.chunks(header.record_size as usize) {
             let chunk = &mut chunk;
 
-            // category: Category
-            let category = Category::try_from(crate::util::read_i32_le(chunk)?)?;
+            // category: ServerCategory
+            let category = ServerCategory::try_from(crate::util::read_i32_le(chunk)?)?;
 
             // region: Region
             let region = Region::try_from(crate::util::read_i32_le(chunk)?)?;
@@ -85,7 +85,7 @@ impl DbcTable for Cfg_Categories {
 
         let mut string_index = 1;
         for row in &self.rows {
-            // category: Category
+            // category: ServerCategory
             b.write_all(&(row.category.as_int() as i32).to_le_bytes())?;
 
             // region: Region
@@ -126,14 +126,14 @@ impl Cfg_Categories {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Category {
+pub enum ServerCategory {
     One,
     Two,
     Three,
     Five,
 }
 
-impl Category {
+impl ServerCategory {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             1 => Self::One,
@@ -145,15 +145,15 @@ impl Category {
     }
 }
 
-impl TryFrom<i32> for Category {
+impl TryFrom<i32> for ServerCategory {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Category", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ServerCategory", value as i64))
     }
 
 }
 
-impl Category {
+impl ServerCategory {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::One => 1,
@@ -166,7 +166,7 @@ impl Category {
 
 }
 
-impl Default for Category {
+impl Default for ServerCategory {
     fn default() -> Self {
         Self::One
     }
@@ -233,7 +233,7 @@ impl Default for Region {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_CategoriesRow {
-    pub category: Category,
+    pub category: ServerCategory,
     pub region: Region,
     pub name: LocalizedString,
 }
