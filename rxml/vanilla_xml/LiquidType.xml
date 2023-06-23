@@ -17,7 +17,7 @@
 
     <enum>
         <type>int32</type>
-        <name>Type</name>
+        <name>OceanType</name>
         <options>
             <option name="fire" value="0x00" />
             <option name="slime" value="0x02" />
@@ -26,7 +26,7 @@
     </enum>
 
     <field>
-        <type>Type</type>
+        <type>OceanType</type>
         <name>type</name>
     </field>
 

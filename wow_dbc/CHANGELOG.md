@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: `Faction` renamed to `LfgFaction`.
 * BREAKING: `Language` renamed to `ClientLanguage`.
 * BREAKING: `Category` renamed to `ServerCategory`.
+* BREAKING: `Type` renamed to `OceanType`.
 
 ### Removed
 

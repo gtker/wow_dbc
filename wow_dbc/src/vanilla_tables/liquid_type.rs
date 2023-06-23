@@ -62,8 +62,8 @@ impl DbcTable for LiquidType {
                 String::from_utf8(s)?
             };
 
-            // ty: Type
-            let ty = Type::try_from(crate::util::read_i32_le(chunk)?)?;
+            // ty: OceanType
+            let ty = OceanType::try_from(crate::util::read_i32_le(chunk)?)?;
 
             // spell: foreign_key (Spell) uint32
             let spell = SpellKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -104,7 +104,7 @@ impl DbcTable for LiquidType {
                 b.write_all(&(0_u32).to_le_bytes())?;
             }
 
-            // ty: Type
+            // ty: OceanType
             b.write_all(&(row.ty.as_int() as i32).to_le_bytes())?;
 
             // spell: foreign_key (Spell) uint32
@@ -189,13 +189,13 @@ impl From<u32> for LiquidTypeKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Type {
+pub enum OceanType {
     Fire,
     Slime,
     Water,
 }
 
-impl Type {
+impl OceanType {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             0 => Self::Fire,
@@ -206,15 +206,15 @@ impl Type {
     }
 }
 
-impl TryFrom<i32> for Type {
+impl TryFrom<i32> for OceanType {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Type", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("OceanType", value as i64))
     }
 
 }
 
-impl Type {
+impl OceanType {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::Fire => 0,
@@ -226,7 +226,7 @@ impl Type {
 
 }
 
-impl Default for Type {
+impl Default for OceanType {
     fn default() -> Self {
         Self::Fire
     }
@@ -237,7 +237,7 @@ impl Default for Type {
 pub struct LiquidTypeRow {
     pub id: LiquidTypeKey,
     pub name: String,
-    pub ty: Type,
+    pub ty: OceanType,
     pub spell: SpellKey,
 }
 
