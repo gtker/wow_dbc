@@ -49,8 +49,8 @@ impl DbcTable for GMSurveyCurrentSurvey {
         for mut chunk in r.chunks(header.record_size as usize) {
             let chunk = &mut chunk;
 
-            // language: Language
-            let language = Language::try_from(crate::util::read_i32_le(chunk)?)?;
+            // language: ClientLanguage
+            let language = ClientLanguage::try_from(crate::util::read_i32_le(chunk)?)?;
 
             // gm_survey: foreign_key (GMSurveySurveys) uint32
             let gm_survey = GMSurveySurveysKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -76,7 +76,7 @@ impl DbcTable for GMSurveyCurrentSurvey {
         b.write_all(&header.write_header())?;
 
         for row in &self.rows {
-            // language: Language
+            // language: ClientLanguage
             b.write_all(&(row.language.as_int() as i32).to_le_bytes())?;
 
             // gm_survey: foreign_key (GMSurveySurveys) uint32
@@ -92,7 +92,7 @@ impl DbcTable for GMSurveyCurrentSurvey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Language {
+pub enum ClientLanguage {
     English,
     Korean,
     French,
@@ -103,7 +103,7 @@ pub enum Language {
     SpanishLatinAmerica,
 }
 
-impl Language {
+impl ClientLanguage {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             0 => Self::English,
@@ -119,15 +119,15 @@ impl Language {
     }
 }
 
-impl TryFrom<i32> for Language {
+impl TryFrom<i32> for ClientLanguage {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Language", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ClientLanguage", value as i64))
     }
 
 }
 
-impl Language {
+impl ClientLanguage {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::English => 0,
@@ -144,7 +144,7 @@ impl Language {
 
 }
 
-impl Default for Language {
+impl Default for ClientLanguage {
     fn default() -> Self {
         Self::English
     }
@@ -153,7 +153,7 @@ impl Default for Language {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyCurrentSurveyRow {
-    pub language: Language,
+    pub language: ClientLanguage,
     pub gm_survey: GMSurveySurveysKey,
 }
 

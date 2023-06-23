@@ -4,7 +4,7 @@
     
     <enum>
         <type>int32</type>
-        <name>Language</name>
+        <name>ClientLanguage</name>
         <options>
             <option name="english" value="0x00" />
             <option name="korean" value="0x01" />
@@ -18,7 +18,7 @@
     </enum>
 
     <field>
-        <type>Language</type>
+        <type>ClientLanguage</type>
         <name>language</name>
     </field>
 

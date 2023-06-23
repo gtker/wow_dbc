@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: `BaseLanguage` removed and changed to `Language`.
 * BREAKING: `PowerType` renamed to `Power`.
 * BREAKING: `Faction` renamed to `LfgFaction`.
+* BREAKING: `Language` renamed to `ClientLanguage`.
 
 ### Removed
 
