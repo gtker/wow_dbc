@@ -43,7 +43,7 @@
 
     <enum>
         <type>int32</type>
-        <name>Faction</name>
+        <name>LfgFaction</name>
         <options>
             <option name="neutral" value="-1" />
             <option name="horde" value="0" />
@@ -52,7 +52,7 @@
     </enum>
 
     <field>
-        <type>Faction</type>
+        <type>LfgFaction</type>
         <name>faction</name>
     </field>
 </dbc>

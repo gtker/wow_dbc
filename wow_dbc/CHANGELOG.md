@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: `EffectAura` renamed to `AuraMod`.
 * BREAKING: `BaseLanguage` removed and changed to `Language`.
 * BREAKING: `PowerType` renamed to `Power`.
+* BREAKING: `Faction` renamed to `LfgFaction`.
 
 ### Removed
 

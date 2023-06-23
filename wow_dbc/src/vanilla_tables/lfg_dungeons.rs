@@ -67,8 +67,8 @@ impl DbcTable for LFGDungeons {
             // instance_type: InstanceType
             let instance_type = InstanceType::try_from(crate::util::read_i32_le(chunk)?)?;
 
-            // faction: Faction
-            let faction = Faction::try_from(crate::util::read_i32_le(chunk)?)?;
+            // faction: LfgFaction
+            let faction = LfgFaction::try_from(crate::util::read_i32_le(chunk)?)?;
 
 
             rows.push(LFGDungeonsRow {
@@ -111,7 +111,7 @@ impl DbcTable for LFGDungeons {
             // instance_type: InstanceType
             b.write_all(&(row.instance_type.as_int() as i32).to_le_bytes())?;
 
-            // faction: Faction
+            // faction: LfgFaction
             b.write_all(&(row.faction.as_int() as i32).to_le_bytes())?;
 
         }
@@ -241,13 +241,13 @@ impl Default for InstanceType {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Faction {
+pub enum LfgFaction {
     Neutral,
     Horde,
     Alliance,
 }
 
-impl Faction {
+impl LfgFaction {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             -1 => Self::Neutral,
@@ -258,15 +258,15 @@ impl Faction {
     }
 }
 
-impl TryFrom<i32> for Faction {
+impl TryFrom<i32> for LfgFaction {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Faction", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("LfgFaction", value as i64))
     }
 
 }
 
-impl Faction {
+impl LfgFaction {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::Neutral => -1,
@@ -278,7 +278,7 @@ impl Faction {
 
 }
 
-impl Default for Faction {
+impl Default for LfgFaction {
     fn default() -> Self {
         Self::Neutral
     }
@@ -292,6 +292,6 @@ pub struct LFGDungeonsRow {
     pub min_allowed_level: u32,
     pub max_allowed_level: u32,
     pub instance_type: InstanceType,
-    pub faction: Faction,
+    pub faction: LfgFaction,
 }
 
