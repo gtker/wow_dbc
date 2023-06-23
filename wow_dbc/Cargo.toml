@@ -21,4 +21,4 @@ all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
-wow_world_base = { path = "../../wow_messages/wow_world_base" }
+wow_world_base = { git = "https://github.com/gtker/wow_messages.git", rev = "fa9b147d21da8805d2763b55fe2b8b30acbb7343" }

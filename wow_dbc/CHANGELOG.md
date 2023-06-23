@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+* BREAKING: Types used are now from the `wow_world_base` crate.
 * ints in `Spell.dbc` to enums/flags.
 * ints in `Spell.dbc` for TBC/Wrath to `EffectAura`.
 * BREAKING: `EffectAura` renamed to `AuraMod`.
