@@ -85,8 +85,8 @@ impl DbcTable for ChrRaces {
             // speed_modifier: float
             let speed_modifier = crate::util::read_f32_le(chunk)?;
 
-            // base_lang: BaseLanguage
-            let base_lang = BaseLanguage::try_from(crate::util::read_u32_le(chunk)?)?;
+            // base_lang: Language
+            let base_lang = Language::try_from(crate::util::read_u32_le(chunk)?)?;
 
             // creature_type: foreign_key (CreatureType) uint32
             let creature_type = CreatureTypeKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -208,7 +208,7 @@ impl DbcTable for ChrRaces {
             // speed_modifier: float
             b.write_all(&row.speed_modifier.to_le_bytes())?;
 
-            // base_lang: BaseLanguage
+            // base_lang: Language
             b.write_all(&(row.base_lang.as_int() as u32).to_le_bytes())?;
 
             // creature_type: foreign_key (CreatureType) uint32
@@ -358,12 +358,12 @@ impl From<u32> for ChrRacesKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum BaseLanguage {
+pub enum Language {
     Horde,
     Alliance,
 }
 
-impl BaseLanguage {
+impl Language {
     const fn from_value(value: u32) -> Option<Self> {
         Some(match value {
             1 => Self::Horde,
@@ -373,15 +373,15 @@ impl BaseLanguage {
     }
 }
 
-impl TryFrom<u32> for BaseLanguage {
+impl TryFrom<u32> for Language {
     type Error = crate::InvalidEnumError;
     fn try_from(value: u32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("BaseLanguage", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Language", value as i64))
     }
 
 }
 
-impl BaseLanguage {
+impl Language {
     pub const fn as_int(&self) -> u32 {
         match self {
             Self::Horde => 1,
@@ -392,7 +392,7 @@ impl BaseLanguage {
 
 }
 
-impl Default for BaseLanguage {
+impl Default for Language {
     fn default() -> Self {
         Self::Horde
     }
@@ -445,7 +445,7 @@ pub struct ChrRacesRow {
     pub female_display: CreatureDisplayInfoKey,
     pub client_prefix: String,
     pub speed_modifier: f32,
-    pub base_lang: BaseLanguage,
+    pub base_lang: Language,
     pub creature_type: CreatureTypeKey,
     pub login_effect: SpellKey,
     pub unknown1: i32,

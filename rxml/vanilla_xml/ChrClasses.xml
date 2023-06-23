@@ -22,7 +22,7 @@
 
     <enum>
         <type>int32</type>
-        <name>PowerType</name>
+        <name>Power</name>
         <options>
             <option name="mana" value="0x00" />
             <option name="rage" value="0x01" />
@@ -33,7 +33,7 @@
     </enum>
 
     <field>
-        <type>PowerType</type>
+        <type>Power</type>
         <name>power_type</name>
     </field>    
 

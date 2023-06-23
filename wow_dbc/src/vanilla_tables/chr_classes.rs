@@ -61,8 +61,8 @@ impl DbcTable for ChrClasses {
             // damage_bonus_stat: int32
             let damage_bonus_stat = crate::util::read_i32_le(chunk)?;
 
-            // power_type: PowerType
-            let power_type = PowerType::try_from(crate::util::read_i32_le(chunk)?)?;
+            // power_type: Power
+            let power_type = Power::try_from(crate::util::read_i32_le(chunk)?)?;
 
             // pet_name_token: string_ref
             let pet_name_token = {
@@ -123,7 +123,7 @@ impl DbcTable for ChrClasses {
             // damage_bonus_stat: int32
             b.write_all(&row.damage_bonus_stat.to_le_bytes())?;
 
-            // power_type: PowerType
+            // power_type: Power
             b.write_all(&(row.power_type.as_int() as i32).to_le_bytes())?;
 
             // pet_name_token: string_ref
@@ -236,7 +236,7 @@ impl From<u32> for ChrClassesKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum PowerType {
+pub enum Power {
     Mana,
     Rage,
     Focus,
@@ -244,7 +244,7 @@ pub enum PowerType {
     Happiness,
 }
 
-impl PowerType {
+impl Power {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             0 => Self::Mana,
@@ -257,15 +257,15 @@ impl PowerType {
     }
 }
 
-impl TryFrom<i32> for PowerType {
+impl TryFrom<i32> for Power {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("PowerType", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Power", value as i64))
     }
 
 }
 
-impl PowerType {
+impl Power {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::Mana => 0,
@@ -279,7 +279,7 @@ impl PowerType {
 
 }
 
-impl Default for PowerType {
+impl Default for Power {
     fn default() -> Self {
         Self::Mana
     }
@@ -291,7 +291,7 @@ pub struct ChrClassesRow {
     pub id: ChrClassesKey,
     pub player_class: u32,
     pub damage_bonus_stat: i32,
-    pub power_type: PowerType,
+    pub power_type: Power,
     pub pet_name_token: String,
     pub name: LocalizedString,
     pub filename: String,

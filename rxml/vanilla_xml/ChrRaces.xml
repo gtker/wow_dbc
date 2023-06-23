@@ -76,7 +76,7 @@
 
     <enum>
         <type>uint32</type>
-        <name>BaseLanguage</name>
+        <name>Language</name>
         <options>
             <option name="horde" value="0x01" />
             <option name="alliance" value="0x07" />
@@ -84,7 +84,7 @@
     </enum>
 
     <field>
-        <type>BaseLanguage</type>
+        <type>Language</type>
         <name>base_lang</name>
     </field>    
 
