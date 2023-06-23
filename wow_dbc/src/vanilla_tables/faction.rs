@@ -58,11 +58,11 @@ impl DbcTable for Faction {
             // reputation_index: uint32
             let reputation_index = crate::util::read_u32_le(chunk)?;
 
-            // reputation_race_mask: ReputationRaceMask[4]
+            // reputation_race_mask: AllowedRace[4]
             let reputation_race_mask = {
-                let mut arr = [ReputationRaceMask::default(); 4];
+                let mut arr = [AllowedRace::default(); 4];
                 for i in arr.iter_mut() {
-                    *i = ReputationRaceMask::new(crate::util::read_i32_le(chunk)?);
+                    *i = AllowedRace::new(crate::util::read_i32_le(chunk)?);
                 }
 
                 arr
@@ -128,7 +128,7 @@ impl DbcTable for Faction {
             // reputation_index: uint32
             b.write_all(&row.reputation_index.to_le_bytes())?;
 
-            // reputation_race_mask: ReputationRaceMask[4]
+            // reputation_race_mask: AllowedRace[4]
             for i in row.reputation_race_mask {
                 b.write_all(&(i.as_int() as i32).to_le_bytes())?;
             }
@@ -242,11 +242,11 @@ impl From<u32> for FactionKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct ReputationRaceMask {
+pub struct AllowedRace {
     value: i32,
 }
 
-impl ReputationRaceMask {
+impl AllowedRace {
     pub const fn new(value: i32) -> Self {
         Self { value }
     }
@@ -333,7 +333,7 @@ impl ReputationFlags {
 pub struct FactionRow {
     pub id: FactionKey,
     pub reputation_index: u32,
-    pub reputation_race_mask: [ReputationRaceMask; 4],
+    pub reputation_race_mask: [AllowedRace; 4],
     pub reputation_class_mask: [u32; 4],
     pub reputation_base: [u32; 4],
     pub reputation_flags: [ReputationFlags; 4],

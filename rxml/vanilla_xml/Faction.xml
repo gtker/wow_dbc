@@ -4,7 +4,7 @@
 
     <flag>
         <type>int32</type>
-        <name>ReputationRaceMask</name>
+        <name>AllowedRace</name>
         <options>
             <option name="human" value="0x01" />
             <option name="orc" value="0x02" />
@@ -44,7 +44,7 @@
     </field>
 
     <field>
-        <type>ReputationRaceMask[4]</type>
+        <type>AllowedRace[4]</type>
         <name>reputation_race_mask</name>
     </field>
 
