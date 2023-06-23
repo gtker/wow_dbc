@@ -21,7 +21,7 @@
 
     <flag>
         <type>uint32</type>
-        <name>Flags</name>
+        <name>PvpFlags</name>
         <options>
             <option name="pvp_flagged" value="0x800" />
             <option name="attack_pvping_players" value="0x1000" />
@@ -29,7 +29,7 @@
     </flag>
 
     <field>
-        <type>Flags</type>
+        <type>PvpFlags</type>
         <name>flags</name>
     </field>
 

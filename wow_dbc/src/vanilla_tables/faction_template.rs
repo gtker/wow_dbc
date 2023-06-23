@@ -58,8 +58,8 @@ impl DbcTable for FactionTemplate {
             // faction: foreign_key (Faction) uint32
             let faction = FactionKey::new(crate::util::read_u32_le(chunk)?.into());
 
-            // flags: Flags
-            let flags = Flags::new(crate::util::read_u32_le(chunk)?);
+            // flags: PvpFlags
+            let flags = PvpFlags::new(crate::util::read_u32_le(chunk)?);
 
             // faction_group: foreign_key (FactionGroup) uint32
             let faction_group = FactionGroupKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -109,7 +109,7 @@ impl DbcTable for FactionTemplate {
             // faction: foreign_key (Faction) uint32
             b.write_all(&(row.faction.id as u32).to_le_bytes())?;
 
-            // flags: Flags
+            // flags: PvpFlags
             b.write_all(&(row.flags.as_int() as u32).to_le_bytes())?;
 
             // faction_group: foreign_key (FactionGroup) uint32
@@ -190,11 +190,11 @@ impl From<u32> for FactionTemplateKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct Flags {
+pub struct PvpFlags {
     value: u32,
 }
 
-impl Flags {
+impl PvpFlags {
     pub const fn new(value: u32) -> Self {
         Self { value }
     }
@@ -217,7 +217,7 @@ impl Flags {
 pub struct FactionTemplateRow {
     pub id: FactionTemplateKey,
     pub faction: FactionKey,
-    pub flags: Flags,
+    pub flags: PvpFlags,
     pub faction_group: FactionGroupKey,
     pub friend_group: FactionGroupKey,
     pub enemy_group: FactionGroupKey,
