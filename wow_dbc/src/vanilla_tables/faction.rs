@@ -5,6 +5,9 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::{
+    AllowedRace, ReputationFlags,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Faction {
@@ -62,7 +65,7 @@ impl DbcTable for Faction {
             let reputation_race_mask = {
                 let mut arr = [AllowedRace::default(); 4];
                 for i in arr.iter_mut() {
-                    *i = AllowedRace::new(crate::util::read_i32_le(chunk)?);
+                    *i = AllowedRace::new(crate::util::read_i32_le(chunk)? as _);
                 }
 
                 arr
@@ -78,7 +81,7 @@ impl DbcTable for Faction {
             let reputation_flags = {
                 let mut arr = [ReputationFlags::default(); 4];
                 for i in arr.iter_mut() {
-                    *i = ReputationFlags::new(crate::util::read_i32_le(chunk)?);
+                    *i = ReputationFlags::new(crate::util::read_i32_le(chunk)? as _);
                 }
 
                 arr
@@ -237,94 +240,6 @@ impl From<u16> for FactionKey {
 impl From<u32> for FactionKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct AllowedRace {
-    value: i32,
-}
-
-impl AllowedRace {
-    pub const fn new(value: i32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> i32 {
-        self.value
-    }
-
-    pub const fn human(&self) -> bool {
-        (self.value & 1) != 0
-    }
-
-    pub const fn orc(&self) -> bool {
-        (self.value & 2) != 0
-    }
-
-    pub const fn dwarf(&self) -> bool {
-        (self.value & 4) != 0
-    }
-
-    pub const fn night_elf(&self) -> bool {
-        (self.value & 8) != 0
-    }
-
-    pub const fn undead(&self) -> bool {
-        (self.value & 16) != 0
-    }
-
-    pub const fn tauren(&self) -> bool {
-        (self.value & 32) != 0
-    }
-
-    pub const fn gnome(&self) -> bool {
-        (self.value & 64) != 0
-    }
-
-    pub const fn troll(&self) -> bool {
-        (self.value & 128) != 0
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct ReputationFlags {
-    value: i32,
-}
-
-impl ReputationFlags {
-    pub const fn new(value: i32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> i32 {
-        self.value
-    }
-
-    pub const fn visible_to_client(&self) -> bool {
-        (self.value & 1) != 0
-    }
-
-    pub const fn enable_at_war(&self) -> bool {
-        (self.value & 2) != 0
-    }
-
-    pub const fn hide_in_client(&self) -> bool {
-        (self.value & 4) != 0
-    }
-
-    pub const fn force_hide_in_client(&self) -> bool {
-        (self.value & 8) != 0
-    }
-
-    pub const fn force_at_peace(&self) -> bool {
-        (self.value & 16) != 0
-    }
-
-    pub const fn faction_inactive(&self) -> bool {
-        (self.value & 32) != 0
     }
 
 }

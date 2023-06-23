@@ -1,5 +1,5 @@
 use crate::{
-    DbcTable, Gender, Indexable,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::chr_classes::ChrClassesKey;
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
+use wow_world_base::vanilla::Gender;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharStartOutfit {
@@ -62,7 +63,7 @@ impl DbcTable for CharStartOutfit {
             let class = ChrClassesKey::new(crate::util::read_u8_le(chunk)?.into());
 
             // gender: Gender
-            let gender = Gender::try_from(crate::util::read_i8_le(chunk)?)?;
+            let gender = crate::util::read_i8_le(chunk)?.try_into()?;
 
             // outfit_id: int8
             let outfit_id = crate::util::read_i8_le(chunk)?;

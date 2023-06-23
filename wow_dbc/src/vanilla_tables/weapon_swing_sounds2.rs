@@ -6,6 +6,7 @@ use crate::header::{
 };
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
+use wow_world_base::vanilla::SwingType;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponSwingSounds2 {
@@ -55,7 +56,7 @@ impl DbcTable for WeaponSwingSounds2 {
             let id = WeaponSwingSounds2Key::new(crate::util::read_u32_le(chunk)?);
 
             // swing_type: SwingType
-            let swing_type = SwingType::try_from(crate::util::read_i32_le(chunk)?)?;
+            let swing_type = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // critical: bool32
             let critical = crate::util::read_u32_le(chunk)? != 0;
@@ -150,51 +151,6 @@ impl From<u16> for WeaponSwingSounds2Key {
 impl From<u32> for WeaponSwingSounds2Key {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum SwingType {
-    Light,
-    Medium,
-    Heavy,
-}
-
-impl SwingType {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Light,
-            1 => Self::Medium,
-            2 => Self::Heavy,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for SwingType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("SwingType", value as i64))
-    }
-
-}
-
-impl SwingType {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Light => 0,
-            Self::Medium => 1,
-            Self::Heavy => 2,
-        }
-
-    }
-
-}
-
-impl Default for SwingType {
-    fn default() -> Self {
-        Self::Light
     }
 
 }

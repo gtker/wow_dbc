@@ -5,6 +5,7 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::Class;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemClass {
@@ -59,7 +60,7 @@ impl DbcTable for ItemClass {
             let subclass_map = crate::util::read_u32_le(chunk)?;
 
             // item_class: Class
-            let item_class = Class::try_from(crate::util::read_i32_le(chunk)?)?;
+            let item_class = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // class_name: string_ref_loc
             let class_name = crate::util::read_localized_string(chunk, &string_block)?;
@@ -174,48 +175,6 @@ impl From<u16> for ItemClassKey {
 impl From<u32> for ItemClassKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Class {
-    Item,
-    Weapon,
-}
-
-impl Class {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Item,
-            1 => Self::Weapon,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for Class {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Class", value as i64))
-    }
-
-}
-
-impl Class {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Item => 0,
-            Self::Weapon => 1,
-        }
-
-    }
-
-}
-
-impl Default for Class {
-    fn default() -> Self {
-        Self::Item
     }
 
 }

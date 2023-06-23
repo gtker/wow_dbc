@@ -5,6 +5,7 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::Power;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChrClasses {
@@ -62,7 +63,7 @@ impl DbcTable for ChrClasses {
             let damage_bonus_stat = crate::util::read_i32_le(chunk)?;
 
             // power_type: Power
-            let power_type = Power::try_from(crate::util::read_i32_le(chunk)?)?;
+            let power_type = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // pet_name_token: string_ref
             let pet_name_token = {
@@ -231,57 +232,6 @@ impl From<u16> for ChrClassesKey {
 impl From<u32> for ChrClassesKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Power {
-    Mana,
-    Rage,
-    Focus,
-    Energy,
-    Happiness,
-}
-
-impl Power {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Mana,
-            1 => Self::Rage,
-            2 => Self::Focus,
-            3 => Self::Energy,
-            4 => Self::Happiness,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for Power {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Power", value as i64))
-    }
-
-}
-
-impl Power {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Mana => 0,
-            Self::Rage => 1,
-            Self::Focus => 2,
-            Self::Energy => 3,
-            Self::Happiness => 4,
-        }
-
-    }
-
-}
-
-impl Default for Power {
-    fn default() -> Self {
-        Self::Mana
     }
 
 }

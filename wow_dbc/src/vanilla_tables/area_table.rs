@@ -13,6 +13,7 @@ use crate::vanilla_tables::sound_provider_preferences::SoundProviderPreferencesK
 use crate::vanilla_tables::zone_intro_music_table::ZoneIntroMusicTableKey;
 use crate::vanilla_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
+use wow_world_base::vanilla::AreaFlags;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct AreaTable {
@@ -73,7 +74,7 @@ impl DbcTable for AreaTable {
             let area_bit = crate::util::read_i32_le(chunk)?;
 
             // flags: AreaFlags
-            let flags = AreaFlags::new(crate::util::read_i32_le(chunk)?);
+            let flags = AreaFlags::new(crate::util::read_i32_le(chunk)? as _);
 
             // sound_preferences: foreign_key (SoundProviderPreferences) uint32
             let sound_preferences = SoundProviderPreferencesKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -273,62 +274,6 @@ impl From<u16> for AreaTableKey {
 impl From<u32> for AreaTableKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct AreaFlags {
-    value: i32,
-}
-
-impl AreaFlags {
-    pub const fn new(value: i32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> i32 {
-        self.value
-    }
-
-    pub const fn area_flag_snow(&self) -> bool {
-        (self.value & 1) != 0
-    }
-
-    pub const fn area_flag_unk(&self) -> bool {
-        (self.value & 2) != 0
-    }
-
-    pub const fn area_flag_development(&self) -> bool {
-        (self.value & 4) != 0
-    }
-
-    pub const fn area_flag_unk2(&self) -> bool {
-        (self.value & 8) != 0
-    }
-
-    pub const fn area_flag_unk3(&self) -> bool {
-        (self.value & 16) != 0
-    }
-
-    pub const fn area_flag_city_slave(&self) -> bool {
-        (self.value & 32) != 0
-    }
-
-    pub const fn area_flag_city_allow_duels(&self) -> bool {
-        (self.value & 64) != 0
-    }
-
-    pub const fn area_flag_unk4(&self) -> bool {
-        (self.value & 128) != 0
-    }
-
-    pub const fn area_flag_city(&self) -> bool {
-        (self.value & 256) != 0
-    }
-
-    pub const fn area_flag_test(&self) -> bool {
-        (self.value & 512) != 0
     }
 
 }

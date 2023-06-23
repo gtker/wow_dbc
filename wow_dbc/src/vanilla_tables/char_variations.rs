@@ -1,11 +1,10 @@
-use crate::{
-    DbcTable, Gender,
-};
+use crate::DbcTable;
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
+use wow_world_base::vanilla::Gender;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharVariations {
@@ -55,7 +54,7 @@ impl DbcTable for CharVariations {
             let id = ChrRacesKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // gender: Gender
-            let gender = Gender::try_from(crate::util::read_i32_le(chunk)?)?;
+            let gender = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // unknown_1: int32
             let unknown_1 = crate::util::read_i32_le(chunk)?;

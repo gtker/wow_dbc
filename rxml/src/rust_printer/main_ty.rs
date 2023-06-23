@@ -434,15 +434,14 @@ fn print_read_field_ty(s: &mut Writer, ty: &Type, o: &Objects) {
         }
         Type::Flag(en) => {
             s.wln_no_indent(format!(
-                "{en}::new(crate::util::read_{ty}_le(chunk)?);",
+                "{en}::new(crate::util::read_{ty}_le(chunk)? as _);",
                 en = en.name(),
                 ty = en.ty().rust_str(),
             ));
         }
         Type::Enum(en) => {
             s.wln_no_indent(format!(
-                "{en}::try_from(crate::util::read_{ty}_le(chunk)?)?;",
-                en = en.name(),
+                "crate::util::read_{ty}_le(chunk)?.try_into()?;",
                 ty = en.ty().rust_str(),
             ));
         }

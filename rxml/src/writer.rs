@@ -85,12 +85,6 @@ impl Writer {
         self.newline();
     }
 
-    pub fn new_enum(&mut self, name: impl AsRef<str>, f: impl Fn(&mut Self)) {
-        self.open_curly(format!("pub enum {}", name.as_ref()));
-        f(self);
-        self.closing_curly_newline();
-    }
-
     pub fn new_struct(&mut self, name: impl AsRef<str>, f: impl Fn(&mut Self)) {
         self.open_curly(format!("pub struct {}", name.as_ref()));
         f(self);

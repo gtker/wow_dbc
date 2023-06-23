@@ -95,39 +95,6 @@ impl Display for InvalidHeaderError {
 
 impl Error for InvalidHeaderError {}
 
-/// Error for values outside of allowed enumerators.
-#[derive(Debug)]
-pub struct InvalidEnumError {
-    /// Name of the enum.
-    pub ty: &'static str,
-    /// Read value that is outside of allowed enum values. Needs to be [`i64`] in order to hold all [`u32`] and [`i32`] values.
-    pub value: i64,
-}
-
-impl InvalidEnumError {
-    pub(crate) const fn new(ty: &'static str, value: i64) -> Self {
-        Self { ty, value }
-    }
-}
-
-impl Display for InvalidEnumError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "Enum '{}' has invalid enumerator value '{}'",
-            self.ty, self.value,
-        )
-    }
-}
-
-impl Error for InvalidEnumError {}
-
-impl From<InvalidEnumError> for DbcError {
-    fn from(i: InvalidEnumError) -> Self {
-        Self::InvalidEnum(EnumError::new(i.ty, i.value as u64)) // TODO: Change to i128
-    }
-}
-
 impl From<EnumError> for DbcError {
     fn from(i: EnumError) -> Self {
         Self::InvalidEnum(i)

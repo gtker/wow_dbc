@@ -5,6 +5,9 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::{
+    InstanceType, LfgFaction,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeons {
@@ -65,10 +68,10 @@ impl DbcTable for LFGDungeons {
             let max_allowed_level = crate::util::read_u32_le(chunk)?;
 
             // instance_type: InstanceType
-            let instance_type = InstanceType::try_from(crate::util::read_i32_le(chunk)?)?;
+            let instance_type = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // faction: LfgFaction
-            let faction = LfgFaction::try_from(crate::util::read_i32_le(chunk)?)?;
+            let faction = crate::util::read_i32_le(chunk)?.try_into()?;
 
 
             rows.push(LFGDungeonsRow {
@@ -188,99 +191,6 @@ impl From<u16> for LFGDungeonsKey {
 impl From<u32> for LFGDungeonsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum InstanceType {
-    GroupInstance,
-    RaidInstance,
-    WorldZone,
-    Battleground,
-}
-
-impl InstanceType {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            1 => Self::GroupInstance,
-            2 => Self::RaidInstance,
-            4 => Self::WorldZone,
-            5 => Self::Battleground,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for InstanceType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("InstanceType", value as i64))
-    }
-
-}
-
-impl InstanceType {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::GroupInstance => 1,
-            Self::RaidInstance => 2,
-            Self::WorldZone => 4,
-            Self::Battleground => 5,
-        }
-
-    }
-
-}
-
-impl Default for InstanceType {
-    fn default() -> Self {
-        Self::GroupInstance
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum LfgFaction {
-    Neutral,
-    Horde,
-    Alliance,
-}
-
-impl LfgFaction {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            -1 => Self::Neutral,
-            0 => Self::Horde,
-            1 => Self::Alliance,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for LfgFaction {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("LfgFaction", value as i64))
-    }
-
-}
-
-impl LfgFaction {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Neutral => -1,
-            Self::Horde => 0,
-            Self::Alliance => 1,
-        }
-
-    }
-
-}
-
-impl Default for LfgFaction {
-    fn default() -> Self {
-        Self::Neutral
     }
 
 }

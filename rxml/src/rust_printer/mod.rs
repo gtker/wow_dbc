@@ -21,10 +21,6 @@ pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Wri
 
     create_primary_keys(&mut s, d);
 
-    create_enums(&mut s, d);
-
-    create_flags(&mut s, d);
-
     create_row(&mut s, d, o);
 
     create_test(&mut s, d, &version.test_dir_name());
@@ -73,14 +69,6 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion
         insert(&mut map, "crate", "ExtendedLocalizedString");
     }
 
-    if d.contains_gender_enum() {
-        insert(&mut map, "crate", "Gender");
-    }
-
-    if d.contains_size_class_enum() {
-        insert(&mut map, "crate", "SizeClass");
-    }
-
     let include_path = version.module_name();
     for foreign_key in d.foreign_keys() {
         if foreign_key == d.name() || !o.table_exists(foreign_key) {
@@ -93,6 +81,22 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion
             format!("crate::{include_path}::{name}"),
             format!("{}Key", foreign_key),
         );
+    }
+
+    let module = version.to_str();
+    let base_import_path = format!("wow_world_base::{module}");
+
+    for field in d.fields() {
+        match field.ty() {
+            Type::Array(array) => match array.ty() {
+                Type::Enum(e) | Type::Flag(e) => {
+                    insert(&mut map, base_import_path.clone(), e.name())
+                }
+                _ => {}
+            },
+            Type::Enum(e) | Type::Flag(e) => insert(&mut map, base_import_path.clone(), e.name()),
+            _ => {}
+        }
     }
 
     for (module, names) in map {
@@ -259,125 +263,6 @@ fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
                     s.wln("Self::new(v.into())");
                 }
             });
-        });
-    }
-}
-
-fn create_enums(s: &mut Writer, d: &DbcDescription) {
-    for en in d.enums() {
-        if en.name() == "Gender" || en.name() == "SizeClass" {
-            continue;
-        }
-
-        s.wln("#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]");
-        s.new_enum(en.name(), |s| {
-            for enumerator in en.enumerators() {
-                s.wln(format!("{},", enumerator.name()));
-            }
-        });
-
-        s.bodyn(format!("impl {}", en.name()), |s| {
-            s.open_curly(format!(
-                "const fn from_value(value: {}) -> Option<Self>",
-                en.ty().rust_str()
-            ));
-
-            s.open_curly("Some(match value");
-
-            for en in en.enumerators() {
-                s.wln(format!("{} => Self::{},", en.value(), en.name()));
-            }
-            s.wln("_ => return None,");
-
-            s.closing_curly_with(")");
-
-            s.closing_curly();
-        });
-
-        s.bodyn(
-            format!("impl TryFrom<{}> for {}", en.ty().rust_str(), en.name()),
-            |s| {
-                s.wln("type Error = crate::InvalidEnumError;");
-                s.bodyn(
-                    format!(
-                        "fn try_from(value: {}) -> Result<Self, Self::Error>",
-                        en.ty().rust_str()
-                    ),
-                    |s| {
-                        s.wln(format!(
-                            "Self::from_value(value).ok_or(crate::InvalidEnumError::new(\"{}\", value as i64))",
-                            en.name()
-                        ));
-                    },
-                );
-            },
-        );
-
-        s.bodyn(format!("impl {name}", name = en.name()), |s| {
-            s.bodyn(
-                format!("pub const fn as_int(&self) -> {}", en.ty().rust_str()),
-                |s| {
-                    s.bodyn("match self", |s| {
-                        for enumerator in en.enumerators() {
-                            s.wln(format!(
-                                "Self::{name} => {value},",
-                                name = enumerator.name(),
-                                value = enumerator.value()
-                            ));
-                        }
-                    });
-                },
-            );
-        });
-
-        s.bodyn(format!("impl Default for {name}", name = en.name()), |s| {
-            s.bodyn("fn default() -> Self", |s| {
-                s.wln(format!(
-                    "Self::{}",
-                    en.enumerators().first().unwrap().name()
-                ));
-            });
-        });
-    }
-}
-
-fn create_flags(s: &mut Writer, d: &DbcDescription) {
-    for en in d.flags() {
-        s.wln("#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]");
-        s.new_struct(en.name(), |s| {
-            s.wln(format!("value: {},", en.ty().rust_str()));
-        });
-
-        s.bodyn(format!("impl {name}", name = en.name()), |s| {
-            s.bodyn(
-                format!("pub const fn new(value: {}) -> Self", en.ty().rust_str()),
-                |s| {
-                    s.wln("Self { value }");
-                },
-            );
-
-            s.bodyn(
-                format!("pub const fn as_int(&self) -> {}", en.ty().rust_str()),
-                |s| {
-                    s.wln("self.value");
-                },
-            );
-
-            for enumerator in en.enumerators() {
-                s.bodyn(
-                    format!(
-                        "pub const fn {}(&self) -> bool",
-                        enumerator.name().to_snake_case()
-                    ),
-                    |s| {
-                        if enumerator.value() != 0 {
-                            s.wln(format!("(self.value & {}) != 0", enumerator.value()));
-                        } else {
-                            s.wln("self.value == 0");
-                        }
-                    },
-                );
-            }
         });
     }
 }

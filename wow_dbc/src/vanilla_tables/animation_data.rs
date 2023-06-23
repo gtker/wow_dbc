@@ -5,6 +5,7 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::WeaponFlags;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AnimationData {
@@ -62,7 +63,7 @@ impl DbcTable for AnimationData {
             };
 
             // weapon_flags: WeaponFlags
-            let weapon_flags = WeaponFlags::new(crate::util::read_i32_le(chunk)?);
+            let weapon_flags = WeaponFlags::new(crate::util::read_i32_le(chunk)? as _);
 
             // body_flags: int32
             let body_flags = crate::util::read_i32_le(chunk)?;
@@ -204,38 +205,6 @@ impl From<u16> for AnimationDataKey {
 impl From<u32> for AnimationDataKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct WeaponFlags {
-    value: i32,
-}
-
-impl WeaponFlags {
-    pub const fn new(value: i32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> i32 {
-        self.value
-    }
-
-    pub const fn weapon_not_affected_by_animation(&self) -> bool {
-        self.value == 0
-    }
-
-    pub const fn sheathe_weapons_automatically(&self) -> bool {
-        (self.value & 4) != 0
-    }
-
-    pub const fn sheathe_weapons_automatically2(&self) -> bool {
-        (self.value & 16) != 0
-    }
-
-    pub const fn unsheathe_weapons(&self) -> bool {
-        (self.value & 32) != 0
     }
 
 }

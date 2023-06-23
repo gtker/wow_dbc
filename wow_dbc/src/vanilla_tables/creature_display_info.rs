@@ -1,5 +1,5 @@
 use crate::{
-    DbcTable, Indexable, SizeClass,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
@@ -10,6 +10,7 @@ use crate::vanilla_tables::creature_sound_data::CreatureSoundDataKey;
 use crate::vanilla_tables::npc_sounds::NPCSoundsKey;
 use crate::vanilla_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
+use wow_world_base::vanilla::SizeClass;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct CreatureDisplayInfo {
@@ -90,7 +91,7 @@ impl DbcTable for CreatureDisplayInfo {
             };
 
             // size: SizeClass
-            let size = SizeClass::try_from(crate::util::read_i32_le(chunk)?)?;
+            let size = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // blood: foreign_key (UnitBlood) uint32
             let blood = UnitBloodKey::new(crate::util::read_u32_le(chunk)?.into());

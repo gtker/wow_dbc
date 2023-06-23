@@ -6,6 +6,7 @@ use crate::header::{
 };
 use crate::vanilla_tables::faction_group::FactionGroupKey;
 use std::io::Write;
+use wow_world_base::vanilla::DefaultChannelFlags;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ChatChannels {
@@ -57,7 +58,7 @@ impl DbcTable for ChatChannels {
             let id = ChatChannelsKey::new(crate::util::read_u32_le(chunk)?);
 
             // flags: DefaultChannelFlags
-            let flags = DefaultChannelFlags::new(crate::util::read_i32_le(chunk)?);
+            let flags = DefaultChannelFlags::new(crate::util::read_i32_le(chunk)? as _);
 
             // faction_group: foreign_key (FactionGroup) uint32
             let faction_group = FactionGroupKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -184,58 +185,6 @@ impl From<u16> for ChatChannelsKey {
 impl From<u32> for ChatChannelsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct DefaultChannelFlags {
-    value: i32,
-}
-
-impl DefaultChannelFlags {
-    pub const fn new(value: i32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> i32 {
-        self.value
-    }
-
-    pub const fn none(&self) -> bool {
-        self.value == 0
-    }
-
-    pub const fn initial(&self) -> bool {
-        (self.value & 1) != 0
-    }
-
-    pub const fn zone_dependency(&self) -> bool {
-        (self.value & 2) != 0
-    }
-
-    pub const fn global(&self) -> bool {
-        (self.value & 4) != 0
-    }
-
-    pub const fn trade(&self) -> bool {
-        (self.value & 8) != 0
-    }
-
-    pub const fn city_only(&self) -> bool {
-        (self.value & 16) != 0
-    }
-
-    pub const fn city_only2(&self) -> bool {
-        (self.value & 32) != 0
-    }
-
-    pub const fn defence(&self) -> bool {
-        (self.value & 65536) != 0
-    }
-
-    pub const fn unselected(&self) -> bool {
-        (self.value & 262144) != 0
     }
 
 }

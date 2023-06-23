@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::liquid_type::LiquidTypeKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
+use wow_world_base::vanilla::FluidSpeed;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundWaterType {
@@ -59,7 +60,7 @@ impl DbcTable for SoundWaterType {
             let liquid_type = LiquidTypeKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // fluid_speed: FluidSpeed
-            let fluid_speed = FluidSpeed::try_from(crate::util::read_i32_le(chunk)?)?;
+            let fluid_speed = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // sound: foreign_key (SoundEntries) uint32
             let sound = SoundEntriesKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -151,51 +152,6 @@ impl From<u16> for SoundWaterTypeKey {
 impl From<u32> for SoundWaterTypeKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum FluidSpeed {
-    Still,
-    Slow,
-    Rapid,
-}
-
-impl FluidSpeed {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Still,
-            4 => Self::Slow,
-            8 => Self::Rapid,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for FluidSpeed {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("FluidSpeed", value as i64))
-    }
-
-}
-
-impl FluidSpeed {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Still => 0,
-            Self::Slow => 4,
-            Self::Rapid => 8,
-        }
-
-    }
-
-}
-
-impl Default for FluidSpeed {
-    fn default() -> Self {
-        Self::Still
     }
 
 }

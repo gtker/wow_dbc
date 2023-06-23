@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::item_class::ItemClassKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
+use wow_world_base::vanilla::ItemEnvTypes;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SheatheSoundLookups {
@@ -62,7 +63,7 @@ impl DbcTable for SheatheSoundLookups {
             let item_subclass = crate::util::read_u32_le(chunk)?;
 
             // item_env_types: ItemEnvTypes
-            let item_env_types = ItemEnvTypes::try_from(crate::util::read_i32_le(chunk)?)?;
+            let item_env_types = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // not_shield: bool32
             let not_shield = crate::util::read_u32_le(chunk)? != 0;
@@ -172,51 +173,6 @@ impl From<u16> for SheatheSoundLookupsKey {
 impl From<u32> for SheatheSoundLookupsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum ItemEnvTypes {
-    Shield,
-    MetalWeapon,
-    WoodWeapon,
-}
-
-impl ItemEnvTypes {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Shield,
-            1 => Self::MetalWeapon,
-            2 => Self::WoodWeapon,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for ItemEnvTypes {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ItemEnvTypes", value as i64))
-    }
-
-}
-
-impl ItemEnvTypes {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Shield => 0,
-            Self::MetalWeapon => 1,
-            Self::WoodWeapon => 2,
-        }
-
-    }
-
-}
-
-impl Default for ItemEnvTypes {
-    fn default() -> Self {
-        Self::Shield
     }
 
 }

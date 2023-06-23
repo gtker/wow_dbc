@@ -1,5 +1,5 @@
 use crate::{
-    DbcTable, Indexable, SizeClass,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use crate::vanilla_tables::terrain_type::TerrainTypeKey;
 use std::io::Write;
+use wow_world_base::vanilla::SizeClass;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookups {
@@ -56,7 +57,7 @@ impl DbcTable for DeathThudLookups {
             let id = DeathThudLookupsKey::new(crate::util::read_u32_le(chunk)?);
 
             // size: SizeClass
-            let size = SizeClass::try_from(crate::util::read_i32_le(chunk)?)?;
+            let size = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // terrain_type: foreign_key (TerrainType) uint32
             let terrain_type = TerrainTypeKey::new(crate::util::read_u32_le(chunk)?.into());

@@ -1,5 +1,5 @@
 use crate::{
-    DbcTable, Gender, Indexable,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
+use wow_world_base::vanilla::Gender;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SoundCharacterMacroLines {
@@ -59,7 +60,7 @@ impl DbcTable for SoundCharacterMacroLines {
             let unknown = crate::util::read_u32_le(chunk)?;
 
             // gender: Gender
-            let gender = Gender::try_from(crate::util::read_i32_le(chunk)?)?;
+            let gender = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // race: foreign_key (ChrRaces) uint32
             let race = ChrRacesKey::new(crate::util::read_u32_le(chunk)?.into());

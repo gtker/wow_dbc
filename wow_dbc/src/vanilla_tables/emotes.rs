@@ -7,6 +7,9 @@ use crate::header::{
 use crate::vanilla_tables::animation_data::AnimationDataKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
+use wow_world_base::vanilla::{
+    EmoteFlags, EmoteSpecProc,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Emotes {
@@ -67,10 +70,10 @@ impl DbcTable for Emotes {
             let animation_data = AnimationDataKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // flags: EmoteFlags
-            let flags = EmoteFlags::new(crate::util::read_i32_le(chunk)?);
+            let flags = EmoteFlags::new(crate::util::read_i32_le(chunk)? as _);
 
             // spec_proc: EmoteSpecProc
-            let spec_proc = EmoteSpecProc::try_from(crate::util::read_i32_le(chunk)?)?;
+            let spec_proc = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // emote_spec_proc_param: int32
             let emote_spec_proc_param = crate::util::read_i32_le(chunk)?;
@@ -206,87 +209,6 @@ impl From<u16> for EmotesKey {
 impl From<u32> for EmotesKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum EmoteSpecProc {
-    NoLoop,
-    Loop,
-    LoopWithSound,
-}
-
-impl EmoteSpecProc {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::NoLoop,
-            1 => Self::Loop,
-            2 => Self::LoopWithSound,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for EmoteSpecProc {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("EmoteSpecProc", value as i64))
-    }
-
-}
-
-impl EmoteSpecProc {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::NoLoop => 0,
-            Self::Loop => 1,
-            Self::LoopWithSound => 2,
-        }
-
-    }
-
-}
-
-impl Default for EmoteSpecProc {
-    fn default() -> Self {
-        Self::NoLoop
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct EmoteFlags {
-    value: i32,
-}
-
-impl EmoteFlags {
-    pub const fn new(value: i32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> i32 {
-        self.value
-    }
-
-    pub const fn talk(&self) -> bool {
-        (self.value & 8) != 0
-    }
-
-    pub const fn question(&self) -> bool {
-        (self.value & 16) != 0
-    }
-
-    pub const fn exclamation(&self) -> bool {
-        (self.value & 32) != 0
-    }
-
-    pub const fn shout(&self) -> bool {
-        (self.value & 64) != 0
-    }
-
-    pub const fn laugh(&self) -> bool {
-        (self.value & 128) != 0
     }
 
 }

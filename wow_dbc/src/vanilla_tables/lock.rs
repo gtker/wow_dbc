@@ -5,6 +5,7 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::LockType;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Lock {
@@ -57,7 +58,7 @@ impl DbcTable for Lock {
             let ty = {
                 let mut arr = [LockType::default(); 8];
                 for i in arr.iter_mut() {
-                    *i = LockType::try_from(crate::util::read_i32_le(chunk)?)?;
+                    *i = crate::util::read_i32_le(chunk)?.try_into()?;
                 }
 
                 arr
@@ -175,51 +176,6 @@ impl From<u16> for LockKey {
 impl From<u32> for LockKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum LockType {
-    None,
-    ItemRequired,
-    LocktypeReference,
-}
-
-impl LockType {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::None,
-            1 => Self::ItemRequired,
-            2 => Self::LocktypeReference,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for LockType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("LockType", value as i64))
-    }
-
-}
-
-impl LockType {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::None => 0,
-            Self::ItemRequired => 1,
-            Self::LocktypeReference => 2,
-        }
-
-    }
-
-}
-
-impl Default for LockType {
-    fn default() -> Self {
-        Self::None
     }
 
 }

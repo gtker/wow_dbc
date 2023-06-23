@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::faction::FactionKey;
 use crate::vanilla_tables::faction_group::FactionGroupKey;
 use std::io::Write;
+use wow_world_base::vanilla::PvpFlags;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionTemplate {
@@ -59,7 +60,7 @@ impl DbcTable for FactionTemplate {
             let faction = FactionKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // flags: PvpFlags
-            let flags = PvpFlags::new(crate::util::read_u32_le(chunk)?);
+            let flags = PvpFlags::new(crate::util::read_u32_le(chunk)? as _);
 
             // faction_group: foreign_key (FactionGroup) uint32
             let faction_group = FactionGroupKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -185,30 +186,6 @@ impl From<u16> for FactionTemplateKey {
 impl From<u32> for FactionTemplateKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct PvpFlags {
-    value: u32,
-}
-
-impl PvpFlags {
-    pub const fn new(value: u32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> u32 {
-        self.value
-    }
-
-    pub const fn pvp_flagged(&self) -> bool {
-        (self.value & 2048) != 0
-    }
-
-    pub const fn attack_pvping_players(&self) -> bool {
-        (self.value & 4096) != 0
     }
 
 }

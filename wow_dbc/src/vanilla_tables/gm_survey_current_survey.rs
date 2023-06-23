@@ -4,6 +4,7 @@ use crate::header::{
 };
 use crate::vanilla_tables::gm_survey_surveys::GMSurveySurveysKey;
 use std::io::Write;
+use wow_world_base::vanilla::ClientLanguage;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GMSurveyCurrentSurvey {
@@ -50,7 +51,7 @@ impl DbcTable for GMSurveyCurrentSurvey {
             let chunk = &mut chunk;
 
             // language: ClientLanguage
-            let language = ClientLanguage::try_from(crate::util::read_i32_le(chunk)?)?;
+            let language = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // gm_survey: foreign_key (GMSurveySurveys) uint32
             let gm_survey = GMSurveySurveysKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -87,66 +88,6 @@ impl DbcTable for GMSurveyCurrentSurvey {
         b.write_all(&[0_u8])?;
 
         Ok(())
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum ClientLanguage {
-    English,
-    Korean,
-    French,
-    German,
-    Chinese,
-    Taiwanese,
-    SpanishSpain,
-    SpanishLatinAmerica,
-}
-
-impl ClientLanguage {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::English,
-            1 => Self::Korean,
-            2 => Self::French,
-            3 => Self::German,
-            4 => Self::Chinese,
-            5 => Self::Taiwanese,
-            6 => Self::SpanishSpain,
-            7 => Self::SpanishLatinAmerica,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for ClientLanguage {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ClientLanguage", value as i64))
-    }
-
-}
-
-impl ClientLanguage {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::English => 0,
-            Self::Korean => 1,
-            Self::French => 2,
-            Self::German => 3,
-            Self::Chinese => 4,
-            Self::Taiwanese => 5,
-            Self::SpanishSpain => 6,
-            Self::SpanishLatinAmerica => 7,
-        }
-
-    }
-
-}
-
-impl Default for ClientLanguage {
-    fn default() -> Self {
-        Self::English
     }
 
 }

@@ -1,11 +1,14 @@
 use crate::{
-    DbcTable, Gender, Indexable,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
+use wow_world_base::vanilla::{
+    Gender, SelectionType,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharSections {
@@ -60,10 +63,10 @@ impl DbcTable for CharSections {
             let race = ChrRacesKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // gender: Gender
-            let gender = Gender::try_from(crate::util::read_i32_le(chunk)?)?;
+            let gender = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // ty: SelectionType
-            let ty = SelectionType::try_from(crate::util::read_i32_le(chunk)?)?;
+            let ty = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // variation_index: int32
             let variation_index = crate::util::read_i32_le(chunk)?;
@@ -229,57 +232,6 @@ impl From<u16> for CharSectionsKey {
 impl From<u32> for CharSectionsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum SelectionType {
-    BaseSkin,
-    Face,
-    FacialHair,
-    Hair,
-    Underwear,
-}
-
-impl SelectionType {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::BaseSkin,
-            1 => Self::Face,
-            2 => Self::FacialHair,
-            3 => Self::Hair,
-            4 => Self::Underwear,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for SelectionType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("SelectionType", value as i64))
-    }
-
-}
-
-impl SelectionType {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::BaseSkin => 0,
-            Self::Face => 1,
-            Self::FacialHair => 2,
-            Self::Hair => 3,
-            Self::Underwear => 4,
-        }
-
-    }
-
-}
-
-impl Default for SelectionType {
-    fn default() -> Self {
-        Self::BaseSkin
     }
 
 }

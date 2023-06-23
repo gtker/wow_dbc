@@ -11,6 +11,9 @@ use crate::vanilla_tables::faction_template::FactionTemplateKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use crate::vanilla_tables::spell::SpellKey;
 use std::io::Write;
+use wow_world_base::vanilla::{
+    CharacterRaceFlags, Language,
+};
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ChrRaces {
@@ -62,7 +65,7 @@ impl DbcTable for ChrRaces {
             let id = ChrRacesKey::new(crate::util::read_u32_le(chunk)?);
 
             // flags: CharacterRaceFlags
-            let flags = CharacterRaceFlags::new(crate::util::read_u32_le(chunk)?);
+            let flags = CharacterRaceFlags::new(crate::util::read_u32_le(chunk)? as _);
 
             // faction: foreign_key (FactionTemplate) uint32
             let faction = FactionTemplateKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -86,7 +89,7 @@ impl DbcTable for ChrRaces {
             let speed_modifier = crate::util::read_f32_le(chunk)?;
 
             // base_lang: Language
-            let base_lang = Language::try_from(crate::util::read_u32_le(chunk)?)?;
+            let base_lang = crate::util::read_u32_le(chunk)?.try_into()?;
 
             // creature_type: foreign_key (CreatureType) uint32
             let creature_type = CreatureTypeKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -353,84 +356,6 @@ impl From<u16> for ChrRacesKey {
 impl From<u32> for ChrRacesKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Language {
-    Horde,
-    Alliance,
-}
-
-impl Language {
-    const fn from_value(value: u32) -> Option<Self> {
-        Some(match value {
-            1 => Self::Horde,
-            7 => Self::Alliance,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<u32> for Language {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: u32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Language", value as i64))
-    }
-
-}
-
-impl Language {
-    pub const fn as_int(&self) -> u32 {
-        match self {
-            Self::Horde => 1,
-            Self::Alliance => 7,
-        }
-
-    }
-
-}
-
-impl Default for Language {
-    fn default() -> Self {
-        Self::Horde
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct CharacterRaceFlags {
-    value: u32,
-}
-
-impl CharacterRaceFlags {
-    pub const fn new(value: u32) -> Self {
-        Self { value }
-    }
-
-    pub const fn as_int(&self) -> u32 {
-        self.value
-    }
-
-    pub const fn none(&self) -> bool {
-        self.value == 0
-    }
-
-    pub const fn not_playable(&self) -> bool {
-        (self.value & 1) != 0
-    }
-
-    pub const fn bare_feet(&self) -> bool {
-        (self.value & 2) != 0
-    }
-
-    pub const fn can_current_form_mount(&self) -> bool {
-        (self.value & 4) != 0
-    }
-
-    pub const fn unknown2(&self) -> bool {
-        (self.value & 8) != 0
     }
 
 }

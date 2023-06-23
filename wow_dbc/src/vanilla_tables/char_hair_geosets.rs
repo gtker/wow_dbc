@@ -1,11 +1,14 @@
 use crate::{
-    DbcTable, Gender, Indexable,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
+use wow_world_base::vanilla::{
+    Gender, Scalp,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CharHairGeosets {
@@ -58,7 +61,7 @@ impl DbcTable for CharHairGeosets {
             let race = ChrRacesKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // gender: Gender
-            let gender = Gender::try_from(crate::util::read_i32_le(chunk)?)?;
+            let gender = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // variation: uint32
             let variation = crate::util::read_u32_le(chunk)?;
@@ -67,7 +70,7 @@ impl DbcTable for CharHairGeosets {
             let geoset = crate::util::read_i32_le(chunk)?;
 
             // show_scalp: Scalp
-            let show_scalp = Scalp::try_from(crate::util::read_i32_le(chunk)?)?;
+            let show_scalp = crate::util::read_i32_le(chunk)?.try_into()?;
 
 
             rows.push(CharHairGeosetsRow {
@@ -164,48 +167,6 @@ impl From<u16> for CharHairGeosetsKey {
 impl From<u32> for CharHairGeosetsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Scalp {
-    Hair,
-    Bald,
-}
-
-impl Scalp {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Hair,
-            1 => Self::Bald,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for Scalp {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Scalp", value as i64))
-    }
-
-}
-
-impl Scalp {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Hair => 0,
-            Self::Bald => 1,
-        }
-
-    }
-
-}
-
-impl Default for Scalp {
-    fn default() -> Self {
-        Self::Hair
     }
 
 }

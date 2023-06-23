@@ -1,11 +1,12 @@
 use crate::{
-    DbcTable, Gender, Indexable,
+    DbcTable, Indexable,
 };
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
+use wow_world_base::vanilla::Gender;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NameGen {
@@ -66,7 +67,7 @@ impl DbcTable for NameGen {
             let race = ChrRacesKey::new(crate::util::read_u32_le(chunk)?.into());
 
             // gender: Gender
-            let gender = Gender::try_from(crate::util::read_i32_le(chunk)?)?;
+            let gender = crate::util::read_i32_le(chunk)?.try_into()?;
 
 
             rows.push(NameGenRow {

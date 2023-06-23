@@ -7,6 +7,7 @@ use crate::header::{
 use crate::vanilla_tables::area_table::AreaTableKey;
 use crate::vanilla_tables::loading_screens::LoadingScreensKey;
 use std::io::Write;
+use wow_world_base::vanilla::InstanceType;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Map {
@@ -64,7 +65,7 @@ impl DbcTable for Map {
             };
 
             // instance_type: InstanceType
-            let instance_type = InstanceType::try_from(crate::util::read_i32_le(chunk)?)?;
+            let instance_type = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // battleground: bool32
             let battleground = crate::util::read_u32_le(chunk)? != 0;
@@ -274,54 +275,6 @@ impl From<u16> for MapKey {
 impl From<u32> for MapKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum InstanceType {
-    Normal,
-    Group,
-    Raid,
-    Battleground,
-}
-
-impl InstanceType {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Normal,
-            1 => Self::Group,
-            2 => Self::Raid,
-            3 => Self::Battleground,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for InstanceType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("InstanceType", value as i64))
-    }
-
-}
-
-impl InstanceType {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Normal => 0,
-            Self::Group => 1,
-            Self::Raid => 2,
-            Self::Battleground => 3,
-        }
-
-    }
-
-}
-
-impl Default for InstanceType {
-    fn default() -> Self {
-        Self::Normal
     }
 
 }

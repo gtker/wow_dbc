@@ -5,6 +5,7 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::SoundType;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SoundEntries {
@@ -56,7 +57,7 @@ impl DbcTable for SoundEntries {
             let id = SoundEntriesKey::new(crate::util::read_u32_le(chunk)?);
 
             // sound_type: SoundType
-            let sound_type = SoundType::try_from(crate::util::read_i32_le(chunk)?)?;
+            let sound_type = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // name: string_ref
             let name = {
@@ -274,120 +275,6 @@ impl From<u16> for SoundEntriesKey {
 impl From<u32> for SoundEntriesKey {
     fn from(v: u32) -> Self {
         Self::new(v)
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum SoundType {
-    Unused,
-    Spells,
-    Ui,
-    Footsteps,
-    WeaponImpact,
-    WeaponMiss,
-    PickUpPutDown,
-    NpcCombat,
-    Errors,
-    Objects,
-    Death,
-    NpcGreetings,
-    Test,
-    ArmourFoley,
-    Footsteps2,
-    WaterCharacter,
-    WaterLiquid,
-    Tradeskills,
-    Doodads,
-    SpellFizzle,
-    NpcLoops,
-    ZoneMusic,
-    Emotes,
-    NarrationMusic,
-    Narration,
-    ZoneAmbience,
-}
-
-impl SoundType {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            0 => Self::Unused,
-            1 => Self::Spells,
-            2 => Self::Ui,
-            3 => Self::Footsteps,
-            4 => Self::WeaponImpact,
-            6 => Self::WeaponMiss,
-            9 => Self::PickUpPutDown,
-            10 => Self::NpcCombat,
-            12 => Self::Errors,
-            14 => Self::Objects,
-            16 => Self::Death,
-            17 => Self::NpcGreetings,
-            18 => Self::Test,
-            19 => Self::ArmourFoley,
-            20 => Self::Footsteps2,
-            21 => Self::WaterCharacter,
-            22 => Self::WaterLiquid,
-            23 => Self::Tradeskills,
-            25 => Self::Doodads,
-            26 => Self::SpellFizzle,
-            27 => Self::NpcLoops,
-            28 => Self::ZoneMusic,
-            29 => Self::Emotes,
-            30 => Self::NarrationMusic,
-            31 => Self::Narration,
-            50 => Self::ZoneAmbience,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for SoundType {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("SoundType", value as i64))
-    }
-
-}
-
-impl SoundType {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::Unused => 0,
-            Self::Spells => 1,
-            Self::Ui => 2,
-            Self::Footsteps => 3,
-            Self::WeaponImpact => 4,
-            Self::WeaponMiss => 6,
-            Self::PickUpPutDown => 9,
-            Self::NpcCombat => 10,
-            Self::Errors => 12,
-            Self::Objects => 14,
-            Self::Death => 16,
-            Self::NpcGreetings => 17,
-            Self::Test => 18,
-            Self::ArmourFoley => 19,
-            Self::Footsteps2 => 20,
-            Self::WaterCharacter => 21,
-            Self::WaterLiquid => 22,
-            Self::Tradeskills => 23,
-            Self::Doodads => 25,
-            Self::SpellFizzle => 26,
-            Self::NpcLoops => 27,
-            Self::ZoneMusic => 28,
-            Self::Emotes => 29,
-            Self::NarrationMusic => 30,
-            Self::Narration => 31,
-            Self::ZoneAmbience => 50,
-        }
-
-    }
-
-}
-
-impl Default for SoundType {
-    fn default() -> Self {
-        Self::Unused
     }
 
 }

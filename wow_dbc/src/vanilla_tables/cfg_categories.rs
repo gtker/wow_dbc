@@ -5,6 +5,9 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
+use wow_world_base::vanilla::{
+    ServerCategory, ServerRegion,
+};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -54,10 +57,10 @@ impl DbcTable for Cfg_Categories {
             let chunk = &mut chunk;
 
             // category: ServerCategory
-            let category = ServerCategory::try_from(crate::util::read_i32_le(chunk)?)?;
+            let category = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // region: ServerRegion
-            let region = ServerRegion::try_from(crate::util::read_i32_le(chunk)?)?;
+            let region = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // name: string_ref_loc
             let name = crate::util::read_localized_string(chunk, &string_block)?;
@@ -121,111 +124,6 @@ impl Cfg_Categories {
         }
 
         sum as u32
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum ServerCategory {
-    One,
-    Two,
-    Three,
-    Five,
-}
-
-impl ServerCategory {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            1 => Self::One,
-            2 => Self::Two,
-            3 => Self::Three,
-            5 => Self::Five,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for ServerCategory {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ServerCategory", value as i64))
-    }
-
-}
-
-impl ServerCategory {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::One => 1,
-            Self::Two => 2,
-            Self::Three => 3,
-            Self::Five => 5,
-        }
-
-    }
-
-}
-
-impl Default for ServerCategory {
-    fn default() -> Self {
-        Self::One
-    }
-
-}
-
-#[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum ServerRegion {
-    UnitedStates,
-    Korea,
-    Europe,
-    Taiwan,
-    China,
-    TestServer,
-    QaServer,
-}
-
-impl ServerRegion {
-    const fn from_value(value: i32) -> Option<Self> {
-        Some(match value {
-            1 => Self::UnitedStates,
-            2 => Self::Korea,
-            3 => Self::Europe,
-            4 => Self::Taiwan,
-            5 => Self::China,
-            99 => Self::TestServer,
-            101 => Self::QaServer,
-            _ => return None,
-        })
-    }
-}
-
-impl TryFrom<i32> for ServerRegion {
-    type Error = crate::InvalidEnumError;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ServerRegion", value as i64))
-    }
-
-}
-
-impl ServerRegion {
-    pub const fn as_int(&self) -> i32 {
-        match self {
-            Self::UnitedStates => 1,
-            Self::Korea => 2,
-            Self::Europe => 3,
-            Self::Taiwan => 4,
-            Self::China => 5,
-            Self::TestServer => 99,
-            Self::QaServer => 101,
-        }
-
-    }
-
-}
-
-impl Default for ServerRegion {
-    fn default() -> Self {
-        Self::UnitedStates
     }
 
 }
