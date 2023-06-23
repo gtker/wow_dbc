@@ -12,7 +12,7 @@
 
     <enum>
         <type>int32</type>
-        <name>Type</name>
+        <name>LockType</name>
         <options>
             <option name="none" value="0x00" />
             <option name="item_required" value="0x01" />
@@ -21,7 +21,7 @@
     </enum>
 
     <field>
-        <type>Type[8]</type>
+        <type>LockType[8]</type>
         <name>type</name>
     </field>
 

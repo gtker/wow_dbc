@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: `ReputationRaceMask` renamed to `AllowedRace`.
 * BREAKING: `Flags` renamed to `PvpFlags`.
 * BREAKING: `ChannelFlags` renamed to `DefaultChannelFlags`.
+* BREAKING: `Type` renamed to `LockType`.
+* BREAKING: `Region` renamed to `ServerRegion`.
+* BREAKING: `Flags` renamed to `CharacterRaceFlags`.
 
 ### Removed
 

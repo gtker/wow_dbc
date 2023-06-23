@@ -16,7 +16,7 @@
 
     <enum>
         <type>int32</type>
-        <name>Region</name>
+        <name>ServerRegion</name>
         <options>
             <option name="UNITED_STATES" value="1" />
             <option name="KOREA"         value="2" />
@@ -34,7 +34,7 @@
     </field>
 
     <field>
-        <type>Region</type>
+        <type>ServerRegion</type>
         <name>region</name>
     </field>
 

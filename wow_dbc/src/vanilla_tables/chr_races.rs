@@ -61,8 +61,8 @@ impl DbcTable for ChrRaces {
             // id: primary_key (ChrRaces) uint32
             let id = ChrRacesKey::new(crate::util::read_u32_le(chunk)?);
 
-            // flags: Flags
-            let flags = Flags::new(crate::util::read_u32_le(chunk)?);
+            // flags: CharacterRaceFlags
+            let flags = CharacterRaceFlags::new(crate::util::read_u32_le(chunk)?);
 
             // faction: foreign_key (FactionTemplate) uint32
             let faction = FactionTemplateKey::new(crate::util::read_u32_le(chunk)?.into());
@@ -181,7 +181,7 @@ impl DbcTable for ChrRaces {
             // id: primary_key (ChrRaces) uint32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // flags: Flags
+            // flags: CharacterRaceFlags
             b.write_all(&(row.flags.as_int() as u32).to_le_bytes())?;
 
             // faction: foreign_key (FactionTemplate) uint32
@@ -400,11 +400,11 @@ impl Default for Language {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash, Default)]
-pub struct Flags {
+pub struct CharacterRaceFlags {
     value: u32,
 }
 
-impl Flags {
+impl CharacterRaceFlags {
     pub const fn new(value: u32) -> Self {
         Self { value }
     }
@@ -438,7 +438,7 @@ impl Flags {
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ChrRacesRow {
     pub id: ChrRacesKey,
-    pub flags: Flags,
+    pub flags: CharacterRaceFlags,
     pub faction: FactionTemplateKey,
     pub exploration_sound: SoundEntriesKey,
     pub male_display: CreatureDisplayInfoKey,

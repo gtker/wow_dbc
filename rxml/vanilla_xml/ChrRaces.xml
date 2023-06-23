@@ -5,7 +5,7 @@
 
     <flag>
         <type>uint32</type>
-        <name>Flags</name>
+        <name>CharacterRaceFlags</name>
         <options>
             <option name="none" value="0x00" />
             <option name="not_playable" value="0x01" />
@@ -24,7 +24,7 @@
     </field>
 
     <field>
-        <type>Flags</type>
+        <type>CharacterRaceFlags</type>
         <name>flags</name>
     </field>
 

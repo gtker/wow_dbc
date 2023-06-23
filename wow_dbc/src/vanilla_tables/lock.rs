@@ -53,11 +53,11 @@ impl DbcTable for Lock {
             // id: primary_key (Lock) uint32
             let id = LockKey::new(crate::util::read_u32_le(chunk)?);
 
-            // ty: Type[8]
+            // ty: LockType[8]
             let ty = {
-                let mut arr = [Type::default(); 8];
+                let mut arr = [LockType::default(); 8];
                 for i in arr.iter_mut() {
-                    *i = Type::try_from(crate::util::read_i32_le(chunk)?)?;
+                    *i = LockType::try_from(crate::util::read_i32_le(chunk)?)?;
                 }
 
                 arr
@@ -99,7 +99,7 @@ impl DbcTable for Lock {
             // id: primary_key (Lock) uint32
             b.write_all(&row.id.id.to_le_bytes())?;
 
-            // ty: Type[8]
+            // ty: LockType[8]
             for i in row.ty {
                 b.write_all(&(i.as_int() as i32).to_le_bytes())?;
             }
@@ -180,13 +180,13 @@ impl From<u32> for LockKey {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Type {
+pub enum LockType {
     None,
     ItemRequired,
     LocktypeReference,
 }
 
-impl Type {
+impl LockType {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             0 => Self::None,
@@ -197,15 +197,15 @@ impl Type {
     }
 }
 
-impl TryFrom<i32> for Type {
+impl TryFrom<i32> for LockType {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Type", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("LockType", value as i64))
     }
 
 }
 
-impl Type {
+impl LockType {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::None => 0,
@@ -217,7 +217,7 @@ impl Type {
 
 }
 
-impl Default for Type {
+impl Default for LockType {
     fn default() -> Self {
         Self::None
     }
@@ -227,7 +227,7 @@ impl Default for Type {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LockRow {
     pub id: LockKey,
-    pub ty: [Type; 8],
+    pub ty: [LockType; 8],
     pub property: [u32; 8],
     pub required_skill: [i32; 8],
     pub action: [i32; 8],

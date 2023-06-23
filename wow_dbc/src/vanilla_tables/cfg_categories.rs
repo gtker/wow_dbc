@@ -56,8 +56,8 @@ impl DbcTable for Cfg_Categories {
             // category: ServerCategory
             let category = ServerCategory::try_from(crate::util::read_i32_le(chunk)?)?;
 
-            // region: Region
-            let region = Region::try_from(crate::util::read_i32_le(chunk)?)?;
+            // region: ServerRegion
+            let region = ServerRegion::try_from(crate::util::read_i32_le(chunk)?)?;
 
             // name: string_ref_loc
             let name = crate::util::read_localized_string(chunk, &string_block)?;
@@ -88,7 +88,7 @@ impl DbcTable for Cfg_Categories {
             // category: ServerCategory
             b.write_all(&(row.category.as_int() as i32).to_le_bytes())?;
 
-            // region: Region
+            // region: ServerRegion
             b.write_all(&(row.region.as_int() as i32).to_le_bytes())?;
 
             // name: string_ref_loc
@@ -174,7 +174,7 @@ impl Default for ServerCategory {
 }
 
 #[derive(Debug, Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub enum Region {
+pub enum ServerRegion {
     UnitedStates,
     Korea,
     Europe,
@@ -184,7 +184,7 @@ pub enum Region {
     QaServer,
 }
 
-impl Region {
+impl ServerRegion {
     const fn from_value(value: i32) -> Option<Self> {
         Some(match value {
             1 => Self::UnitedStates,
@@ -199,15 +199,15 @@ impl Region {
     }
 }
 
-impl TryFrom<i32> for Region {
+impl TryFrom<i32> for ServerRegion {
     type Error = crate::InvalidEnumError;
     fn try_from(value: i32) -> Result<Self, Self::Error> {
-        Self::from_value(value).ok_or(crate::InvalidEnumError::new("Region", value as i64))
+        Self::from_value(value).ok_or(crate::InvalidEnumError::new("ServerRegion", value as i64))
     }
 
 }
 
-impl Region {
+impl ServerRegion {
     pub const fn as_int(&self) -> i32 {
         match self {
             Self::UnitedStates => 1,
@@ -223,7 +223,7 @@ impl Region {
 
 }
 
-impl Default for Region {
+impl Default for ServerRegion {
     fn default() -> Self {
         Self::UnitedStates
     }
@@ -234,7 +234,7 @@ impl Default for Region {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cfg_CategoriesRow {
     pub category: ServerCategory,
-    pub region: Region,
+    pub region: ServerRegion,
     pub name: LocalizedString,
 }
 
