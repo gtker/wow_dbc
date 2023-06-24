@@ -283,17 +283,17 @@ fn create_index(s: &mut Writer, d: &DbcDescription) {
     s.wln(format!("type PrimaryKey = {name}Key;", name = d.name()));
 
     s.bodyn(
-        "fn get(&self, key: impl Into<Self::PrimaryKey>) -> Option<&Self::Row>",
+        "fn get(&self, key: impl TryInto<Self::PrimaryKey>) -> Option<&Self::Row>",
         |s| {
-            s.wln("let key = key.into();");
+            s.wln("let key = key.try_into().ok()?;");
             s.wln("self.rows.iter().find(|a| a.id.id == key.id)");
         },
     );
 
     s.body(
-        "fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row>",
+        "fn get_mut(&mut self, key: impl TryInto<Self::PrimaryKey>) -> Option<&mut Self::Row>",
         |s| {
-            s.wln("let key = key.into();");
+            s.wln("let key = key.try_into().ok()?;");
             s.wln("self.rows.iter_mut().find(|a| a.id.id == key.id)");
         },
     );

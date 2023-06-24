@@ -107,13 +107,13 @@ impl DbcTable for CreatureSpellData {
 
 impl Indexable for CreatureSpellData {
     type PrimaryKey = CreatureSpellDataKey;
-    fn get(&self, key: impl Into<Self::PrimaryKey>) -> Option<&Self::Row> {
-        let key = key.into();
+    fn get(&self, key: impl TryInto<Self::PrimaryKey>) -> Option<&Self::Row> {
+        let key = key.try_into().ok()?;
         self.rows.iter().find(|a| a.id.id == key.id)
     }
 
-    fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row> {
-        let key = key.into();
+    fn get_mut(&mut self, key: impl TryInto<Self::PrimaryKey>) -> Option<&mut Self::Row> {
+        let key = key.try_into().ok()?;
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
 }
