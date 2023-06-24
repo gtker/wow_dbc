@@ -323,7 +323,9 @@ fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     s.wln(format!(
         "let contents = include_bytes!(\"../../../{test_dir_name}/{ty}.dbc\");",
     ));
-    s.wln(format!("let actual = {ty}::read(&mut contents).unwrap();",));
+    s.wln(format!(
+        "let actual = {ty}::read(&mut contents.as_slice()).unwrap();",
+    ));
     s.wln("let mut v = Vec::with_capacity(contents.len());");
     s.wln("actual.write(&mut v).unwrap();");
 
