@@ -188,6 +188,13 @@ impl From<u16> for PetitionTypeKey {
     }
 }
 
+impl TryFrom<u32> for PetitionTypeKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PetitionTypeRow {
     pub id: PetitionTypeKey,

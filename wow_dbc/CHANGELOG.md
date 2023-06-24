@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* BREAKING: Added TryFrom for remaining integer types. This may break type deduction and is a breaking change.
 * `as_int` and `new` functions for flags.
 * `as_int` functions for enums.
 * Functions to check if an enumerator is set for flags.

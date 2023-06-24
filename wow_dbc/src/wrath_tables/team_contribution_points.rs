@@ -147,6 +147,13 @@ impl From<u16> for TeamContributionPointsKey {
     }
 }
 
+impl TryFrom<u32> for TeamContributionPointsKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct TeamContributionPointsRow {
     pub id: TeamContributionPointsKey,

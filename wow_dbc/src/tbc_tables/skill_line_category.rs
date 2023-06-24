@@ -179,6 +179,13 @@ impl From<u16> for SkillLineCategoryKey {
     }
 }
 
+impl TryFrom<u32> for SkillLineCategoryKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillLineCategoryRow {
     pub id: SkillLineCategoryKey,

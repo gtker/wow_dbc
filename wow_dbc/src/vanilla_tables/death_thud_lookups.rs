@@ -159,6 +159,27 @@ impl From<u32> for DeathThudLookupsKey {
     }
 }
 
+impl TryFrom<i8> for DeathThudLookupsKey {
+    type Error = i8;
+    fn try_from(v: i8) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i16> for DeathThudLookupsKey {
+    type Error = i16;
+    fn try_from(v: i16) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i32> for DeathThudLookupsKey {
+    type Error = i32;
+    fn try_from(v: i32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DeathThudLookupsRow {
     pub id: DeathThudLookupsKey,

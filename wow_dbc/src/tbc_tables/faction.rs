@@ -235,6 +235,13 @@ impl From<u16> for FactionKey {
     }
 }
 
+impl TryFrom<u32> for FactionKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FactionRow {
     pub id: FactionKey,

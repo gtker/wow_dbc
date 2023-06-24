@@ -226,6 +226,13 @@ impl From<u16> for LFGDungeonsKey {
     }
 }
 
+impl TryFrom<u32> for LFGDungeonsKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,

@@ -162,6 +162,13 @@ impl From<u16> for WeaponSwingSounds2Key {
     }
 }
 
+impl TryFrom<u32> for WeaponSwingSounds2Key {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct WeaponSwingSounds2Row {
     pub id: WeaponSwingSounds2Key,

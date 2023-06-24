@@ -188,6 +188,27 @@ impl From<u32> for ItemRandomPropertiesKey {
     }
 }
 
+impl TryFrom<i8> for ItemRandomPropertiesKey {
+    type Error = i8;
+    fn try_from(v: i8) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i16> for ItemRandomPropertiesKey {
+    type Error = i16;
+    fn try_from(v: i16) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i32> for ItemRandomPropertiesKey {
+    type Error = i32;
+    fn try_from(v: i32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemRandomPropertiesRow {
     pub id: ItemRandomPropertiesKey,

@@ -213,6 +213,27 @@ impl From<u32> for WorldMapContinentKey {
     }
 }
 
+impl TryFrom<i8> for WorldMapContinentKey {
+    type Error = i8;
+    fn try_from(v: i8) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i16> for WorldMapContinentKey {
+    type Error = i16;
+    fn try_from(v: i16) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i32> for WorldMapContinentKey {
+    type Error = i32;
+    fn try_from(v: i32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct WorldMapContinentRow {
     pub id: WorldMapContinentKey,

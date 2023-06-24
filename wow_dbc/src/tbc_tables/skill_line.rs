@@ -204,6 +204,13 @@ impl From<u16> for SkillLineKey {
     }
 }
 
+impl TryFrom<u32> for SkillLineKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SkillLineRow {
     pub id: SkillLineKey,

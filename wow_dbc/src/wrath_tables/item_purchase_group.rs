@@ -182,6 +182,13 @@ impl From<u16> for ItemPurchaseGroupKey {
     }
 }
 
+impl TryFrom<u32> for ItemPurchaseGroupKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemPurchaseGroupRow {
     pub id: ItemPurchaseGroupKey,

@@ -181,6 +181,13 @@ impl From<u16> for PageTextMaterialKey {
     }
 }
 
+impl TryFrom<u32> for PageTextMaterialKey {
+    type Error = u32;
+    fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PageTextMaterialRow {
     pub id: PageTextMaterialKey,
