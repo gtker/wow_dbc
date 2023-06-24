@@ -163,6 +163,18 @@ impl LFGDungeonGroupKey {
 
 }
 
+impl From<u8> for LFGDungeonGroupKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+}
+
+impl From<u16> for LFGDungeonGroupKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+}
+
 impl From<i8> for LFGDungeonGroupKey {
     fn from(v: i8) -> Self {
         Self::new(v.into())
@@ -181,21 +193,37 @@ impl From<i32> for LFGDungeonGroupKey {
     }
 }
 
-impl From<u8> for LFGDungeonGroupKey {
-    fn from(v: u8) -> Self {
-        Self::new(v.into())
-    }
-}
-
-impl From<u16> for LFGDungeonGroupKey {
-    fn from(v: u16) -> Self {
-        Self::new(v.into())
-    }
-}
-
 impl TryFrom<u32> for LFGDungeonGroupKey {
     type Error = u32;
     fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<usize> for LFGDungeonGroupKey {
+    type Error = usize;
+    fn try_from(v: usize) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<u64> for LFGDungeonGroupKey {
+    type Error = u64;
+    fn try_from(v: u64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i64> for LFGDungeonGroupKey {
+    type Error = i64;
+    fn try_from(v: i64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<isize> for LFGDungeonGroupKey {
+    type Error = isize;
+    fn try_from(v: isize) -> Result<Self, Self::Error> {
         Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
     }
 }

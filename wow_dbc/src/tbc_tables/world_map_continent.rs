@@ -183,6 +183,18 @@ impl WorldMapContinentKey {
 
 }
 
+impl From<u8> for WorldMapContinentKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+}
+
+impl From<u16> for WorldMapContinentKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+}
+
 impl From<i8> for WorldMapContinentKey {
     fn from(v: i8) -> Self {
         Self::new(v.into())
@@ -201,21 +213,37 @@ impl From<i32> for WorldMapContinentKey {
     }
 }
 
-impl From<u8> for WorldMapContinentKey {
-    fn from(v: u8) -> Self {
-        Self::new(v.into())
-    }
-}
-
-impl From<u16> for WorldMapContinentKey {
-    fn from(v: u16) -> Self {
-        Self::new(v.into())
-    }
-}
-
 impl TryFrom<u32> for WorldMapContinentKey {
     type Error = u32;
     fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<usize> for WorldMapContinentKey {
+    type Error = usize;
+    fn try_from(v: usize) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<u64> for WorldMapContinentKey {
+    type Error = u64;
+    fn try_from(v: u64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i64> for WorldMapContinentKey {
+    type Error = i64;
+    fn try_from(v: i64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<isize> for WorldMapContinentKey {
+    type Error = isize;
+    fn try_from(v: isize) -> Result<Self, Self::Error> {
         Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
     }
 }

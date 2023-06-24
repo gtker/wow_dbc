@@ -160,6 +160,20 @@ impl From<u32> for SpellMechanicKey {
     }
 }
 
+impl TryFrom<u64> for SpellMechanicKey {
+    type Error = u64;
+    fn try_from(v: u64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<usize> for SpellMechanicKey {
+    type Error = usize;
+    fn try_from(v: usize) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
 impl TryFrom<i8> for SpellMechanicKey {
     type Error = i8;
     fn try_from(v: i8) -> Result<Self, Self::Error> {
@@ -177,6 +191,20 @@ impl TryFrom<i16> for SpellMechanicKey {
 impl TryFrom<i32> for SpellMechanicKey {
     type Error = i32;
     fn try_from(v: i32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i64> for SpellMechanicKey {
+    type Error = i64;
+    fn try_from(v: i64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<isize> for SpellMechanicKey {
+    type Error = isize;
+    fn try_from(v: isize) -> Result<Self, Self::Error> {
         Ok(TryInto::<u32>::try_into(v).ok().ok_or(v)?.into())
     }
 }

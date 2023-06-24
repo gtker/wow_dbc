@@ -144,6 +144,18 @@ impl BannedAddOnsKey {
 
 }
 
+impl From<u8> for BannedAddOnsKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+}
+
+impl From<u16> for BannedAddOnsKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+}
+
 impl From<i8> for BannedAddOnsKey {
     fn from(v: i8) -> Self {
         Self::new(v.into())
@@ -162,21 +174,37 @@ impl From<i32> for BannedAddOnsKey {
     }
 }
 
-impl From<u8> for BannedAddOnsKey {
-    fn from(v: u8) -> Self {
-        Self::new(v.into())
-    }
-}
-
-impl From<u16> for BannedAddOnsKey {
-    fn from(v: u16) -> Self {
-        Self::new(v.into())
-    }
-}
-
 impl TryFrom<u32> for BannedAddOnsKey {
     type Error = u32;
     fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<usize> for BannedAddOnsKey {
+    type Error = usize;
+    fn try_from(v: usize) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<u64> for BannedAddOnsKey {
+    type Error = u64;
+    fn try_from(v: u64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i64> for BannedAddOnsKey {
+    type Error = i64;
+    fn try_from(v: i64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<isize> for BannedAddOnsKey {
+    type Error = isize;
+    fn try_from(v: isize) -> Result<Self, Self::Error> {
         Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
     }
 }

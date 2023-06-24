@@ -124,6 +124,18 @@ impl GlyphSlotKey {
 
 }
 
+impl From<u8> for GlyphSlotKey {
+    fn from(v: u8) -> Self {
+        Self::new(v.into())
+    }
+}
+
+impl From<u16> for GlyphSlotKey {
+    fn from(v: u16) -> Self {
+        Self::new(v.into())
+    }
+}
+
 impl From<i8> for GlyphSlotKey {
     fn from(v: i8) -> Self {
         Self::new(v.into())
@@ -142,21 +154,37 @@ impl From<i32> for GlyphSlotKey {
     }
 }
 
-impl From<u8> for GlyphSlotKey {
-    fn from(v: u8) -> Self {
-        Self::new(v.into())
-    }
-}
-
-impl From<u16> for GlyphSlotKey {
-    fn from(v: u16) -> Self {
-        Self::new(v.into())
-    }
-}
-
 impl TryFrom<u32> for GlyphSlotKey {
     type Error = u32;
     fn try_from(v: u32) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<usize> for GlyphSlotKey {
+    type Error = usize;
+    fn try_from(v: usize) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<u64> for GlyphSlotKey {
+    type Error = u64;
+    fn try_from(v: u64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<i64> for GlyphSlotKey {
+    type Error = i64;
+    fn try_from(v: i64) -> Result<Self, Self::Error> {
+        Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
+    }
+}
+
+impl TryFrom<isize> for GlyphSlotKey {
+    type Error = isize;
+    fn try_from(v: isize) -> Result<Self, Self::Error> {
         Ok(TryInto::<i32>::try_into(v).ok().ok_or(v)?.into())
     }
 }

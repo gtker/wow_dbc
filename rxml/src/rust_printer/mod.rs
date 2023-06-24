@@ -245,11 +245,11 @@ fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
     let original_ty = ty.rust_str();
 
     let from_tys = match ty {
-        Type::I8 => ["i8"].as_slice(),
-        Type::I16 => ["i8", "i16", "u8"].as_slice(),
-        Type::I32 => ["i8", "i16", "i32", "u8", "u16"].as_slice(),
-        Type::U8 => ["u8"].as_slice(),
-        Type::U16 => ["u8", "u16"].as_slice(),
+        Type::I8 => ["i8", "isize"].as_slice(),
+        Type::I16 => ["u8", "i8", "i16", "isize"].as_slice(),
+        Type::I32 => ["u8", "u16", "i8", "i16", "i32"].as_slice(),
+        Type::U8 => ["u8", "usize"].as_slice(),
+        Type::U16 => ["u8", "u16", "usize"].as_slice(),
         Type::U32 => ["u8", "u16", "u32"].as_slice(),
         _ => unreachable!("invalid primary key"),
     };
@@ -267,12 +267,12 @@ fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
     }
 
     let try_from_tys = match ty {
-        Type::I8 => ["u8", "u16", "u32", "i16", "i32"].as_slice(),
-        Type::I16 => ["u16", "u32", "i32"].as_slice(),
-        Type::I32 => ["u32"].as_slice(),
-        Type::U8 => ["u16", "u32", "i8", "i16", "i32"].as_slice(),
-        Type::U16 => ["u32", "i8", "i16", "i32"].as_slice(),
-        Type::U32 => ["i8", "i16", "i32"].as_slice(),
+        Type::I8 => ["u8", "u16", "u32", "u64", "usize", "i16", "i32", "i64"].as_slice(),
+        Type::I16 => ["u16", "u32", "u64", "usize", "i32", "i64"].as_slice(),
+        Type::I32 => ["u32", "usize", "u64", "i64", "isize"].as_slice(),
+        Type::U8 => ["u16", "u32", "u64", "i8", "i16", "i32", "i64", "isize"].as_slice(),
+        Type::U16 => ["u32", "u64", "i8", "i16", "i32", "i64", "isize"].as_slice(),
+        Type::U32 => ["u64", "usize", "i8", "i16", "i32", "i64", "isize"].as_slice(),
         _ => unreachable!("invalid primary key"),
     };
 
