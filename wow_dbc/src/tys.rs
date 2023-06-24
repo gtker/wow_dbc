@@ -167,6 +167,7 @@ impl ExtendedLocalizedString {
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[cfg(feature = "vanilla")]
 pub struct LocalizedString {
     /// English, Great Britain
     pub en_gb: String,
@@ -188,6 +189,7 @@ pub struct LocalizedString {
     pub flags: u32,
 }
 
+#[cfg(feature = "vanilla")]
 impl LocalizedString {
     #[allow(clippy::too_many_arguments)]
     pub(crate) const fn new(

@@ -18,8 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * BREAKING: Types used are now from the `wow_world_base` crate.
-* ints in `Spell.dbc` to enums/flags.
-* ints in `Spell.dbc` for TBC/Wrath to `EffectAura`.
+* BREAKING: `LocalizedString` is now gated behind the `vanilla` feature.
 * BREAKING: `EffectAura` renamed to `AuraMod`.
 * BREAKING: `BaseLanguage` removed and changed to `Language`.
 * BREAKING: `PowerType` renamed to `Power`.
@@ -33,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * BREAKING: `Type` renamed to `LockType`.
 * BREAKING: `Region` renamed to `ServerRegion`.
 * BREAKING: `Flags` renamed to `CharacterRaceFlags`.
+* BREAKING: ints in `Spell.dbc` to enums/flags.
+* BREAKING: ints in `Spell.dbc` for TBC/Wrath to `EffectAura`.
 
 ### Removed
 
