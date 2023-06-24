@@ -256,7 +256,7 @@ fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
     for t in from_tys {
         let t = t.rust_str();
         s.bodyn(format!("impl From<{t}> for {primary_key}",), |s| {
-            s.bodyn(format!("fn from(v: {t}) -> Self"), |s| {
+            s.body(format!("fn from(v: {t}) -> Self"), |s| {
                 if t == ty.rust_str() {
                     s.wln("Self::new(v)");
                 } else {

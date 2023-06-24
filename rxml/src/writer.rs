@@ -96,6 +96,12 @@ impl Writer {
         self.inc_indent();
     }
 
+    pub fn body(&mut self, s: impl AsRef<str>, f: impl Fn(&mut Self)) {
+        self.open_curly(s);
+        f(self);
+        self.closing_curly();
+    }
+
     pub fn bodyn(&mut self, s: impl AsRef<str>, f: impl Fn(&mut Self)) {
         self.open_curly(s);
         f(self);

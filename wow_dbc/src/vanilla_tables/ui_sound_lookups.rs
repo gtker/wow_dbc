@@ -123,7 +123,6 @@ impl Indexable for UISoundLookups {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl UISoundLookups {
@@ -164,21 +163,18 @@ impl From<u8> for UISoundLookupsKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for UISoundLookupsKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for UISoundLookupsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

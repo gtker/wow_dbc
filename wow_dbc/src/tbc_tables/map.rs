@@ -302,7 +302,6 @@ impl Indexable for Map {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl Map {
@@ -355,35 +354,30 @@ impl From<i8> for MapKey {
     fn from(v: i8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<i16> for MapKey {
     fn from(v: i16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<i32> for MapKey {
     fn from(v: i32) -> Self {
         Self::new(v)
     }
-
 }
 
 impl From<u8> for MapKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for MapKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

@@ -269,7 +269,6 @@ impl Indexable for SoundProviderPreferences {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl SoundProviderPreferences {
@@ -310,21 +309,18 @@ impl From<u8> for SoundProviderPreferencesKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for SoundProviderPreferencesKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for SoundProviderPreferencesKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

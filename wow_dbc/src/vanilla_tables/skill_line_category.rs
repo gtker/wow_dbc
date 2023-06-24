@@ -113,7 +113,6 @@ impl Indexable for SkillLineCategory {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl SkillLineCategory {
@@ -154,21 +153,18 @@ impl From<u8> for SkillLineCategoryKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for SkillLineCategoryKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for SkillLineCategoryKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

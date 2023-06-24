@@ -439,7 +439,6 @@ impl Indexable for SpellChainEffects {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl SpellChainEffects {
@@ -482,35 +481,30 @@ impl From<i8> for SpellChainEffectsKey {
     fn from(v: i8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<i16> for SpellChainEffectsKey {
     fn from(v: i16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<i32> for SpellChainEffectsKey {
     fn from(v: i32) -> Self {
         Self::new(v)
     }
-
 }
 
 impl From<u8> for SpellChainEffectsKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for SpellChainEffectsKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

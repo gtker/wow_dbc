@@ -140,7 +140,6 @@ impl Indexable for VocalUISounds {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
@@ -159,21 +158,18 @@ impl From<u8> for VocalUISoundsKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for VocalUISoundsKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for VocalUISoundsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

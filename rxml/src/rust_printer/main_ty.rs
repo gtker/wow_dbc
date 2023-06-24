@@ -290,7 +290,7 @@ fn create_index(s: &mut Writer, d: &DbcDescription) {
         },
     );
 
-    s.bodyn(
+    s.body(
         "fn get_mut(&mut self, key: impl Into<Self::PrimaryKey>) -> Option<&mut Self::Row>",
         |s| {
             s.wln("let key = key.into();");

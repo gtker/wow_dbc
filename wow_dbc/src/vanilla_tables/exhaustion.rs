@@ -141,7 +141,6 @@ impl Indexable for Exhaustion {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl Exhaustion {
@@ -182,21 +181,18 @@ impl From<u8> for ExhaustionKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for ExhaustionKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for ExhaustionKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

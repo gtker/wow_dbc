@@ -151,7 +151,6 @@ impl Indexable for CinematicCamera {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 impl CinematicCamera {
@@ -192,21 +191,18 @@ impl From<u8> for CinematicCameraKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for CinematicCameraKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for CinematicCameraKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

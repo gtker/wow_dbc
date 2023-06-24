@@ -118,7 +118,6 @@ impl Indexable for Cfg_Configs {
         let key = key.into();
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-
 }
 
 #[allow(non_camel_case_types)]
@@ -138,21 +137,18 @@ impl From<u8> for Cfg_ConfigsKey {
     fn from(v: u8) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u16> for Cfg_ConfigsKey {
     fn from(v: u16) -> Self {
         Self::new(v.into())
     }
-
 }
 
 impl From<u32> for Cfg_ConfigsKey {
     fn from(v: u32) -> Self {
         Self::new(v)
     }
-
 }
 
 #[allow(non_camel_case_types)]
