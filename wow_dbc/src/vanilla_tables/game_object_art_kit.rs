@@ -14,7 +14,7 @@ pub struct GameObjectArtKit {
 impl DbcTable for GameObjectArtKit {
     type Row = GameObjectArtKitRow;
 
-    fn filename() -> &'static str { "GameObjectArtKit.dbc" }
+    const FILENAME: &'static str = "GameObjectArtKit.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

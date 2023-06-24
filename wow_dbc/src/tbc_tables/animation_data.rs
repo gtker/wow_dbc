@@ -14,7 +14,7 @@ pub struct AnimationData {
 impl DbcTable for AnimationData {
     type Row = AnimationDataRow;
 
-    fn filename() -> &'static str { "AnimationData.dbc" }
+    const FILENAME: &'static str = "AnimationData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

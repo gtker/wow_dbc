@@ -16,7 +16,7 @@ pub struct SpellVisual {
 impl DbcTable for SpellVisual {
     type Row = SpellVisualRow;
 
-    fn filename() -> &'static str { "SpellVisual.dbc" }
+    const FILENAME: &'static str = "SpellVisual.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

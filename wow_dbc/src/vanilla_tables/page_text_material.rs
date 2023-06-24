@@ -14,7 +14,7 @@ pub struct PageTextMaterial {
 impl DbcTable for PageTextMaterial {
     type Row = PageTextMaterialRow;
 
-    fn filename() -> &'static str { "PageTextMaterial.dbc" }
+    const FILENAME: &'static str = "PageTextMaterial.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

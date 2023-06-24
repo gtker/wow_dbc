@@ -18,7 +18,7 @@ pub struct CharHairGeosets {
 impl DbcTable for CharHairGeosets {
     type Row = CharHairGeosetsRow;
 
-    fn filename() -> &'static str { "CharHairGeosets.dbc" }
+    const FILENAME: &'static str = "CharHairGeosets.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

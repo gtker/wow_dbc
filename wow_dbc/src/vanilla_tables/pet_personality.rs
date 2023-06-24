@@ -14,7 +14,7 @@ pub struct PetPersonality {
 impl DbcTable for PetPersonality {
     type Row = PetPersonalityRow;
 
-    fn filename() -> &'static str { "PetPersonality.dbc" }
+    const FILENAME: &'static str = "PetPersonality.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

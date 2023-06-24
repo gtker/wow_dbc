@@ -14,7 +14,7 @@ pub struct ItemRandomProperties {
 impl DbcTable for ItemRandomProperties {
     type Row = ItemRandomPropertiesRow;
 
-    fn filename() -> &'static str { "ItemRandomProperties.dbc" }
+    const FILENAME: &'static str = "ItemRandomProperties.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

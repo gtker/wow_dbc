@@ -14,7 +14,7 @@ pub struct Lock {
 impl DbcTable for Lock {
     type Row = LockRow;
 
-    fn filename() -> &'static str { "Lock.dbc" }
+    const FILENAME: &'static str = "Lock.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

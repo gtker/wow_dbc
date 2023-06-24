@@ -14,7 +14,7 @@ pub struct SpellRadius {
 impl DbcTable for SpellRadius {
     type Row = SpellRadiusRow;
 
-    fn filename() -> &'static str { "SpellRadius.dbc" }
+    const FILENAME: &'static str = "SpellRadius.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

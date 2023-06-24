@@ -14,7 +14,7 @@ pub struct NamesReserved {
 impl DbcTable for NamesReserved {
     type Row = NamesReservedRow;
 
-    fn filename() -> &'static str { "NamesReserved.dbc" }
+    const FILENAME: &'static str = "NamesReserved.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

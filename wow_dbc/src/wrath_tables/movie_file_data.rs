@@ -13,7 +13,7 @@ pub struct MovieFileData {
 impl DbcTable for MovieFileData {
     type Row = MovieFileDataRow;
 
-    fn filename() -> &'static str { "MovieFileData.dbc" }
+    const FILENAME: &'static str = "MovieFileData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

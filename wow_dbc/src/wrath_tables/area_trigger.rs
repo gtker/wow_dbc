@@ -15,7 +15,7 @@ pub struct AreaTrigger {
 impl DbcTable for AreaTrigger {
     type Row = AreaTriggerRow;
 
-    fn filename() -> &'static str { "AreaTrigger.dbc" }
+    const FILENAME: &'static str = "AreaTrigger.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

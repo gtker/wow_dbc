@@ -14,7 +14,7 @@ pub struct CameraShakes {
 impl DbcTable for CameraShakes {
     type Row = CameraShakesRow;
 
-    fn filename() -> &'static str { "CameraShakes.dbc" }
+    const FILENAME: &'static str = "CameraShakes.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

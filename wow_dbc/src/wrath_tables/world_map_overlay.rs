@@ -15,7 +15,7 @@ pub struct WorldMapOverlay {
 impl DbcTable for WorldMapOverlay {
     type Row = WorldMapOverlayRow;
 
-    fn filename() -> &'static str { "WorldMapOverlay.dbc" }
+    const FILENAME: &'static str = "WorldMapOverlay.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

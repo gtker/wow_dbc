@@ -14,7 +14,7 @@ pub struct Exhaustion {
 impl DbcTable for Exhaustion {
     type Row = ExhaustionRow;
 
-    fn filename() -> &'static str { "Exhaustion.dbc" }
+    const FILENAME: &'static str = "Exhaustion.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

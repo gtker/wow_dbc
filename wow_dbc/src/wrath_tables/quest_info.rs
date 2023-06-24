@@ -14,7 +14,7 @@ pub struct QuestInfo {
 impl DbcTable for QuestInfo {
     type Row = QuestInfoRow;
 
-    fn filename() -> &'static str { "QuestInfo.dbc" }
+    const FILENAME: &'static str = "QuestInfo.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

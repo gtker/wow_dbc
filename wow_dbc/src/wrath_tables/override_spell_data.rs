@@ -14,7 +14,7 @@ pub struct OverrideSpellData {
 impl DbcTable for OverrideSpellData {
     type Row = OverrideSpellDataRow;
 
-    fn filename() -> &'static str { "OverrideSpellData.dbc" }
+    const FILENAME: &'static str = "OverrideSpellData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -19,7 +19,7 @@ pub struct AreaTable {
 impl DbcTable for AreaTable {
     type Row = AreaTableRow;
 
-    fn filename() -> &'static str { "AreaTable.dbc" }
+    const FILENAME: &'static str = "AreaTable.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

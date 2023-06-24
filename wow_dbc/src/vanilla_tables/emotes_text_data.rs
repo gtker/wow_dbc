@@ -14,7 +14,7 @@ pub struct EmotesTextData {
 impl DbcTable for EmotesTextData {
     type Row = EmotesTextDataRow;
 
-    fn filename() -> &'static str { "EmotesTextData.dbc" }
+    const FILENAME: &'static str = "EmotesTextData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

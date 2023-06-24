@@ -14,7 +14,7 @@ pub struct SpellEffectCameraShakes {
 impl DbcTable for SpellEffectCameraShakes {
     type Row = SpellEffectCameraShakesRow;
 
-    fn filename() -> &'static str { "SpellEffectCameraShakes.dbc" }
+    const FILENAME: &'static str = "SpellEffectCameraShakes.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

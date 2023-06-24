@@ -14,7 +14,7 @@ pub struct FileData {
 impl DbcTable for FileData {
     type Row = FileDataRow;
 
-    fn filename() -> &'static str { "FileData.dbc" }
+    const FILENAME: &'static str = "FileData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

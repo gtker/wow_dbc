@@ -16,7 +16,7 @@ pub struct WorldStateUI {
 impl DbcTable for WorldStateUI {
     type Row = WorldStateUIRow;
 
-    fn filename() -> &'static str { "WorldStateUI.dbc" }
+    const FILENAME: &'static str = "WorldStateUI.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

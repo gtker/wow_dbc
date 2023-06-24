@@ -17,7 +17,7 @@ pub struct CharStartOutfit {
 impl DbcTable for CharStartOutfit {
     type Row = CharStartOutfitRow;
 
-    fn filename() -> &'static str { "CharStartOutfit.dbc" }
+    const FILENAME: &'static str = "CharStartOutfit.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

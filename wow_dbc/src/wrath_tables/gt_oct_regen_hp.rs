@@ -12,7 +12,7 @@ pub struct gtOCTRegenHP {
 impl DbcTable for gtOCTRegenHP {
     type Row = gtOCTRegenHPRow;
 
-    fn filename() -> &'static str { "gtOCTRegenHP.dbc" }
+    const FILENAME: &'static str = "gtOCTRegenHP.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

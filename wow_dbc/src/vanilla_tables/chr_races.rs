@@ -23,7 +23,7 @@ pub struct ChrRaces {
 impl DbcTable for ChrRaces {
     type Row = ChrRacesRow;
 
-    fn filename() -> &'static str { "ChrRaces.dbc" }
+    const FILENAME: &'static str = "ChrRaces.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

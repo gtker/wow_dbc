@@ -14,7 +14,7 @@ pub struct TotemCategory {
 impl DbcTable for TotemCategory {
     type Row = TotemCategoryRow;
 
-    fn filename() -> &'static str { "TotemCategory.dbc" }
+    const FILENAME: &'static str = "TotemCategory.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

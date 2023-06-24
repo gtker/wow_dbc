@@ -14,7 +14,7 @@ pub struct SoundFilter {
 impl DbcTable for SoundFilter {
     type Row = SoundFilterRow;
 
-    fn filename() -> &'static str { "SoundFilter.dbc" }
+    const FILENAME: &'static str = "SoundFilter.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

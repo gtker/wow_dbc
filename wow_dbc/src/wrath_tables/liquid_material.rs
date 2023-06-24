@@ -14,7 +14,7 @@ pub struct LiquidMaterial {
 impl DbcTable for LiquidMaterial {
     type Row = LiquidMaterialRow;
 
-    fn filename() -> &'static str { "LiquidMaterial.dbc" }
+    const FILENAME: &'static str = "LiquidMaterial.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

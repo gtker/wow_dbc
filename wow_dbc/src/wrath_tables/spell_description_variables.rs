@@ -14,7 +14,7 @@ pub struct SpellDescriptionVariables {
 impl DbcTable for SpellDescriptionVariables {
     type Row = SpellDescriptionVariablesRow;
 
-    fn filename() -> &'static str { "SpellDescriptionVariables.dbc" }
+    const FILENAME: &'static str = "SpellDescriptionVariables.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

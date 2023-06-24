@@ -15,7 +15,7 @@ pub struct LoadingScreenTaxiSplines {
 impl DbcTable for LoadingScreenTaxiSplines {
     type Row = LoadingScreenTaxiSplinesRow;
 
-    fn filename() -> &'static str { "LoadingScreenTaxiSplines.dbc" }
+    const FILENAME: &'static str = "LoadingScreenTaxiSplines.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

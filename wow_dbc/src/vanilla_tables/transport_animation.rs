@@ -15,7 +15,7 @@ pub struct TransportAnimation {
 impl DbcTable for TransportAnimation {
     type Row = TransportAnimationRow;
 
-    fn filename() -> &'static str { "TransportAnimation.dbc" }
+    const FILENAME: &'static str = "TransportAnimation.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

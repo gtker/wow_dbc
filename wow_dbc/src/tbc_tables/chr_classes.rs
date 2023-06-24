@@ -14,7 +14,7 @@ pub struct ChrClasses {
 impl DbcTable for ChrClasses {
     type Row = ChrClassesRow;
 
-    fn filename() -> &'static str { "ChrClasses.dbc" }
+    const FILENAME: &'static str = "ChrClasses.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

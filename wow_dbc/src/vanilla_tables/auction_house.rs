@@ -15,7 +15,7 @@ pub struct AuctionHouse {
 impl DbcTable for AuctionHouse {
     type Row = AuctionHouseRow;
 
-    fn filename() -> &'static str { "AuctionHouse.dbc" }
+    const FILENAME: &'static str = "AuctionHouse.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

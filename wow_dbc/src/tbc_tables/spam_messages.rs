@@ -14,7 +14,7 @@ pub struct SpamMessages {
 impl DbcTable for SpamMessages {
     type Row = SpamMessagesRow;
 
-    fn filename() -> &'static str { "SpamMessages.dbc" }
+    const FILENAME: &'static str = "SpamMessages.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

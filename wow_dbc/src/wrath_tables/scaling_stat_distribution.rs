@@ -14,7 +14,7 @@ pub struct ScalingStatDistribution {
 impl DbcTable for ScalingStatDistribution {
     type Row = ScalingStatDistributionRow;
 
-    fn filename() -> &'static str { "ScalingStatDistribution.dbc" }
+    const FILENAME: &'static str = "ScalingStatDistribution.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

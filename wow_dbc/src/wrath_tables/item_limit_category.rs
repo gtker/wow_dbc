@@ -14,7 +14,7 @@ pub struct ItemLimitCategory {
 impl DbcTable for ItemLimitCategory {
     type Row = ItemLimitCategoryRow;
 
-    fn filename() -> &'static str { "ItemLimitCategory.dbc" }
+    const FILENAME: &'static str = "ItemLimitCategory.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

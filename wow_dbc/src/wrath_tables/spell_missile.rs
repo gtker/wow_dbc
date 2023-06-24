@@ -14,7 +14,7 @@ pub struct SpellMissile {
 impl DbcTable for SpellMissile {
     type Row = SpellMissileRow;
 
-    fn filename() -> &'static str { "SpellMissile.dbc" }
+    const FILENAME: &'static str = "SpellMissile.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

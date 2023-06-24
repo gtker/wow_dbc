@@ -14,7 +14,7 @@ pub struct SpellDuration {
 impl DbcTable for SpellDuration {
     type Row = SpellDurationRow;
 
-    fn filename() -> &'static str { "SpellDuration.dbc" }
+    const FILENAME: &'static str = "SpellDuration.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

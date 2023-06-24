@@ -16,7 +16,7 @@ pub struct NameGen {
 impl DbcTable for NameGen {
     type Row = NameGenRow;
 
-    fn filename() -> &'static str { "NameGen.dbc" }
+    const FILENAME: &'static str = "NameGen.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

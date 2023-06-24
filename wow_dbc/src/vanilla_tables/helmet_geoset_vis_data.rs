@@ -14,7 +14,7 @@ pub struct HelmetGeosetVisData {
 impl DbcTable for HelmetGeosetVisData {
     type Row = HelmetGeosetVisDataRow;
 
-    fn filename() -> &'static str { "HelmetGeosetVisData.dbc" }
+    const FILENAME: &'static str = "HelmetGeosetVisData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

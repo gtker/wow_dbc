@@ -14,7 +14,7 @@ pub struct SpellRuneCost {
 impl DbcTable for SpellRuneCost {
     type Row = SpellRuneCostRow;
 
-    fn filename() -> &'static str { "SpellRuneCost.dbc" }
+    const FILENAME: &'static str = "SpellRuneCost.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

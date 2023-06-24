@@ -14,7 +14,7 @@ pub struct NamesProfanity {
 impl DbcTable for NamesProfanity {
     type Row = NamesProfanityRow;
 
-    fn filename() -> &'static str { "NamesProfanity.dbc" }
+    const FILENAME: &'static str = "NamesProfanity.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

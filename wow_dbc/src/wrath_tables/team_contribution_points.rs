@@ -14,7 +14,7 @@ pub struct TeamContributionPoints {
 impl DbcTable for TeamContributionPoints {
     type Row = TeamContributionPointsRow;
 
-    fn filename() -> &'static str { "TeamContributionPoints.dbc" }
+    const FILENAME: &'static str = "TeamContributionPoints.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -16,7 +16,7 @@ pub struct SkillRaceClassInfo {
 impl DbcTable for SkillRaceClassInfo {
     type Row = SkillRaceClassInfoRow;
 
-    fn filename() -> &'static str { "SkillRaceClassInfo.dbc" }
+    const FILENAME: &'static str = "SkillRaceClassInfo.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct FactionGroup {
 impl DbcTable for FactionGroup {
     type Row = FactionGroupRow;
 
-    fn filename() -> &'static str { "FactionGroup.dbc" }
+    const FILENAME: &'static str = "FactionGroup.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

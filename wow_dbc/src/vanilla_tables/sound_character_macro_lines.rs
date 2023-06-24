@@ -17,7 +17,7 @@ pub struct SoundCharacterMacroLines {
 impl DbcTable for SoundCharacterMacroLines {
     type Row = SoundCharacterMacroLinesRow;
 
-    fn filename() -> &'static str { "SoundCharacterMacroLines.dbc" }
+    const FILENAME: &'static str = "SoundCharacterMacroLines.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

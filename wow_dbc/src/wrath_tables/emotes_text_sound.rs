@@ -17,7 +17,7 @@ pub struct EmotesTextSound {
 impl DbcTable for EmotesTextSound {
     type Row = EmotesTextSoundRow;
 
-    fn filename() -> &'static str { "EmotesTextSound.dbc" }
+    const FILENAME: &'static str = "EmotesTextSound.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

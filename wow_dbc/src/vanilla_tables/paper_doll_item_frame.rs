@@ -12,7 +12,7 @@ pub struct PaperDollItemFrame {
 impl DbcTable for PaperDollItemFrame {
     type Row = PaperDollItemFrameRow;
 
-    fn filename() -> &'static str { "PaperDollItemFrame.dbc" }
+    const FILENAME: &'static str = "PaperDollItemFrame.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

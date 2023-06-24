@@ -14,7 +14,7 @@ pub struct UnitBlood {
 impl DbcTable for UnitBlood {
     type Row = UnitBloodRow;
 
-    fn filename() -> &'static str { "UnitBlood.dbc" }
+    const FILENAME: &'static str = "UnitBlood.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

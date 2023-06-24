@@ -14,7 +14,7 @@ pub struct MailTemplate {
 impl DbcTable for MailTemplate {
     type Row = MailTemplateRow;
 
-    fn filename() -> &'static str { "MailTemplate.dbc" }
+    const FILENAME: &'static str = "MailTemplate.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

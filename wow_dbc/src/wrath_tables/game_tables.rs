@@ -12,7 +12,7 @@ pub struct GameTables {
 impl DbcTable for GameTables {
     type Row = GameTablesRow;
 
-    fn filename() -> &'static str { "GameTables.dbc" }
+    const FILENAME: &'static str = "GameTables.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

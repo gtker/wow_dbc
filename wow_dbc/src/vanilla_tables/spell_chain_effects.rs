@@ -14,7 +14,7 @@ pub struct SpellChainEffects {
 impl DbcTable for SpellChainEffects {
     type Row = SpellChainEffectsRow;
 
-    fn filename() -> &'static str { "SpellChainEffects.dbc" }
+    const FILENAME: &'static str = "SpellChainEffects.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

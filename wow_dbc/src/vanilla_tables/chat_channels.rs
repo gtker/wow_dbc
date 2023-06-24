@@ -16,7 +16,7 @@ pub struct ChatChannels {
 impl DbcTable for ChatChannels {
     type Row = ChatChannelsRow;
 
-    fn filename() -> &'static str { "ChatChannels.dbc" }
+    const FILENAME: &'static str = "ChatChannels.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

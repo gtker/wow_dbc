@@ -15,7 +15,7 @@ pub struct LanguageWords {
 impl DbcTable for LanguageWords {
     type Row = LanguageWordsRow;
 
-    fn filename() -> &'static str { "LanguageWords.dbc" }
+    const FILENAME: &'static str = "LanguageWords.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct FootprintTextures {
 impl DbcTable for FootprintTextures {
     type Row = FootprintTexturesRow;
 
-    fn filename() -> &'static str { "FootprintTextures.dbc" }
+    const FILENAME: &'static str = "FootprintTextures.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

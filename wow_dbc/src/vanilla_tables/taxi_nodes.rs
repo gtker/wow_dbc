@@ -15,7 +15,7 @@ pub struct TaxiNodes {
 impl DbcTable for TaxiNodes {
     type Row = TaxiNodesRow;
 
-    fn filename() -> &'static str { "TaxiNodes.dbc" }
+    const FILENAME: &'static str = "TaxiNodes.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

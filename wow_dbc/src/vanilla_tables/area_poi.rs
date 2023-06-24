@@ -18,7 +18,7 @@ pub struct AreaPOI {
 impl DbcTable for AreaPOI {
     type Row = AreaPOIRow;
 
-    fn filename() -> &'static str { "AreaPOI.dbc" }
+    const FILENAME: &'static str = "AreaPOI.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

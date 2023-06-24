@@ -14,7 +14,7 @@ pub struct LightSkybox {
 impl DbcTable for LightSkybox {
     type Row = LightSkyboxRow;
 
-    fn filename() -> &'static str { "LightSkybox.dbc" }
+    const FILENAME: &'static str = "LightSkybox.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

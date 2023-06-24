@@ -14,7 +14,7 @@ pub struct TransportRotation {
 impl DbcTable for TransportRotation {
     type Row = TransportRotationRow;
 
-    fn filename() -> &'static str { "TransportRotation.dbc" }
+    const FILENAME: &'static str = "TransportRotation.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

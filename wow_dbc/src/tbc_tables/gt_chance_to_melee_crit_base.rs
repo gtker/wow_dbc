@@ -12,7 +12,7 @@ pub struct gtChanceToMeleeCritBase {
 impl DbcTable for gtChanceToMeleeCritBase {
     type Row = gtChanceToMeleeCritBaseRow;
 
-    fn filename() -> &'static str { "gtChanceToMeleeCritBase.dbc" }
+    const FILENAME: &'static str = "gtChanceToMeleeCritBase.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct CharacterCreateCameras {
 impl DbcTable for CharacterCreateCameras {
     type Row = CharacterCreateCamerasRow;
 
-    fn filename() -> &'static str { "CharacterCreateCameras.dbc" }
+    const FILENAME: &'static str = "CharacterCreateCameras.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

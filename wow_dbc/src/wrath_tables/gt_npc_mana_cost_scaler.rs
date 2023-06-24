@@ -12,7 +12,7 @@ pub struct gtNPCManaCostScaler {
 impl DbcTable for gtNPCManaCostScaler {
     type Row = gtNPCManaCostScalerRow;
 
-    fn filename() -> &'static str { "gtNPCManaCostScaler.dbc" }
+    const FILENAME: &'static str = "gtNPCManaCostScaler.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

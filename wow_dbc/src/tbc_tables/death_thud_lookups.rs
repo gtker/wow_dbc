@@ -16,7 +16,7 @@ pub struct DeathThudLookups {
 impl DbcTable for DeathThudLookups {
     type Row = DeathThudLookupsRow;
 
-    fn filename() -> &'static str { "DeathThudLookups.dbc" }
+    const FILENAME: &'static str = "DeathThudLookups.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

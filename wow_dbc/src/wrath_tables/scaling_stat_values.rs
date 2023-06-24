@@ -14,7 +14,7 @@ pub struct ScalingStatValues {
 impl DbcTable for ScalingStatValues {
     type Row = ScalingStatValuesRow;
 
-    fn filename() -> &'static str { "ScalingStatValues.dbc" }
+    const FILENAME: &'static str = "ScalingStatValues.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

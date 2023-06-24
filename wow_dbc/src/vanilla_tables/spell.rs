@@ -30,7 +30,7 @@ pub struct Spell {
 impl DbcTable for Spell {
     type Row = SpellRow;
 
-    fn filename() -> &'static str { "Spell.dbc" }
+    const FILENAME: &'static str = "Spell.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

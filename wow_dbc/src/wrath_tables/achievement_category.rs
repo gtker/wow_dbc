@@ -15,7 +15,7 @@ pub struct Achievement_Category {
 impl DbcTable for Achievement_Category {
     type Row = Achievement_CategoryRow;
 
-    fn filename() -> &'static str { "Achievement_Category.dbc" }
+    const FILENAME: &'static str = "Achievement_Category.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

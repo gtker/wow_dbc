@@ -14,7 +14,7 @@ pub struct AttackAnimTypes {
 impl DbcTable for AttackAnimTypes {
     type Row = AttackAnimTypesRow;
 
-    fn filename() -> &'static str { "AttackAnimTypes.dbc" }
+    const FILENAME: &'static str = "AttackAnimTypes.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

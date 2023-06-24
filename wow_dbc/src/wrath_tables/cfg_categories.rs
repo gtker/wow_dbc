@@ -15,7 +15,7 @@ pub struct Cfg_Categories {
 impl DbcTable for Cfg_Categories {
     type Row = Cfg_CategoriesRow;
 
-    fn filename() -> &'static str { "Cfg_Categories.dbc" }
+    const FILENAME: &'static str = "Cfg_Categories.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

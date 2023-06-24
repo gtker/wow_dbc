@@ -14,7 +14,7 @@ pub struct LFGDungeonExpansion {
 impl DbcTable for LFGDungeonExpansion {
     type Row = LFGDungeonExpansionRow;
 
-    fn filename() -> &'static str { "LFGDungeonExpansion.dbc" }
+    const FILENAME: &'static str = "LFGDungeonExpansion.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

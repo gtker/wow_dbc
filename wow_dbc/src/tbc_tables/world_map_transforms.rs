@@ -15,7 +15,7 @@ pub struct WorldMapTransforms {
 impl DbcTable for WorldMapTransforms {
     type Row = WorldMapTransformsRow;
 
-    fn filename() -> &'static str { "WorldMapTransforms.dbc" }
+    const FILENAME: &'static str = "WorldMapTransforms.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

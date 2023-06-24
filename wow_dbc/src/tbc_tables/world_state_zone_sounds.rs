@@ -18,7 +18,7 @@ pub struct WorldStateZoneSounds {
 impl DbcTable for WorldStateZoneSounds {
     type Row = WorldStateZoneSoundsRow;
 
-    fn filename() -> &'static str { "WorldStateZoneSounds.dbc" }
+    const FILENAME: &'static str = "WorldStateZoneSounds.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

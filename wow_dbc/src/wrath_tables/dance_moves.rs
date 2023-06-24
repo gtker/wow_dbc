@@ -15,7 +15,7 @@ pub struct DanceMoves {
 impl DbcTable for DanceMoves {
     type Row = DanceMovesRow;
 
-    fn filename() -> &'static str { "DanceMoves.dbc" }
+    const FILENAME: &'static str = "DanceMoves.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

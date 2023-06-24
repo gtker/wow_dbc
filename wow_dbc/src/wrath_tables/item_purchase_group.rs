@@ -14,7 +14,7 @@ pub struct ItemPurchaseGroup {
 impl DbcTable for ItemPurchaseGroup {
     type Row = ItemPurchaseGroupRow;
 
-    fn filename() -> &'static str { "ItemPurchaseGroup.dbc" }
+    const FILENAME: &'static str = "ItemPurchaseGroup.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

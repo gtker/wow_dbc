@@ -14,7 +14,7 @@ pub struct ItemGroupSounds {
 impl DbcTable for ItemGroupSounds {
     type Row = ItemGroupSoundsRow;
 
-    fn filename() -> &'static str { "ItemGroupSounds.dbc" }
+    const FILENAME: &'static str = "ItemGroupSounds.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

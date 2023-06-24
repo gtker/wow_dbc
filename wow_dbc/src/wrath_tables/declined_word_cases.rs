@@ -15,7 +15,7 @@ pub struct DeclinedWordCases {
 impl DbcTable for DeclinedWordCases {
     type Row = DeclinedWordCasesRow;
 
-    fn filename() -> &'static str { "DeclinedWordCases.dbc" }
+    const FILENAME: &'static str = "DeclinedWordCases.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -18,7 +18,7 @@ pub struct CharSections {
 impl DbcTable for CharSections {
     type Row = CharSectionsRow;
 
-    fn filename() -> &'static str { "CharSections.dbc" }
+    const FILENAME: &'static str = "CharSections.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct BattlemasterList {
 impl DbcTable for BattlemasterList {
     type Row = BattlemasterListRow;
 
-    fn filename() -> &'static str { "BattlemasterList.dbc" }
+    const FILENAME: &'static str = "BattlemasterList.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

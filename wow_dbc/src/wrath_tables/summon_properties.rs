@@ -15,7 +15,7 @@ pub struct SummonProperties {
 impl DbcTable for SummonProperties {
     type Row = SummonPropertiesRow;
 
-    fn filename() -> &'static str { "SummonProperties.dbc" }
+    const FILENAME: &'static str = "SummonProperties.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

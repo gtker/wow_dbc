@@ -14,7 +14,7 @@ pub struct SpellDispelType {
 impl DbcTable for SpellDispelType {
     type Row = SpellDispelTypeRow;
 
-    fn filename() -> &'static str { "SpellDispelType.dbc" }
+    const FILENAME: &'static str = "SpellDispelType.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct SpellItemEnchantmentCondition {
 impl DbcTable for SpellItemEnchantmentCondition {
     type Row = SpellItemEnchantmentConditionRow;
 
-    fn filename() -> &'static str { "SpellItemEnchantmentCondition.dbc" }
+    const FILENAME: &'static str = "SpellItemEnchantmentCondition.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

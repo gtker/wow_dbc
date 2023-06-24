@@ -14,7 +14,7 @@ pub struct SkillTiers {
 impl DbcTable for SkillTiers {
     type Row = SkillTiersRow;
 
-    fn filename() -> &'static str { "SkillTiers.dbc" }
+    const FILENAME: &'static str = "SkillTiers.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

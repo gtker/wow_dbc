@@ -16,7 +16,7 @@ pub struct SpellVisualKitModelAttach {
 impl DbcTable for SpellVisualKitModelAttach {
     type Row = SpellVisualKitModelAttachRow;
 
-    fn filename() -> &'static str { "SpellVisualKitModelAttach.dbc" }
+    const FILENAME: &'static str = "SpellVisualKitModelAttach.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

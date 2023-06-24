@@ -15,7 +15,7 @@ pub struct Stationery {
 impl DbcTable for Stationery {
     type Row = StationeryRow;
 
-    fn filename() -> &'static str { "Stationery.dbc" }
+    const FILENAME: &'static str = "Stationery.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

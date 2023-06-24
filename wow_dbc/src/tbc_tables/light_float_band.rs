@@ -14,7 +14,7 @@ pub struct LightFloatBand {
 impl DbcTable for LightFloatBand {
     type Row = LightFloatBandRow;
 
-    fn filename() -> &'static str { "LightFloatBand.dbc" }
+    const FILENAME: &'static str = "LightFloatBand.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

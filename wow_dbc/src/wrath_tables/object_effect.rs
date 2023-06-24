@@ -16,7 +16,7 @@ pub struct ObjectEffect {
 impl DbcTable for ObjectEffect {
     type Row = ObjectEffectRow;
 
-    fn filename() -> &'static str { "ObjectEffect.dbc" }
+    const FILENAME: &'static str = "ObjectEffect.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -12,7 +12,7 @@ pub struct gtCombatRatings {
 impl DbcTable for gtCombatRatings {
     type Row = gtCombatRatingsRow;
 
-    fn filename() -> &'static str { "gtCombatRatings.dbc" }
+    const FILENAME: &'static str = "gtCombatRatings.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct SpellVisualKitAreaModel {
 impl DbcTable for SpellVisualKitAreaModel {
     type Row = SpellVisualKitAreaModelRow;
 
-    fn filename() -> &'static str { "SpellVisualKitAreaModel.dbc" }
+    const FILENAME: &'static str = "SpellVisualKitAreaModel.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

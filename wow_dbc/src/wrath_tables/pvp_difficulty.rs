@@ -15,7 +15,7 @@ pub struct PvpDifficulty {
 impl DbcTable for PvpDifficulty {
     type Row = PvpDifficultyRow;
 
-    fn filename() -> &'static str { "PvpDifficulty.dbc" }
+    const FILENAME: &'static str = "PvpDifficulty.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -39,7 +39,7 @@ fn create_types(s: &mut Writer, d: &DbcDescription) {
     s.newline();
 
     s.wln(format!(
-        "fn filename() -> &'static str {{ \"{}.dbc\" }}",
+        "const FILENAME: &'static str = \"{}.dbc\";",
         d.name()
     ));
     s.newline();

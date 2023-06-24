@@ -15,7 +15,7 @@ pub struct Startup_Strings {
 impl DbcTable for Startup_Strings {
     type Row = Startup_StringsRow;
 
-    fn filename() -> &'static str { "Startup_Strings.dbc" }
+    const FILENAME: &'static str = "Startup_Strings.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

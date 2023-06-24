@@ -14,7 +14,7 @@ pub struct SpellFocusObject {
 impl DbcTable for SpellFocusObject {
     type Row = SpellFocusObjectRow;
 
-    fn filename() -> &'static str { "SpellFocusObject.dbc" }
+    const FILENAME: &'static str = "SpellFocusObject.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

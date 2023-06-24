@@ -15,7 +15,7 @@ pub struct ItemExtendedCost {
 impl DbcTable for ItemExtendedCost {
     type Row = ItemExtendedCostRow;
 
-    fn filename() -> &'static str { "ItemExtendedCost.dbc" }
+    const FILENAME: &'static str = "ItemExtendedCost.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -12,7 +12,7 @@ pub struct gtBarberShopCostBase {
 impl DbcTable for gtBarberShopCostBase {
     type Row = gtBarberShopCostBaseRow;
 
-    fn filename() -> &'static str { "gtBarberShopCostBase.dbc" }
+    const FILENAME: &'static str = "gtBarberShopCostBase.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

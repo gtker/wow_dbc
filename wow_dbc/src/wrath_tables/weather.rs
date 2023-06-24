@@ -15,7 +15,7 @@ pub struct Weather {
 impl DbcTable for Weather {
     type Row = WeatherRow;
 
-    fn filename() -> &'static str { "Weather.dbc" }
+    const FILENAME: &'static str = "Weather.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

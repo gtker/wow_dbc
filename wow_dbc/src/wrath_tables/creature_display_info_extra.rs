@@ -15,7 +15,7 @@ pub struct CreatureDisplayInfoExtra {
 impl DbcTable for CreatureDisplayInfoExtra {
     type Row = CreatureDisplayInfoExtraRow;
 
-    fn filename() -> &'static str { "CreatureDisplayInfoExtra.dbc" }
+    const FILENAME: &'static str = "CreatureDisplayInfoExtra.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

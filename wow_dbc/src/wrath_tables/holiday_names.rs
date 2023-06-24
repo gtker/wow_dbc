@@ -14,7 +14,7 @@ pub struct HolidayNames {
 impl DbcTable for HolidayNames {
     type Row = HolidayNamesRow;
 
-    fn filename() -> &'static str { "HolidayNames.dbc" }
+    const FILENAME: &'static str = "HolidayNames.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

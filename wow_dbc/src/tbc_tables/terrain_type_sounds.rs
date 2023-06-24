@@ -14,7 +14,7 @@ pub struct TerrainTypeSounds {
 impl DbcTable for TerrainTypeSounds {
     type Row = TerrainTypeSoundsRow;
 
-    fn filename() -> &'static str { "TerrainTypeSounds.dbc" }
+    const FILENAME: &'static str = "TerrainTypeSounds.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

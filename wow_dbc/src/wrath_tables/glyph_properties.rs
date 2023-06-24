@@ -16,7 +16,7 @@ pub struct GlyphProperties {
 impl DbcTable for GlyphProperties {
     type Row = GlyphPropertiesRow;
 
-    fn filename() -> &'static str { "GlyphProperties.dbc" }
+    const FILENAME: &'static str = "GlyphProperties.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

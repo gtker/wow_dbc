@@ -15,7 +15,7 @@ pub struct SoundEntriesAdvanced {
 impl DbcTable for SoundEntriesAdvanced {
     type Row = SoundEntriesAdvancedRow;
 
-    fn filename() -> &'static str { "SoundEntriesAdvanced.dbc" }
+    const FILENAME: &'static str = "SoundEntriesAdvanced.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

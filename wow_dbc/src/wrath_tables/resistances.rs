@@ -14,7 +14,7 @@ pub struct Resistances {
 impl DbcTable for Resistances {
     type Row = ResistancesRow;
 
-    fn filename() -> &'static str { "Resistances.dbc" }
+    const FILENAME: &'static str = "Resistances.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

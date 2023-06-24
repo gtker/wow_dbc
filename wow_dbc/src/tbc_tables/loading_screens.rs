@@ -14,7 +14,7 @@ pub struct LoadingScreens {
 impl DbcTable for LoadingScreens {
     type Row = LoadingScreensRow;
 
-    fn filename() -> &'static str { "LoadingScreens.dbc" }
+    const FILENAME: &'static str = "LoadingScreens.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

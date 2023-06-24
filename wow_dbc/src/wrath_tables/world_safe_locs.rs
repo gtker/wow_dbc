@@ -15,7 +15,7 @@ pub struct WorldSafeLocs {
 impl DbcTable for WorldSafeLocs {
     type Row = WorldSafeLocsRow;
 
-    fn filename() -> &'static str { "WorldSafeLocs.dbc" }
+    const FILENAME: &'static str = "WorldSafeLocs.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

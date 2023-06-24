@@ -14,7 +14,7 @@ pub struct CharVariations {
 impl DbcTable for CharVariations {
     type Row = CharVariationsRow;
 
-    fn filename() -> &'static str { "CharVariations.dbc" }
+    const FILENAME: &'static str = "CharVariations.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

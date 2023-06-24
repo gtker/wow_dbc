@@ -16,7 +16,7 @@ pub struct CurrencyTypes {
 impl DbcTable for CurrencyTypes {
     type Row = CurrencyTypesRow;
 
-    fn filename() -> &'static str { "CurrencyTypes.dbc" }
+    const FILENAME: &'static str = "CurrencyTypes.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -15,7 +15,7 @@ pub struct ZoneIntroMusicTable {
 impl DbcTable for ZoneIntroMusicTable {
     type Row = ZoneIntroMusicTableRow;
 
-    fn filename() -> &'static str { "ZoneIntroMusicTable.dbc" }
+    const FILENAME: &'static str = "ZoneIntroMusicTable.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

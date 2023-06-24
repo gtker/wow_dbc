@@ -14,7 +14,7 @@ pub struct SpellAuraNames {
 impl DbcTable for SpellAuraNames {
     type Row = SpellAuraNamesRow;
 
-    fn filename() -> &'static str { "SpellAuraNames.dbc" }
+    const FILENAME: &'static str = "SpellAuraNames.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

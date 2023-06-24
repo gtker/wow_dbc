@@ -17,7 +17,7 @@ pub struct Map {
 impl DbcTable for Map {
     type Row = MapRow;
 
-    fn filename() -> &'static str { "Map.dbc" }
+    const FILENAME: &'static str = "Map.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

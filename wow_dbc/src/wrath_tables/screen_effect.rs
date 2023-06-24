@@ -17,7 +17,7 @@ pub struct ScreenEffect {
 impl DbcTable for ScreenEffect {
     type Row = ScreenEffectRow;
 
-    fn filename() -> &'static str { "ScreenEffect.dbc" }
+    const FILENAME: &'static str = "ScreenEffect.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -14,7 +14,7 @@ pub struct BannedAddOns {
 impl DbcTable for BannedAddOns {
     type Row = BannedAddOnsRow;
 
-    fn filename() -> &'static str { "BannedAddOns.dbc" }
+    const FILENAME: &'static str = "BannedAddOns.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

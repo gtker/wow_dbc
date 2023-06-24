@@ -14,7 +14,7 @@ pub struct GMSurveySurveys {
 impl DbcTable for GMSurveySurveys {
     type Row = GMSurveySurveysRow;
 
-    fn filename() -> &'static str { "GMSurveySurveys.dbc" }
+    const FILENAME: &'static str = "GMSurveySurveys.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

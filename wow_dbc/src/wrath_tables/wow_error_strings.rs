@@ -15,7 +15,7 @@ pub struct WowError_Strings {
 impl DbcTable for WowError_Strings {
     type Row = WowError_StringsRow;
 
-    fn filename() -> &'static str { "WowError_Strings.dbc" }
+    const FILENAME: &'static str = "WowError_Strings.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -15,7 +15,7 @@ pub struct SpellShapeshiftForm {
 impl DbcTable for SpellShapeshiftForm {
     type Row = SpellShapeshiftFormRow;
 
-    fn filename() -> &'static str { "SpellShapeshiftForm.dbc" }
+    const FILENAME: &'static str = "SpellShapeshiftForm.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -17,7 +17,7 @@ pub struct FootstepTerrainLookup {
 impl DbcTable for FootstepTerrainLookup {
     type Row = FootstepTerrainLookupRow;
 
-    fn filename() -> &'static str { "FootstepTerrainLookup.dbc" }
+    const FILENAME: &'static str = "FootstepTerrainLookup.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

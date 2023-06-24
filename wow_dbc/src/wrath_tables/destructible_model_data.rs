@@ -14,7 +14,7 @@ pub struct DestructibleModelData {
 impl DbcTable for DestructibleModelData {
     type Row = DestructibleModelDataRow;
 
-    fn filename() -> &'static str { "DestructibleModelData.dbc" }
+    const FILENAME: &'static str = "DestructibleModelData.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

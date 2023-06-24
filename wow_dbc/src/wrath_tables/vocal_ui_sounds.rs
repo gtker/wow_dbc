@@ -15,7 +15,7 @@ pub struct VocalUISounds {
 impl DbcTable for VocalUISounds {
     type Row = VocalUISoundsRow;
 
-    fn filename() -> &'static str { "VocalUISounds.dbc" }
+    const FILENAME: &'static str = "VocalUISounds.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

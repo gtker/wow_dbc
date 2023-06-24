@@ -14,7 +14,7 @@ pub struct GMTicketCategory {
 impl DbcTable for GMTicketCategory {
     type Row = GMTicketCategoryRow;
 
-    fn filename() -> &'static str { "GMTicketCategory.dbc" }
+    const FILENAME: &'static str = "GMTicketCategory.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

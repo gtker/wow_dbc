@@ -15,7 +15,7 @@ pub struct LightParams {
 impl DbcTable for LightParams {
     type Row = LightParamsRow;
 
-    fn filename() -> &'static str { "LightParams.dbc" }
+    const FILENAME: &'static str = "LightParams.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

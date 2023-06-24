@@ -15,7 +15,7 @@ pub struct Vehicle {
 impl DbcTable for Vehicle {
     type Row = VehicleRow;
 
-    fn filename() -> &'static str { "Vehicle.dbc" }
+    const FILENAME: &'static str = "Vehicle.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

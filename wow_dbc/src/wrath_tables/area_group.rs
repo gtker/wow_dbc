@@ -14,7 +14,7 @@ pub struct AreaGroup {
 impl DbcTable for AreaGroup {
     type Row = AreaGroupRow;
 
-    fn filename() -> &'static str { "AreaGroup.dbc" }
+    const FILENAME: &'static str = "AreaGroup.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

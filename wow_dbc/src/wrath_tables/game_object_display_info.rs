@@ -15,7 +15,7 @@ pub struct GameObjectDisplayInfo {
 impl DbcTable for GameObjectDisplayInfo {
     type Row = GameObjectDisplayInfoRow;
 
-    fn filename() -> &'static str { "GameObjectDisplayInfo.dbc" }
+    const FILENAME: &'static str = "GameObjectDisplayInfo.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

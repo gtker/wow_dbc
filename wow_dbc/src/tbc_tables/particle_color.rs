@@ -14,7 +14,7 @@ pub struct ParticleColor {
 impl DbcTable for ParticleColor {
     type Row = ParticleColorRow;
 
-    fn filename() -> &'static str { "ParticleColor.dbc" }
+    const FILENAME: &'static str = "ParticleColor.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

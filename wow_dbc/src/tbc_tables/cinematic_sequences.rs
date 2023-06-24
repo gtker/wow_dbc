@@ -15,7 +15,7 @@ pub struct CinematicSequences {
 impl DbcTable for CinematicSequences {
     type Row = CinematicSequencesRow;
 
-    fn filename() -> &'static str { "CinematicSequences.dbc" }
+    const FILENAME: &'static str = "CinematicSequences.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

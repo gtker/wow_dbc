@@ -15,7 +15,7 @@ pub struct EnvironmentalDamage {
 impl DbcTable for EnvironmentalDamage {
     type Row = EnvironmentalDamageRow;
 
-    fn filename() -> &'static str { "EnvironmentalDamage.dbc" }
+    const FILENAME: &'static str = "EnvironmentalDamage.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

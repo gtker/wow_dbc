@@ -14,7 +14,7 @@ pub struct Package {
 impl DbcTable for Package {
     type Row = PackageRow;
 
-    fn filename() -> &'static str { "Package.dbc" }
+    const FILENAME: &'static str = "Package.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

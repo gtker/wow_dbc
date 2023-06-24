@@ -14,7 +14,7 @@ pub struct SpellVisualPrecastTransitions {
 impl DbcTable for SpellVisualPrecastTransitions {
     type Row = SpellVisualPrecastTransitionsRow;
 
-    fn filename() -> &'static str { "SpellVisualPrecastTransitions.dbc" }
+    const FILENAME: &'static str = "SpellVisualPrecastTransitions.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

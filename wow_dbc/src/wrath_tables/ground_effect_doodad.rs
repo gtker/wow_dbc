@@ -14,7 +14,7 @@ pub struct GroundEffectDoodad {
 impl DbcTable for GroundEffectDoodad {
     type Row = GroundEffectDoodadRow;
 
-    fn filename() -> &'static str { "GroundEffectDoodad.dbc" }
+    const FILENAME: &'static str = "GroundEffectDoodad.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

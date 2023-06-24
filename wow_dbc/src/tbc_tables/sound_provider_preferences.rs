@@ -14,7 +14,7 @@ pub struct SoundProviderPreferences {
 impl DbcTable for SoundProviderPreferences {
     type Row = SoundProviderPreferencesRow;
 
-    fn filename() -> &'static str { "SoundProviderPreferences.dbc" }
+    const FILENAME: &'static str = "SoundProviderPreferences.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

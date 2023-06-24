@@ -15,7 +15,7 @@ pub struct TalentTab {
 impl DbcTable for TalentTab {
     type Row = TalentTabRow;
 
-    fn filename() -> &'static str { "TalentTab.dbc" }
+    const FILENAME: &'static str = "TalentTab.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * BREAKING: Types used are now from the `wow_world_base` crate.
+* BREAKING: Changed `DbcTable::filename()` to associated const `FILENAME`.
+  This makes the name available at compile time, as well as better communicating that it's just a constant value.
 * BREAKING: `LocalizedString` is now gated behind the `vanilla` feature.
 * BREAKING: `EffectAura` renamed to `AuraMod`.
 * BREAKING: `BaseLanguage` removed and changed to `Language`.

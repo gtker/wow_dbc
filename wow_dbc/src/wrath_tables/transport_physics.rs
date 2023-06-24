@@ -14,7 +14,7 @@ pub struct TransportPhysics {
 impl DbcTable for TransportPhysics {
     type Row = TransportPhysicsRow;
 
-    fn filename() -> &'static str { "TransportPhysics.dbc" }
+    const FILENAME: &'static str = "TransportPhysics.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

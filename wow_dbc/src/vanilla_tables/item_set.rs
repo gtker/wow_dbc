@@ -15,7 +15,7 @@ pub struct ItemSet {
 impl DbcTable for ItemSet {
     type Row = ItemSetRow;
 
-    fn filename() -> &'static str { "ItemSet.dbc" }
+    const FILENAME: &'static str = "ItemSet.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

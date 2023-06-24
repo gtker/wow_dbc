@@ -16,7 +16,7 @@ pub struct DungeonEncounter {
 impl DbcTable for DungeonEncounter {
     type Row = DungeonEncounterRow;
 
-    fn filename() -> &'static str { "DungeonEncounter.dbc" }
+    const FILENAME: &'static str = "DungeonEncounter.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

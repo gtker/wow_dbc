@@ -14,7 +14,7 @@ pub struct ItemVisualEffects {
 impl DbcTable for ItemVisualEffects {
     type Row = ItemVisualEffectsRow;
 
-    fn filename() -> &'static str { "ItemVisualEffects.dbc" }
+    const FILENAME: &'static str = "ItemVisualEffects.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

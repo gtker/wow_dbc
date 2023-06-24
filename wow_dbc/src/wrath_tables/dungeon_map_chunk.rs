@@ -17,7 +17,7 @@ pub struct DungeonMapChunk {
 impl DbcTable for DungeonMapChunk {
     type Row = DungeonMapChunkRow;
 
-    fn filename() -> &'static str { "DungeonMapChunk.dbc" }
+    const FILENAME: &'static str = "DungeonMapChunk.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

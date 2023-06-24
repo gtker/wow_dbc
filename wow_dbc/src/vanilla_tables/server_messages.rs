@@ -14,7 +14,7 @@ pub struct ServerMessages {
 impl DbcTable for ServerMessages {
     type Row = ServerMessagesRow;
 
-    fn filename() -> &'static str { "ServerMessages.dbc" }
+    const FILENAME: &'static str = "ServerMessages.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

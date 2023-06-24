@@ -15,7 +15,7 @@ pub struct GroundEffectTexture {
 impl DbcTable for GroundEffectTexture {
     type Row = GroundEffectTextureRow;
 
-    fn filename() -> &'static str { "GroundEffectTexture.dbc" }
+    const FILENAME: &'static str = "GroundEffectTexture.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

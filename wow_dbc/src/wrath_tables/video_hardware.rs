@@ -14,7 +14,7 @@ pub struct VideoHardware {
 impl DbcTable for VideoHardware {
     type Row = VideoHardwareRow;
 
-    fn filename() -> &'static str { "VideoHardware.dbc" }
+    const FILENAME: &'static str = "VideoHardware.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

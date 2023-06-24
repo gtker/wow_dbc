@@ -14,7 +14,7 @@ pub struct ItemSubClassMask {
 impl DbcTable for ItemSubClassMask {
     type Row = ItemSubClassMaskRow;
 
-    fn filename() -> &'static str { "ItemSubClassMask.dbc" }
+    const FILENAME: &'static str = "ItemSubClassMask.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

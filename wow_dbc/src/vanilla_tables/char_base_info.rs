@@ -14,7 +14,7 @@ pub struct CharBaseInfo {
 impl DbcTable for CharBaseInfo {
     type Row = CharBaseInfoRow;
 
-    fn filename() -> &'static str { "CharBaseInfo.dbc" }
+    const FILENAME: &'static str = "CharBaseInfo.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

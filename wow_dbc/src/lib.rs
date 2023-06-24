@@ -97,7 +97,7 @@ pub trait DbcTable: Sized {
     type Row;
 
     /// The name of the DBC file _with_ `.dbc` at the end.
-    fn filename() -> &'static str;
+    const FILENAME: &'static str;
 
     /// Array of all rows. Are not guaranteed to be in any order.
     fn rows(&self) -> &[Self::Row];

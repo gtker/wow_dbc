@@ -15,7 +15,7 @@ pub struct WorldMapContinent {
 impl DbcTable for WorldMapContinent {
     type Row = WorldMapContinentRow;
 
-    fn filename() -> &'static str { "WorldMapContinent.dbc" }
+    const FILENAME: &'static str = "WorldMapContinent.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

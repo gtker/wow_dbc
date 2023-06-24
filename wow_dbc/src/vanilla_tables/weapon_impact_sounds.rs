@@ -14,7 +14,7 @@ pub struct WeaponImpactSounds {
 impl DbcTable for WeaponImpactSounds {
     type Row = WeaponImpactSoundsRow;
 
-    fn filename() -> &'static str { "WeaponImpactSounds.dbc" }
+    const FILENAME: &'static str = "WeaponImpactSounds.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }

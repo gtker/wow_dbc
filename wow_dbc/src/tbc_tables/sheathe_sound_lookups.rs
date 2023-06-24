@@ -15,7 +15,7 @@ pub struct SheatheSoundLookups {
 impl DbcTable for SheatheSoundLookups {
     type Row = SheatheSoundLookupsRow;
 
-    fn filename() -> &'static str { "SheatheSoundLookups.dbc" }
+    const FILENAME: &'static str = "SheatheSoundLookups.dbc";
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
