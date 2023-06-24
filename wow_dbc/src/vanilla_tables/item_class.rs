@@ -5,7 +5,7 @@ use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
 use std::io::Write;
-use wow_world_base::vanilla::Class;
+use wow_world_base::vanilla::ItemWeaponClass;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ItemClass {
@@ -59,7 +59,7 @@ impl DbcTable for ItemClass {
             // subclass_map: uint32
             let subclass_map = crate::util::read_u32_le(chunk)?;
 
-            // item_class: Class
+            // item_class: ItemWeaponClass
             let item_class = crate::util::read_i32_le(chunk)?.try_into()?;
 
             // class_name: string_ref_loc
@@ -95,7 +95,7 @@ impl DbcTable for ItemClass {
             // subclass_map: uint32
             b.write_all(&row.subclass_map.to_le_bytes())?;
 
-            // item_class: Class
+            // item_class: ItemWeaponClass
             b.write_all(&(row.item_class.as_int() as i32).to_le_bytes())?;
 
             // class_name: string_ref_loc
@@ -228,7 +228,7 @@ impl TryFrom<isize> for ItemClassKey {
 pub struct ItemClassRow {
     pub id: ItemClassKey,
     pub subclass_map: u32,
-    pub item_class: Class,
+    pub item_class: ItemWeaponClass,
     pub class_name: LocalizedString,
 }
 
