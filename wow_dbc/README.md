@@ -8,7 +8,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-wow_dbc = { version = "0.2", features = ["vanilla", "tbc", "wrath"] }
+wow_dbc = { version = "0.3.0", features = ["vanilla", "tbc", "wrath"] }
 ```
 
 Or add it with [cargo edit](https://github.com/killercup/cargo-edit):

@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.3.0] - 2024-02-22
+
 ### Added
 
 * BREAKING: Added TryFrom for remaining integer types. This may break type deduction and is a breaking change.
@@ -65,6 +67,7 @@ This makes it possible to do `table.get(value)` instead of `table.get(TableKey::
 * Initial release.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/gtker/wow_dbc/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/gtker/wow_dbc/compare/wow_dbc-v0.3.0...HEAD
+[0.3.0]: https://github.com/gtker/wow_dbc/compare/v0.2.0...wow_dbc-v0.3.0
 [0.1.0]: https://github.com/gtker/wow_dbc/tree/58484817c75947a97c05a0ed1fbf02f0bc6baa74
 [0.2.0]: https://github.com/gtker/wow_dbc/releases/tag/v0.2.0

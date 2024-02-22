@@ -1,6 +1,6 @@
 [package]
 name = "wow_dbc"
-version = "0.2.0" # Remember to update docs in src/lib.rs and README.md
+version = "0.3.0"
 edition = "2021"
 description = "Library for parsing World of Warcraft DBC files for 1.12, 2.4.3 and 3.3.5."
 license = "MIT OR Apache-2.0"
