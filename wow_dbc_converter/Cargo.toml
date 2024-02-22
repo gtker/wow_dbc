@@ -3,7 +3,8 @@ name = "wow_dbc_converter"
 version = "0.1.0"
 edition = "2021"
 
-[features]
+publish = false
+metadata.release.release = false
 
 [dependencies]
 wow_dbc = { path = "../wow_dbc", features = ["vanilla", "tbc", "wrath"] }

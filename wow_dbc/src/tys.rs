@@ -1,5 +1,3 @@
-use std::io::Write;
-
 /// DBCs from the English version of the game will only have English version strings, while other localizations will have other languages.
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
@@ -118,7 +116,10 @@ impl ExtendedLocalizedString {
         arr
     }
 
-    pub(crate) fn string_block_as_array(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
+    pub(crate) fn string_block_as_array(
+        &self,
+        b: &mut impl std::io::Write,
+    ) -> Result<(), std::io::Error> {
         for s in self.strings() {
             if !s.is_empty() {
                 b.write_all(s.as_bytes())?;
@@ -246,7 +247,10 @@ impl LocalizedString {
         arr
     }
 
-    pub(crate) fn string_block_as_array(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
+    pub(crate) fn string_block_as_array(
+        &self,
+        b: &mut impl std::io::Write,
+    ) -> Result<(), std::io::Error> {
         for s in self.strings() {
             if !s.is_empty() {
                 b.write_all(s.as_bytes())?;

@@ -120,13 +120,13 @@ fn main() {
 }
 
 fn apply_file(options: &Options, file: &PathBuf) {
-    let contents = match read(&file) {
+    let contents = match read(file) {
         Ok(e) => e,
         Err(e) => {
             recoverable_error(
                 format!("Failed to read file '{}': '{}'.", file.display(), e),
                 "Skipping file and continuing",
-                &options,
+                options,
             );
             return;
         }
@@ -139,7 +139,7 @@ fn apply_file(options: &Options, file: &PathBuf) {
                 file.display()
             ),
             "Skipping file and continuing",
-            &options,
+            options,
         );
         return;
     }
@@ -150,7 +150,7 @@ fn apply_file(options: &Options, file: &PathBuf) {
             recoverable_error(
                 format!("Failed to get file name for '{}'", file.display()),
                 "Skipping file and continuing",
-                &options,
+                options,
             );
             return;
         }
@@ -184,7 +184,7 @@ fn apply_file(options: &Options, file: &PathBuf) {
                             e
                         ),
                         "Skipping file and continuing",
-                        &options,
+                        options,
                     );
                 }
             }
@@ -201,7 +201,7 @@ fn apply_file(options: &Options, file: &PathBuf) {
                             e
                         ),
                         "Skipping file and continuing",
-                        &options,
+                        options,
                     );
                 }
             }
@@ -221,7 +221,7 @@ fn apply_file(options: &Options, file: &PathBuf) {
                             e
                         ),
                         "Skipping file and continuing",
-                        &options,
+                        options,
                     );
                 }
             }
@@ -293,7 +293,7 @@ fn options(args: Args) -> Options {
 
                     println!("Creating path '{}' and all parents.", p.display());
 
-                    match create_dir_all(&parent) {
+                    match create_dir_all(parent) {
                         Ok(_) => {
                             println!("Successfully created directory '{}'", parent.display());
                         }

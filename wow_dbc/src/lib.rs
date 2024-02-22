@@ -57,39 +57,45 @@
 #![allow(clippy::useless_conversion)]
 #![allow(non_camel_case_types)]
 #![warn(
-    clippy::perf,
-    clippy::correctness,
-    clippy::style,
-    clippy::missing_const_for_fn,
-    clippy::missing_errors_doc,
-    clippy::missing_panics_doc,
-    clippy::doc_markdown,
-    clippy::unseparated_literal_suffix,
-    missing_docs
+clippy::perf,
+clippy::correctness,
+clippy::style,
+clippy::missing_const_for_fn,
+clippy::missing_errors_doc,
+clippy::missing_panics_doc,
+clippy::doc_markdown,
+clippy::unseparated_literal_suffix,
+missing_docs
 )]
 
 use std::io::{Read, Write};
 
 pub(crate) mod error;
+
+pub use error::*;
+
+#[allow(unused)]
 pub(crate) mod header;
 
-#[allow(missing_docs)]
+#[allow(missing_docs, clippy::unnecessary_cast)]
 #[cfg(feature = "vanilla")]
 pub mod vanilla_tables;
 
-#[allow(missing_docs)]
+#[allow(missing_docs, clippy::unnecessary_cast)]
 #[cfg(feature = "tbc")]
 pub mod tbc_tables;
 
-#[allow(missing_docs)]
+#[allow(missing_docs, clippy::unnecessary_cast)]
 #[cfg(feature = "wrath")]
 pub mod wrath_tables;
 
 mod tys;
-mod util;
+
+#[allow(unused)]
 pub use tys::*;
 
-pub use error::*;
+#[allow(unused)]
+mod util;
 
 /// Main trait for the crate. Implemented by all tables in [`vanilla_tables`].
 pub trait DbcTable: Sized {

@@ -1,8 +1,6 @@
 #[cfg(any(feature = "tbc", feature = "wrath"))]
 use crate::tys::ExtendedLocalizedString;
 
-use crate::tys::LocalizedString;
-use crate::DbcError;
 use std::io::Read;
 
 pub fn read_u8_le(b: &mut &[u8]) -> Result<u8, std::io::Error> {
@@ -58,10 +56,11 @@ pub fn get_string_as_vec(b: &mut &[u8], string_block: &[u8]) -> Result<Vec<u8>, 
     Ok(string_block[start..end].to_vec())
 }
 
+#[cfg(feature = "vanilla")]
 pub fn read_localized_string(
     chunk: &mut &[u8],
     string_block: &[u8],
-) -> Result<LocalizedString, DbcError> {
+) -> Result<crate::tys::LocalizedString, crate::DbcError> {
     let en_gb = get_string_as_vec(chunk, string_block)?;
     let en_gb = String::from_utf8(en_gb)?;
 
@@ -88,7 +87,7 @@ pub fn read_localized_string(
 
     let flags = read_u32_le(chunk)?;
 
-    Ok(LocalizedString::new(
+    Ok(crate::tys::LocalizedString::new(
         en_gb, ko_kr, fr_fr, de_de, en_cn, en_tw, es_es, es_mx, flags,
     ))
 }
@@ -97,7 +96,7 @@ pub fn read_localized_string(
 pub fn read_extended_localized_string(
     chunk: &mut &[u8],
     string_block: &[u8],
-) -> Result<ExtendedLocalizedString, DbcError> {
+) -> Result<ExtendedLocalizedString, crate::DbcError> {
     let en_gb = get_string_as_vec(chunk, string_block)?;
     let en_gb = String::from_utf8(en_gb)?;
 
