@@ -9,6 +9,7 @@ use crate::wrath_tables::skill_tiers::SkillTiersKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SkillRaceClassInfo {
     pub rows: Vec<SkillRaceClassInfoRow>,
 }
@@ -17,6 +18,8 @@ impl DbcTable for SkillRaceClassInfo {
     type Row = SkillRaceClassInfoRow;
 
     const FILENAME: &'static str = "SkillRaceClassInfo.dbc";
+    const FIELD_COUNT: usize = 8;
+    const ROW_SIZE: usize = 32;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -26,19 +29,19 @@ impl DbcTable for SkillRaceClassInfo {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 32 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 32,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 8 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 8,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -95,8 +98,8 @@ impl DbcTable for SkillRaceClassInfo {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 8,
-            record_size: 32,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -150,6 +153,7 @@ impl Indexable for SkillRaceClassInfo {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SkillRaceClassInfoKey {
     pub id: i32
 }
@@ -227,6 +231,7 @@ impl TryFrom<isize> for SkillRaceClassInfoKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SkillRaceClassInfoRow {
     pub id: SkillRaceClassInfoKey,
     pub skill_id: SkillLineKey,
@@ -238,3 +243,22 @@ pub struct SkillRaceClassInfoRow {
     pub skill_cost_index: i32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn skill_race_class_info() {
+        let mut file = File::open("../wrath-dbc/SkillRaceClassInfo.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = SkillRaceClassInfo::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = SkillRaceClassInfo::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

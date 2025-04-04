@@ -35,9 +35,13 @@ pub fn overwrite_if_not_same_contents(s: &str, filename: &Path) {
     if f.is_ok() {
         let f = read_to_string(filename).unwrap();
         if f != s {
+            eprintln!("Updating file: {}", filename.display());
             write_string_to_file(s, filename);
+        } else {
+            eprintln!("Not modified: {}", filename.display());
         }
     } else {
+        eprintln!("Creating file: {}", filename.display());
         write_string_to_file(s, filename);
     }
 }

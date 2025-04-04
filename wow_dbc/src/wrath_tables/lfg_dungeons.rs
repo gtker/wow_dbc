@@ -9,6 +9,7 @@ use crate::wrath_tables::map::MapKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LFGDungeons {
     pub rows: Vec<LFGDungeonsRow>,
 }
@@ -17,6 +18,8 @@ impl DbcTable for LFGDungeons {
     type Row = LFGDungeonsRow;
 
     const FILENAME: &'static str = "LFGDungeons.dbc";
+    const FIELD_COUNT: usize = 49;
+    const ROW_SIZE: usize = 196;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -26,19 +29,19 @@ impl DbcTable for LFGDungeons {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 196 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 196,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 49 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 49,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -136,8 +139,8 @@ impl DbcTable for LFGDungeons {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 49,
-            record_size: 196,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -251,6 +254,7 @@ impl LFGDungeons {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LFGDungeonsKey {
     pub id: i32
 }
@@ -328,6 +332,7 @@ impl TryFrom<isize> for LFGDungeonsKey {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LFGDungeonsRow {
     pub id: LFGDungeonsKey,
     pub name_lang: ExtendedLocalizedString,
@@ -348,3 +353,22 @@ pub struct LFGDungeonsRow {
     pub description_lang: ExtendedLocalizedString,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn lfg_dungeons() {
+        let mut file = File::open("../wrath-dbc/LFGDungeons.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = LFGDungeons::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = LFGDungeons::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

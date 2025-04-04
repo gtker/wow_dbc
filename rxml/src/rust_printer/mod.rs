@@ -23,7 +23,8 @@ pub fn create_table(d: &DbcDescription, o: &Objects, version: DbcVersion) -> Wri
 
     create_row(&mut s, d, o);
 
-    create_test(&mut s, d, &version.test_dir_name());
+
+    create_test(&mut s, d, version);
 
     s
 }
@@ -143,6 +144,9 @@ fn print_derives(s: &mut Writer, fields: &[Field], derive_copy: bool) {
     }
 
     s.wln_no_indent(")]");
+
+    // add optional derive for serde
+    s.wln("#[cfg_attr(feature = \"serde\", derive(serde::Serialize, serde::Deserialize))]");
 }
 
 fn can_derive_copy(fields: &[Field]) -> bool {
@@ -223,6 +227,10 @@ fn create_primary_keys(s: &mut Writer, d: &DbcDescription) {
             s.wln("#[allow(non_camel_case_types)]");
         }
         s.wln("#[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]");
+
+        // add optional derive for serde
+        s.wln("#[cfg_attr(feature = \"serde\", derive(serde::Serialize, serde::Deserialize))]");
+
         s.new_struct(key.ty().rust_str(), |s| {
             s.wln(format!("pub id: {}", native_ty));
         });
@@ -295,12 +303,7 @@ fn print_field_comment(s: &mut Writer, field: &Field) {
     s.wln(format!("// {}: {}", field.name(), field.ty().str()));
 }
 
-fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
-    const BUILD_TESTS: bool = false;
-    if !BUILD_TESTS {
-        return;
-    }
-
+fn create_test(s: &mut Writer, d: &DbcDescription, version: DbcVersion) {
     if d.name() == "CharacterCreateCameras"
         || d.name() == "SoundCharacterMacroLines"
         || d.name() == "SpellAuraNames"
@@ -313,16 +316,25 @@ fn create_test(s: &mut Writer, d: &DbcDescription, test_dir_name: &str) {
     s.wln("#[cfg(test)]");
     s.open_curly("mod test");
     s.wln("use super::*;");
+    s.wln("use std::fs::File;");
+    s.wln("use std::io::Read;");
     s.newline();
 
     s.wln("#[test]");
+    s.wln("#[ignore = \"requires DBC files\"]");
     s.open_curly(format!("fn {name}()", name = d.name().to_snake_case()));
 
     let ty = d.name();
 
+    let test_dir_name = version.test_dir_name();
+
+    // need to ascent once to get to the workspace root where the DBC files are
     s.wln(format!(
-        "let contents = include_bytes!(\"../../../{test_dir_name}/{ty}.dbc\");",
+        "let mut file = File::open(\"../{test_dir_name}/{ty}.dbc\").expect(\"Failed to open DBC file\");",
     ));
+    s.wln("let mut contents = Vec::new();");
+    s.wln("file.read_to_end(&mut contents).expect(\"Failed to read DBC file\");");
+
     s.wln(format!(
         "let actual = {ty}::read(&mut contents.as_slice()).unwrap();",
     ));

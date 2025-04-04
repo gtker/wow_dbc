@@ -8,6 +8,7 @@ use crate::wrath_tables::chr_races::ChrRacesKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreatureDisplayInfoExtra {
     pub rows: Vec<CreatureDisplayInfoExtraRow>,
 }
@@ -16,6 +17,8 @@ impl DbcTable for CreatureDisplayInfoExtra {
     type Row = CreatureDisplayInfoExtraRow;
 
     const FILENAME: &'static str = "CreatureDisplayInfoExtra.dbc";
+    const FIELD_COUNT: usize = 21;
+    const ROW_SIZE: usize = 84;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -25,19 +28,19 @@ impl DbcTable for CreatureDisplayInfoExtra {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 84 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 84,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 21 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 21,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -111,8 +114,8 @@ impl DbcTable for CreatureDisplayInfoExtra {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 21,
-            record_size: 84,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -207,6 +210,7 @@ impl CreatureDisplayInfoExtra {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreatureDisplayInfoExtraKey {
     pub id: i32
 }
@@ -284,6 +288,7 @@ impl TryFrom<isize> for CreatureDisplayInfoExtraKey {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CreatureDisplayInfoExtraRow {
     pub id: CreatureDisplayInfoExtraKey,
     pub display_race_id: ChrRacesKey,
@@ -298,3 +303,22 @@ pub struct CreatureDisplayInfoExtraRow {
     pub bake_name: String,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn creature_display_info_extra() {
+        let mut file = File::open("../wrath-dbc/CreatureDisplayInfoExtra.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = CreatureDisplayInfoExtra::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = CreatureDisplayInfoExtra::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

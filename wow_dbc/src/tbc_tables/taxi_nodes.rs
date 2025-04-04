@@ -8,6 +8,7 @@ use crate::tbc_tables::map::MapKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TaxiNodes {
     pub rows: Vec<TaxiNodesRow>,
 }
@@ -16,6 +17,8 @@ impl DbcTable for TaxiNodes {
     type Row = TaxiNodesRow;
 
     const FILENAME: &'static str = "TaxiNodes.dbc";
+    const FIELD_COUNT: usize = 24;
+    const ROW_SIZE: usize = 96;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -25,19 +28,19 @@ impl DbcTable for TaxiNodes {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 96 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 96,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 24 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 24,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -84,8 +87,8 @@ impl DbcTable for TaxiNodes {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 24,
-            record_size: 96,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -159,6 +162,7 @@ impl TaxiNodes {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TaxiNodesKey {
     pub id: i32
 }
@@ -236,6 +240,7 @@ impl TryFrom<isize> for TaxiNodesKey {
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TaxiNodesRow {
     pub id: TaxiNodesKey,
     pub continent_id: MapKey,
@@ -244,3 +249,22 @@ pub struct TaxiNodesRow {
     pub mount_creature_id: [i32; 2],
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn taxi_nodes() {
+        let mut file = File::open("../tbc-dbc/TaxiNodes.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = TaxiNodes::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = TaxiNodes::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

@@ -10,6 +10,7 @@ use crate::vanilla_tables::terrain_type::TerrainTypeKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FootstepTerrainLookup {
     pub rows: Vec<FootstepTerrainLookupRow>,
 }
@@ -18,6 +19,8 @@ impl DbcTable for FootstepTerrainLookup {
     type Row = FootstepTerrainLookupRow;
 
     const FILENAME: &'static str = "FootstepTerrainLookup.dbc";
+    const FIELD_COUNT: usize = 5;
+    const ROW_SIZE: usize = 20;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -27,19 +30,19 @@ impl DbcTable for FootstepTerrainLookup {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 20 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 20,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 5 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 5,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -84,8 +87,8 @@ impl DbcTable for FootstepTerrainLookup {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 5,
-            record_size: 20,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -130,6 +133,7 @@ impl Indexable for FootstepTerrainLookup {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FootstepTerrainLookupKey {
     pub id: u32
 }
@@ -209,6 +213,7 @@ impl TryFrom<isize> for FootstepTerrainLookupKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FootstepTerrainLookupRow {
     pub id: FootstepTerrainLookupKey,
     pub creature_footstep: GroundEffectDoodadKey,
@@ -217,3 +222,22 @@ pub struct FootstepTerrainLookupRow {
     pub sound_entry_splash: SoundEntriesKey,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn footstep_terrain_lookup() {
+        let mut file = File::open("../vanilla-dbc/FootstepTerrainLookup.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = FootstepTerrainLookup::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = FootstepTerrainLookup::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

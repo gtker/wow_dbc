@@ -11,6 +11,7 @@ use crate::wrath_tables::spell::SpellKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LiquidType {
     pub rows: Vec<LiquidTypeRow>,
 }
@@ -19,6 +20,8 @@ impl DbcTable for LiquidType {
     type Row = LiquidTypeRow;
 
     const FILENAME: &'static str = "LiquidType.dbc";
+    const FIELD_COUNT: usize = 45;
+    const ROW_SIZE: usize = 180;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -28,19 +31,19 @@ impl DbcTable for LiquidType {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 180 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 180,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 45 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 45,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -157,8 +160,8 @@ impl DbcTable for LiquidType {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 45,
-            record_size: 180,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -300,6 +303,7 @@ impl LiquidType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LiquidTypeKey {
     pub id: i32
 }
@@ -377,6 +381,7 @@ impl TryFrom<isize> for LiquidTypeKey {
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LiquidTypeRow {
     pub id: LiquidTypeKey,
     pub name: String,
@@ -399,3 +404,22 @@ pub struct LiquidTypeRow {
     pub int: [i32; 4],
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn liquid_type() {
+        let mut file = File::open("../wrath-dbc/LiquidType.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = LiquidType::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = LiquidType::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

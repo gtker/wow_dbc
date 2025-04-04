@@ -7,6 +7,7 @@ use std::io::Write;
 use wow_world_base::vanilla::ClientLanguage;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct GMSurveyCurrentSurvey {
     pub rows: Vec<GMSurveyCurrentSurveyRow>,
 }
@@ -15,6 +16,8 @@ impl DbcTable for GMSurveyCurrentSurvey {
     type Row = GMSurveyCurrentSurveyRow;
 
     const FILENAME: &'static str = "GMSurveyCurrentSurvey.dbc";
+    const FIELD_COUNT: usize = 2;
+    const ROW_SIZE: usize = 8;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -24,19 +27,19 @@ impl DbcTable for GMSurveyCurrentSurvey {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 8 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 8,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 2 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 2,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -69,8 +72,8 @@ impl DbcTable for GMSurveyCurrentSurvey {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 2,
-            record_size: 8,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -93,8 +96,28 @@ impl DbcTable for GMSurveyCurrentSurvey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct GMSurveyCurrentSurveyRow {
     pub language: ClientLanguage,
     pub gm_survey: GMSurveySurveysKey,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn gm_survey_current_survey() {
+        let mut file = File::open("../vanilla-dbc/GMSurveyCurrentSurvey.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = GMSurveyCurrentSurvey::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = GMSurveyCurrentSurvey::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

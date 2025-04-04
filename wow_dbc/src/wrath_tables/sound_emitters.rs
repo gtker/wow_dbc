@@ -9,6 +9,7 @@ use crate::wrath_tables::sound_entries_advanced::SoundEntriesAdvancedKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SoundEmitters {
     pub rows: Vec<SoundEmittersRow>,
 }
@@ -17,6 +18,8 @@ impl DbcTable for SoundEmitters {
     type Row = SoundEmittersRow;
 
     const FILENAME: &'static str = "SoundEmitters.dbc";
+    const FIELD_COUNT: usize = 10;
+    const ROW_SIZE: usize = 40;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -26,19 +29,19 @@ impl DbcTable for SoundEmitters {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 40 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 40,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 10 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 10,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -92,8 +95,8 @@ impl DbcTable for SoundEmitters {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 10,
-            record_size: 40,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -176,6 +179,7 @@ impl SoundEmitters {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SoundEmittersKey {
     pub id: i32
 }
@@ -253,6 +257,7 @@ impl TryFrom<isize> for SoundEmittersKey {
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SoundEmittersRow {
     pub id: SoundEmittersKey,
     pub position: [f32; 3],
@@ -262,3 +267,22 @@ pub struct SoundEmittersRow {
     pub name: String,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn sound_emitters() {
+        let mut file = File::open("../wrath-dbc/SoundEmitters.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = SoundEmitters::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = SoundEmitters::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

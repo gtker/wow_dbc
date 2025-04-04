@@ -9,6 +9,7 @@ use std::io::Write;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Achievement_Criteria {
     pub rows: Vec<Achievement_CriteriaRow>,
 }
@@ -17,6 +18,8 @@ impl DbcTable for Achievement_Criteria {
     type Row = Achievement_CriteriaRow;
 
     const FILENAME: &'static str = "Achievement_Criteria.dbc";
+    const FIELD_COUNT: usize = 31;
+    const ROW_SIZE: usize = 124;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -26,19 +29,19 @@ impl DbcTable for Achievement_Criteria {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 124 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 124,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 31 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 31,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -125,8 +128,8 @@ impl DbcTable for Achievement_Criteria {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 31,
-            record_size: 124,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -225,6 +228,7 @@ impl Achievement_Criteria {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Achievement_CriteriaKey {
     pub id: i32
 }
@@ -303,6 +307,7 @@ impl TryFrom<isize> for Achievement_CriteriaKey {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Achievement_CriteriaRow {
     pub id: Achievement_CriteriaKey,
     pub achievement_id: AchievementKey,
@@ -321,3 +326,22 @@ pub struct Achievement_CriteriaRow {
     pub ui_order: i32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn achievement_criteria() {
+        let mut file = File::open("../wrath-dbc/Achievement_Criteria.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = Achievement_Criteria::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = Achievement_Criteria::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

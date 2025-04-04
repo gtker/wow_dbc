@@ -7,6 +7,7 @@ use crate::header::{
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WeaponImpactSounds {
     pub rows: Vec<WeaponImpactSoundsRow>,
 }
@@ -15,6 +16,8 @@ impl DbcTable for WeaponImpactSounds {
     type Row = WeaponImpactSoundsRow;
 
     const FILENAME: &'static str = "WeaponImpactSounds.dbc";
+    const FIELD_COUNT: usize = 23;
+    const ROW_SIZE: usize = 92;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -24,19 +27,19 @@ impl DbcTable for WeaponImpactSounds {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 92 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 92,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 23 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 23,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -81,8 +84,8 @@ impl DbcTable for WeaponImpactSounds {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 23,
-            record_size: 92,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -133,6 +136,7 @@ impl Indexable for WeaponImpactSounds {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WeaponImpactSoundsKey {
     pub id: i32
 }
@@ -210,6 +214,7 @@ impl TryFrom<isize> for WeaponImpactSoundsKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WeaponImpactSoundsRow {
     pub id: WeaponImpactSoundsKey,
     pub weapon_sub_class_id: i32,
@@ -218,3 +223,22 @@ pub struct WeaponImpactSoundsRow {
     pub crit_impact_sound_id: [i32; 10],
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn weapon_impact_sounds() {
+        let mut file = File::open("../wrath-dbc/WeaponImpactSounds.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = WeaponImpactSounds::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = WeaponImpactSounds::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}
