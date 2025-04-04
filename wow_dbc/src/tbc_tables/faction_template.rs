@@ -9,6 +9,7 @@ use crate::tbc_tables::faction_group::FactionGroupKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FactionTemplate {
     pub rows: Vec<FactionTemplateRow>,
 }
@@ -17,6 +18,8 @@ impl DbcTable for FactionTemplate {
     type Row = FactionTemplateRow;
 
     const FILENAME: &'static str = "FactionTemplate.dbc";
+    const FIELD_COUNT: usize = 14;
+    const ROW_SIZE: usize = 56;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -26,19 +29,19 @@ impl DbcTable for FactionTemplate {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 56 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 56,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 14 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 14,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -95,8 +98,8 @@ impl DbcTable for FactionTemplate {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 14,
-            record_size: 56,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -156,6 +159,7 @@ impl Indexable for FactionTemplate {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FactionTemplateKey {
     pub id: i32
 }
@@ -233,6 +237,7 @@ impl TryFrom<isize> for FactionTemplateKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FactionTemplateRow {
     pub id: FactionTemplateKey,
     pub faction: FactionKey,
@@ -244,3 +249,22 @@ pub struct FactionTemplateRow {
     pub friend: [i32; 4],
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn faction_template() {
+        let mut file = File::open("../tbc-dbc/FactionTemplate.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = FactionTemplate::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = FactionTemplate::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

@@ -7,6 +7,7 @@ use crate::header::{
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ItemRandomSuffix {
     pub rows: Vec<ItemRandomSuffixRow>,
 }
@@ -15,6 +16,8 @@ impl DbcTable for ItemRandomSuffix {
     type Row = ItemRandomSuffixRow;
 
     const FILENAME: &'static str = "ItemRandomSuffix.dbc";
+    const FIELD_COUNT: usize = 25;
+    const ROW_SIZE: usize = 100;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -24,19 +27,19 @@ impl DbcTable for ItemRandomSuffix {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 100 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 100,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 25 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 25,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -86,8 +89,8 @@ impl DbcTable for ItemRandomSuffix {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 25,
-            record_size: 100,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -169,6 +172,7 @@ impl ItemRandomSuffix {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ItemRandomSuffixKey {
     pub id: i32
 }
@@ -246,6 +250,7 @@ impl TryFrom<isize> for ItemRandomSuffixKey {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ItemRandomSuffixRow {
     pub id: ItemRandomSuffixKey,
     pub name_lang: ExtendedLocalizedString,
@@ -254,3 +259,22 @@ pub struct ItemRandomSuffixRow {
     pub allocation_pct: [i32; 3],
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn item_random_suffix() {
+        let mut file = File::open("../tbc-dbc/ItemRandomSuffix.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = ItemRandomSuffix::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = ItemRandomSuffix::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

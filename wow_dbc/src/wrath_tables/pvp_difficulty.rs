@@ -8,6 +8,7 @@ use crate::wrath_tables::map::MapKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PvpDifficulty {
     pub rows: Vec<PvpDifficultyRow>,
 }
@@ -16,6 +17,8 @@ impl DbcTable for PvpDifficulty {
     type Row = PvpDifficultyRow;
 
     const FILENAME: &'static str = "PvpDifficulty.dbc";
+    const FIELD_COUNT: usize = 6;
+    const ROW_SIZE: usize = 24;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -25,19 +28,19 @@ impl DbcTable for PvpDifficulty {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 24 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 24,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 6 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 6,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -86,8 +89,8 @@ impl DbcTable for PvpDifficulty {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 6,
-            record_size: 24,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -135,6 +138,7 @@ impl Indexable for PvpDifficulty {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PvpDifficultyKey {
     pub id: i32
 }
@@ -212,6 +216,7 @@ impl TryFrom<isize> for PvpDifficultyKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PvpDifficultyRow {
     pub id: PvpDifficultyKey,
     pub map_id: MapKey,
@@ -221,3 +226,22 @@ pub struct PvpDifficultyRow {
     pub difficulty: i32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn pvp_difficulty() {
+        let mut file = File::open("../wrath-dbc/PvpDifficulty.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = PvpDifficulty::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = PvpDifficulty::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

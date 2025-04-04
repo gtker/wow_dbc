@@ -7,6 +7,7 @@ use crate::header::{
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TotemCategory {
     pub rows: Vec<TotemCategoryRow>,
 }
@@ -15,6 +16,8 @@ impl DbcTable for TotemCategory {
     type Row = TotemCategoryRow;
 
     const FILENAME: &'static str = "TotemCategory.dbc";
+    const FIELD_COUNT: usize = 20;
+    const ROW_SIZE: usize = 80;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -24,19 +27,19 @@ impl DbcTable for TotemCategory {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 80 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 80,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 20 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 20,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -79,8 +82,8 @@ impl DbcTable for TotemCategory {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 20,
-            record_size: 80,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -145,6 +148,7 @@ impl TotemCategory {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TotemCategoryKey {
     pub id: i32
 }
@@ -222,6 +226,7 @@ impl TryFrom<isize> for TotemCategoryKey {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct TotemCategoryRow {
     pub id: TotemCategoryKey,
     pub name_lang: ExtendedLocalizedString,
@@ -229,3 +234,22 @@ pub struct TotemCategoryRow {
     pub totem_category_mask: i32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn totem_category() {
+        let mut file = File::open("../tbc-dbc/TotemCategory.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = TotemCategory::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = TotemCategory::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

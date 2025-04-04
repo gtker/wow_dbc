@@ -2,6 +2,7 @@
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg(any(feature = "tbc", feature = "wrath"))]
 pub struct ExtendedLocalizedString {
     /// English, Great Britain
@@ -168,6 +169,7 @@ impl ExtendedLocalizedString {
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg(feature = "vanilla")]
 pub struct LocalizedString {
     /// English, Great Britain

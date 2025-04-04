@@ -23,6 +23,7 @@ use wow_world_base::vanilla::{
 };
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Spell {
     pub rows: Vec<SpellRow>,
 }
@@ -31,6 +32,8 @@ impl DbcTable for Spell {
     type Row = SpellRow;
 
     const FILENAME: &'static str = "Spell.dbc";
+    const FIELD_COUNT: usize = 173;
+    const ROW_SIZE: usize = 692;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -40,19 +43,19 @@ impl DbcTable for Spell {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 692 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 692,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 173 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 173,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -430,8 +433,8 @@ impl DbcTable for Spell {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 173,
-            record_size: 692,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -820,6 +823,7 @@ impl Spell {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SpellKey {
     pub id: u32
 }
@@ -899,6 +903,7 @@ impl TryFrom<isize> for SpellKey {
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SpellRow {
     pub id: SpellKey,
     pub school: ResistancesKey,
@@ -988,3 +993,22 @@ pub struct SpellRow {
     pub required_aura_vision: i32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn spell() {
+        let mut file = File::open("../vanilla-dbc/Spell.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = Spell::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = Spell::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

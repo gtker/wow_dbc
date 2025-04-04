@@ -10,6 +10,7 @@ use crate::wrath_tables::wmo_area_table::WMOAreaTableKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DungeonMapChunk {
     pub rows: Vec<DungeonMapChunkRow>,
 }
@@ -18,6 +19,8 @@ impl DbcTable for DungeonMapChunk {
     type Row = DungeonMapChunkRow;
 
     const FILENAME: &'static str = "DungeonMapChunk.dbc";
+    const FIELD_COUNT: usize = 5;
+    const ROW_SIZE: usize = 20;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -27,19 +30,19 @@ impl DbcTable for DungeonMapChunk {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 20 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 20,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 5 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 5,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -84,8 +87,8 @@ impl DbcTable for DungeonMapChunk {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 5,
-            record_size: 20,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -130,6 +133,7 @@ impl Indexable for DungeonMapChunk {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DungeonMapChunkKey {
     pub id: i32
 }
@@ -207,6 +211,7 @@ impl TryFrom<isize> for DungeonMapChunkKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DungeonMapChunkRow {
     pub id: DungeonMapChunkKey,
     pub map_id: MapKey,
@@ -215,3 +220,22 @@ pub struct DungeonMapChunkRow {
     pub min_z: f32,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn dungeon_map_chunk() {
+        let mut file = File::open("../wrath-dbc/DungeonMapChunk.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = DungeonMapChunk::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = DungeonMapChunk::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

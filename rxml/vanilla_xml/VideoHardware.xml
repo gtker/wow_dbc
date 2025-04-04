@@ -9,9 +9,108 @@
             <type>primary</type>
         </key>
     </field>
-
+    
     <field>
-        <type>uint32[21]</type>
-        <name>unknown</name>
+        <name>vendor_id</name>
+        <type>uint32</type>
     </field>
+    
+    <field>
+        <name>device_id</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>farclip_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>terrain_l_o_d_dist_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>terrain_shadow_l_o_d</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>detail_doodad_density_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>detail_doodad_alpha</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>animating_doodad_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>trilinear</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>num_lights</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>specularity</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>water_l_o_d_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>particle_density_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>unit_draw_dist_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>small_cull_dist_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>resolution_idx</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>base_mip_level</name>
+        <type>uint32</type>
+    </field>
+    
+    <field>
+        <name>ogl_overrides</name>
+        <type>string_ref</type>
+    </field>
+    
+    <field>
+        <name>d3d_overrides</name>
+        <type>string_ref</type>
+    </field>
+    <field>
+        <name>fix_lag</name>
+        <type>uint32</type>
+    </field>
+    <field>
+        <name>multisample</name>
+        <type>uint32</type>
+    </field>
+
 </dbc>

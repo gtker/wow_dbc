@@ -10,6 +10,7 @@ use crate::wrath_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WorldChunkSounds {
     pub rows: Vec<WorldChunkSoundsRow>,
 }
@@ -18,6 +19,8 @@ impl DbcTable for WorldChunkSounds {
     type Row = WorldChunkSoundsRow;
 
     const FILENAME: &'static str = "WorldChunkSounds.dbc";
+    const FIELD_COUNT: usize = 9;
+    const ROW_SIZE: usize = 36;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -27,19 +30,19 @@ impl DbcTable for WorldChunkSounds {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 36 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 36,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 9 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 9,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -100,8 +103,8 @@ impl DbcTable for WorldChunkSounds {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 9,
-            record_size: 36,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: 1,
         };
 
@@ -158,6 +161,7 @@ impl Indexable for WorldChunkSounds {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WorldChunkSoundsKey {
     pub id: i32
 }
@@ -235,6 +239,7 @@ impl TryFrom<isize> for WorldChunkSoundsKey {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct WorldChunkSoundsRow {
     pub id: WorldChunkSoundsKey,
     pub chunk_x: i32,
@@ -247,3 +252,22 @@ pub struct WorldChunkSoundsRow {
     pub sound_provider_preferences_id: SoundProviderPreferencesKey,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn world_chunk_sounds() {
+        let mut file = File::open("../wrath-dbc/WorldChunkSounds.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = WorldChunkSounds::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = WorldChunkSounds::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

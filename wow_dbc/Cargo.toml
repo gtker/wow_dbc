@@ -15,6 +15,7 @@ default = []
 vanilla = ["wow_world_base/vanilla"]
 tbc = ["wow_world_base/tbc"]
 wrath = ["wow_world_base/wrath"]
+serde = ["wow_world_base/serde", "dep:serde"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -22,3 +23,4 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
 wow_world_base = "0.2.0"
+serde = { version = "1.0", features = ["derive"], optional = true }

@@ -13,6 +13,7 @@ use crate::wrath_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AreaTable {
     pub rows: Vec<AreaTableRow>,
 }
@@ -21,6 +22,8 @@ impl DbcTable for AreaTable {
     type Row = AreaTableRow;
 
     const FILENAME: &'static str = "AreaTable.dbc";
+    const FIELD_COUNT: usize = 36;
+    const ROW_SIZE: usize = 144;
 
     fn rows(&self) -> &[Self::Row] { &self.rows }
     fn rows_mut(&mut self) -> &mut [Self::Row] { &mut self.rows }
@@ -30,19 +33,19 @@ impl DbcTable for AreaTable {
         b.read_exact(&mut header)?;
         let header = parse_header(&header)?;
 
-        if header.record_size != 144 {
+        if header.record_size != Self::ROW_SIZE as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::RecordSize {
-                    expected: 144,
+                    expected: Self::ROW_SIZE as u32,
                     actual: header.record_size,
                 },
             ));
         }
 
-        if header.field_count != 36 {
+        if header.field_count != Self::FIELD_COUNT as u32 {
             return Err(crate::DbcError::InvalidHeader(
                 crate::InvalidHeaderError::FieldCount {
-                    expected: 36,
+                    expected: Self::FIELD_COUNT as u32,
                     actual: header.field_count,
                 },
             ));
@@ -137,8 +140,8 @@ impl DbcTable for AreaTable {
     fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
         let header = DbcHeader {
             record_count: self.rows.len() as u32,
-            field_count: 36,
-            record_size: 144,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
             string_block_size: self.string_block_size(),
         };
 
@@ -245,6 +248,7 @@ impl AreaTable {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AreaTableKey {
     pub id: i32
 }
@@ -322,6 +326,7 @@ impl TryFrom<isize> for AreaTableKey {
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AreaTableRow {
     pub id: AreaTableKey,
     pub continent_id: MapKey,
@@ -342,3 +347,22 @@ pub struct AreaTableRow {
     pub light_id: LightKey,
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::fs::File;
+    use std::io::Read;
+
+    #[test]
+    #[ignore = "requires DBC files"]
+    fn area_table() {
+        let mut file = File::open("../wrath-dbc/AreaTable.dbc").expect("Failed to open DBC file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).expect("Failed to read DBC file");
+        let actual = AreaTable::read(&mut contents.as_slice()).unwrap();
+        let mut v = Vec::with_capacity(contents.len());
+        actual.write(&mut v).unwrap();
+        let new = AreaTable::read(&mut v.as_slice()).unwrap();
+        assert_eq!(actual, new);
+    }
+}

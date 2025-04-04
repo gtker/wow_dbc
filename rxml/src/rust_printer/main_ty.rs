@@ -38,9 +38,18 @@ fn create_types(s: &mut Writer, d: &DbcDescription) {
     s.wln(format!("type Row = {}Row;", d.name()));
     s.newline();
 
+    // add constants to make generated code more readable
     s.wln(format!(
         "const FILENAME: &'static str = \"{}.dbc\";",
         d.name()
+    ));
+    s.wln(format!(
+        "const FIELD_COUNT: usize = {};",
+        d.field_count()
+    ));
+    s.wln(format!(
+        "const ROW_SIZE: usize = {};",
+        d.row_size()
     ));
     s.newline();
 
@@ -53,8 +62,8 @@ fn create_write(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     s.open_curly("fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error>");
     s.open_curly("let header = DbcHeader");
     s.wln("record_count: self.rows.len() as u32,");
-    s.wln(format!("field_count: {},", d.field_count()));
-    s.wln(format!("record_size: {},", d.row_size()));
+    s.wln("field_count: Self::FIELD_COUNT as u32,");
+    s.wln("record_size: Self::ROW_SIZE as u32,".to_string());
     if d.contains_string() {
         s.wln("string_block_size: self.string_block_size(),");
     } else {
@@ -209,7 +218,7 @@ fn create_string_size_block(s: &mut Writer, d: &DbcDescription) {
                 match array.ty() {
                     Type::StringRef => {
                         s.bodyn(format!("for s in &row.{name}", name = field.name()), |s| {
-                             s.wln(
+                            s.wln(
                                 "if !s.is_empty() { b.write_all(s.as_bytes())?; b.write_all(&[0])?; };",
                             );
                         });
@@ -307,12 +316,12 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     s.wln("let header = parse_header(&header)?;");
     s.newline();
 
-    s.bodyn(format!("if header.record_size != {}", d.row_size()), |s| {
+    s.bodyn("if header.record_size != Self::ROW_SIZE as u32".to_string(), |s| {
         s.wln("return Err(crate::DbcError::InvalidHeader(");
         s.inc_indent();
 
         s.open_curly("crate::InvalidHeaderError::RecordSize");
-        s.wln(format!("expected: {},", d.row_size()));
+        s.wln("expected: Self::ROW_SIZE as u32,".to_string());
         s.wln("actual: header.record_size,");
         s.closing_curly_with(","); // InvalidHeaderError::RecordSize
 
@@ -321,13 +330,13 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     });
 
     s.bodyn(
-        format!("if header.field_count != {}", d.field_count()),
+        "if header.field_count != Self::FIELD_COUNT as u32".to_string(),
         |s| {
             s.wln("return Err(crate::DbcError::InvalidHeader(");
             s.inc_indent();
 
             s.open_curly("crate::InvalidHeaderError::FieldCount");
-            s.wln(format!("expected: {},", d.field_count()));
+            s.wln("expected: Self::FIELD_COUNT as u32,".to_string());
             s.wln("actual: header.field_count,");
             s.closing_curly_with(","); // InvalidHeaderError::RecordSize
 
