@@ -2,6 +2,7 @@ use crate::DbcTable;
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
+use crate::util::StringCache;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -79,68 +80,35 @@ impl DbcTable for PaperDollItemFrame {
         Ok(PaperDollItemFrame { rows, })
     }
 
-    fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        let header = DbcHeader {
-            record_count: self.rows.len() as u32,
-            field_count: Self::FIELD_COUNT as u32,
-            record_size: Self::ROW_SIZE as u32,
-            string_block_size: self.string_block_size(),
-        };
+    fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error> {
+        let mut b = Vec::with_capacity(self.rows.len() * Self::ROW_SIZE);
 
-        b.write_all(&header.write_header())?;
+        let mut string_cache = StringCache::new();
 
-        let mut string_index = 1;
         for row in &self.rows {
             // item_button_name: string_ref
-            if !row.item_button_name.is_empty() {
-                b.write_all(&(string_index as u32).to_le_bytes())?;
-                string_index += row.item_button_name.len() + 1;
-            }
-            else {
-                b.write_all(&(0_u32).to_le_bytes())?;
-            }
+            b.write_all(&string_cache.add_string(&row.item_button_name).to_le_bytes())?;
 
             // slot_icon: string_ref
-            if !row.slot_icon.is_empty() {
-                b.write_all(&(string_index as u32).to_le_bytes())?;
-                string_index += row.slot_icon.len() + 1;
-            }
-            else {
-                b.write_all(&(0_u32).to_le_bytes())?;
-            }
+            b.write_all(&string_cache.add_string(&row.slot_icon).to_le_bytes())?;
 
             // slot_number: int32
             b.write_all(&row.slot_number.to_le_bytes())?;
 
         }
 
-        self.write_string_block(b)?;
+        assert_eq!(b.len(), self.rows.len() * Self::ROW_SIZE);
+        let header = DbcHeader {
+            record_count: self.rows.len() as u32,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
+            string_block_size: string_cache.size(),
+        };
 
+        w.write_all(&header.write_header())?;
+        w.write_all(&b)?;
+        w.write_all(string_cache.buffer())?;
         Ok(())
-    }
-
-}
-
-impl PaperDollItemFrame {
-    fn write_string_block(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        b.write_all(&[0])?;
-
-        for row in &self.rows {
-            if !row.item_button_name.is_empty() { b.write_all(row.item_button_name.as_bytes())?; b.write_all(&[0])?; };
-            if !row.slot_icon.is_empty() { b.write_all(row.slot_icon.as_bytes())?; b.write_all(&[0])?; };
-        }
-
-        Ok(())
-    }
-
-    fn string_block_size(&self) -> u32 {
-        let mut sum = 1;
-        for row in &self.rows {
-            if !row.item_button_name.is_empty() { sum += row.item_button_name.len() + 1; };
-            if !row.slot_icon.is_empty() { sum += row.slot_icon.len() + 1; };
-        }
-
-        sum as u32
     }
 
 }

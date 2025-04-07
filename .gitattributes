@@ -1,0 +1,4 @@
+# hide generated files from diff and github ui
+wow_dbc/src/vanilla_tables/* -diff linguist-generated=true
+wow_dbc/src/tbc_tables/* -diff linguist-generated=true
+wow_dbc/src/wrath_tables/* -diff linguist-generated=true

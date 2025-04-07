@@ -3,6 +3,8 @@ use crate::types::{Field, Type};
 use crate::{rust_printer, DbcDescription, Objects, Writer};
 
 pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
+    let name = d.name();
+
     if not_pascal_case_name(d.name()) {
         s.wln("#[allow(non_camel_case_types)]");
     }
@@ -11,7 +13,7 @@ pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
         s.wln(format!("pub rows: Vec<{}Row>,", d.name()));
     });
 
-    s.bodyn(format!("impl DbcTable for {name}", name = d.name()), |s| {
+    s.bodyn(format!("impl DbcTable for {name}"), |s| {
         create_types(s, d);
 
         create_read(s, d, o);
@@ -20,16 +22,8 @@ pub fn create_main_ty(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     });
 
     if d.primary_key().is_some() {
-        s.bodyn(format!("impl Indexable for {name}", name = d.name()), |s| {
+        s.bodyn(format!("impl Indexable for {name}"), |s| {
             create_index(s, d);
-        });
-    }
-
-    if d.contains_string() {
-        s.bodyn(format!("impl {name}", name = d.name()), |s| {
-            create_string_size_block(s, d);
-
-            create_string_block_size(s, d);
         });
     }
 }
@@ -59,43 +53,55 @@ fn create_types(s: &mut Writer, d: &DbcDescription) {
 }
 
 fn create_write(s: &mut Writer, d: &DbcDescription, o: &Objects) {
-    s.open_curly("fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error>");
-    s.open_curly("let header = DbcHeader");
-    s.wln("record_count: self.rows.len() as u32,");
-    s.wln("field_count: Self::FIELD_COUNT as u32,");
-    s.wln("record_size: Self::ROW_SIZE as u32,".to_string());
-    if d.contains_string() {
-        s.wln("string_block_size: self.string_block_size(),");
-    } else {
-        s.wln("string_block_size: 1,");
-    }
-    s.closing_curly_with(";");
+    s.open_curly("fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error>");
+
+    // header requires the string block size, which we don't know until deduplicating the strings
+    s.wln("let mut b = Vec::with_capacity(self.rows.len() * Self::ROW_SIZE);");
     s.newline();
 
-    s.wln("b.write_all(&header.write_header())?;");
+    // always allocating a string cache, even if not used, simplifies the code
+    s.wln(format!(
+        "let {} string_cache = StringCache::new();",
+        if d.contains_string() {
+            "mut"
+        } else {
+            ""
+        }
+    ));
     s.newline();
-    if d.contains_string() {
-        s.wln("let mut string_index = 1;");
-    }
 
+    // write all rows into the buffer while building the string cache
     s.bodyn("for row in &self.rows", |s| {
         for field in d.fields() {
             print_write_field(s, field, o);
         }
     });
 
-    if d.contains_string() {
-        s.wln("self.write_string_block(b)?;");
-    } else {
-        s.wln("b.write_all(&[0_u8])?;")
-    }
+    // assert that the buffer matches expected size
+    s.wln("assert_eq!(b.len(), self.rows.len() * Self::ROW_SIZE);");
+
+    s.open_curly("let header = DbcHeader");
+    s.wln("record_count: self.rows.len() as u32,");
+    s.wln("field_count: Self::FIELD_COUNT as u32,");
+    s.wln("record_size: Self::ROW_SIZE as u32,");
+    s.wln("string_block_size: string_cache.size(),");
+    s.closing_curly_with(";");
     s.newline();
+
+    // write header with proper string block size into output writer
+    s.wln("w.write_all(&header.write_header())?;");
+
+    // write row data into output writer
+    s.wln("w.write_all(&b)?;");
+
+    // write string block into output writer (might be zero size)
+    s.wln("w.write_all(string_cache.buffer())?;");
 
     s.wln("Ok(())");
     s.closing_curly_newline(); // pub fn write_to_bytes
 }
 
-fn print_write_field_ty(s: &mut Writer, name: &str, ty: &Type, o: &Objects, prefix: &str) {
+fn print_write_field_ty(s: &mut Writer, name: &str, ty: &Type, o: &Objects, prefix: &str, in_array: bool) {
     match ty {
         Type::Float | Type::I8 | Type::I16 | Type::I32 | Type::U8 | Type::U16 | Type::U32 => {
             s.wln(format!(
@@ -151,25 +157,16 @@ fn print_write_field_ty(s: &mut Writer, name: &str, ty: &Type, o: &Objects, pref
         }
         Type::ExtendedStringRefLoc | Type::StringRefLoc => {
             s.wln(format!(
-                "b.write_all(&row.{name}.string_indices_as_array(&mut string_index))?;"
+                "b.write_all(&row.{name}.string_indices_as_array(&mut string_cache))?;"
             ));
         }
         Type::StringRef => {
-            s.open_curly(format!(
-                "if !{prefix}{name}.is_empty()",
-                prefix = prefix,
-                name = name,
-            ));
-            s.wln("b.write_all(&(string_index as u32).to_le_bytes())?;");
             s.wln(format!(
-                "string_index += {prefix}{name}.len() + 1;",
+                "b.write_all(&string_cache.add_string({ref_prefix}{prefix}{name}).to_le_bytes())?;",
+                ref_prefix = if in_array { "" } else { "&" },
                 prefix = prefix,
                 name = name,
             ));
-            s.closing_curly();
-            s.open_curly("else");
-            s.wln("b.write_all(&(0_u32).to_le_bytes())?;");
-            s.closing_curly();
         }
         Type::Array(array) => {
             s.bodyn(
@@ -179,7 +176,7 @@ fn print_write_field_ty(s: &mut Writer, name: &str, ty: &Type, o: &Objects, pref
                     complex = if array.ty().is_string() { "&" } else { "" },
                 ),
                 |s| {
-                    print_write_field_ty(s, "i", array.ty(), o, "");
+                    print_write_field_ty(s, "i", array.ty(), o, "", true);
                 },
             );
         }
@@ -189,99 +186,9 @@ fn print_write_field_ty(s: &mut Writer, name: &str, ty: &Type, o: &Objects, pref
 fn print_write_field(s: &mut Writer, field: &Field, o: &Objects) {
     rust_printer::print_field_comment(s, field);
 
-    print_write_field_ty(s, field.name(), field.ty(), o, "row.");
+    print_write_field_ty(s, field.name(), field.ty(), o, "row.", false);
 
     s.newline();
-}
-
-fn create_string_size_block(s: &mut Writer, d: &DbcDescription) {
-    if !d.contains_string() {
-        return;
-    }
-
-    s.open_curly("fn write_string_block(&self, b: &mut impl Write) -> Result<(), std::io::Error>");
-    s.wln("b.write_all(&[0])?;");
-    s.newline();
-
-    s.open_curly("for row in &self.rows");
-    for field in d.fields() {
-        match field.ty() {
-            Type::StringRef => s.wln(format!(
-                "if !row.{name}.is_empty() {{ b.write_all(row.{name}.as_bytes())?; b.write_all(&[0])?; }};",
-                name = field.name()
-            )),
-            Type::ExtendedStringRefLoc |
-            Type::StringRefLoc => {
-                s.wln(format!("row.{name}.string_block_as_array(b)?;", name = field.name()));
-            }
-            Type::Array(array) => {
-                match array.ty() {
-                    Type::StringRef => {
-                        s.bodyn(format!("for s in &row.{name}", name = field.name()), |s| {
-                            s.wln(
-                                "if !s.is_empty() { b.write_all(s.as_bytes())?; b.write_all(&[0])?; };",
-                            );
-                        });
-                    }
-                    Type::ExtendedStringRefLoc |
-                    Type::StringRefLoc => {
-                        s.wln(format!("row.{name}.string_block_as_array(b)?;", name = field.name()));
-                    }
-                    _ => {}
-                }
-            }
-            _ => {}
-        }
-    }
-
-    s.closing_curly_newline();
-
-    s.wln("Ok(())");
-    s.closing_curly_newline(); // fn write_string_block
-}
-
-fn create_string_block_size(s: &mut Writer, d: &DbcDescription) {
-    if !d.contains_string() {
-        return;
-    }
-
-    s.open_curly("fn string_block_size(&self) -> u32");
-    s.wln("let mut sum = 1;");
-
-    s.open_curly("for row in &self.rows");
-    for field in d.fields() {
-        match field.ty() {
-            Type::StringRef => s.wln(format!(
-                "if !row.{name}.is_empty() {{ sum += row.{name}.len() + 1; }};",
-                name = field.name()
-            )),
-            Type::ExtendedStringRefLoc | Type::StringRefLoc => {
-                s.wln(format!(
-                    "sum += row.{name}.string_block_size();",
-                    name = field.name()
-                ));
-            }
-            Type::Array(array) => match array.ty() {
-                Type::StringRef => {
-                    s.bodyn(format!("for s in &row.{name}", name = field.name()), |s| {
-                        s.wln("if !s.is_empty() { sum += s.len() + 1; };");
-                    });
-                }
-                Type::ExtendedStringRefLoc | Type::StringRefLoc => {
-                    s.wln(format!(
-                        "sum += row.{name}.string_block_size();",
-                        name = field.name()
-                    ));
-                }
-                _ => {}
-            },
-            _ => {}
-        }
-    }
-    s.closing_curly_newline();
-
-    s.wln("sum as u32");
-    s.closing_curly_newline(); // fn string_block_size
 }
 
 fn create_index(s: &mut Writer, d: &DbcDescription) {
@@ -316,12 +223,12 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     s.wln("let header = parse_header(&header)?;");
     s.newline();
 
-    s.bodyn("if header.record_size != Self::ROW_SIZE as u32".to_string(), |s| {
+    s.bodyn("if header.record_size != Self::ROW_SIZE as u32", |s| {
         s.wln("return Err(crate::DbcError::InvalidHeader(");
         s.inc_indent();
 
         s.open_curly("crate::InvalidHeaderError::RecordSize");
-        s.wln("expected: Self::ROW_SIZE as u32,".to_string());
+        s.wln("expected: Self::ROW_SIZE as u32,");
         s.wln("actual: header.record_size,");
         s.closing_curly_with(","); // InvalidHeaderError::RecordSize
 
@@ -330,13 +237,13 @@ fn create_read(s: &mut Writer, d: &DbcDescription, o: &Objects) {
     });
 
     s.bodyn(
-        "if header.field_count != Self::FIELD_COUNT as u32".to_string(),
+        "if header.field_count != Self::FIELD_COUNT as u32",
         |s| {
             s.wln("return Err(crate::DbcError::InvalidHeader(");
             s.inc_indent();
 
             s.open_curly("crate::InvalidHeaderError::FieldCount");
-            s.wln("expected: Self::FIELD_COUNT as u32,".to_string());
+            s.wln("expected: Self::FIELD_COUNT as u32,");
             s.wln("actual: header.field_count,");
             s.closing_curly_with(","); // InvalidHeaderError::RecordSize
 

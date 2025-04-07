@@ -55,6 +55,7 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion
     insert(&mut map, "crate::header", "HEADER_SIZE");
     insert(&mut map, "crate::header", "DbcHeader");
     insert(&mut map, "crate::header", "parse_header");
+    insert(&mut map, "crate::util", "StringCache");
 
     insert(&mut map, "crate", "DbcTable");
 
@@ -68,6 +69,10 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion
 
     if d.contains_extended_localized_string() {
         insert(&mut map, "crate", "ExtendedLocalizedString");
+    }
+
+    if d.contains_localized_string() || d.contains_extended_localized_string() {
+        insert(&mut map, "crate::tys", "WritableString");
     }
 
     let include_path = version.module_name();
@@ -263,7 +268,7 @@ fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
     };
 
     for t in from_tys {
-        s.bodyn(format!("impl From<{t}> for {primary_key}",), |s| {
+        s.bodyn(format!("impl From<{t}> for {primary_key}"), |s| {
             s.body(format!("fn from(v: {t}) -> Self"), |s| {
                 if t == &original_ty {
                     s.wln("Self::new(v)");
@@ -285,7 +290,7 @@ fn create_primary_key_froms(s: &mut Writer, key: &Field, ty: &Type) {
     };
 
     for t in try_from_tys {
-        s.bodyn(format!("impl TryFrom<{t}> for {primary_key}",), |s| {
+        s.bodyn(format!("impl TryFrom<{t}> for {primary_key}"), |s| {
             s.wln(format!("type Error = {t};"));
             s.body(
                 format!("fn try_from(v: {t}) -> Result<Self, Self::Error>"),
@@ -310,6 +315,18 @@ fn create_test(s: &mut Writer, d: &DbcDescription, version: DbcVersion) {
         || d.name() == "SpellEffectNames"
     {
         // These do not have Dbcs
+        return;
+    }
+
+    // some files are just empty in a default dbc set
+    if match version {
+        DbcVersion::Vanilla => false,
+        DbcVersion::Tbc => false,
+        DbcVersion::Wrath => {
+            d.name() == "CharVariations"
+        }
+    }
+    {
         return;
     }
 
@@ -341,7 +358,7 @@ fn create_test(s: &mut Writer, d: &DbcDescription, version: DbcVersion) {
     s.wln("let mut v = Vec::with_capacity(contents.len());");
     s.wln("actual.write(&mut v).unwrap();");
 
-    s.wln(format!("let new = {ty}::read(&mut v.as_slice()).unwrap();",));
+    s.wln(format!("let new = {ty}::read(&mut v.as_slice()).unwrap();"));
     s.wln("assert_eq!(actual, new);");
 
     s.closing_curly(); // fn

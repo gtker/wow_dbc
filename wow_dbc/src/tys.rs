@@ -1,3 +1,5 @@
+use crate::util::StringCache;
+
 /// DBCs from the English version of the game will only have English version strings, while other localizations will have other languages.
 ///
 /// You are most likely interested in, [`LocalizedString::en_gb`], the English version.
@@ -86,65 +88,12 @@ impl ExtendedLocalizedString {
             flags,
         }
     }
+}
 
-    pub(crate) fn string_indices_as_array(&self, string_index: &mut usize) -> [u8; 16 * 4 + 4] {
-        let mut arr = [0_u8; 16 * 4 + 4]; // 16 strings of 4 bytes + 4 bytes of flags
-        let mut index = 0;
-
-        for s in self.strings() {
-            let value = (if !s.is_empty() {
-                let v = *string_index;
-                *string_index += s.len() + 1;
-                v
-            } else {
-                0
-            } as u32)
-                .to_le_bytes();
-
-            arr[index] = value[0];
-            arr[index + 1] = value[1];
-            arr[index + 2] = value[2];
-            arr[index + 3] = value[3];
-            index += 4;
-        }
-
-        let value = &self.flags.to_le_bytes();
-        arr[index] = value[0];
-        arr[index + 1] = value[1];
-        arr[index + 2] = value[2];
-        arr[index + 3] = value[3];
-
-        arr
-    }
-
-    pub(crate) fn string_block_as_array(
-        &self,
-        b: &mut impl std::io::Write,
-    ) -> Result<(), std::io::Error> {
-        for s in self.strings() {
-            if !s.is_empty() {
-                b.write_all(s.as_bytes())?;
-                b.write_all(&[0])?;
-            };
-        }
-
-        Ok(())
-    }
-
-    pub(crate) fn string_block_size(&self) -> usize {
-        let mut sum = 0;
-
-        for s in self.strings() {
-            if !s.is_empty() {
-                sum += s.len() + 1;
-            }
-        }
-
-        sum
-    }
-
-    pub(crate) const fn strings(&self) -> [&String; 16] {
-        [
+#[cfg(any(feature = "tbc", feature = "wrath"))]
+impl WritableString for ExtendedLocalizedString {
+    fn strings(&self) -> Box<[&str]> {
+        Box::new([
             &self.en_gb,
             &self.ko_kr,
             &self.fr_fr,
@@ -161,7 +110,11 @@ impl ExtendedLocalizedString {
             &self.unknown_13,
             &self.unknown_14,
             &self.unknown_15,
-        ]
+        ])
+    }
+
+    fn flags(&self) -> u32 {
+        self.flags
     }
 }
 
@@ -218,65 +171,12 @@ impl LocalizedString {
             flags,
         }
     }
+}
 
-    pub(crate) fn string_indices_as_array(&self, string_index: &mut usize) -> [u8; 36] {
-        let mut arr = [0_u8; 4 * 8 + 4]; // 8 strings of 4 bytes each, and 4 bytes for flag
-        let mut index = 0;
-
-        for s in self.strings() {
-            let value = (if !s.is_empty() {
-                let v = *string_index;
-                *string_index += s.len() + 1;
-                v
-            } else {
-                0
-            } as u32)
-                .to_le_bytes();
-
-            arr[index] = value[0];
-            arr[index + 1] = value[1];
-            arr[index + 2] = value[2];
-            arr[index + 3] = value[3];
-            index += 4;
-        }
-
-        let value = &self.flags.to_le_bytes();
-        arr[index] = value[0];
-        arr[index + 1] = value[1];
-        arr[index + 2] = value[2];
-        arr[index + 3] = value[3];
-
-        arr
-    }
-
-    pub(crate) fn string_block_as_array(
-        &self,
-        b: &mut impl std::io::Write,
-    ) -> Result<(), std::io::Error> {
-        for s in self.strings() {
-            if !s.is_empty() {
-                b.write_all(s.as_bytes())?;
-                b.write_all(&[0])?;
-            };
-        }
-
-        Ok(())
-    }
-
-    pub(crate) fn string_block_size(&self) -> usize {
-        let mut sum = 0;
-
-        for s in self.strings() {
-            if !s.is_empty() {
-                sum += s.len() + 1;
-            }
-        }
-
-        sum
-    }
-
-    pub(crate) const fn strings(&self) -> [&String; 8] {
-        [
+#[cfg(feature = "vanilla")]
+impl WritableString for LocalizedString {
+    fn strings(&self) -> Box<[&str]> {
+        Box::new([
             &self.en_gb,
             &self.ko_kr,
             &self.fr_fr,
@@ -285,6 +185,31 @@ impl LocalizedString {
             &self.en_tw,
             &self.es_es,
             &self.es_mx,
-        ]
+        ])
+    }
+
+    fn flags(&self) -> u32 {
+        self.flags
+    }
+}
+
+pub(crate) trait WritableString {
+
+    /// Returns a slice of strings, represented by the implementing type.
+    fn strings(&self) -> Box<[&str]>;
+
+    /// Returns the flags for the strings.
+    fn flags(&self) -> u32;
+
+    fn string_indices_as_array(&self, string_cache: &mut StringCache) -> Box<[u8]> {
+        // S u32s + 1 u32 for flags
+        let mut arr = Vec::new();
+
+        for s in self.strings().iter() {
+            // some strings can be empty, which is handled gracefully by the string cache by providing the same offset for all empty strings
+            arr.extend_from_slice(&string_cache.add_string(s).to_le_bytes());
+        }
+        arr.extend_from_slice(&self.flags().to_le_bytes());
+        arr.into_boxed_slice()
     }
 }

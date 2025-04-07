@@ -4,6 +4,8 @@ use crate::{
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
+use crate::tys::WritableString;
+use crate::util::StringCache;
 use crate::wrath_tables::cinematic_sequences::CinematicSequencesKey;
 use crate::wrath_tables::creature_display_info::CreatureDisplayInfoKey;
 use crate::wrath_tables::creature_type::CreatureTypeKey;
@@ -170,17 +172,11 @@ impl DbcTable for ChrRaces {
         Ok(ChrRaces { rows, })
     }
 
-    fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        let header = DbcHeader {
-            record_count: self.rows.len() as u32,
-            field_count: Self::FIELD_COUNT as u32,
-            record_size: Self::ROW_SIZE as u32,
-            string_block_size: self.string_block_size(),
-        };
+    fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error> {
+        let mut b = Vec::with_capacity(self.rows.len() * Self::ROW_SIZE);
 
-        b.write_all(&header.write_header())?;
+        let mut string_cache = StringCache::new();
 
-        let mut string_index = 1;
         for row in &self.rows {
             // id: primary_key (ChrRaces) int32
             b.write_all(&row.id.id.to_le_bytes())?;
@@ -201,13 +197,7 @@ impl DbcTable for ChrRaces {
             b.write_all(&(row.female_display_id.id as i32).to_le_bytes())?;
 
             // client_prefix: string_ref
-            if !row.client_prefix.is_empty() {
-                b.write_all(&(string_index as u32).to_le_bytes())?;
-                string_index += row.client_prefix.len() + 1;
-            }
-            else {
-                b.write_all(&(0_u32).to_le_bytes())?;
-            }
+            b.write_all(&string_cache.add_string(&row.client_prefix).to_le_bytes())?;
 
             // base_language: foreign_key (Languages) int32
             b.write_all(&(row.base_language.id as i32).to_le_bytes())?;
@@ -222,13 +212,7 @@ impl DbcTable for ChrRaces {
             b.write_all(&(row.splash_sound_id.id as i32).to_le_bytes())?;
 
             // client_file_string: string_ref
-            if !row.client_file_string.is_empty() {
-                b.write_all(&(string_index as u32).to_le_bytes())?;
-                string_index += row.client_file_string.len() + 1;
-            }
-            else {
-                b.write_all(&(0_u32).to_le_bytes())?;
-            }
+            b.write_all(&string_cache.add_string(&row.client_file_string).to_le_bytes())?;
 
             // cinematic_sequence_id: foreign_key (CinematicSequences) int32
             b.write_all(&(row.cinematic_sequence_id.id as i32).to_le_bytes())?;
@@ -237,42 +221,39 @@ impl DbcTable for ChrRaces {
             b.write_all(&row.alliance.to_le_bytes())?;
 
             // name_lang: string_ref_loc (Extended)
-            b.write_all(&row.name_lang.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.name_lang.string_indices_as_array(&mut string_cache))?;
 
             // name_female_lang: string_ref_loc (Extended)
-            b.write_all(&row.name_female_lang.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.name_female_lang.string_indices_as_array(&mut string_cache))?;
 
             // name_male_lang: string_ref_loc (Extended)
-            b.write_all(&row.name_male_lang.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.name_male_lang.string_indices_as_array(&mut string_cache))?;
 
             // facial_hair_customization: string_ref[2]
             for i in &row.facial_hair_customization {
-                if !i.is_empty() {
-                    b.write_all(&(string_index as u32).to_le_bytes())?;
-                    string_index += i.len() + 1;
-                }
-                else {
-                    b.write_all(&(0_u32).to_le_bytes())?;
-                }
+                b.write_all(&string_cache.add_string(i).to_le_bytes())?;
             }
 
 
             // hair_customization: string_ref
-            if !row.hair_customization.is_empty() {
-                b.write_all(&(string_index as u32).to_le_bytes())?;
-                string_index += row.hair_customization.len() + 1;
-            }
-            else {
-                b.write_all(&(0_u32).to_le_bytes())?;
-            }
+            b.write_all(&string_cache.add_string(&row.hair_customization).to_le_bytes())?;
 
             // required_expansion: int32
             b.write_all(&row.required_expansion.to_le_bytes())?;
 
         }
 
-        self.write_string_block(b)?;
+        assert_eq!(b.len(), self.rows.len() * Self::ROW_SIZE);
+        let header = DbcHeader {
+            record_count: self.rows.len() as u32,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
+            string_block_size: string_cache.size(),
+        };
 
+        w.write_all(&header.write_header())?;
+        w.write_all(&b)?;
+        w.write_all(string_cache.buffer())?;
         Ok(())
     }
 
@@ -289,46 +270,6 @@ impl Indexable for ChrRaces {
         let key = key.try_into().ok()?;
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-}
-
-impl ChrRaces {
-    fn write_string_block(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        b.write_all(&[0])?;
-
-        for row in &self.rows {
-            if !row.client_prefix.is_empty() { b.write_all(row.client_prefix.as_bytes())?; b.write_all(&[0])?; };
-            if !row.client_file_string.is_empty() { b.write_all(row.client_file_string.as_bytes())?; b.write_all(&[0])?; };
-            row.name_lang.string_block_as_array(b)?;
-            row.name_female_lang.string_block_as_array(b)?;
-            row.name_male_lang.string_block_as_array(b)?;
-            for s in &row.facial_hair_customization {
-                if !s.is_empty() { b.write_all(s.as_bytes())?; b.write_all(&[0])?; };
-            }
-
-            if !row.hair_customization.is_empty() { b.write_all(row.hair_customization.as_bytes())?; b.write_all(&[0])?; };
-        }
-
-        Ok(())
-    }
-
-    fn string_block_size(&self) -> u32 {
-        let mut sum = 1;
-        for row in &self.rows {
-            if !row.client_prefix.is_empty() { sum += row.client_prefix.len() + 1; };
-            if !row.client_file_string.is_empty() { sum += row.client_file_string.len() + 1; };
-            sum += row.name_lang.string_block_size();
-            sum += row.name_female_lang.string_block_size();
-            sum += row.name_male_lang.string_block_size();
-            for s in &row.facial_hair_customization {
-                if !s.is_empty() { sum += s.len() + 1; };
-            }
-
-            if !row.hair_customization.is_empty() { sum += row.hair_customization.len() + 1; };
-        }
-
-        sum as u32
-    }
-
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]

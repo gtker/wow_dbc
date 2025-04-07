@@ -57,7 +57,7 @@ impl Writer {
     }
 
     fn get_column(&self) -> usize {
-        self.inner.len() - (self.inner.rfind(|a| a == '\n').unwrap() + 1)
+        self.inner.len() - (self.inner.rfind('\n').unwrap() + 1)
     }
 
     pub(crate) fn space(&mut self) {
