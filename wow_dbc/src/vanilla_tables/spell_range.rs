@@ -4,6 +4,8 @@ use crate::{
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
+use crate::tys::WritableString;
+use crate::util::StringCache;
 use std::io::Write;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -87,17 +89,11 @@ impl DbcTable for SpellRange {
         Ok(SpellRange { rows, })
     }
 
-    fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        let header = DbcHeader {
-            record_count: self.rows.len() as u32,
-            field_count: Self::FIELD_COUNT as u32,
-            record_size: Self::ROW_SIZE as u32,
-            string_block_size: self.string_block_size(),
-        };
+    fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error> {
+        let mut b = Vec::with_capacity(self.rows.len() * Self::ROW_SIZE);
 
-        b.write_all(&header.write_header())?;
+        let mut string_cache = StringCache::new();
 
-        let mut string_index = 1;
         for row in &self.rows {
             // id: primary_key (SpellRange) uint32
             b.write_all(&row.id.id.to_le_bytes())?;
@@ -112,15 +108,24 @@ impl DbcTable for SpellRange {
             b.write_all(&row.flags.to_le_bytes())?;
 
             // display_name: string_ref_loc
-            b.write_all(&row.display_name.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.display_name.string_indices_as_array(&mut string_cache))?;
 
             // display_name_short: string_ref_loc
-            b.write_all(&row.display_name_short.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.display_name_short.string_indices_as_array(&mut string_cache))?;
 
         }
 
-        self.write_string_block(b)?;
+        assert_eq!(b.len(), self.rows.len() * Self::ROW_SIZE);
+        let header = DbcHeader {
+            record_count: self.rows.len() as u32,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
+            string_block_size: string_cache.size(),
+        };
 
+        w.write_all(&header.write_header())?;
+        w.write_all(&b)?;
+        w.write_all(string_cache.buffer())?;
         Ok(())
     }
 
@@ -137,30 +142,6 @@ impl Indexable for SpellRange {
         let key = key.try_into().ok()?;
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-}
-
-impl SpellRange {
-    fn write_string_block(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        b.write_all(&[0])?;
-
-        for row in &self.rows {
-            row.display_name.string_block_as_array(b)?;
-            row.display_name_short.string_block_as_array(b)?;
-        }
-
-        Ok(())
-    }
-
-    fn string_block_size(&self) -> u32 {
-        let mut sum = 1;
-        for row in &self.rows {
-            sum += row.display_name.string_block_size();
-            sum += row.display_name_short.string_block_size();
-        }
-
-        sum as u32
-    }
-
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]

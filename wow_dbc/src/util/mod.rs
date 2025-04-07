@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 #[cfg(any(feature = "tbc", feature = "wrath"))]
 use crate::tys::ExtendedLocalizedString;
 
@@ -178,4 +179,131 @@ pub fn read_array_i32<const N: usize>(chunk: &mut &[u8]) -> Result<[i32; N], std
     }
 
     Ok(arr)
+}
+
+/// This struct implements a string cache for writing the string block of a DBC file.
+///
+/// It maintains an in-memory buffer of the final string block and a mapping of strings to their offset in the buffer.
+pub struct StringCache {
+    /// Mapping of already written strings to their offsets in the buffer.
+    offsets: HashMap<String, u32>,
+
+    /// The buffer that contains the final string block.
+    buffer: Vec<u8>,
+}
+
+
+impl StringCache {
+    /// Creates a new `StringCache`.
+    pub fn new() -> Self {
+        let mut new = Self {
+            offsets: HashMap::new(),
+            buffer: Vec::new(),
+        };
+
+        // add an empty string, which makes empty strings reference 0
+        new.buffer.push(0_u8);
+        new.offsets.insert("".to_string(), 0);
+
+        new
+    }
+
+    /// Adds a string to the cache and returns its offset in the buffer.
+    ///
+    /// If the string already exists in the cache, it returns the existing offset.
+    pub fn add_string(&mut self, s: &str) -> u32 {
+
+        // if offset already exists, return it
+        if let Some(offset) = self.offsets.get(s) {
+            return *offset;
+        }
+
+        // if the string does not exist, we add it to the cache
+        let offset = self.buffer.len() as u32;
+        self.buffer.extend_from_slice(s.as_bytes());
+
+        // null-terminate the string
+        self.buffer.push(0_u8);
+
+        // and then we add an offset for the string and all of it's suffixes
+        // this allows us to reuse suffixes of strings, like "abc" and "bc", which both end with "bc"
+        // the original dbc files do this as well but not as thoroughly
+        // there are instances where suffixes stand alone, like "23" after "123" is already in the cache
+        // this means that bit perfect recreation is not possible
+        for i in 0..s.len() {
+            // we need to check if the resulting substring is a valid UTF-8 string, if not, we skip it
+            // this happens if we are dealing with a multibyte character in a localized string
+
+            if !s.is_char_boundary(i) {
+                continue;
+            }
+
+            let suffix = &s[i..];
+            self.offsets.insert(suffix.to_string(), offset + i as u32);
+        }
+
+        offset
+    }
+
+    /// Returns the size of the string block.
+    pub fn size(&self) -> u32 {
+        self.buffer.len() as u32
+    }
+
+    /// Returns the buffer containing the string block.
+    pub fn buffer(&self) -> &[u8] {
+        &self.buffer
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_string_cache() {
+        let mut cache = StringCache::new();
+        assert_eq!(cache.add_string("Hello"), 1);
+        assert_eq!(cache.add_string("World"), 7);
+        assert_eq!(cache.add_string("Hello"), 1);
+        assert_eq!(cache.size(), 13);
+    }
+
+    #[test]
+    fn test_empty_string_cache() {
+        let mut cache = StringCache::new();
+        assert_eq!(cache.size(), 1);
+        assert_eq!(cache.buffer().len(), 1);
+    }
+
+    #[test]
+    fn test_empty_string() {
+        let mut cache = StringCache::new();
+        assert_eq!(cache.add_string(""), 0);
+        assert_eq!(cache.size(), 1);
+        assert_eq!(cache.buffer().len(), 1);
+        assert_eq!(cache.buffer()[0], 0);
+    }
+
+    #[test]
+    fn test_suffix_match() {
+        let mut cache = StringCache::new();
+
+        // all of these strings have the same suffixes and will point to the first "abc"
+        assert_eq!(cache.add_string("abc"), 1);
+        assert_eq!(cache.add_string("bc"), 2);
+        assert_eq!(cache.add_string("c"), 3);
+
+        // shares the same prefix, but different suffix, not a match
+        assert_eq!(cache.add_string("a"), 5);
+
+        // while "123" would contain both "23" and "3", if they are added in reverse order, they are not a match
+        assert_eq!(cache.add_string("3"), 7);
+        assert_eq!(cache.add_string("23"), 9);
+        assert_eq!(cache.add_string("123"), 12);
+
+        assert_eq!(cache.size(), 16);
+        assert_eq!(cache.buffer().len(), 16);
+    }
 }

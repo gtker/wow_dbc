@@ -4,6 +4,8 @@ use crate::{
 use crate::header::{
     DbcHeader, HEADER_SIZE, parse_header,
 };
+use crate::tys::WritableString;
+use crate::util::StringCache;
 use crate::wrath_tables::area_table::AreaTableKey;
 use crate::wrath_tables::loading_screens::LoadingScreensKey;
 use std::io::Write;
@@ -136,29 +138,17 @@ impl DbcTable for Map {
         Ok(Map { rows, })
     }
 
-    fn write(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        let header = DbcHeader {
-            record_count: self.rows.len() as u32,
-            field_count: Self::FIELD_COUNT as u32,
-            record_size: Self::ROW_SIZE as u32,
-            string_block_size: self.string_block_size(),
-        };
+    fn write(&self, w: &mut impl Write) -> Result<(), std::io::Error> {
+        let mut b = Vec::with_capacity(self.rows.len() * Self::ROW_SIZE);
 
-        b.write_all(&header.write_header())?;
+        let mut string_cache = StringCache::new();
 
-        let mut string_index = 1;
         for row in &self.rows {
             // id: primary_key (Map) int32
             b.write_all(&row.id.id.to_le_bytes())?;
 
             // directory: string_ref
-            if !row.directory.is_empty() {
-                b.write_all(&(string_index as u32).to_le_bytes())?;
-                string_index += row.directory.len() + 1;
-            }
-            else {
-                b.write_all(&(0_u32).to_le_bytes())?;
-            }
+            b.write_all(&string_cache.add_string(&row.directory).to_le_bytes())?;
 
             // instance_type: int32
             b.write_all(&row.instance_type.to_le_bytes())?;
@@ -170,16 +160,16 @@ impl DbcTable for Map {
             b.write_all(&row.p_v_p.to_le_bytes())?;
 
             // map_name_lang: string_ref_loc (Extended)
-            b.write_all(&row.map_name_lang.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.map_name_lang.string_indices_as_array(&mut string_cache))?;
 
             // area_table_id: foreign_key (AreaTable) int32
             b.write_all(&(row.area_table_id.id as i32).to_le_bytes())?;
 
             // map_description0_lang: string_ref_loc (Extended)
-            b.write_all(&row.map_description0_lang.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.map_description0_lang.string_indices_as_array(&mut string_cache))?;
 
             // map_description1_lang: string_ref_loc (Extended)
-            b.write_all(&row.map_description1_lang.string_indices_as_array(&mut string_index))?;
+            b.write_all(&row.map_description1_lang.string_indices_as_array(&mut string_cache))?;
 
             // loading_screen_id: foreign_key (LoadingScreens) int32
             b.write_all(&(row.loading_screen_id.id as i32).to_le_bytes())?;
@@ -210,8 +200,17 @@ impl DbcTable for Map {
 
         }
 
-        self.write_string_block(b)?;
+        assert_eq!(b.len(), self.rows.len() * Self::ROW_SIZE);
+        let header = DbcHeader {
+            record_count: self.rows.len() as u32,
+            field_count: Self::FIELD_COUNT as u32,
+            record_size: Self::ROW_SIZE as u32,
+            string_block_size: string_cache.size(),
+        };
 
+        w.write_all(&header.write_header())?;
+        w.write_all(&b)?;
+        w.write_all(string_cache.buffer())?;
         Ok(())
     }
 
@@ -228,34 +227,6 @@ impl Indexable for Map {
         let key = key.try_into().ok()?;
         self.rows.iter_mut().find(|a| a.id.id == key.id)
     }
-}
-
-impl Map {
-    fn write_string_block(&self, b: &mut impl Write) -> Result<(), std::io::Error> {
-        b.write_all(&[0])?;
-
-        for row in &self.rows {
-            if !row.directory.is_empty() { b.write_all(row.directory.as_bytes())?; b.write_all(&[0])?; };
-            row.map_name_lang.string_block_as_array(b)?;
-            row.map_description0_lang.string_block_as_array(b)?;
-            row.map_description1_lang.string_block_as_array(b)?;
-        }
-
-        Ok(())
-    }
-
-    fn string_block_size(&self) -> u32 {
-        let mut sum = 1;
-        for row in &self.rows {
-            if !row.directory.is_empty() { sum += row.directory.len() + 1; };
-            sum += row.map_name_lang.string_block_size();
-            sum += row.map_description0_lang.string_block_size();
-            sum += row.map_description1_lang.string_block_size();
-        }
-
-        sum as u32
-    }
-
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash, Default)]
