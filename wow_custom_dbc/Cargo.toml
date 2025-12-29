@@ -1,0 +1,16 @@
+[package]
+name = "wow_custom_dbc"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = []
+vanilla = ["wow_dbc_converter/vanilla"]
+tbc = ["wow_dbc_converter/tbc"]
+wrath = ["wow_dbc_converter/wrath"]
+
+[dependencies]
+clap = { version = "4.5.53", features = ["derive"] }
+wow_dbc = { path = "../wow_dbc", features = ["vanilla", "tbc", "wrath"] }
+rusqlite = { version = "0.28.0", features = ["bundled"] }
+wow_dbc_converter = { path = "../wow_dbc_converter", features = ["tbc","vanilla","wrath"]}
