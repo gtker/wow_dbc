@@ -13,6 +13,8 @@ use std::process::exit;
 use clap::Parser;
 use rusqlite::Connection;
 
+use wow_dbc_converter::Expansion;
+
 /// Convert DBC files to SQLite databases
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -46,26 +48,7 @@ struct Args {
     strict_mode: bool,
 }
 
-#[derive(Debug, Copy, Clone, clap::ValueEnum)]
-pub(crate) enum Expansion {
-    Vanilla,
-    BurningCrusade,
-    Wrath,
-}
 
-impl Display for Expansion {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Expansion::Vanilla => "Vanilla (1.12.x.y)",
-                Expansion::BurningCrusade => "The Burning Crusade (2.4.3.8606)",
-                Expansion::Wrath => "Wrath of the Lich King (3.3.5.12340)",
-            }
-        )
-    }
-}
 
 #[derive(Debug, Clone)]
 struct Options {

@@ -18,6 +18,8 @@ pub fn sqlite_converter(
 
     create_dispatch_functions(&mut s, descriptions);
 
+    generate_get_sql_for_table(&mut s, descriptions);
+
     s
 }
 
@@ -415,34 +417,7 @@ fn create_select(s: &mut Writer, description: &DbcDescription) {
     s.wln(format!("FROM `{}`;\"", description.name()));
 }
 
-fn create_dispatch_functions(s: &mut Writer, descriptions: &[DbcDescription]) {
-    s.open_curly("pub(crate) fn generate_dbc_for(name: &str, conn: &rusqlite::Connection, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
-    s.open_curly("match name");
-    for d in descriptions {
-        s.open_curly(format!("\"{}\" =>", d.name()));
 
-        // 1. Use the name to retrieve the sql select statement for the table
-        s.wln(format!("let (_create, _insert, select) = {}();", d.name()));
-
-        // 2. Use the connection provided to select the rows from the matching table
-        s.wln("let mut stmt = conn.prepare(select)?;");
-        s.wln("let mut rows = stmt.query([])?;");
-
-        // 3. Call the specific from_rows function to get the dbc struct
-        s.wln(format!("let data = {}_from_rows(&mut rows)?;", d.name().to_snake_case()));
-
-        // 4. Write the dbc struct to the writer
-        s.wln("data.write(&mut writer).map_err(|e| SqliteError::DbcError(wow_dbc::DbcError::Io(e)))?;");
-        s.wln("Ok(())");
-
-        s.closing_curly();
-    }
-    s.wln("_ => Err(SqliteError::FilenameNotFound { name: name.to_string() }),");
-    s.closing_curly(); // match
-    s.closing_curly(); // fn
-
-    s.newline();
-}
 
 fn create_insert(s: &mut Writer, description: &DbcDescription) {
     s.wln(format!("\"INSERT INTO {} (", description.name()));
@@ -650,4 +625,44 @@ fn includes(s: &mut Writer, version: DbcVersion) {
     ));
 
     s.newline();
+}
+
+fn create_dispatch_functions(s: &mut Writer, descriptions: &[DbcDescription]) {
+    s.open_curly("pub(crate) fn generate_dbc_for(name: &str, conn: &rusqlite::Connection, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
+    s.open_curly("match name");
+    for d in descriptions {
+        s.open_curly(format!("\"{}\" =>", d.name()));
+
+        // 1. Use the name to retrieve the sql select statement for the table
+        s.wln(format!("let (_create, _insert, select) = {}();", d.name()));
+
+        // 2. Use the connection provided to select the rows from the matching table
+        s.wln("let mut stmt = conn.prepare(select)?;");
+        s.wln("let mut rows = stmt.query([])?;");
+
+        // 3. Call the specific from_rows function to get the dbc struct
+        s.wln(format!("let data = {}_from_rows(&mut rows)?;", d.name().to_snake_case()));
+
+        // 4. Write the dbc struct to the writer
+        s.wln("data.write(&mut writer).map_err(|e| SqliteError::DbcError(wow_dbc::DbcError::Io(e)))?;");
+        s.wln("Ok(())");
+
+        s.closing_curly();
+    }
+    s.wln("_ => Err(SqliteError::FilenameNotFound { name: name.to_string() }),");
+    s.closing_curly(); // match
+    s.closing_curly(); // fn
+
+    s.newline();
+}
+
+fn generate_get_sql_for_table(s: &mut Writer, descriptions: &[DbcDescription]) {
+    s.open_curly("pub(crate) fn get_sql_for(name: &str) -> Result<(&'static str, &'static str, &'static str), SqliteError>");
+    s.open_curly("match name");
+    for d in descriptions {
+        s.wln(format!("\"{}\" => Ok({}()),", d.name(), d.name()));
+    }
+    s.wln("_ => Err(SqliteError::FilenameNotFound { name: name.to_string() }),");
+    s.closing_curly(); // end match
+    s.closing_curly();
 }

@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter};
 use wow_dbc::DbcError;
 
 #[derive(Debug)]
-pub(crate) enum SqliteError {
+pub enum SqliteError {
     Rusqlite(rusqlite::Error),
     EnumError(String),
     DbcError(DbcError),

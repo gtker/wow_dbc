@@ -3,6 +3,7 @@ resolver = "2"
 
 members = [
     "rxml",
+    "wow_custom_dbc",
     "wow_dbc",
     "wow_dbc_converter",
 ]
