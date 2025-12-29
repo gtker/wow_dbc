@@ -7,7 +7,7 @@ use crate::header::{
 use crate::tys::WritableString;
 use crate::util::StringCache;
 use std::io::Write;
-use wow_world_base::vanilla::ItemWeaponClass;
+pub use wow_world_base::vanilla::ItemWeaponClass;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

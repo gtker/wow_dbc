@@ -8,7 +8,7 @@ use crate::tys::WritableString;
 use crate::util::StringCache;
 use crate::vanilla_tables::faction_group::FactionGroupKey;
 use std::io::Write;
-use wow_world_base::vanilla::DefaultChannelFlags;
+pub use wow_world_base::vanilla::DefaultChannelFlags;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

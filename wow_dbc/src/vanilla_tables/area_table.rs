@@ -15,7 +15,7 @@ use crate::vanilla_tables::sound_provider_preferences::SoundProviderPreferencesK
 use crate::vanilla_tables::zone_intro_music_table::ZoneIntroMusicTableKey;
 use crate::vanilla_tables::zone_music::ZoneMusicKey;
 use std::io::Write;
-use wow_world_base::vanilla::AreaFlags;
+pub use wow_world_base::vanilla::AreaFlags;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

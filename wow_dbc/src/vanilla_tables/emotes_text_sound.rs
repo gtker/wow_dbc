@@ -9,7 +9,7 @@ use crate::vanilla_tables::chr_races::ChrRacesKey;
 use crate::vanilla_tables::emotes_text::EmotesTextKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
-use wow_world_base::vanilla::Gender;
+pub use wow_world_base::vanilla::Gender;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

@@ -7,7 +7,7 @@ use crate::header::{
 use crate::util::StringCache;
 use crate::vanilla_tables::chr_races::ChrRacesKey;
 use std::io::Write;
-use wow_world_base::vanilla::{
+pub use wow_world_base::vanilla::{
     Gender, SelectionType,
 };
 

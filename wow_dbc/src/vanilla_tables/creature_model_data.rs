@@ -8,7 +8,7 @@ use crate::util::StringCache;
 use crate::vanilla_tables::footprint_textures::FootprintTexturesKey;
 use crate::vanilla_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
-use wow_world_base::vanilla::SizeClass;
+pub use wow_world_base::vanilla::SizeClass;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

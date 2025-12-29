@@ -11,7 +11,7 @@ use crate::vanilla_tables::creature_sound_data::CreatureSoundDataKey;
 use crate::vanilla_tables::npc_sounds::NPCSoundsKey;
 use crate::vanilla_tables::unit_blood::UnitBloodKey;
 use std::io::Write;
-use wow_world_base::vanilla::SizeClass;
+pub use wow_world_base::vanilla::SizeClass;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

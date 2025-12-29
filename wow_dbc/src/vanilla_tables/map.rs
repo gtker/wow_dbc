@@ -9,7 +9,7 @@ use crate::util::StringCache;
 use crate::vanilla_tables::area_table::AreaTableKey;
 use crate::vanilla_tables::loading_screens::LoadingScreensKey;
 use std::io::Write;
-use wow_world_base::vanilla::InstanceType;
+pub use wow_world_base::vanilla::InstanceType;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

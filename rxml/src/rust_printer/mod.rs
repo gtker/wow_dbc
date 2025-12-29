@@ -106,8 +106,10 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion
     }
 
     for (module, names) in map {
+        let is_external = module.starts_with("wow_world_base");
+        let visibility = if is_external { "pub use" } else { "use" };
         if names.len() > 1 {
-            s.wln(format!("use {module}::{{"));
+            s.wln(format!("{visibility} {module}::{{"));
             s.inc_indent();
 
             for (i, name) in names.iter().enumerate() {
@@ -121,7 +123,7 @@ fn includes(s: &mut Writer, d: &DbcDescription, o: &Objects, version: DbcVersion
             s.closing_curly_with(";"); // use module
         } else {
             let name = names.first().unwrap();
-            s.wln(format!("use {module}::{name};"))
+            s.wln(format!("{visibility} {module}::{name};"))
         }
     }
 

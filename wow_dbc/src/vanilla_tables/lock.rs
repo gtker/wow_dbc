@@ -6,7 +6,7 @@ use crate::header::{
 };
 use crate::util::StringCache;
 use std::io::Write;
-use wow_world_base::vanilla::LockType;
+pub use wow_world_base::vanilla::LockType;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

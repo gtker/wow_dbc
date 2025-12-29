@@ -6,7 +6,7 @@ use crate::header::{
 };
 use crate::util::StringCache;
 use std::io::Write;
-use wow_world_base::vanilla::SoundType;
+pub use wow_world_base::vanilla::SoundType;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

@@ -7,7 +7,7 @@ use crate::header::{
 use crate::tys::WritableString;
 use crate::util::StringCache;
 use std::io::Write;
-use wow_world_base::vanilla::{
+pub use wow_world_base::vanilla::{
     AllowedRace, ReputationFlags,
 };
 

@@ -13,7 +13,7 @@ use crate::vanilla_tables::faction_template::FactionTemplateKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use crate::vanilla_tables::spell::SpellKey;
 use std::io::Write;
-use wow_world_base::vanilla::{
+pub use wow_world_base::vanilla::{
     CharacterRaceFlags, Language,
 };
 

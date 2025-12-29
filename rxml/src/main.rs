@@ -107,7 +107,7 @@ fn main() {
 
         let sqlite_conversion = sqlite_converter(o.descriptions(), version, &o);
         let file_path = converter_location(version, "sqlite");
-        overwrite_if_not_same_contents(sqlite_conversion.inner(), &file_path)
+        overwrite_if_not_same_contents(sqlite_conversion.inner(), &file_path);
     }
 }
 

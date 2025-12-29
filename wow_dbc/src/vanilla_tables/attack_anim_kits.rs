@@ -8,7 +8,7 @@ use crate::util::StringCache;
 use crate::vanilla_tables::animation_data::AnimationDataKey;
 use crate::vanilla_tables::attack_anim_types::AttackAnimTypesKey;
 use std::io::Write;
-use wow_world_base::vanilla::AttackHand;
+pub use wow_world_base::vanilla::AttackHand;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

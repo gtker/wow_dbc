@@ -8,7 +8,7 @@ use crate::util::StringCache;
 use crate::vanilla_tables::item_class::ItemClassKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
-use wow_world_base::vanilla::ItemEnvTypes;
+pub use wow_world_base::vanilla::ItemEnvTypes;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

@@ -8,7 +8,7 @@ use crate::util::StringCache;
 use crate::vanilla_tables::animation_data::AnimationDataKey;
 use crate::vanilla_tables::sound_entries::SoundEntriesKey;
 use std::io::Write;
-use wow_world_base::vanilla::{
+pub use wow_world_base::vanilla::{
     EmoteFlags, EmoteSpecProc,
 };
 

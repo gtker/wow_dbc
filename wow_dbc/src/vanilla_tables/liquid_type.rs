@@ -7,7 +7,7 @@ use crate::header::{
 use crate::util::StringCache;
 use crate::vanilla_tables::spell::SpellKey;
 use std::io::Write;
-use wow_world_base::vanilla::OceanType;
+pub use wow_world_base::vanilla::OceanType;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

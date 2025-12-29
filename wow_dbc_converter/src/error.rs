@@ -5,6 +5,7 @@ use wow_dbc::DbcError;
 #[derive(Debug)]
 pub(crate) enum SqliteError {
     Rusqlite(rusqlite::Error),
+    EnumError(String),
     DbcError(DbcError),
     FilenameNotFound { name: String },
 }
@@ -14,6 +15,7 @@ impl Display for SqliteError {
         match self {
             SqliteError::Rusqlite(v) => v.fmt(f),
             SqliteError::DbcError(v) => v.fmt(f),
+            SqliteError::EnumError(v) => write!(f, "EnumError: {}", v),
             SqliteError::FilenameNotFound { name } => {
                 write!(f, "Unknown DBC file encountered: '{}'", name)
             }
@@ -34,3 +36,4 @@ impl From<DbcError> for SqliteError {
         Self::DbcError(v)
     }
 }
+

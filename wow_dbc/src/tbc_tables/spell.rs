@@ -15,7 +15,7 @@ use crate::tbc_tables::spell_mechanic::SpellMechanicKey;
 use crate::tys::WritableString;
 use crate::util::StringCache;
 use std::io::Write;
-use wow_world_base::tbc::AuraMod;
+pub use wow_world_base::tbc::AuraMod;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
