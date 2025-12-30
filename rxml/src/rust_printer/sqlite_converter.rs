@@ -414,7 +414,12 @@ fn create_select(s: &mut Writer, description: &DbcDescription) {
     }
 
     s.dec_indent();
-    s.wln(format!("FROM `{}`;\"", description.name()));
+    match description.name() {
+        "SkillLineAbility" => s.wln(" FROM SkillLineAbility ORDER BY 2;\""),
+        "Talent" => s.wln(" FROM Talent ORDER BY 2,3,4;\""),
+        _ => s.wln(format!("FROM `{}`;\"", description.name()))
+    }
+
 }
 
 
@@ -617,7 +622,10 @@ fn create_table_ty(ty: &Type) -> &'static str {
 fn includes(s: &mut Writer, version: DbcVersion) {
     s.wln("use crate::SqliteError;");
     s.wln("use rusqlite::{Connection, params};");
-    s.wln("use wow_dbc::{DbcTable, LocalizedString, ExtendedLocalizedString};");
+    match version {
+        DbcVersion::Vanilla => s.wln("use wow_dbc::{DbcTable, LocalizedString};"),
+        _ => s.wln("use wow_dbc::{DbcTable, ExtendedLocalizedString};")
+    }
 
     s.wln(format!(
         "use wow_dbc::{version}::*;",

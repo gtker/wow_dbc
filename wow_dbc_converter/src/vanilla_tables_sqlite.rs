@@ -1,6 +1,6 @@
 use crate::SqliteError;
 use rusqlite::{Connection, params};
-use wow_dbc::{DbcTable, LocalizedString, ExtendedLocalizedString};
+use wow_dbc::{DbcTable, LocalizedString};
 use wow_dbc::vanilla_tables::*;
 
 pub(crate) fn write_to_sqlite(conn: &mut Connection, file_name: &str, file_contents: &mut &[u8]) -> Result<(), SqliteError> {
@@ -12027,7 +12027,7 @@ pub(crate) fn SkillLineAbility() -> (&'static str, &'static str, &'static str) {
         character_points_1,
         num_skills_up,
         unknown_padding
-    FROM `SkillLineAbility`;"
+     FROM SkillLineAbility ORDER BY 2;"
     )
 }
 
@@ -15536,7 +15536,7 @@ pub(crate) fn Talent() -> (&'static str, &'static str, &'static str) {
         prereq_ranks_2,
         flags,
         required_spell
-    FROM `Talent`;"
+     FROM Talent ORDER BY 2,3,4;"
     )
 }
 
