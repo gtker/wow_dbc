@@ -18,13 +18,14 @@ pub fn sqlite_converter(
 
     create_dispatch_functions(&mut s, descriptions);
 
+    s.wln("#[allow(dead_code)]");
     generate_get_sql_for_table(&mut s, descriptions);
 
     s
 }
 
 fn write_to_sqlite_function(s: &mut Writer, descriptions: &[DbcDescription], o: &Objects) {
-    s.open_curly("pub(crate) fn write_to_sqlite(conn: &mut Connection, file_name: &str, file_contents: &mut &[u8]) -> Result<(), SqliteError>");
+    s.open_curly("pub fn write_to_sqlite(conn: &mut Connection, file_name: &str, file_contents: &mut &[u8]) -> Result<(), SqliteError>");
 
     s.wln("let tx = conn.transaction()?;");
     s.newline();
@@ -162,26 +163,26 @@ fn sqlite_table_functions(s: &mut Writer, descriptions: &[DbcDescription]) {
     }
 }
 
-fn create_lookup_dispatch(s: &mut Writer, descriptions: &[DbcDescription]) {
-    s.newline();
-    s.wln("/// Maps a table name to its conversion logic and writes the result to the provided writer.");
-    s.open_curly("pub(crate) fn read_table(name: &str, rows: &mut rusqlite::Rows<'_>, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
-    s.open_curly("match name");
-
-    for d in descriptions {
-        s.open_curly(format!("\"{}\" =>", d.name()));
-        // Call the specific from_rows function
-        s.wln(format!("let data = {}_from_rows(rows)?;", d.name().to_snake_case()));
-        // Use the DbcTable trait (which data implements) to write the file
-        s.wln("data.write(&mut writer).map_err(|e| SqliteError::DbcError(wow_dbc::DbcError::Io(e)))?;");
-        s.wln("Ok(())");
-        s.closing_curly();
-    }
-
-    s.wln("_ => Err(SqliteError::FilenameNotFound { name: name.to_string() }),");
-    s.closing_curly(); // match
-    s.closing_curly(); // fn
-}
+// fn create_lookup_dispatch(s: &mut Writer, descriptions: &[DbcDescription]) {
+//     s.newline();
+//     s.wln("/// Maps a table name to its conversion logic and writes the result to the provided writer.");
+//     s.open_curly("pub(crate) fn read_table(name: &str, rows: &mut rusqlite::Rows<'_>, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
+//     s.open_curly("match name");
+//
+//     for d in descriptions {
+//         s.open_curly(format!("\"{}\" =>", d.name()));
+//         // Call the specific from_rows function
+//         s.wln(format!("let data = {}_from_rows(rows)?;", d.name().to_snake_case()));
+//         // Use the DbcTable trait (which data implements) to write the file
+//         s.wln("data.write(&mut writer).map_err(|e| SqliteError::DbcError(wow_dbc::DbcError::Io(e)))?;");
+//         s.wln("Ok(())");
+//         s.closing_curly();
+//     }
+//
+//     s.wln("_ => Err(SqliteError::FilenameNotFound { name: name.to_string() }),");
+//     s.closing_curly(); // match
+//     s.closing_curly(); // fn
+// }
 
 fn create_from_rows(s: &mut Writer, description: &DbcDescription) {
     s.newline();
@@ -204,7 +205,7 @@ fn create_from_rows(s: &mut Writer, description: &DbcDescription) {
     let mut index = 0;
     for field in description.fields() {
         match field.ty() {
-            Type::PrimaryKey { table, ty } => {
+            Type::PrimaryKey { table: _, ty } => {
                 s.wln(format!(
                     "{name}: row.get::<_, {table_key}>({index})?.into(),",
                     name = field.name(),
@@ -213,7 +214,7 @@ fn create_from_rows(s: &mut Writer, description: &DbcDescription) {
                 ));
                 index += 1;
             }
-            Type::ForeignKey { table, ty } => {
+            Type::ForeignKey { table: _, ty } => {
                 s.wln(format!(
                     "{name}: row.get::<_, {table_key}>({index})?.into(),",
                     name = field.name(),
@@ -537,22 +538,22 @@ fn create_table(s: &mut Writer, description: &DbcDescription) {
     for (i, field) in description.fields().iter().enumerate() {
         match field.ty() {
             Type::StringRefLoc | Type::ExtendedStringRefLoc | Type::Array(_) => {
-                let (iterator) = match field.ty() {
-                    Type::StringRefLoc => (
+                let iterator = match field.ty() {
+                    Type::StringRefLoc =>
                         string_ref_loc_members()
                             .iter()
                             .map(|a| (a.to_string(), match a { &"flags" => "INTEGER", _ => "TEXT"}))
                             .collect::<Vec<_>>()
-                    ),
-                    Type::ExtendedStringRefLoc => (
+                    ,
+                    Type::ExtendedStringRefLoc =>
                         extended_string_ref_loc_members()
                             .iter()
                             .map(|a| (a.to_string(), match a { &"flags" => "INTEGER", _ => "TEXT"}))
                             .collect::<Vec<_>>()
-                    ),
-                    Type::Array(array) => (
+                    ,
+                    Type::Array(array) =>
                         (0..array.size()).map(|a| (a.to_string(), create_table_ty(array.ty()))).collect::<Vec<_>>()
-                    ),
+                    ,
                     _ => unreachable!(),
                 };
                 let mut iterator = iterator.iter().peekable();
@@ -636,7 +637,7 @@ fn includes(s: &mut Writer, version: DbcVersion) {
 }
 
 fn create_dispatch_functions(s: &mut Writer, descriptions: &[DbcDescription]) {
-    s.open_curly("pub(crate) fn generate_dbc_for(name: &str, conn: &rusqlite::Connection, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
+    s.open_curly("pub fn generate_dbc_for(name: &str, conn: &rusqlite::Connection, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
     s.open_curly("match name");
     for d in descriptions {
         s.open_curly(format!("\"{}\" =>", d.name()));
@@ -665,7 +666,7 @@ fn create_dispatch_functions(s: &mut Writer, descriptions: &[DbcDescription]) {
 }
 
 fn generate_get_sql_for_table(s: &mut Writer, descriptions: &[DbcDescription]) {
-    s.open_curly("pub(crate) fn get_sql_for(name: &str) -> Result<(&'static str, &'static str, &'static str), SqliteError>");
+    s.open_curly("pub fn get_sql_for(name: &str) -> Result<(&'static str, &'static str, &'static str), SqliteError>");
     s.open_curly("match name");
     for d in descriptions {
         s.wln(format!("\"{}\" => Ok({}()),", d.name(), d.name()));

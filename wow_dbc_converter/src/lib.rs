@@ -79,25 +79,53 @@ impl Display for Expansion {
 
 pub fn get_table_sql(name: &str, expansion: Expansion) -> Result<(&'static str, &'static str, &'static str), SqliteError> {
     match expansion {
-        #[cfg(feature = "vanilla")]
-        Expansion::Vanilla => vanilla_tables_sqlite::get_sql_for(name),
-        #[cfg(feature = "tbc")]
-        Expansion::BurningCrusade => tbc_tables_sqlite::get_sql_for(name),
-        #[cfg(feature = "wrath")]
-        Expansion::Wrath => wrath_tables_sqlite::get_sql_for(name),
-        _ => Err(SqliteError::EnumError(format!("{expansion} is not a valid expansion. Are the right features enabled?")))
+        Expansion::Vanilla => {
+            #[cfg(feature = "vanilla")]
+            {vanilla_tables_sqlite::get_sql_for(name)}
 
+            #[cfg(not(feature = "vanilla"))]
+            Err(SqliteError::EnumError(format!("Cannot get table {name} because {expansion} is not a valid expansion. Are the right features enabled?")))
+        },
+        Expansion::BurningCrusade => {
+            #[cfg(feature = "tbc")]
+            {tbc_tables_sqlite::get_sql_for(name)}
+
+            #[cfg(not(feature = "tbc"))]
+            Err(SqliteError::EnumError(format!("Cannot get table {name} because {expansion} is not a valid expansion. Are the right features enabled?")))
+        },
+        Expansion::Wrath => {
+            #[cfg(feature = "wrath")]
+            {wrath_tables_sqlite::get_sql_for(name)}
+
+            #[cfg(not(feature = "wrath"))]
+            Err(SqliteError::EnumError(format!("Cannot get table {name} because {expansion} is not a valid expansion. Are the right features enabled?")))
+        }
     }
 }
 
-pub fn generate_dbc_for(expansion: Expansion, name: &str, conn: &rusqlite::Connection, writer: &mut dyn std::io::Write) -> Result<(), SqliteError> {
+pub fn generate_dbc_for(expansion: Expansion, name: &str, _conn: &rusqlite::Connection, _writer: &mut dyn std::io::Write) -> Result<(), SqliteError> {
     match expansion {
-        #[cfg(feature = "vanilla")]
-        Expansion::Vanilla => vanilla_tables_sqlite::generate_dbc_for(&name, &conn, writer),
-        #[cfg(feature = "tbc")]
-        Expansion::BurningCrusade => tbc_tables_sqlite::generate_dbc_for(&name, &conn, writer),
-        #[cfg(feature = "wrath")]
-        Expansion::Wrath => wrath_tables_sqlite::generate_dbc_for(&name, &conn, writer),
-        _ => Err(SqliteError::EnumError(format!("{expansion} is not a valid expansion. Are the right features enabled?")))
+        Expansion::Vanilla => {
+            #[cfg(feature = "vanilla")]
+            {vanilla_tables_sqlite::generate_dbc_for(&name, &_conn, _writer)}
+
+            #[cfg(not(feature = "vanilla"))]
+            Err(SqliteError::EnumError(format!("Cannot generate dbc for {name} because {expansion} is not a valid expansion. Are the right features enabled?")))
+        },
+        Expansion::BurningCrusade => {
+            #[cfg(feature = "tbc")]
+            {tbc_tables_sqlite::generate_dbc_for(&name, &_conn, _writer)}
+
+            #[cfg(not(feature = "tbc"))]
+            Err(SqliteError::EnumError(format!("Cannot generate dbc for {name} because {expansion} is not a valid expansion. Are the right features enabled?")))
+        },
+        
+        Expansion::Wrath => {
+            #[cfg(feature = "wrath")]
+            {wrath_tables_sqlite::generate_dbc_for(&name, &_conn, _writer)}
+
+            #[cfg(not(feature = "wrath"))]
+            Err(SqliteError::EnumError(format!("Cannot generate dbc for {name} because {expansion} is not a valid expansion. Are the right features enabled?")))
+        }
     }
 }

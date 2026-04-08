@@ -4,7 +4,6 @@ mod vanilla_tables_sqlite;
 mod wrath_tables_sqlite;
 
 pub(crate) use error::*;
-use std::fmt::{Display, Formatter};
 
 use std::fs::{create_dir_all, read, read_dir};
 use std::path::PathBuf;
