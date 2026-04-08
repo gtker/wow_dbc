@@ -1,6 +1,6 @@
 
 
-use wow_dbc_converter::{tbc_tables_sqlite,vanilla_tables_sqlite,wrath_tables_sqlite, Expansion};
+use wow_dbc_converter::{Expansion};
 
 use std::fs::create_dir_all;
 use std::path::PathBuf;
