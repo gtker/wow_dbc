@@ -136,6 +136,9 @@ impl DbcTable for Spell {
             // category_recovery_time: int32
             let category_recovery_time = crate::util::read_i32_le(chunk)?;
 
+            // interrupt_flags: int32
+            let interrupt_flags = crate::util::read_i32_le(chunk)?;
+
             // aura_interrupt_flags: int32
             let aura_interrupt_flags = crate::util::read_i32_le(chunk)?;
 
@@ -281,9 +284,6 @@ impl DbcTable for Spell {
             // spell_priority: int32
             let spell_priority = crate::util::read_i32_le(chunk)?;
 
-            // unknown_flag: int32
-            let unknown_flag = crate::util::read_i32_le(chunk)?;
-
             // name: string_ref_loc
             let name = crate::util::read_localized_string(chunk, &string_block)?;
 
@@ -361,6 +361,7 @@ impl DbcTable for Spell {
                 casting_time_index,
                 recovery_time,
                 category_recovery_time,
+                interrupt_flags,
                 aura_interrupt_flags,
                 channel_interrupt_flags,
                 proc_type_mask,
@@ -407,7 +408,6 @@ impl DbcTable for Spell {
                 spell_icon,
                 active_icon,
                 spell_priority,
-                unknown_flag,
                 name,
                 name_subtext,
                 description,
@@ -500,6 +500,9 @@ impl DbcTable for Spell {
 
             // category_recovery_time: int32
             b.write_all(&row.category_recovery_time.to_le_bytes())?;
+
+            // interrupt_flags: int32
+            b.write_all(&row.interrupt_flags.to_le_bytes())?;
 
             // aura_interrupt_flags: int32
             b.write_all(&row.aura_interrupt_flags.to_le_bytes())?;
@@ -705,9 +708,6 @@ impl DbcTable for Spell {
             // spell_priority: int32
             b.write_all(&row.spell_priority.to_le_bytes())?;
 
-            // unknown_flag: int32
-            b.write_all(&row.unknown_flag.to_le_bytes())?;
-
             // name: string_ref_loc
             b.write_all(&row.name.string_indices_as_array(&mut string_cache))?;
 
@@ -903,6 +903,7 @@ pub struct SpellRow {
     pub casting_time_index: SpellCastTimesKey,
     pub recovery_time: i32,
     pub category_recovery_time: i32,
+    pub interrupt_flags: i32,
     pub aura_interrupt_flags: i32,
     pub channel_interrupt_flags: i32,
     pub proc_type_mask: i32,
@@ -949,7 +950,6 @@ pub struct SpellRow {
     pub spell_icon: SpellIconKey,
     pub active_icon: i32,
     pub spell_priority: i32,
-    pub unknown_flag: i32,
     pub name: LocalizedString,
     pub name_subtext: LocalizedString,
     pub description: LocalizedString,
