@@ -163,27 +163,6 @@ fn sqlite_table_functions(s: &mut Writer, descriptions: &[DbcDescription]) {
     }
 }
 
-// fn create_lookup_dispatch(s: &mut Writer, descriptions: &[DbcDescription]) {
-//     s.newline();
-//     s.wln("/// Maps a table name to its conversion logic and writes the result to the provided writer.");
-//     s.open_curly("pub(crate) fn read_table(name: &str, rows: &mut rusqlite::Rows<'_>, mut writer: impl std::io::Write) -> Result<(), SqliteError>");
-//     s.open_curly("match name");
-//
-//     for d in descriptions {
-//         s.open_curly(format!("\"{}\" =>", d.name()));
-//         // Call the specific from_rows function
-//         s.wln(format!("let data = {}_from_rows(rows)?;", d.name().to_snake_case()));
-//         // Use the DbcTable trait (which data implements) to write the file
-//         s.wln("data.write(&mut writer).map_err(|e| SqliteError::DbcError(wow_dbc::DbcError::Io(e)))?;");
-//         s.wln("Ok(())");
-//         s.closing_curly();
-//     }
-//
-//     s.wln("_ => Err(SqliteError::FilenameNotFound { name: name.to_string() }),");
-//     s.closing_curly(); // match
-//     s.closing_curly(); // fn
-// }
-
 fn create_from_rows(s: &mut Writer, description: &DbcDescription) {
     s.newline();
     s.open_curly(format!(
